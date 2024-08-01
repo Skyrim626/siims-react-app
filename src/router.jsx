@@ -18,10 +18,34 @@ import ChairpersonDashboard from "./pages/chairperson/ChairpersonDashboard";
 import ChairpersonProfile from "./pages/chairperson/ChairpersonProfile";
 import ChairpersonSettings from "./pages/chairperson/ChairpersonSettings";
 import ChairpersonEndorsementRequests from "./pages/chairperson/ChairpersonEndorsementRequests";
+import ChairpersonUsers from "./pages/chairperson/ChairpersonUsers";
 
-// Import Handlers
+// Import Handler
+import Authentication from "./handlers/Authentication";
 
 const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <GuestLayout />,
+    children: [
+      {
+        path: "/",
+        element: <Navigate to={"/login"} />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/forgot-password",
+        element: <ForgotPassword />,
+      },
+    ],
+  },
+  {
+    path: "/auth",
+    element: <Authentication />,
+  },
   {
     path: "/chairperson",
     element: <ChairpersonLayout />,
@@ -37,6 +61,10 @@ const router = createBrowserRouter([
       {
         path: "/chairperson/profile",
         element: <ChairpersonProfile />,
+      },
+      {
+        path: "/chairperson/users",
+        element: <ChairpersonUsers />,
       },
       {
         path: "/chairperson/endorsement-requests",
@@ -94,24 +122,7 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
   }, */
-  {
-    path: "/",
-    element: <GuestLayout />,
-    children: [
-      {
-        path: "/",
-        element: <Navigate to={"/login"} />,
-      },
-      {
-        path: "/login",
-        element: <Login />,
-      },
-      {
-        path: "/forgot-password",
-        element: <ForgotPassword />,
-      },
-    ],
-  },
+
   {
     path: "*",
     element: <NotFound />,

@@ -7,6 +7,7 @@ import {
   MessageCircle,
   Settings,
   UserCircle,
+  Users2,
 } from "lucide-react";
 
 // Import Layout
@@ -39,6 +40,14 @@ const sidebarItemsConfig = [
     path: "/chairperson/profile",
   },
   {
+    icon: <Users2 size={20} />,
+    text: "Users",
+    alert: true,
+    ariaLabel: "Users",
+    active: true,
+    path: "/chairperson/users",
+  },
+  {
     icon: <MessageCircle size={20} />,
     text: "Messages",
     alert: true,
@@ -54,6 +63,7 @@ const sidebarItemsConfig = [
     active: true,
     path: "/chairperson/endorsement-requests",
   },
+  { isDivider: true, role: "all" },
   {
     icon: <Settings size={20} />,
     text: "Settings",
@@ -73,6 +83,11 @@ export default function ChairpersonLayout() {
       <SidebarLayout>
         <Sidebar>
           {sidebarItemsConfig.map((sidebarItem, index) => {
+            // Render divider if specified
+            if (sidebarItem.isDivider) {
+              return <hr key={index} className="my-3" />;
+            }
+
             return (
               <SidebarItem
                 key={index}

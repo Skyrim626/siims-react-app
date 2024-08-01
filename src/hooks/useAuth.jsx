@@ -3,6 +3,7 @@ import { appStateContext } from "../contexts/AppContextProvider";
 import axiosClient from "../axios";
 import { Navigate, useNavigate } from "react-router-dom";
 
+// Custom Hooks for Authentication
 const useAuth = () => {
   const { user, token, setUser, setToken } = appStateContext();
   const [loading, setLoading] = useState(false);
@@ -10,6 +11,12 @@ const useAuth = () => {
   const navigate = useNavigate();
 
   // side effect during usage of useAuth
+  useEffect(() => {
+    if (!token) {
+      console.log("oof");
+    }
+  }, [token]);
+
   /* useEffect(() => {
     const fetchUser = async () => {
       if (token) {

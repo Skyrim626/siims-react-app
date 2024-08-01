@@ -21,8 +21,8 @@ export default function ForgotPassword() {
       {/* Logo and Welcome */}
       <div className="flex flex-col">
         <img src={logo} alt="SIIMS Logo" className="w-2/5 mx-auto md:mx-0" />
-        <h1 className="font-bold text-3xl mb-1">Welcome back</h1>
-        <p>Please enter log in details below</p>
+        <h1 className="font-bold text-3xl mb-1">Forgot Password</h1>
+        <p>Please enter your email to verify</p>
       </div>
 
       {/* Forgot Password Form */}

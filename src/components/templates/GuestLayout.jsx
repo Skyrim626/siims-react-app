@@ -8,10 +8,13 @@ import formImage from "../../assets/images/form-image.svg";
 
 // Import Context
 import { appStateContext } from "../../contexts/AppContextProvider";
+import useAuth from "../../hooks/useAuth";
 
 // Guest Layout Component
 export default function GuestLayout() {
   const { token } = appStateContext();
+
+  const { testing } = useAuth();
 
   // Check if the token exist
   if (token) {
