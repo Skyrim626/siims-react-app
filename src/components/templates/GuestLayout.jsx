@@ -7,11 +7,11 @@ import { Navigate, Outlet } from "react-router-dom";
 import formImage from "../../assets/images/form-image.svg";
 
 // Import Context
-import { userStateContext } from "../../contexts/ContextProvider";
+import { appStateContext } from "../../contexts/AppContextProvider";
 
 // Guest Layout Component
 export default function GuestLayout() {
-  const { user, token } = userStateContext();
+  const { token } = appStateContext();
 
   // Check if the token exist
   if (token) {

@@ -13,11 +13,13 @@ export default function TextFormField({
   required = false,
   onChange = () => {},
   error,
+  labelColor = "text-gray-200",
+  readOnly = false,
 }) {
   return (
     <>
       <div className="flex flex-col space-y-2">
-        <label htmlFor={name} className="text-lg text-gray-200">
+        <label htmlFor={name} className={`text-lg ${labelColor}`}>
           {label}
         </label>
         <Input
@@ -29,6 +31,7 @@ export default function TextFormField({
           className={className}
           required={required}
           error={error}
+          readOnly={readOnly}
         />
       </div>
     </>

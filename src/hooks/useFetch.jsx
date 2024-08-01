@@ -1,21 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 // Axios Imports
 import axiosClient from "../axios";
 
-const useFetch = async (api, options) => {
-  const data = await axiosClient
-    .post(api, options)
-    .then((response) => {
-      console.log(response);
-      return response;
-    })
-    .catch((error) => {
-      console.log(error);
-      return error;
-    });
+const useFetch = (api) => {
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  return data;
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axiosClient.get(api);
+        setData(response.data);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [api]);
+
+  return { data, error, isLoading };
 };
 
 export default useFetch;

@@ -7,31 +7,30 @@ import logo from "../assets/images/logo.svg";
 import FormField from "../components/molecules/TextFormField";
 
 // React Router Dom Libraries Import
-import { NavLink } from "react-router-dom";
+import { Navigate, NavLink } from "react-router-dom";
 import Button from "../components/atoms/Button";
 
 // Custom Hooks Imports
-import useFetch from "../hooks/useFetch";
 import axiosClient from "../axios";
+import useAuth from "../hooks/useAuth";
+import Loader from "../components/atoms/Loader";
 
 // Login Page Component
 export default function Login() {
   // Use States for Input
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
+  const { login, loading, error } = useAuth();
 
-  // A function that handles the submit of login credentials
-  const handleSubmit = async (event) => {
-    event.preventDefault(); // Prevent the default form submission behavior
+  // Handle Login
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
-    // Package request
-    const formData = {
-      id,
-      password,
-    };
-
-    axiosClient.post("/login", formData).then(({ data }) => {});
+    await login(id, password);
   };
+
+  if (loading) return <Loader />;
+  if (error) return <div>Error: {error.message}</div>;
 
   return (
     <>
@@ -43,7 +42,7 @@ export default function Login() {
       </div>
 
       {/* Login Form */}
-      <form method="post" className="mt-3 space-y-5" onSubmit={handleSubmit}>
+      <form method="post" className="mt-3 space-y-5" onSubmit={handleLogin}>
         <FormField
           label={"User ID"}
           name={"id"}

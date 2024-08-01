@@ -5,12 +5,14 @@ import { RouterProvider } from "react-router-dom";
 
 // Import routes
 import routes from "./router";
-import { ContextProvider } from "./contexts/ContextProvider";
+
+// Import Context
+import { AppContextProvider } from "./contexts/AppContextProvider";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <ContextProvider>
+    <AppContextProvider>
       <RouterProvider router={routes} />
-    </ContextProvider>
+    </AppContextProvider>
   </React.StrictMode>
 );

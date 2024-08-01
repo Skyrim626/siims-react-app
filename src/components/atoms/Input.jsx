@@ -10,17 +10,20 @@ export default function Input({
   value,
   required = false,
   error,
+  deactivated = false,
+  readOnly = false,
 }) {
   return (
     <>
       <input
         type={type}
         placeholder={placeholder}
-        className={className}
+        className={`${className} ${readOnly ? "bg-gray-400" : ""}`}
         name={name}
         onChange={onChange}
         value={value}
         required={required}
+        readOnly={readOnly}
       />
       {error && <p className="text-sm text-red-600">{error}</p>}
     </>

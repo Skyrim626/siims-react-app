@@ -1,9 +1,9 @@
 import React from "react";
 
-export default function Section({ className, children }) {
+export default function Section({ className = "mt-4", children }) {
   return (
     <>
-      <section className={`mt-4 ${className}`}>{children}</section>
+      <section className={className}>{children}</section>
     </>
   );
 }

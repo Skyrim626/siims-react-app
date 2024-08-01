@@ -1,28 +1,65 @@
+// Import React Router Dom
 import { createBrowserRouter, Navigate } from "react-router-dom";
 
 // Layout Imports
 import GuestLayout from "./components/templates/GuestLayout";
 
-// Page Imports
+// Imports Global Pages
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
-import Dashboard from "./pages/Dashboard";
-import ProtectedRoute from "./handlers/ProtectedRoute";
-import SelectRole from "./pages/SelectRole";
-import LoginSuccess from "./handlers/LoginSuccess";
-import SidebarLayout from "./components/layouts/SidebarLayout";
-import StackedLayout from "./components/layouts/StackedLayout";
-import Logs from "./pages/Logs";
+import NotFound from "./pages/NotFound";
 
-const routes = createBrowserRouter([
+// Import Layouts
+import StackedLayout from "./components/layouts/StackedLayout";
+import ChairpersonLayout from "./components/layouts/ChairpersonLayout";
+
+// Import Chairperson Pages
+import ChairpersonDashboard from "./pages/chairperson/ChairpersonDashboard";
+import ChairpersonProfile from "./pages/chairperson/ChairpersonProfile";
+import ChairpersonSettings from "./pages/chairperson/ChairpersonSettings";
+import ChairpersonEndorsementRequests from "./pages/chairperson/ChairpersonEndorsementRequests";
+
+// Import Handlers
+
+const router = createBrowserRouter([
   {
-    path: "/",
-    element: <LoginSuccess />,
+    path: "/chairperson",
+    element: <ChairpersonLayout />,
+    children: [
+      {
+        path: "/chairperson/dashboard",
+        element: <Navigate to={"/chairperson"} />,
+      },
+      {
+        path: "/chairperson",
+        element: <ChairpersonDashboard />,
+      },
+      {
+        path: "/chairperson/profile",
+        element: <ChairpersonProfile />,
+      },
+      {
+        path: "/chairperson/endorsement-requests",
+        element: <ChairpersonEndorsementRequests />,
+      },
+      {
+        path: "/chairperson/settings",
+        element: <ChairpersonSettings />,
+      },
+    ],
   },
   {
     path: "/student",
+    element: <StackedLayout />,
+  },
+  /* {
+    path: "/",
+    element: <LoginSuccess />,
+  }, */
+  /* {
+    path: "/student",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute allowedRoles={["student"]}>
         <StackedLayout />
       </ProtectedRoute>
     ),
@@ -30,7 +67,7 @@ const routes = createBrowserRouter([
   {
     path: "/admin",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute allowedRoles={["admin"]}>
         <SidebarLayout userRole={"admin"} />
       </ProtectedRoute>
     ),
@@ -48,15 +85,15 @@ const routes = createBrowserRouter([
         element: <Logs />,
       },
     ],
-  },
-  {
+  }, */
+  /* {
     path: "/select-role",
     element: (
       <ProtectedRoute>
         <SelectRole />
       </ProtectedRoute>
     ),
-  },
+  }, */
   {
     path: "/",
     element: <GuestLayout />,
@@ -75,7 +112,11 @@ const routes = createBrowserRouter([
       },
     ],
   },
+  {
+    path: "*",
+    element: <NotFound />,
+  },
 ]);
 
-// Exporting routes
-export default routes;
+// Exporting router
+export default router;
