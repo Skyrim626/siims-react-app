@@ -12,6 +12,11 @@ import NotFound from "./pages/NotFound";
 // Import Layouts
 import StackedLayout from "./components/layouts/StackedLayout";
 import ChairpersonLayout from "./components/layouts/ChairpersonLayout";
+import AdminLayout from "./components/layouts/AdminLayout";
+import StudentLayout from "./components/layouts/StudentLayout";
+
+// Import Admin Pages
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 // Import Chairperson Pages
 import ChairpersonDashboard from "./pages/chairperson/ChairpersonDashboard";
@@ -19,9 +24,17 @@ import ChairpersonProfile from "./pages/chairperson/ChairpersonProfile";
 import ChairpersonSettings from "./pages/chairperson/ChairpersonSettings";
 import ChairpersonEndorsementRequests from "./pages/chairperson/ChairpersonEndorsementRequests";
 import ChairpersonUsers from "./pages/chairperson/ChairpersonUsers";
+import ChairpersonUsersStudents from "./pages/chairperson/ChairpersonUsersStudents";
+
+// Import Student Pages
+import StudentDashboard from "./pages/student/StudentDashboard";
 
 // Import Handler
 import Authentication from "./handlers/Authentication";
+import Authorization from "./handlers/Authorization";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminUserAdd from "./pages/admin/AdminUserAdd";
+import AdminUsersView from "./pages/admin/AdminUsersView";
 
 const router = createBrowserRouter([
   {
@@ -51,7 +64,7 @@ const router = createBrowserRouter([
     element: <ChairpersonLayout />,
     children: [
       {
-        path: "/chairperson/dashboard",
+        path: "dashboard",
         element: <Navigate to={"/chairperson"} />,
       },
       {
@@ -59,69 +72,81 @@ const router = createBrowserRouter([
         element: <ChairpersonDashboard />,
       },
       {
-        path: "/chairperson/profile",
+        path: "profile",
         element: <ChairpersonProfile />,
       },
       {
-        path: "/chairperson/users",
+        path: "users",
         element: <ChairpersonUsers />,
       },
       {
-        path: "/chairperson/endorsement-requests",
+        path: "users/students",
+        element: <ChairpersonUsersStudents />,
+      },
+      {
+        path: "endorsement-requests",
         element: <ChairpersonEndorsementRequests />,
       },
       {
-        path: "/chairperson/settings",
+        path: "settings",
         element: <ChairpersonSettings />,
       },
     ],
   },
   {
     path: "/student",
-    element: <StackedLayout />,
-  },
-  /* {
-    path: "/",
-    element: <LoginSuccess />,
-  }, */
-  /* {
-    path: "/student",
     element: (
-      <ProtectedRoute allowedRoles={["student"]}>
-        <StackedLayout />
-      </ProtectedRoute>
+      <Authorization allowedRole={"student"}>
+        <StudentLayout />
+      </Authorization>
     ),
+    children: [
+      {
+        path: "dashboard",
+        element: <Navigate to={"/student"} />,
+      },
+      {
+        path: "/student",
+        element: <StudentDashboard />,
+      },
+    ],
   },
   {
     path: "/admin",
     element: (
-      <ProtectedRoute allowedRoles={["admin"]}>
-        <SidebarLayout userRole={"admin"} />
-      </ProtectedRoute>
+      <Authorization allowedRole={"admin"}>
+        <AdminLayout />
+      </Authorization>
     ),
     children: [
       {
-        path: "/admin",
-        element: <Navigate to={"/admin/dashboard"} />,
+        path: "dashboard",
+        element: <Navigate to={"/admin"} />,
       },
       {
-        path: "/admin/dashboard",
-        element: <Dashboard />,
+        index: true,
+        element: <AdminDashboard />,
       },
       {
-        path: "/admin/logs",
-        element: <Logs />,
+        path: "users",
+        element: <AdminUsers />,
+        children: [
+          {
+            index: true,
+            element: <AdminUsersView />,
+          },
+          {
+            path: "add",
+            element: <AdminUserAdd />,
+          },
+        ],
+      },
+      {
+        path: "/admin/users/add",
+        element: <AdminUserAdd />,
       },
     ],
-  }, */
-  /* {
-    path: "/select-role",
-    element: (
-      <ProtectedRoute>
-        <SelectRole />
-      </ProtectedRoute>
-    ),
-  }, */
+  },
 
   {
     path: "*",

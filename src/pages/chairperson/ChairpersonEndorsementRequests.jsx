@@ -5,17 +5,21 @@ import Section from "../../components/atoms/Section";
 import Heading from "../../components/atoms/Heading";
 import Table from "../../components/organisms/Table";
 import DynamicTable from "../../components/organisms/DynamicTable";
+import Page from "../../components/atoms/Page";
 
 export default function ChairpersonEndorsementRequests() {
   return (
     <>
-      <div className="px-4">
+      <Page>
         <Section>
           <Heading level={2} text={"Endorsement Requests"} />
           <p>View coordinators endorsement letter requests for internship.</p>
         </Section>
         <Section>
           <DynamicTable
+            enableSearch
+            enableFilters
+            filterLabels={["All", "Pending", "Rejected"]}
             data={[
               {
                 id: 1,
@@ -51,7 +55,7 @@ export default function ChairpersonEndorsementRequests() {
             ]}
           />
         </Section>
-      </div>
+      </Page>
     </>
   );
 }

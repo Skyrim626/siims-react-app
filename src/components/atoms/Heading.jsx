@@ -5,6 +5,7 @@ export default function Heading({
   text,
   fontStyle = "font-semibold",
   textColor = "text-gray-900",
+  className,
 }) {
   // Renders a heading
   const renderHeading = () => {
@@ -28,7 +29,11 @@ export default function Heading({
     }
 
     return (
-      <HeadingTag className={`${fontStyle + " " + textColor + " " + fontSize}`}>
+      <HeadingTag
+        className={`${
+          fontStyle + " " + textColor + " " + fontSize
+        } ${className}`}
+      >
         {text}
       </HeadingTag>
     );

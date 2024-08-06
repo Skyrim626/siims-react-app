@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { appStateContext } from "../contexts/AppContextProvider";
-import { Navigate, useNavigate } from "react-router-dom";
-import axiosClient from "../axios";
-import Loader from "../components/atoms/Loader";
 import { useAuth } from "../contexts/AuthContext";
+import { Navigate } from "react-router-dom";
+import Loader from "../components/atoms/Loader";
+import axiosClient from "../axios";
 
-export default function Authentication() {
+export default function Authorization({ children, allowedRole }) {
   const { user, token } = useAuth();
   const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -49,32 +48,8 @@ export default function Authentication() {
     return <div>Error: {error.message}</div>;
   }
 
+  // Filter role name
   const roleNames = roles.map((role) => role.name);
-  console.log(roleNames);
 
-  if (roleNames.includes("student")) {
-    return <Navigate to={"/student"} />;
-  }
-
-  if (roleNames.includes("admin")) {
-    return <Navigate to={"/admin"} />;
-  }
-
-  if (roleNames.includes("chairperson")) {
-    return <Navigate to={"/chairperson"} />;
-  }
-
-  if (roleNames.includes("coordinator")) {
-    return <Navigate to={"/coordinator"} />;
-  }
-
-  if (roleNames.includes("supervisor")) {
-    return <Navigate to={"/supervisor"} />;
-  }
-
-  if (roleNames.includes("dean")) {
-    return <Navigate to={"/dean"} />;
-  }
-
-  return <div>The User is Authenticated. TODO: Authorize the user</div>;
+  return roleNames.includes(allowedRole) ? children : <Navigate to={"/auth"} />;
 }

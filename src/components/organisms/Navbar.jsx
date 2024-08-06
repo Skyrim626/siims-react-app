@@ -37,7 +37,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Navbar({ companyLogo = logo }) {
+export default function Navbar({ companyLogo = logo, children }) {
   return (
     <>
       <nav className="bg-gray-800">
@@ -46,6 +46,11 @@ export default function Navbar({ companyLogo = logo }) {
             <div className="flex items-center">
               <div className="flex-shrink-0">
                 <img alt="Your Company" src={companyLogo} className="h-16" />
+              </div>
+            </div>
+            <div className="hidden md:block">
+              <div className="ml-10 flex items-baseline space-x-4">
+                {children}
               </div>
             </div>
           </div>

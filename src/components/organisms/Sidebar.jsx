@@ -4,6 +4,8 @@ import React, { createContext, useState } from "react";
 // Image Imports
 import companyLogo from "../../assets/images/logo.svg";
 import Button from "../atoms/Button";
+import { useAuth } from "../../contexts/AuthContext";
+import Loader from "../atoms/Loader";
 
 // Create and Export Contexts
 // * Purpose: To provide the current state of sidebar expansion to child components
@@ -27,8 +29,9 @@ export const SidebarContext = createContext();
  * @param {React.ReactNode} props.children - The sidebar items to be rendered.
  * @returns {JSX.Element} - The sidebar layout with a toggle feature and user information.
  */
-export default function Sidebar({ logo = companyLogo, children }) {
+export default function Sidebar({ logo = companyLogo, children, name, email }) {
   const [expanded, setExpanded] = useState(true); // Manage the sidebar's expanded/collapsed state
+  const { logout } = useAuth();
 
   return (
     <aside className="h-screen">
@@ -65,13 +68,15 @@ export default function Sidebar({ logo = companyLogo, children }) {
             }`}
           >
             <div className="leading-4 text-gray-50">
-              <h4 className="font-semibold">John Doe</h4>
-              <span className="text-xs">johndoe@gmail.com</span>
+              <h4 className="font-semibold">{name}</h4>
+              <span className="text-xs">{email}</span>
             </div>
-            <LogOut
-              className="transition text-white cursor-pointer hover:text-blue-500"
-              size={20}
-            />
+            <Button onClick={logout} className="" type="submit">
+              <LogOut
+                className="transition text-white cursor-pointer hover:text-blue-500"
+                size={20}
+              />
+            </Button>
           </div>
         </div>
       </nav>

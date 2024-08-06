@@ -4,12 +4,13 @@ import React, { useState } from "react";
 import logo from "../assets/images/logo.svg";
 
 // Molecule Components Import
-import FormField from "../components/molecules/TextFormField";
+import TextFormField from "../components/molecules/TextFormField";
+import Form from "../components/organisms/Form";
 
 // React Router Dom Libraries Import
 import { NavLink } from "react-router-dom";
 import Button from "../components/atoms/Button";
-import TextFormField from "../components/molecules/TextFormField";
+import Heading from "../components/atoms/Heading";
 
 // Forgot Password Page Component
 export default function ForgotPassword() {
@@ -21,14 +22,19 @@ export default function ForgotPassword() {
       {/* Logo and Welcome */}
       <div className="flex flex-col">
         <img src={logo} alt="SIIMS Logo" className="w-2/5 mx-auto md:mx-0" />
-        <h1 className="font-bold text-3xl mb-1">Forgot Password</h1>
+        <Heading
+          level={3}
+          text={"Forgot Password"}
+          textColor="text-white"
+          className="mb-1"
+        />
         <p>Please enter your email to verify</p>
       </div>
 
       {/* Forgot Password Form */}
       {/* form action TODO */}
-      <form method="POST" className="mt-3 space-y-5">
-        <FormField
+      <Form method={"POST"} className="mt-3 space-y-5">
+        <TextFormField
           label={"Email"}
           type="email"
           name={"email"}
@@ -58,7 +64,7 @@ export default function ForgotPassword() {
         >
           Submit
         </Button>
-      </form>
+      </Form>
     </>
   );
 }

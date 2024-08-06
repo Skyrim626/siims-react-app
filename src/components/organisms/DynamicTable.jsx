@@ -15,9 +15,22 @@ import {
   ChevronUp,
 } from "lucide-react";
 
-const ITEMS_PER_PAGE = 3;
+// TODO: Dyamic Filter Labels
+// const filterLabels = [];
 
-export default function DynamicTable({ data }) {
+export default function DynamicTable({
+  data,
+  enableSearch = false,
+  enableFilters = false,
+  filterLabels = ["All"],
+  enableMarkApprove = false,
+  enableDelete = false,
+  itemsPerPage = 5,
+  enableActions = false,
+  enableActionView = true, // Default True for enableActions prop if set true
+  enableActionEdit = true, // Default True for enableActions prop if set true
+  enableActionDelete = true, // Default True for enableActions prop if set true
+}) {
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("All");
   const [selectedItems, setSelectedItems] = useState([]);
@@ -25,6 +38,7 @@ export default function DynamicTable({ data }) {
   const [visibleAttributes, setVisibleAttributes] = useState(
     new Set(Object.keys(data[0] || {}))
   );
+
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
 
   // Handle search input change
@@ -87,7 +101,7 @@ export default function DynamicTable({ data }) {
   // Filter data based on search term and status filter
   const filteredData = useMemo(() => {
     return data.filter((item) => {
-      const matchesStatus = filter === "All" || item.status === filter;
+      const matchesStatus = filter === "All" || item.role === filter;
       const matchesSearch = Object.values(item).some(
         (val) =>
           typeof val === "string" &&
@@ -99,12 +113,12 @@ export default function DynamicTable({ data }) {
 
   // Paginate the filtered data
   const paginatedData = useMemo(() => {
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const endIndex = startIndex + ITEMS_PER_PAGE;
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
     return filteredData.slice(startIndex, endIndex);
   }, [filteredData, currentPage]);
 
-  const totalPages = Math.ceil(filteredData.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
   // Change page handler
   const handlePageChange = (newPage) => {
@@ -119,46 +133,59 @@ export default function DynamicTable({ data }) {
     <>
       {/* Filters */}
       <div className="py-4">
-        <div className="flex space-x-4">
-          {["All", "Pending", "Rejected"].map((status) => (
-            <button
-              key={status}
-              onClick={() => handleFilterChange(status)}
-              className={`px-4 py-2 text-gray-900 ${
-                filter === status
-                  ? "border-b-2 border-gray-900 font-semibold"
-                  : "hover:bg-blue-600 transition hover:text-white"
-              }`}
-            >
-              {status}
-            </button>
-          ))}
-        </div>
+        {/* Enable filter if the enableFilter is true */}
+        {enableFilters && (
+          <div className="flex space-x-4">
+            {filterLabels.map((status) => (
+              <Button
+                key={status}
+                onClick={() => handleFilterChange(status)}
+                className={`px-4 py-2 text-gray-900 border-b-2 ${
+                  filter === status
+                    ? "  border-blue-600 text-blue-600 font-semibold"
+                    : " hover:border-gray-900 transition"
+                }`}
+              >
+                {status}
+              </Button>
+            ))}
+          </div>
+        )}
         <div className="flex justify-between items-center mt-4">
           <div className="button-group | flex items-center gap-2">
-            <Button className="bg-gray-900 font-semibold rounded-full p-2 text-sm flex items-center gap-2">
-              <CheckCircle2
-                size={20}
-                className="text-green-400 hover:text-green-500"
-              />
-              <p className="text-gray-100 hover:text-white">Mark as approved</p>
-            </Button>
-            <Button className="bg-gray-900 font-semibold rounded-full p-2 text-sm flex items-center gap-2">
-              <Trash2 size={20} className="text-red-500 hover:text-red-600" />
-              <p className="text-gray-100 hover:text-white">Delete</p>
-            </Button>
+            {enableMarkApprove && (
+              <Button className="bg-gray-900 font-semibold rounded-full p-2 text-sm flex items-center gap-2">
+                <CheckCircle2
+                  size={20}
+                  className="text-green-400 hover:text-green-500"
+                />
+                <p className="text-gray-100 hover:text-white">
+                  Mark as approved
+                </p>
+              </Button>
+            )}
+            {enableDelete && (
+              <Button className="bg-gray-900 font-semibold rounded-full p-2 text-sm flex items-center gap-2">
+                <Trash2 size={20} className="text-red-500 hover:text-red-600" />
+                <p className="text-gray-100 hover:text-white">Delete</p>
+              </Button>
+            )}
           </div>
           <div className="flex items-center gap-2">
-            <div className="flex items-center border px-3 rounded-full border-blue-950 bg-white">
-              <Search size={20} />
-              <Input
-                type="text"
-                placeholder="Search for items"
-                value={searchTerm}
-                onChange={handleSearchChange}
-                className="w-full py-3 ml-2 pl-3 outline-none"
-              />
-            </div>
+            {/* Search Component */}
+            {/* Enable Search if the enableSearch is true */}
+            {enableSearch && (
+              <div className="flex items-center border px-3 rounded-full border-blue-950 bg-white">
+                <Search size={20} />
+                <Input
+                  type="text"
+                  placeholder="Search for items"
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  className="w-full py-3 ml-2 pl-3 outline-none"
+                />
+              </div>
+            )}
 
             <div className="relative">
               <Button
@@ -225,9 +252,13 @@ export default function DynamicTable({ data }) {
                   {attr.charAt(0).toUpperCase() + attr.slice(1)}
                 </th>
               ))}
-              <th className="py-2 px-4 border-b bg-gray-800 text-white">
-                Actions
-              </th>
+
+              {/* Enabling Actions */}
+              {enableActions && (
+                <th className="py-2 px-4 border-b bg-gray-800 text-white">
+                  Actions
+                </th>
+              )}
             </tr>
           </thead>
           <tbody className="overflow-y-auto max-h-96">
@@ -248,28 +279,41 @@ export default function DynamicTable({ data }) {
                       {item[attr]}
                     </td>
                   ))}
-                  <td className="py-2 px-4 border-b">
-                    <div className="flex items-center space-x-2">
-                      <button
-                        onClick={() => handleView(item.id)}
-                        className="text-blue-500 hover:text-blue-700"
-                      >
-                        <Eye size={20} />
-                      </button>
-                      <button
-                        onClick={() => handleEdit(item.id)}
-                        className="text-yellow-500 hover:text-yellow-700"
-                      >
-                        <Edit size={20} />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(item.id)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <Trash2 size={20} />
-                      </button>
-                    </div>
-                  </td>
+                  {enableActions && (
+                    <td className="py-2 px-4 border-b">
+                      <div className="flex items-center space-x-2">
+                        {/*  Enable Action to View */}
+                        {enableActionView && (
+                          <Button
+                            onClick={() => handleView(item.id)}
+                            className="text-blue-500 hover:text-blue-700"
+                          >
+                            <Eye size={20} />
+                          </Button>
+                        )}
+
+                        {/* Enable Action to Edit */}
+                        {enableActionEdit && (
+                          <Button
+                            onClick={() => handleEdit(item.id)}
+                            className="text-yellow-500 hover:text-yellow-700"
+                          >
+                            <Edit size={20} />
+                          </Button>
+                        )}
+
+                        {/* Enable Action to Delete */}
+                        {enableActionDelete && (
+                          <Button
+                            onClick={() => handleDelete(item.id)}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <Trash2 size={20} />
+                          </Button>
+                        )}
+                      </div>
+                    </td>
+                  )}
                 </tr>
               ))
             ) : (

@@ -8,11 +8,12 @@ import routes from "./router";
 
 // Import Context
 import { AppContextProvider } from "./contexts/AppContextProvider";
+import { AuthProvider } from "./contexts/AuthContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <AppContextProvider>
+    <AuthProvider>
       <RouterProvider router={routes} />
-    </AppContextProvider>
+    </AuthProvider>
   </React.StrictMode>
 );

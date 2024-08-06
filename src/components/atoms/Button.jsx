@@ -9,6 +9,7 @@ export default function Button({
   type = "button",
   className = "w-full py-3 bg-blue-600 rounded-sm",
   children,
+  disabled = false,
   onClick,
 }) {
   // A function that renders a button

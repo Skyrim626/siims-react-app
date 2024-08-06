@@ -4,7 +4,7 @@ import { CircleLoader } from "react-spinners";
 export default function Loader() {
   return (
     <>
-      <div className="flex items-center justify-center h-screen bg-gray-800">
+      <div className="flex items-center justify-center h-screen bg-gray-800 absolute top-0 left-0 right-0 bottom-0">
         <CircleLoader color="#123abc" size={150} />
       </div>
     </>
