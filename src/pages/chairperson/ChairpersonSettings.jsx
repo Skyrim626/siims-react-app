@@ -109,7 +109,7 @@ export default function ChairpersonSettings() {
               readOnly
             />
 
-            <Select
+            {/* <Select
               options={[
                 { value: "male", label: "Male" },
                 { value: "female", label: "Female" },
@@ -119,7 +119,7 @@ export default function ChairpersonSettings() {
               name="genderSelect"
               value={selectedOption}
               onChange={handleSelectChange}
-            />
+            /> */}
           </div>
         </Section>
 

@@ -11,6 +11,8 @@ import Form from "../components/organisms/Form";
 import { NavLink } from "react-router-dom";
 import Button from "../components/atoms/Button";
 import Heading from "../components/atoms/Heading";
+import FormField from "../components/molecules/FormField";
+import Input from "../components/atoms/Input";
 
 // Forgot Password Page Component
 export default function ForgotPassword() {
@@ -34,18 +36,23 @@ export default function ForgotPassword() {
       {/* Forgot Password Form */}
       {/* form action TODO */}
       <Form method={"POST"} className="mt-3 space-y-5">
-        <TextFormField
+        <FormField
           label={"Email"}
-          type="email"
+          labelSize={"medium"}
+          labelColor={"white"}
           name={"email"}
-          placeholder={"johnDoe@email.com"}
-          value={email}
-          className="text-black px-2 py-3 rounded-md outline-none ring-offset-2 focus:ring-2 ring-blue-400/50"
-          onChange={(event) => {
-            setEmail(event.target.value);
-          }}
-          isRequired
-        />
+        >
+          <Input
+            placeholder="johnDoe@email.com"
+            rounded
+            color="black"
+            name="email"
+            value={email}
+            onChange={(event) => {
+              setEmail(event.target.value);
+            }}
+          />
+        </FormField>
 
         {/* Back to login */}
         <div className="text-right">
@@ -59,6 +66,9 @@ export default function ForgotPassword() {
 
         {/* Button Submit */}
         <Button
+          color={"white"}
+          bgColor={"blue"}
+          hoverBgColor={"dark-blue"}
           type="submit"
           className="w-full py-3 transition bg-blue-600 hover:bg-blue-700 rounded-sm"
         >

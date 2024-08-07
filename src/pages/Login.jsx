@@ -15,6 +15,8 @@ import Button from "../components/atoms/Button";
 import Loader from "../components/atoms/Loader";
 import { useAuth } from "../contexts/AuthContext";
 import Heading from "../components/atoms/Heading";
+import FormField from "../components/molecules/FormField";
+import Input from "../components/atoms/Input";
 
 // Login Page Component
 export default function Login() {
@@ -61,30 +63,43 @@ export default function Login() {
             className="mt-3 space-y-5"
             method={"post"}
           >
-            <TextFormField
-              labelSize="medium"
+            {/* ID Input */}
+            <FormField
               label={"User ID"}
+              labelSize={"medium"}
+              labelColor={"white"}
               name={"id"}
-              placeholder={"Enter your ID"}
-              value={id}
-              className="text-black px-2 py-3 rounded-md outline-none ring-offset-2 ring-1 focus:ring-4 ring-blue-400/50"
-              onChange={(event) => {
-                setId(event.target.value);
-              }}
-            />
+            >
+              <Input
+                color="black"
+                type="text"
+                onChange={(event) => {
+                  setId(event.target.value);
+                }}
+                placeholder="Enter your ID"
+                rounded
+                value={id}
+              />
+            </FormField>
 
-            <TextFormField
-              labelSize="medium"
+            {/* Password */}
+            <FormField
               label={"Password"}
+              labelSize={"medium"}
+              labelColor={"white"}
               name={"password"}
-              placeholder={"Enter your Password"}
-              type={"password"}
-              value={password}
-              className="text-black px-2 py-3 rounded-md outline-none ring-offset-2 ring-1 focus:ring-4 ring-blue-400/50"
-              onChange={(event) => {
-                setPassword(event.target.value);
-              }}
-            />
+            >
+              <Input
+                color="black"
+                type="password"
+                onChange={(event) => {
+                  setPassword(event.target.value);
+                }}
+                placeholder="Enter your password"
+                rounded
+                value={password}
+              />
+            </FormField>
 
             {/* Forgot Password */}
             <div className="text-right">
@@ -98,8 +113,11 @@ export default function Login() {
 
             {/* Button Submit */}
             <Button
+              bgColor="blue"
+              className="w-full py-3 transition rounded-sm"
+              color="white"
+              hoverBgColor="dark-blue"
               type="submit"
-              className="w-full py-3 transition bg-blue-600 hover:bg-blue-700 rounded-sm"
             >
               Log In
             </Button>

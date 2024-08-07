@@ -52,17 +52,6 @@ export default function AdminUsersView() {
       <Section>
         <Table
           data={data}
-          filterLabels={["All"]}
-          enableFilterDropDown
-          enableMarkApprove
-          enableMarkDelete
-          enableSearch
-        />
-      </Section>
-
-      <Section>
-        <DynamicTable
-          data={data}
           enableDelete
           enableFilters
           enableSearch

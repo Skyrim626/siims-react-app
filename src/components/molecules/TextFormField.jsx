@@ -2,19 +2,21 @@ import React from "react";
 
 // Atom Component Imports
 import Input from "../atoms/Input";
+import Label from "../atoms/Label";
 
 export default function TextFormField({
   label,
   labelSize = "small",
-  placeholder = "Enter Placeholder",
-  className = "p-3 px-3 rounded-md outline-none ring-offset-2 focus:ring-2 ring-blue-400/50",
+  labelColor = "text-gray-600",
+  placeholder,
+  className = "p-3 rounded-md ring-offset-2 focus:ring-2 ring-blue-400/50",
   name,
   type = "text",
   value,
   required = false,
   onChange = () => {},
   error,
-  labelColor = "text-gray-200",
+
   readOnly = false,
 }) {
   // Render Label
@@ -52,9 +54,15 @@ export default function TextFormField({
   return (
     <>
       <div className="flex flex-col space-y-2">
-        <label htmlFor={name} className={`text-lg ${labelColor}`}>
-          {renderLabel()}
-        </label>
+        {/* Render Label Component if it is true */}
+        {label && (
+          <Label
+            label={label}
+            labelSize={labelSize}
+            labelColor={labelColor}
+            htmlFor={name}
+          />
+        )}
         <Input
           placeholder={placeholder}
           name={name}
