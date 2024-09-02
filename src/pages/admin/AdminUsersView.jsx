@@ -1,14 +1,21 @@
+// Libraries
 import React, { useState } from "react";
-import Section from "../../components/atoms/Section";
-import Heading from "../../components/atoms/Heading";
-import Button from "../../components/atoms/Button";
+import { useLoaderData } from "react-router-dom";
+
+// Icons
 import { Download, UserRoundPlus } from "lucide-react";
-import DynamicTable from "../../components/organisms/DynamicTable";
-import data from "../../data/data";
-import Table from "../../components/organisms/Table";
+
+// Components (Common)
+import Section from "../../components/common/Section";
+import Heading from "../../components/common/Heading";
+import Button from "../../components/common/Button";
+import Table from "../../components/common/Table";
 
 // Users View for Admin Page
 export default function AdminUsersView() {
+  // Get Data
+  const data = useLoaderData();
+
   let [isOpen, setIsOpen] = useState(false);
 
   // Handles Open Modal

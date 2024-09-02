@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 
 // Import Components
 import Input from "../atoms/Input";
-import Button from "../common/Button";
+import Button from "./Button";
 
 // Import Icons
 import {

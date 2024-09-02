@@ -1,55 +1,22 @@
+// Libraries
 import React from "react";
 
-// Improt Components
-import Section from "../../components/atoms/Section";
-import Heading from "../../components/atoms/Heading";
-import Page from "../../components/atoms/Page";
-import Grid from "../../components/organisms/Grid";
+// Components (Common)
+import Section from "../../components/common/Section";
+import Heading from "../../components/common/Heading";
+import Page from "../../components/common/Page";
 
 // Import Lucide Icones
 import { BookCopy, Building, Building2Icon, Users } from "lucide-react";
 import TextBox from "../../components/molecules/TextBox";
-import useFetch from "../../hooks/useFetch";
-import Loader from "../../components/atoms/Loader";
-
-// Customize textbox contents
-/* const textBoxContents = [
-  {
-    icon: <Building2Icon size={20} />,
-    borderColor: "border-yellow-400",
-    label: "Total Departments",
-    total: "56",
-  },
-  {
-    icon: <BookCopy size={20} />,
-    borderColor: "border-green-400",
-    label: "Total Programs",
-    total: "89",
-  },
-  {
-    icon: <Users size={20} />,
-    borderColor: "border-blue-500",
-    label: "Total Users",
-    total: "200",
-  },
-  {
-    icon: <Building size={20} />,
-    borderColor: "border-red-500",
-    label: "Total Offices",
-    total: "100",
-  },
-]; */
+import { useLoaderData } from "react-router-dom";
 
 // Admin Layout
 export default function AdminDashboard() {
-  // Load data
-  const { data, loading, error } = useFetch("/admin/dashboard");
+  // Load Data
+  const data = useLoaderData();
 
-  return loading ? (
-    <Loader />
-  ) : error ? (
-    <div>Error: {error.message}</div>
-  ) : (
+  return (
     <Page>
       <Section>
         <Heading level={2} text={"Dashboard"} />
@@ -58,7 +25,7 @@ export default function AdminDashboard() {
       </Section>
 
       <Section className="mt-4">
-        <Grid className="grid-cols-2 gap-4 mt-3">
+        <div className="grid grid-cols-2 gap-4 mt-3">
           <TextBox borderColor="border-yellow-400">
             <Building2Icon size={20} />
             <p className="font-bold text-lg">{data[0].label}</p>
@@ -79,7 +46,7 @@ export default function AdminDashboard() {
             <p className="font-bold text-lg">{data[3].label}</p>
             <p className="font-bold text-3xl">{data[3].total}</p>
           </TextBox>
-        </Grid>
+        </div>
       </Section>
     </Page>
   );

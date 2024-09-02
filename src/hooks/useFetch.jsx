@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 // Axios Imports
-import axiosClient from "../axios";
+import axiosClient from "../api/axiosClient";
 import { useAuth } from "../contexts/AuthContext";
 
 const useFetch = (api) => {

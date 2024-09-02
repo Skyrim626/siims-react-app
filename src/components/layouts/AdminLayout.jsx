@@ -1,14 +1,13 @@
+// Libraries
 import React from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 // Import Layout
-import SidebarLayout from "./templates/SidebarLayout";
-
-// Import Components
-import Main from "../atoms/Main";
+import SidebarLayout from "./SidebarLayout";
 
 // Import Lucide Icons
 import { BookCopy, LayoutDashboard, User } from "lucide-react";
+
 // Configuration for sidebar items for Admin
 const sidebarItemsConfig = [
   {
@@ -38,16 +37,13 @@ const sidebarItemsConfig = [
   { isDivider: true, role: "all" },
 ];
 
-// For fetching data for sidebar name and email (bottom)
-const fetchApi = "/admin/sidebar";
-
 // Layout for Admin
 export default function AdminLayout() {
   return (
-    <SidebarLayout sidebarItemsConfig={sidebarItemsConfig} api={fetchApi}>
-      <Main className="flex-1 overflow-auto">
+    <SidebarLayout sidebarItemsConfig={sidebarItemsConfig}>
+      <main className="flex-1 overflow-auto">
         <Outlet />
-      </Main>
+      </main>
     </SidebarLayout>
   );
 }

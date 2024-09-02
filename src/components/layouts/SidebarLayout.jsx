@@ -1,142 +1,58 @@
+// Libraries
 import React from "react";
-import { Outlet, useLocation } from "react-router-dom";
-import Sidebar from "../organisms/Sidebar";
-import SidebarItem from "../atoms/SidebarItem";
-import {
-  BarChart3,
-  Boxes,
-  LayoutDashboard,
-  LifeBuoy,
-  Logs,
-  MessageCircle,
-  Package,
-  Receipt,
-  Settings,
-  UserCircle,
-} from "lucide-react";
+import { useLocation } from "react-router-dom";
 
-// Configuration for sidebar items
-const sidebarItemsConfig = [
-  {
-    icon: <LayoutDashboard size={20} />,
-    text: "Dashboard",
-    alert: true,
-    ariaLabel: "Dashboard",
-    roles: ["admin", "chairperson", "coordinator", "supervisor", "dean"],
-    active: true,
-    basePath: "/dashboard",
-  },
-  {
-    icon: <UserCircle size={20} />,
-    text: "Profile",
-    alert: true,
-    ariaLabel: "Profile",
-    roles: ["admin", "chairperson", "coordinator", "supervisor", "dean"],
-    active: true,
-    basePath: "/profile",
-  },
-  {
-    icon: <MessageCircle size={20} />,
-    text: "Messages",
-    alert: true,
-    ariaLabel: "Messages",
-    roles: ["admin", "chairperson", "coordinator", "supervisor", "dean"],
-    active: true,
-    basePath: "/messages",
-  },
-  {
-    icon: <LayoutDashboard size={20} />,
-    text: "Postings",
-    alert: true,
-    ariaLabel: "Postings",
-    roles: ["posting"],
-    active: true,
-    basePath: "/postings",
-  },
-  { isDivider: true, role: "all" },
-  {
-    icon: <Logs size={20} />,
-    text: "Logs",
-    alert: true,
-    ariaLabel: "Logs",
-    roles: ["admin"],
-    active: true,
-    basePath: "/logs",
-  },
-  {
-    icon: <Settings size={20} />,
-    text: "Settings",
-    alert: true,
-    ariaLabel: "Settings",
-    roles: ["admin", "chairperson", "coordinator", "supervisor", "dean"],
-    active: true,
-    basePath: "/settings",
-  },
-  {
-    icon: <LifeBuoy size={20} />,
-    text: "Help",
-    alert: true,
-    ariaLabel: "Help",
-    roles: ["admin", "chairperson", "coordinator", "supervisor", "dean"],
-    active: true,
-    basePath: "/help",
-  },
-];
+// Components (Navigation)
+import Sidebar from "../navigations/Sidebar";
+import SidebarItem from "../navigations/SidebarItem";
 
-/**
- * SidebarLayout Component
- *
- * A layout component that integrates a sidebar with navigation items and a main content area.
- * The sidebar configuration is dynamically filtered and rendered based on the user's role.
- *
- * - `userRole`: The role of the currently logged-in user, used to filter sidebar items and construct navigation paths.
- *
- * The sidebar displays navigation items according to the user's role and highlights the active item based on the current route.
- * The main content area renders nested routes using the <Outlet> component from React Router.
- *
- * @param {string} userRole - The role of the user which determines the sidebar items displayed.
- * @returns {JSX.Element} - A layout with a sidebar and main content area.
- */
-export default function SidebarLayout({ userRole }) {
-  const location = useLocation(); // Get the current location from React Router
-  const basePath = `/${userRole}`; // Construct base path based on user role
+// Custom Hooks
+import { useAuth } from "../../hooks/useAuth";
+
+// Sidebar Layouts
+export default function SidebarLayout({
+  children,
+  className = "flex bg-gray-100 h-screen",
+  sidebarItemsConfig = [],
+}) {
+  // Get user
+  const { user } = useAuth();
+  // Open use location
+  const location = useLocation();
+
+  // Combine into full name
+  const name = `${user["first_name"]} ${user["middle_name"]} ${user["last_name"]}`;
+  const email = user["email"];
 
   return (
-    <>
-      <div className="flex h-screen bg-gray-100">
-        <Sidebar>
-          {sidebarItemsConfig.map((sidebarItem, index) => {
-            // Filter out items not relevant to the current user role
-            if (sidebarItem.roles && !sidebarItem.roles.includes(userRole)) {
-              return null;
-            }
+    <div className={className}>
+      <Sidebar name={name} email={email}>
+        {sidebarItemsConfig.map((sidebarItem, index) => {
+          // Render divider if specified
+          if (sidebarItem.isDivider) {
+            return <hr key={index} className="my-3" />;
+          }
 
-            // Render divider if specified
-            if (sidebarItem.isDivider) {
-              return <hr key={index} className="my-3" />;
-            }
+          // Check if the current path exactly matches or starts with the sidebar item path
+          const isActive = sidebarItem.exact
+            ? location.pathname === sidebarItem.path
+            : location.pathname.startsWith(sidebarItem.path);
 
-            // Construct the full path for the sidebar item
-            const fullPath = `${basePath}${sidebarItem.basePath}`;
-
-            return (
-              <SidebarItem
-                key={index}
-                icon={sidebarItem.icon}
-                text={sidebarItem.text}
-                alert={sidebarItem.alert}
-                active={location.pathname === fullPath} // Set active state based on current path
-                aria-label={sidebarItem.ariaLabel}
-                to={fullPath} // Pass the full path to SidebarItem
-              />
-            );
-          })}
-        </Sidebar>
-        {/* Main Content */}
-        <main className="flex-1 flex flex-col px-4">
-          <Outlet />
-        </main>
-      </div>
-    </>
+          return (
+            <SidebarItem
+              key={index}
+              icon={sidebarItem.icon}
+              text={sidebarItem.text}
+              alert={sidebarItem.alert}
+              active={isActive} // Set active state based on current path
+              aria-label={sidebarItem.ariaLabel}
+              to={sidebarItem.path}
+            />
+          );
+        })}
+      </Sidebar>
+      {/* Render the child Main component */}
+      {children}
+    </div>
   );
 }

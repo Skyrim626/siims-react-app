@@ -1,19 +1,25 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
+
+// CSS
 import "./index.css";
+
+// Router
+import router from "./routes/router";
+
+// Hooks
+import { AuthProvider } from "./hooks/useAuth";
+
+// Components
+import LoadingScreen from "./components/common/LoadingScreen";
+
+// Libraries
 import { RouterProvider } from "react-router-dom";
-
-// Import routes
-import routes from "./router";
-
-// Import Context
-import { AppContextProvider } from "./contexts/AppContextProvider";
-import { AuthProvider } from "./contexts/AuthContext";
+import ReactDOM from "react-dom/client";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <AuthProvider>
-      <RouterProvider router={routes} />
+      <RouterProvider router={router} fallbackElement={<LoadingScreen />} />
     </AuthProvider>
   </React.StrictMode>
 );

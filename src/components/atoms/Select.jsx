@@ -10,8 +10,6 @@ export default function Select({
   onChange = () => {},
   className = "mt-3 p-3 border rounded-md",
 }) {
-  console.log(options);
-
   return (
     <>
       <div className="flex flex-col space-y-2">

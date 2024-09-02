@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import axiosClient from "../axios";
+import axiosClient from "../api/axiosClient";
 
 // Create auth context
 const AuthContext = createContext({
@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Simulate checking for existing session or user
+  // Simulate checking for existing user
   useEffect(() => {
     // Simulate async action
     setTimeout(async () => {

@@ -1,13 +1,16 @@
+// Libraries
 import React, { useState } from "react";
-import Page from "../../components/atoms/Page";
-import Section from "../../components/atoms/Section";
-import Heading from "../../components/atoms/Heading";
-import Button from "../../components/atoms/Button";
+
+// Icons
 import { X } from "lucide-react";
-import TextFormField from "../../components/molecules/TextFormField";
-import Grid from "../../components/organisms/Grid";
-import Form from "../../components/organisms/Form";
-import StudentForm from "../../components/organisms/forms/StudentForm";
+
+// Components (Common)
+import Section from "../../components/common/Section";
+import Heading from "../../components/common/Heading";
+import Button from "../../components/common/Button";
+
+// Forms
+import StudentForm from "../../components/forms/StudentForm";
 import ChairpersonForm from "../../components/organisms/forms/ChairpersonForm";
 
 // Configure User buttons
@@ -26,6 +29,7 @@ const buttons = [
   },
 ];
 
+// AdminUserAdd Page Component
 export default function AdminUserAdd() {
   const [selectedUserType, setSelectedUserType] = useState(null);
 
@@ -67,11 +71,11 @@ export default function AdminUserAdd() {
             return (
               <Button
                 key={index}
-                className={`transition p-2 font-bold text-white flex items-center justify-center gap-2 border-2 rounded-md ${
+                className={`rounded-md p-3 font-bold text-white bg-blue-600 ${
                   selectedUserType === button.type
-                    ? "bg-blue-500"
-                    : "bg-gray-500"
-                } hover:bg-blue-600`}
+                    ? "bg-blue-800"
+                    : "bg-blue-600 hover:bg-blue-700"
+                }`}
                 onClick={() => setSelectedUserType(button.type)}
               >
                 {button.label}
@@ -79,6 +83,8 @@ export default function AdminUserAdd() {
             );
           })}
         </div>
+
+        {/* Render a form */}
         {renderForm()}
       </Section>
     </>
