@@ -25,6 +25,7 @@ const ProtectedRoute = ({ roleAllowed = [], children }) => {
   if (!roles.includes(roleAllowed)) {
     return <Navigate to={"/auth"} />;
   }
+
   return <>{children}</>;
 };
 

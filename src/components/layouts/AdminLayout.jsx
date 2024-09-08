@@ -6,7 +6,14 @@ import { Outlet } from "react-router-dom";
 import SidebarLayout from "./SidebarLayout";
 
 // Import Lucide Icons
-import { BookCopy, LayoutDashboard, User } from "lucide-react";
+import {
+  BookCopy,
+  Building,
+  LayoutDashboard,
+  Logs,
+  MessageCircle,
+  User,
+} from "lucide-react";
 
 // Configuration for sidebar items for Admin
 const sidebarItemsConfig = [
@@ -18,6 +25,7 @@ const sidebarItemsConfig = [
     exact: true, // Add an `exact` property for exact path matching
     path: "/admin",
   },
+
   {
     icon: <User size={20} />,
     text: "Users",
@@ -27,14 +35,38 @@ const sidebarItemsConfig = [
     path: "/admin/users",
   },
   {
-    icon: <BookCopy size={20} />,
-    text: "Programs",
+    icon: <Building size={20} />,
+    text: "Colleges",
     alert: true,
-    ariaLabel: "Programs",
-    exact: false, // No exact match needed for partial path
-    path: "/admin/programs",
+    ariaLabel: "Colleges",
+    exact: false,
+    path: "/admin/colleges",
+  },
+  {
+    icon: <MessageCircle size={20} />,
+    text: "Messages",
+    alert: true,
+    ariaLabel: "Messages",
+    exact: false,
+    path: "/admin/messages",
+  },
+  {
+    icon: <BookCopy size={20} />,
+    text: "Internship Postings",
+    alert: true,
+    ariaLabel: "Internship Postings",
+    exact: false,
+    path: "/admin/internship-postings",
   },
   { isDivider: true, role: "all" },
+  {
+    icon: <Logs size={20} />,
+    text: "Logs",
+    alert: true,
+    ariaLabel: "Logs",
+    exact: false,
+    path: "/admin/logs",
+  },
 ];
 
 // Layout for Admin

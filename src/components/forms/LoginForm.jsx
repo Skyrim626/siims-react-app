@@ -8,6 +8,7 @@ import { useAuth } from "../../hooks/useAuth";
 // Common
 import FormField from "../common/FormField";
 import Button from "../common/Button";
+import { toast } from "react-toastify";
 
 // Login Form
 const LoginForm = () => {
@@ -26,10 +27,20 @@ const LoginForm = () => {
 
     if (loginError) {
       setError(loginError);
-      console.log(error);
+
+      console.log(loginError);
+
       localStorage.removeItem("loginError");
+
+      toast.error("The provided credentials do not match our records", {
+        theme: "colored",
+      });
     }
   }, []);
+
+  useEffect(() => {
+    setError("");
+  }, [id, password]);
 
   // Handle Login
   const handleLogin = async (e) => {
@@ -61,7 +72,8 @@ const LoginForm = () => {
             onChange={(event) => {
               setId(event.target.value);
             }}
-            required
+            autoComplete="off"
+            /* required */
             type="text"
             value={id}
           />
@@ -80,7 +92,7 @@ const LoginForm = () => {
             onChange={(event) => {
               setPassword(event.target.value);
             }}
-            required
+            /* required */
             type="password"
             value={password}
           />

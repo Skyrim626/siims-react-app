@@ -5,13 +5,13 @@ import React, { useState } from "react";
 import { X } from "lucide-react";
 
 // Components (Common)
-import Section from "../../components/common/Section";
-import Heading from "../../components/common/Heading";
-import Button from "../../components/common/Button";
+import Section from "../../../components/common/Section";
+import Heading from "../../../components/common/Heading";
+import Button from "../../../components/common/Button";
 
 // Forms
-import StudentForm from "../../components/forms/StudentForm";
-import ChairpersonForm from "../../components/organisms/forms/ChairpersonForm";
+import StudentForm from "../forms/StudentForm";
+import ChairpersonForm from "../../../components/organisms/forms/ChairpersonForm";
 
 // Configure User buttons
 const buttons = [

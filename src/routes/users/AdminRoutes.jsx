@@ -1,5 +1,5 @@
 // Libraries
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 
 // Route Handlers
 import ProtectedRoute from "../handlers/ProtectedRoute";
@@ -12,9 +12,15 @@ import AdminLayout from "../../components/layouts/AdminLayout";
 
 // Admin Pages
 import AdminDashboard from "../../pages/admin/AdminDashboard";
-import AdminUsers from "../../pages/admin/AdminUsers";
-import AdminUsersView from "../../pages/admin/AdminUsersView";
-import AdminUserAdd from "../../pages/admin/AdminUserAdd";
+import AdminManageUsers from "../../pages/admin/AdminManageUsers";
+import AdminManageStudent from "../../pages/admin/manage-users/student/AdminManageStudent";
+import AdminStudent from "../../pages/admin/manage-users/student/AdminAddStudent";
+import AdminMessages from "../../pages/admin/AdminMessages";
+import AdminLogs from "../../pages/admin/AdminLogs";
+import AdminInternshipPostingsPage from "../../pages/admin/AdminInternshipPostingsPage";
+import AdminDepartmentsPage from "../../pages/admin/AdminDepartmentsPage";
+import AdminCollegesPage from "../../pages/admin/AdminCollegesPage";
+import AdminManageCompaniesPage from "../../pages/admin/manage-users/companies/AdminManageCompaniesPage";
 
 // Custom Hooks
 /* import { useLoader } from "../../hooks/useLoader"; */
@@ -55,6 +61,47 @@ const AdminRoutes = {
     },
     {
       path: "users",
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: <AdminManageUsers />,
+          loader: useLoader("/api/v1/users"),
+        },
+        {
+          path: "students",
+          element: <AdminManageStudent />,
+          children: [
+            {
+              path: "add",
+              element: <AdminStudent />,
+            },
+          ],
+        },
+        {
+          path: "companies",
+          element: <AdminManageCompaniesPage />,
+        },
+      ],
+    },
+    {
+      path: "colleges",
+      element: <AdminCollegesPage />,
+    },
+    {
+      path: "messages",
+      element: <AdminMessages />,
+    },
+    {
+      path: "internship-postings",
+      element: <AdminInternshipPostingsPage />,
+    },
+    {
+      path: "logs",
+      element: <AdminLogs />,
+    },
+    /* {
+      path: "users",
       element: <AdminUsers />,
       children: [
         {
@@ -67,7 +114,7 @@ const AdminRoutes = {
           element: <AdminUserAdd />,
         },
       ],
-    },
+    }, */
   ],
 };
 

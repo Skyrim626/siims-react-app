@@ -29,7 +29,6 @@ export const AuthProvider = ({ children }) => {
 
   // Function to authenticate the user
   const login = async (payload = {}) => {
-    // Get Cookies
     await axiosClient
       .get("/sanctum/csrf-cookie", {
         withCredentials: true,
@@ -48,16 +47,20 @@ export const AuthProvider = ({ children }) => {
             setRoles(response.data.roles); // Roles
 
             // Add to localStorage
-            localStorage.setItem("USER", response.data.user);
-            localStorage.setItem("ROLES", response.data.roles);
+            localStorage.setItem("user", JSON.parse(response.data.user));
+            localStorage.setItem("roles", JSON.parse(response.data.roles));
 
             // Navigate the authenticated user to the /auth
             return <Navigate to={"/auth"} />;
           })
-          .catch((err) => {
-            // console.log(err.response.data.error);
-            // console.log(err);
-            throw err;
+          .catch((error) => {
+            // Check if status 422
+            if (error.status === 422) {
+              console.log(error);
+              return error.response.data.errors;
+            }
+
+            throw error;
           });
       });
   };
@@ -68,11 +71,15 @@ export const AuthProvider = ({ children }) => {
       .post("/api/v1/auth/logout")
       .then((response) => {
         console.log("Successful Log Out");
-        return <Navigate to={"/"} replace={true} />; // Navigate back to login page
+
+        // Remove Local Storages
+        localStorage.removeItem("ACCESS_TOKEN");
+        localStorage.removeItem("user");
+        localStorage.removeItem("roles");
+        window.location.href = "/login";
       })
-      .catch((err) => {
-        console.log(err);
-        throw err;
+      .catch((error) => {
+        throw error;
       });
   };
 

@@ -1,8 +1,11 @@
+// libraries
 import React from "react";
-import Section from "../components/atoms/Section";
-import Heading from "../components/atoms/Heading";
 
-export default function Dashboard() {
+// Components (Common)
+import Section from "../../components/common/Section";
+import Heading from "../../components/common/Heading";
+
+export default function StudentDashboardPage() {
   return (
     <>
       <Section>

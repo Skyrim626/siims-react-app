@@ -1,13 +1,16 @@
 // Libraries
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form } from "react-router-dom";
 
 // Components (Common)
-import Heading from "../common/Heading";
-import FormField from "../common/FormField";
-import Button from "../common/Button";
+import Heading from "../../../components/common/Heading";
+import FormField from "../../../components/common/FormField";
+import Button from "../../../components/common/Button";
+import Select from "../../../components/common/Select";
 
-/* import { genders } from "../../../config/options"; */
+// Utilities
+import genders from "../../../utils/options";
+import axiosClient from "../../../api/axiosClient";
 
 export default function StudentForm({ method = "post", ...props }) {
   // States for Student Form
@@ -20,8 +23,26 @@ export default function StudentForm({ method = "post", ...props }) {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [id, setId] = useState("");
   const [gender, setGender] = useState("");
+  const [college, setCollege] = useState("");
   const [department, setDepartment] = useState("");
   const [course, setCourse] = useState("");
+
+  // Container for colleges selects
+  const [colleges, setColleges] = useState([]);
+  const [programOptions, setProgramOptions] = useState([]);
+
+  useEffect(() => {
+    const fetchColleges = async () => {
+      await axiosClient
+        .get("/api/v1/colleges/include-programs")
+        .then((response) => {
+          console.log(response);
+          setColleges(response.data);
+        });
+    };
+
+    fetchColleges();
+  }, []);
 
   // Calculate Age
   const calculateAge = (date) => {
@@ -212,27 +233,57 @@ export default function StudentForm({ method = "post", ...props }) {
           </FormField>
         </div>
 
-        <div className="grid grid-cols-2 gap-2 mt-4">
+        <div className="grid grid-cols-2 gap-2 mt-4 items-center">
           <FormField label={"Gender"} labelSize={"small"} labelColor={"gray"}>
-            {/* <Select
-              options={genders}
+            <select
+              name="gender"
+              id="gender"
               className="mt-3 p-3 border rounded-md"
               onChange={(e) => {
                 setGender(e.target.value);
               }}
-            /> */}
+            >
+              <option value="" disabled>
+                Select a Gender
+              </option>
+              {genders.map((gender) => {
+                return <option value={gender.value}>{gender.label}</option>;
+              })}
+            </select>
           </FormField>
 
-          {/* Add Program selec option here */}
-
-          <FormField label={"Programs"} labelSize={"small"} labelColor={"gray"}>
-            {/* <Select
-              options={programs}
+          {/* Add College selec option here */}
+          <FormField label={"Colleges"} labelSize={"small"} labelColor={"gray"}>
+            <select
               className="mt-3 p-3 border rounded-md"
-              onChange={(e) => {
-                setCourse(e.target.value);
-              }}
-            /> */}
+              value={department}
+              onChange={(e) => setDepartment(e.target.value)}
+            >
+              <option value="" disabled>
+                Select a College
+              </option>
+              {colleges.map((college) => (
+                <option key={college.id} value={college.id}>
+                  {college.name}
+                </option>
+              ))}
+            </select>
+          </FormField>
+          <FormField label={"Programs"} labelSize={"small"} labelColor={"gray"}>
+            <select
+              className="mt-3 p-3 border rounded-md"
+              value={department}
+              onChange={(e) => setDepartment(e.target.value)}
+            >
+              <option value="" disabled>
+                Select a Program
+              </option>
+              {colleges.map((college) => (
+                <option key={college.id} value={college.id}>
+                  {college.name}
+                </option>
+              ))}
+            </select>
           </FormField>
         </div>
 

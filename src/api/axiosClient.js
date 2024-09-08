@@ -18,8 +18,9 @@ const axiosClient = Axios.create({
 axiosClient.interceptors.request.use((config) => {
     config.headers = {
       ...config.headers,
-      Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}`,
+      Authorization: `Bearer ${JSON.parse(localStorage.getItem('ACCESS_TOKEN'))}`,
     };
+   
     return config;
   }
 );
@@ -30,25 +31,31 @@ axiosClient.interceptors.response.use(
     return response;
   },
   (error) => {
-    const { response } = error;
+    const { response } = error; 
 
     /**
      * Conditional HTTP Statuses
      */
-    if (response && response.status == 401) {
+
+    // Status 401
+    if (response && response.status === 401) {
 
       // ! DO NOT REMOVE
       // Pass the error message to the response
-      const errorMessage = response.data.error || 'Unauthorized access. Please log in again.';
+      const errorMessage = response.data.errors.credentials || 'Unauthorized access. Please log in again.';
       
       // Optionally store the error message in localStorage or global state
       localStorage.setItem('loginError', errorMessage);
 
       // Remove Token
       localStorage.removeItem('ACCESS_TOKEN');
-      window.location.href = '/login';
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+
+      // window.location.href = '/login';
+      window.location.reload();
     }
-    // throw error;
+
     return Promise.reject(error);
   }
 );

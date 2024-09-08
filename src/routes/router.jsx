@@ -6,6 +6,7 @@ import Auth from "./handlers/Auth";
 
 // User Routes
 import AdminRoutes from "./users/AdminRoutes";
+import StudentRoutes from "./users/StudentRoutes";
 import GuestRoutes from "./users/GuestRoutes";
 
 // Pages
@@ -24,6 +25,9 @@ const router = createBrowserRouter([
 
   // path: /admin
   AdminRoutes,
+
+  // path: /student
+  StudentRoutes,
 
   // path: *
   {
