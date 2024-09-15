@@ -2,9 +2,11 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 
-// Components
-import FormField from "../common/FormField";
-import Button from "../common/Button";
+/**
+ * Components
+ */
+// Headless UI Component
+import { Button, Field, Input, Label } from "@headlessui/react";
 
 // Forgot Password Form Component
 const ForgotPasswordForm = () => {
@@ -16,23 +18,22 @@ const ForgotPasswordForm = () => {
       {/* Forgot Password Form */}
       {/* form action TODO */}
       <form action="" method="post" className="mt-3 space-y-5">
-        <FormField
-          label={"Email"}
-          labelClassName="text-white text-md"
-          name={"email"}
-        >
-          <input
-            className="outline-none rounded-md text-black text-md p-3"
+        {/* ID Input */}
+        <Field className={"text-sm flex flex-col gap-2"}>
+          <Label htmlFor="email" className={"text-white font-bold"}>
+            Email
+          </Label>
+          <Input
+            type="text"
+            value={email}
+            className={"outline-none rounded-md text-black p-3"}
             name="email"
-            placeholder="johnDoe@email.com"
+            placeholder="Enter your email"
             onChange={(event) => {
               setEmail(event.target.value);
             }}
-            required
-            type="text"
-            value={email}
           />
-        </FormField>
+        </Field>
 
         {/* Back to login */}
         <div className="text-right">
@@ -47,7 +48,9 @@ const ForgotPasswordForm = () => {
         {/* Button Submit */}
         <Button
           type="submit"
-          className="w-full py-3 transition bg-blue-600 hover:bg-blue-700 rounded-sm"
+          className={
+            "w-full py-3 text-sm rounded-sm bg-blue-600 transition hover:bg-blue-700"
+          }
         >
           Submit
         </Button>

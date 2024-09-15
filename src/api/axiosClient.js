@@ -20,7 +20,8 @@ axiosClient.interceptors.request.use((config) => {
       ...config.headers,
       Authorization: `Bearer ${JSON.parse(localStorage.getItem('ACCESS_TOKEN'))}`,
     };
-   
+    
+    console.log(config);
     return config;
   }
 );

@@ -1,0 +1,118 @@
+import React from "react";
+import Heading from "../common/Heading";
+import { Input, Select } from "@headlessui/react";
+import FormField from "../common/FormField";
+
+const PersonalInfoFields = ({ personalInfo, handlePersonalInfoChange }) => {
+  return (
+    <>
+      {/* Personal Information */}
+      <div>
+        <Heading
+          level={5}
+          color="black"
+          text={"Personal Information"}
+          className="border-l-2 rounded-lg border-blue-700 px-3 font-bold text-md"
+        />
+
+        <div className="flex flex-col">
+          <div className="grid grid-cols-3 gap-2 mt-4">
+            <FormField
+              label={"First Name"}
+              name={"first_name"}
+              labelClassName="text-sm text-black font-semibold"
+            >
+              <Input
+                type="text"
+                className="outline-none text-black rounded-sm p-2 text-sm"
+                name="first_name"
+                onChange={handlePersonalInfoChange}
+                placeholder="First name"
+                value={personalInfo.first_name}
+              />
+            </FormField>
+
+            <FormField
+              label={"Middle Name"}
+              name={"middle_name"}
+              labelClassName="text-sm text-black font-semibold"
+            >
+              <Input
+                type="text"
+                className="outline-none text-black rounded-sm p-2 text-sm"
+                name="middle_name"
+                onChange={handlePersonalInfoChange}
+                placeholder="Middle name"
+                value={personalInfo.middle_name}
+              />
+            </FormField>
+            <FormField
+              label={"Last Name"}
+              name={"last_name"}
+              labelClassName="text-sm text-black font-semibold"
+            >
+              <input
+                type="text"
+                className="outline-none text-black rounded-sm p-2 text-sm"
+                name="last_name"
+                onChange={handlePersonalInfoChange}
+                placeholder="Last name"
+                value={personalInfo.last_name}
+              />
+            </FormField>
+
+            <FormField
+              label={"Email"}
+              name={"email"}
+              labelClassName="text-sm text-black font-semibold"
+            >
+              <Input
+                type="email"
+                className="outline-none text-black rounded-sm p-2 text-sm"
+                name="email"
+                onChange={handlePersonalInfoChange}
+                placeholder="Email"
+                value={personalInfo.email}
+              />
+            </FormField>
+
+            <FormField
+              label={"Gender"}
+              name={"gender"}
+              labelClassName="text-sm text-black font-semibold"
+            >
+              <Select
+                name="status"
+                className="border data-[hover]:shadow data-[focus]:bg-blue-100 h-full outline-none px-2"
+                aria-label="Project status"
+                onClick={handlePersonalInfoChange}
+              >
+                <option value="">-Select a Gender-</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </Select>
+            </FormField>
+
+            <FormField
+              label={"Phone Number"}
+              name={"phone_number"}
+              labelClassName="text-sm text-black font-semibold"
+            >
+              <input
+                type="text"
+                className="outline-none text-black rounded-sm p-2 text-sm"
+                name="phone_number"
+                onChange={handlePersonalInfoChange}
+                placeholder="Phone Number"
+                value={personalInfo.phone_number}
+              />
+            </FormField>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default PersonalInfoFields;

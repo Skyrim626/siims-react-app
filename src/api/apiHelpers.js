@@ -5,6 +5,7 @@ import axiosClient from "./axiosClient";
 export const getRequest = async ({ url, params = {} }) => {
   try {
     const res = await axiosClient.get(url, { params });
+
     return res.data;
   } catch (err) {
     return err;
@@ -20,12 +21,47 @@ export const postRequest = async ({ url, data = {}, params = {} }) => {
     });
 
     // Send request
-    const res = await  axiosClient.post(url, data, {params});
+    const res = await axiosClient.post(url, data, { params });
     // Return response
     return res;
-    
   } catch (error) {
     console.error(error);
+    return error.response ? error.response.data : error.message; // Return error response or message
+  }
+};
+
+export const putRequest = async ({ url, data = {}, params = {} }) => {
+  try {
+    // Send request
+    const res = await axiosClient.put(url, data, { params });
+
+    // Return response
+    return res;
+  } catch (error) {
+    return error.response ? error.response.data : error.message; // Return error response or message
+  }
+};
+
+// Delete Request
+export const deleteRequest = async ({ url, data = {}, params = {} }) => {
+
+  try {
+    // If data exist
+    if (data) {
+      console.log(url);
+      console.log(data);
+      const res = await axiosClient.post(url, data, { params });
+      // Return response
+      return res;
+    }
+
+    const res = await axiosClient.delete(url, { params });
+    // Return response
+    return res;
+
+
+  } catch (error) {
+    console.log(error);
     return error.response ? error.response.data : error.message; // Return error response or message
   }
 };
@@ -62,24 +98,6 @@ export const patchFormDataRequest = async ({ url, data = {}, params = {} }) => {
         "Content-Type": "multipart/form-data",
       },
     });
-    return res.data;
-  } catch (err) {
-    return err;
-  }
-};
-
-export const putRequest = async ({ url, data = {}, params = {} }) => {
-  try {
-    const res = await axios.put(url, data, { params });
-    return res.data;
-  } catch (err) {
-    return err;
-  }
-};
-
-export const deleteRequest = async ({ url, params = {} }) => {
-  try {
-    const res = await axios.delete(url, { params });
     return res.data;
   } catch (err) {
     return err;

@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 
 // Context
 import { SidebarContext } from "./Sidebar";
+import Text from "../common/Text";
 
 // SidebarItem Component
 export default function SidebarItem({ icon, text, to, active, alert }) {
@@ -19,13 +20,14 @@ export default function SidebarItem({ icon, text, to, active, alert }) {
       }`}
     >
       {icon}
-      <span
+      <Text
         className={`overflow-hidden transition-all ${
           expanded ? "w-52 ml-3" : "w-0"
         }`}
       >
         {text}
-      </span>
+      </Text>
+
       {alert && (
         <div
           className={`absolute right-2 w-2 h-2 rounded bg-indigo-400 ${

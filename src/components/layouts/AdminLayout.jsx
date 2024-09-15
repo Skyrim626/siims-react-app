@@ -23,7 +23,7 @@ const sidebarItemsConfig = [
     alert: true,
     ariaLabel: "Dashboard",
     exact: true, // Add an `exact` property for exact path matching
-    path: "/admin",
+    path: "/auth/admin",
   },
 
   {
@@ -32,7 +32,7 @@ const sidebarItemsConfig = [
     alert: true,
     ariaLabel: "Users",
     exact: false, // No exact match needed for partial path
-    path: "/admin/users",
+    path: "/auth/admin/users",
   },
   {
     icon: <Building size={20} />,
@@ -40,7 +40,7 @@ const sidebarItemsConfig = [
     alert: true,
     ariaLabel: "Colleges",
     exact: false,
-    path: "/admin/colleges",
+    path: "/auth/admin/colleges",
   },
   {
     icon: <MessageCircle size={20} />,
@@ -48,7 +48,7 @@ const sidebarItemsConfig = [
     alert: true,
     ariaLabel: "Messages",
     exact: false,
-    path: "/admin/messages",
+    path: "/auth/admin/messages",
   },
   {
     icon: <BookCopy size={20} />,
@@ -56,7 +56,7 @@ const sidebarItemsConfig = [
     alert: true,
     ariaLabel: "Internship Postings",
     exact: false,
-    path: "/admin/internship-postings",
+    path: "/auth/admin/internship-postings",
   },
   { isDivider: true, role: "all" },
   {
@@ -65,7 +65,7 @@ const sidebarItemsConfig = [
     alert: true,
     ariaLabel: "Logs",
     exact: false,
-    path: "/admin/logs",
+    path: "/auth/admin/logs",
   },
 ];
 

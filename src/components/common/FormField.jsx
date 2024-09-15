@@ -1,5 +1,6 @@
+import { Field, Label } from "@headlessui/react";
 import React from "react";
-import Label from "../atoms/Label";
+// import Label from "../atoms/Label";
 
 // Renders a Form Field
 export default function FormField({
@@ -10,13 +11,15 @@ export default function FormField({
 }) {
   return (
     <>
-      <div className="flex flex-col space-y-2">
+      <Field className="flex flex-col space-y-2 text-sm">
         {/* Render label if it has value */}
         {label && (
-          <Label label={label} htmlFor={name} className={labelClassName} />
+          <Label htmlFor={name} className={labelClassName}>
+            {label}
+          </Label>
         )}
         {children}
-      </div>
+      </Field>
     </>
   );
 }

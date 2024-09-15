@@ -3,11 +3,16 @@ import Heading from "../../../components/common/Heading";
 import FormField from "../../../components/common/FormField";
 import Button from "../../../components/common/Button";
 import { generateID, generatePassword } from "../../../utils/generator";
-import { Select } from "@headlessui/react";
 import { postRequest } from "../../../api/apiHelpers";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
+import { Select } from "@headlessui/react";
 
-const CompanyForm = ({ setIsOpen }) => {
+const CompanyFormAdd = ({
+  isOpen,
+  setIsOpen,
+  companies = [],
+  setCompanies = () => {},
+}) => {
   // States for Company Form
 
   // Login Informations State
@@ -35,28 +40,31 @@ const CompanyForm = ({ setIsOpen }) => {
 
   // A function theat handles the submit
   const onSubmit = async () => {
+    // Payload
+    const companyData = {
+      // Login Information
+      id,
+      password,
+      // Personal Information
+      first_name: firstName,
+      middle_name: middleName,
+      last_name: lastName,
+      email,
+      gender,
+      phone_number: phoneNumber,
+      // Address Information
+      street,
+      barangay,
+      city_municipality: city,
+      province,
+      postal_code: postalCode,
+      company_name: companyName,
+      website_url: webUrl,
+    };
+
     const request = {
       url: "/api/v1/users/companies/create",
-      data: {
-        // Login Information
-        id,
-        password,
-        // Personal Information
-        first_name: firstName,
-        middle_name: middleName,
-        last_name: lastName,
-        email,
-        gender,
-        phone_number: phoneNumber,
-        // Address Information
-        street,
-        barangay,
-        city_municipality: city,
-        province,
-        postal_code: postalCode,
-        company_name: companyName,
-        website_url: webUrl,
-      },
+      data: companyData,
     };
     // Sends the payload to the server
     const response = await postRequest(request);
@@ -65,29 +73,16 @@ const CompanyForm = ({ setIsOpen }) => {
     if (response.status === 200) {
       // Close Modal/Dialog
       setIsOpen(false);
+
+      // Set new company
+      setCompanies([...companies, companyData]);
+
       // Show Toast
       toast.success(response.data.success);
     }
   };
 
   return (
-    /* {
-      "id": 2,
-      "first_name": "John",
-      "middle_name": "Doe",
-      "last_name": "Smith",
-      "email": "john.smith@example.com",
-      "password": "password",
-      "gender": "Male",
-      "phone_number": "+1234567890",
-      "street_address": "123 Main Street",
-      "barangay": "Barangay Central",
-      "city_municipality": "Quezon City",
-      "province": "Metro Manila",
-      "postal_code": "1100",
-      "company_name": "Tech Solutions Inc.",
-      "website_url": "https://www.techsolutions.com"
-  } */
     <>
       <form method="post" onSubmit={onSubmit} className="space-y-3">
         <div>
@@ -433,4 +428,4 @@ const CompanyForm = ({ setIsOpen }) => {
   );
 };
 
-export default CompanyForm;
+export default CompanyFormAdd;

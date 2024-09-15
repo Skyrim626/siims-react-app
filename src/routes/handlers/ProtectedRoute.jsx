@@ -1,6 +1,6 @@
 // Libraries
 import React from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 // Custom Hooks
 import { useAuth } from "../../hooks/useAuth";
@@ -16,14 +16,17 @@ const ProtectedRoute = ({ roleAllowed = [], children }) => {
   // Get User Token, Role, and Roles List
   const { user, token, roles } = useAuth();
 
+  // Open Navigation
+  const navigate = useNavigate();
+
   // Check if the user exists and has a token
-  if (!user || !token) {
+  /* if (!user || !token) {
     return <Navigate to={"/login"} />;
-  }
+  } */
 
   // Check if user role is allowed
   if (!roles.includes(roleAllowed)) {
-    return <Navigate to={"/auth"} />;
+    return <Navigate to={"unauthorized"} />;
   }
 
   return <>{children}</>;

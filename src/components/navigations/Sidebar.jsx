@@ -7,8 +7,11 @@ import companyLogo from "../../assets/images/logo.svg";
 // Icons
 import { ChevronFirst, ChevronLast, LogOut, MoreVertical } from "lucide-react";
 
-// Components (Common)
-import Button from "../common/Button";
+/**
+ * Components
+ */
+// Headless UI Components
+import { Button } from "@headlessui/react";
 
 // Custom Hooks
 import { useAuth } from "../../hooks/useAuth";

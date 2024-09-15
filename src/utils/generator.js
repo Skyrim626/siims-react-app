@@ -2,7 +2,7 @@
 // First 4 numbers is based on the current year
 function generateID() {
   const year = new Date().getFullYear(); // Get the current year (first 4 digits)
-  const randomDigits = Math.floor(100000000 + Math.random() * 900000000); // Generate a random 7-digit number
+  const randomDigits = Math.floor(1000000 + Math.random() * 9000000); // Generate a random 7-digit number
   return `${year}${randomDigits}`;
 }
 

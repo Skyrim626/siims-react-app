@@ -13,7 +13,7 @@ import ProtectedRoute from "../handlers/ProtectedRoute";
 
 // Routes for Student
 const StudentRoutes = {
-  path: "/student",
+  path: "my",
   element: (
     <ProtectedRoute roleAllowed={"student"}>
       <StudentLayout />

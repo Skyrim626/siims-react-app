@@ -1,6 +1,6 @@
 // Libraries
 import React from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 
 // Custom Hooks
 import { useAuth } from "../../hooks/useAuth";
@@ -14,6 +14,9 @@ const Auth = () => {
   // Open useAuth
   const { user, token, roles } = useAuth();
 
+  // Open Navigation
+  const navigate = useNavigate();
+
   // Check if and token exist
   if (!token) {
     // Return to login if token does not exist
@@ -23,7 +26,9 @@ const Auth = () => {
   // Check Roles
   // Admin
   if (roles.includes("admin")) {
-    return <Navigate to={"/admin"} />;
+    console.log(roles);
+    // return navigate("admin");
+    return <Navigate to={"admin"} />;
   }
 
   // Student

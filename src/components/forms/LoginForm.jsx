@@ -5,16 +5,19 @@ import { NavLink } from "react-router-dom";
 // Custom Hooks
 import { useAuth } from "../../hooks/useAuth";
 
-// Common
-import FormField from "../common/FormField";
-import Button from "../common/Button";
+// Headless UI Components
+import { Field, Input, Label, Button } from "@headlessui/react";
+
+// import Button from "../common/Button";
 import { toast } from "react-toastify";
+import { Eye, EyeOff } from "lucide-react";
 
 // Login Form
 const LoginForm = () => {
-  // Input States
+  //  Use States
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
+  const [toggleVisible, setToggleVisible] = useState(false);
 
   // Auth Login
   const { login } = useAuth();
@@ -38,6 +41,7 @@ const LoginForm = () => {
     }
   }, []);
 
+  // ! TESTING
   useEffect(() => {
     setError("");
   }, [id, password]);
@@ -60,44 +64,50 @@ const LoginForm = () => {
     <>
       <form method="post" onSubmit={handleLogin} className="mt-3 space-y-4">
         {/* ID Input */}
-        <FormField
-          label={"User ID"}
-          labelClassName="text-md text-white"
-          name={"id"}
-        >
-          <input
-            className="outline-none rounded-md text-black text-md p-3"
+        <Field className={"text-sm flex flex-col gap-2"}>
+          <Label htmlFor="id" className={"text-white font-bold"}>
+            User ID
+          </Label>
+          <Input
+            type="text"
+            value={id}
+            className={"outline-none rounded-md text-black p-3"}
             name="id"
             placeholder="Enter your ID"
             onChange={(event) => {
               setId(event.target.value);
             }}
             autoComplete="off"
-            /* required */
-            type="text"
-            value={id}
           />
-        </FormField>
+        </Field>
 
         {/* Password */}
-        <FormField
-          label={"Password"}
-          name={"password"}
-          labelClassName="text-md text-white"
-        >
-          <input
-            className="outline-none rounded-md text-black text-md p-3"
-            name="password"
-            placeholder="Enter your password"
-            onChange={(event) => {
-              setPassword(event.target.value);
-            }}
-            /* required */
-            type="password"
-            value={password}
-          />
-        </FormField>
-        {error && <span className="text-red-500">{error}</span>}
+        <Field className={"text-sm flex flex-col gap-2"}>
+          <Label htmlFor="password" className={"text-white font-bold"}>
+            Password
+          </Label>
+          <div className="flex items-center bg-white rounded-md text-black">
+            <Input
+              type={toggleVisible ? "text" : "password"}
+              value={password}
+              className={"w-full outline-none p-3 bg-transparent"}
+              name="password"
+              placeholder="Enter your password"
+              onChange={(event) => {
+                setPassword(event.target.value);
+              }}
+              autoComplete="off"
+            />
+            <Button
+              className="mr-3 text-gray-600"
+              onClick={() => {
+                setToggleVisible(!toggleVisible);
+              }}
+            >
+              {toggleVisible ? <Eye size={20} /> : <EyeOff size={20} />}
+            </Button>
+          </div>
+        </Field>
 
         {/* Forgot Password */}
         <div className="text-right">
@@ -111,8 +121,10 @@ const LoginForm = () => {
 
         {/* Button Submit */}
         <Button
-          className="w-full py-3 transition rounded-sm text-white bg-blue-600 hover:bg-blue-700"
           type="submit"
+          className={
+            "w-full py-3 text-sm rounded-sm bg-blue-600 transition hover:bg-blue-700"
+          }
         >
           Log In
         </Button>

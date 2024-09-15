@@ -9,6 +9,7 @@ import logo from "../../assets/images/logo.svg";
  */
 // Common
 import Heading from "../../components/common/Heading";
+import Text from "../../components/common/Text";
 
 // Forms
 import ForgotPasswordForm from "../../components/forms/ForgotPasswordForm";
@@ -25,7 +26,7 @@ export default function ForgotPasswordPage() {
           text={"Forgot Password"}
           className="mb-1 text-white"
         />
-        <p>Please enter your email to verify</p>
+        <Text className="text-sm">Please enter your email to verify.</Text>
       </div>
 
       {/* Forgot Password Form */}
