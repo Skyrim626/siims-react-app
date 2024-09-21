@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { FaArchive, FaEdit, FaEye } from "react-icons/fa";
+import { Link, useLocation } from "react-router-dom";
 
-const TableBody = ({
+const DeanCompaniesTableBody = ({
   paginatedData,
   selectedIds,
   handleCheckboxChange,
@@ -11,6 +12,9 @@ const TableBody = ({
   handleDelete,
   handleArchive,
 }) => {
+  const location = useLocation();
+  console.log(location.pathname);
+
   return (
     <>
       <tbody>
@@ -26,10 +30,10 @@ const TableBody = ({
               />
             </td>
             <td className="py-2 px-4 border-b text-blue-600 font-bold cursor-pointer hover:underline">
-              {data.id}
+              <Link to={`${location.pathname}/${data.id}`}>{data.id}</Link>
             </td>
             {visibleColumns.map((column) => (
-              <td key={column} className="py-2 px-4 border-b">
+              <td key={column} className="py-2 px-4 border-b text-blue-700">
                 {data[column]}
               </td>
             ))}
@@ -72,4 +76,4 @@ const TableBody = ({
   );
 };
 
-export default TableBody;
+export default DeanCompaniesTableBody;

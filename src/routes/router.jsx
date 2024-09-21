@@ -12,6 +12,7 @@ import GuestRoutes from "./users/GuestRoutes";
 // Page
 import NotFoundPage from "../pages/NotFoundPage";
 import UnauthorizedPage from "../pages/UnauthorizedPage";
+import DeanRoutes from "./users/DeanRoutes";
 
 // Router
 const router = createBrowserRouter([
@@ -29,6 +30,9 @@ const router = createBrowserRouter([
 
       // path: student
       StudentRoutes,
+
+      // path: dean
+      DeanRoutes,
 
       {
         path: "unauthorized",

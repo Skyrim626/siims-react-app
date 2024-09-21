@@ -11,6 +11,7 @@ import { Field, Input, Label, Button } from "@headlessui/react";
 // import Button from "../common/Button";
 import { toast } from "react-toastify";
 import { Eye, EyeOff } from "lucide-react";
+import { showFailedAlert } from "../../utils/toastify";
 
 // Login Form
 const LoginForm = () => {
@@ -25,26 +26,22 @@ const LoginForm = () => {
   // Error Catcher
   const [error, setError] = useState("");
 
+  // BUT THIS TOAST IS NOT WORKING EVEN IT IS TRUE
   useEffect(() => {
     const loginError = localStorage.getItem("loginError");
+    console.log("Current login error in localStorage:", loginError);
 
     if (loginError) {
-      setError(loginError);
+      // Show toast
+      showFailedAlert(loginError);
 
-      console.log(loginError);
-
-      localStorage.removeItem("loginError");
-
-      toast.error("The provided credentials do not match our records", {
-        theme: "colored",
-      });
+      // Clear the login error from localStorage
+      // Delay the removal of loginError from localStorage
+      setTimeout(() => {
+        localStorage.removeItem("loginError");
+      }, 100); // Adjust the timing as needed
     }
   }, []);
-
-  // ! TESTING
-  useEffect(() => {
-    setError("");
-  }, [id, password]);
 
   // Handle Login
   const handleLogin = async (e) => {

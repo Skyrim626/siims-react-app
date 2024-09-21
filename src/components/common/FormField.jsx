@@ -8,6 +8,7 @@ export default function FormField({
   labelClassName = "",
   name,
   children,
+  required,
 }) {
   return (
     <>
@@ -15,7 +16,7 @@ export default function FormField({
         {/* Render label if it has value */}
         {label && (
           <Label htmlFor={name} className={labelClassName}>
-            {label}
+            {label} {required && "*"}
           </Label>
         )}
         {children}

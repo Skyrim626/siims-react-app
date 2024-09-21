@@ -2,7 +2,6 @@ import React from "react";
 import Heading from "../common/Heading";
 import { generateID, generatePassword } from "../../utils/generator";
 import { Button, Field, Input, Label } from "@headlessui/react";
-import FormField from "../common/FormField";
 
 /**
  * Fields:
@@ -16,7 +15,7 @@ import FormField from "../common/FormField";
  * @param {*} param0
  * @returns
  */
-const IDPasswordInfoFields = ({
+const LoginInfoFields = ({
   id,
   setId,
   password,
@@ -36,7 +35,7 @@ const IDPasswordInfoFields = ({
 
     <div className="flex flex-col gap-3">
       <div className="grid grid-cols-3 gap-2 mt-4">
-        <Field>
+        <Field className="text-sm">
           <Label>ID {requiredFields["id"] && <span>*</span>} </Label>
           <div className="flex items-center">
             <Input
@@ -47,10 +46,11 @@ const IDPasswordInfoFields = ({
               placeholder="ID"
               value={id}
               readOnly
+              required={requiredFields["id"] && true}
             />
             <Button
               type="button"
-              className="py-1 bg-blue-700 transition duration-150 hover:bg-blue-800 h-full px-2 text-white font-semibold rounded-e-sm"
+              className="py-2 bg-blue-700 transition duration-150 hover:bg-blue-800 h-full px-2 text-white font-semibold rounded-e-sm"
               onClick={() => setId(generateID())}
             >
               Generate ID
@@ -58,7 +58,7 @@ const IDPasswordInfoFields = ({
           </div>
         </Field>
 
-        <Field>
+        <Field className="text-sm">
           <Label>
             Password {requiredFields["password"] && <span>*</span>}{" "}
           </Label>
@@ -70,10 +70,11 @@ const IDPasswordInfoFields = ({
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
               value={password}
+              required={requiredFields["password"] && true}
             />
             <Button
               type="button"
-              className="py-1 bg-blue-700 whitespace-nowrap transition duration-150 hover:bg-blue-800 h-full px-2 text-white font-semibold rounded-e-sm"
+              className="py-2 bg-blue-700 whitespace-nowrap transition duration-150 hover:bg-blue-800 h-full px-2 text-white font-semibold rounded-e-sm"
               onClick={() => setPassword(generatePassword(12))}
             >
               Generate Password
@@ -85,4 +86,4 @@ const IDPasswordInfoFields = ({
   </div>
 );
 
-export default IDPasswordInfoFields;
+export default LoginInfoFields;

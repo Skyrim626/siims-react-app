@@ -14,16 +14,15 @@ import Modal from "../../../../components/common/Modal";
 import CompanyFormEdit from "../../forms/CompanyFormEdit";
 import findItemById from "../../../../utils/findItem";
 import AdminCompanyTable from "../../../../components/tables/AdminCompanyTable";
-import { deleteRequest } from "../../../../api/apiHelpers";
+import { getRequest } from "../../../../api/apiHelpers";
+import AdminDeanTable from "../../../../components/tables/AdminDeanTable";
+import AdminCompanyTableView from "../../../../components/tables/AdminCompanyTableView";
 
 // A page component for managing companies
 const AdminManageCompaniesPage = () => {
-  const data = useLoaderData();
+  // States
+  const [companies, setCompanies] = useState([]);
 
-  /**
-   * States
-   */
-  const [companies, setCompanies] = useState(data || []);
   // Create Company
   const [isOpen, setIsOpen] = useState(false);
   // Edit Company
@@ -32,13 +31,28 @@ const AdminManageCompaniesPage = () => {
   // Selected Data State
   const [selectedData, setSelectedData] = useState({});
 
+  // Fetch companies data
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      const companyResponse = await getRequest({
+        url: "/api/v1/admin/users/companies",
+      });
+
+      // Set Companies
+      setCompanies(companyResponse);
+    };
+
+    // Call
+    fetchCompanies();
+  }, []);
+
   // Edit the Company
-  const handleEdit = (id) => {
+  /* const handleEdit = (id) => {
     // Opens the modal
     console.log(id);
     setSelectedData(findItemById(id, companies));
     setIsOpenEdit(!isOpenEdit);
-  };
+  }; */
 
   return (
     <Section>
@@ -63,9 +77,9 @@ const AdminManageCompaniesPage = () => {
           </Button>
         </div>
       </div>
-      {/* {data.length !== 0 && <TestTable data={data} />} */}
-      {/* <Table data={companies} handleEdit={handleEdit} /> */}
-      <AdminCompanyTable data={companies} handleEdit={handleEdit} />
+
+      {/* {companies.length !== 0 && <AdminCompanyTableView data={companies} />} */}
+      {companies.length !== 0 && <Table data={companies} />}
 
       {/* Modals */}
       <AnimatePresence>

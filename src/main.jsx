@@ -21,7 +21,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <AuthProvider>
       <RouterProvider router={router} fallbackElement={<LoadingScreen />} />
-      <ToastContainer />
     </AuthProvider>
+    <ToastContainer />
   </React.StrictMode>
 );

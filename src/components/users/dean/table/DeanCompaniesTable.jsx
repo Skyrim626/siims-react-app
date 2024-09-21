@@ -1,26 +1,29 @@
-import React, { useState } from "react";
-import Section from "../common/Section";
-import ArchiveButton from "./ArchiveButton";
-import Pagination from "./Pagination";
-import TableHead from "./TableHead";
-import TableBody from "./TableBody";
-import TableShowResult from "./TableShowResult";
+import { useState } from "react";
+import useCheckboxSelection from "../../../../hooks/useCheckboxSelection";
+import useColumnVisibility from "../../../../hooks/useColumnVisibility";
+import usePagination from "../../../../hooks/usePagination";
+import useSearch from "../../../../hooks/useSearch";
+import useSort from "../../../../hooks/useSort";
 import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
-import usePagination from "../../hooks/usePagination";
-import useCheckboxSelection from "../../hooks/useCheckboxSelection";
-import useSort from "../../hooks/useSort";
-import useSearch from "../../hooks/useSearch";
-import useColumnVisibility from "../../hooks/useColumnVisibility";
-import Search from "./Search";
-import Filter from "./Filter";
-import { Select } from "@headlessui/react";
+import ArchiveButton from "../../../tables/ArchiveButton";
+import Pagination from "../../../tables/Pagination";
+import Search from "../../../tables/Search";
+import Filter from "../../../tables/Filter";
+import TableHead from "../../../tables/TableHead";
+import TableBody from "../../../tables/TableBody";
+import TableShowResult from "../../../tables/TableShowResult";
+import DeanCompaniesTableBody from "./DeanCompaniesTableBody";
+import Section from "../../../common/Section";
 
-const AdminDeanTable = ({
+const DeanCompaniesTable = ({
   data,
-  handleArchive,
+  searchPlaceholder = "Search something...",
   handleArchiveBySelectedIds,
+  handleArchive,
   handleEdit,
-  collegesForFilter,
+  handleDelete,
+  handleView,
+
   ITEMS_PER_PAGE_LISTS = [
     { value: 25 },
     { value: 50 },
@@ -29,23 +32,12 @@ const AdminDeanTable = ({
     { value: 500 },
   ],
 }) => {
-  // State for selected college filter
-  const [selectedCollege, setSelectedCollege] = useState("");
-
   // Search hook
   const { term, filteredData, handleSearchChange } = useSearch(data, "");
 
-  // Filtered by college
-  const filteredByCollege = selectedCollege
-    ? filteredData.filter((item) => {
-        console.log(selectedCollege);
-        return item.college_assigned === selectedCollege;
-      })
-    : filteredData;
-
   // Sorting hook
   const { sortedData, sortData, sortField, sortDirection } =
-    useSort(filteredByCollege);
+    useSort(filteredData);
 
   // Pagination hook
   const {
@@ -69,11 +61,6 @@ const AdminDeanTable = ({
   // Filter Toggle States
   const [isFilterOpen, setIsFilterOpen] = useState(false); // Dropdown for filters
 
-  // Handle college filter change
-  const handleCollegeChange = (e) => {
-    setSelectedCollege(e.target.value);
-  };
-
   // Render sorting icon
   const renderSortIcon = (field) => {
     if (sortField === field) {
@@ -88,21 +75,6 @@ const AdminDeanTable = ({
 
   return (
     <Section>
-      {/* Filter by College */}
-      <div className="mb-2">
-        <Select
-          className="px-4 py-2 outline-none text-sm cursor-pointer rounded-sm border-blue-500 border max-w-[150px]"
-          value={selectedCollege}
-          onChange={handleCollegeChange}
-        >
-          <option value="">--All Colleges--</option>
-          {collegesForFilter.map((college) => (
-            <option key={college["id"]} value={college.name}>
-              {college.name}
-            </option>
-          ))}
-        </Select>
-      </div>
       {handleArchiveBySelectedIds && (
         <ArchiveButton
           onClick={() => handleArchiveBySelectedIds(selectedIds)}
@@ -119,13 +91,16 @@ const AdminDeanTable = ({
           handleNextPage={() => handlePageChange(currentPage + 1)} // go to next page
           handlePrevPage={() => handlePageChange(currentPage - 1)} // go to previous page
         />
-
         <div className="flex items-center gap-2">
-          <Search
-            placeholder="Search dean..."
-            searchTerm={term}
-            handleSearchChange={handleSearchChange}
-          />
+          {/* Search */}
+          {searchPlaceholder && (
+            <Search
+              placeholder={searchPlaceholder}
+              searchTerm={term}
+              handleSearchChange={handleSearchChange}
+            />
+          )}
+          {/* Filter */}
           <Filter
             isFilterOpen={isFilterOpen}
             setIsFilterOpen={setIsFilterOpen}
@@ -144,21 +119,25 @@ const AdminDeanTable = ({
             sortData={sortData}
             renderSortIcon={renderSortIcon}
             paginatedData={paginatedData}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+            handleView={handleView}
           />
-          <TableBody
+          <DeanCompaniesTableBody
             paginatedData={paginatedData}
             selectedIds={selectedIds}
             handleCheckboxChange={handleCheckboxChange}
             visibleColumns={visibleColumns}
             handleArchive={handleArchive}
             handleEdit={handleEdit}
+            handleDelete={handleDelete}
+            handleView={handleView}
           />
         </table>
       </div>
-
       <TableShowResult startIndex={startIndex} endIndex={endIndex} />
     </Section>
   );
 };
 
-export default AdminDeanTable;
+export default DeanCompaniesTable;

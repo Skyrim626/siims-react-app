@@ -1,4 +1,5 @@
 // apiHelpers.js
+import { showSuccessAlert } from "../utils/toastify";
 import axiosClient from "./axiosClient";
 
 // For Get Request
@@ -7,6 +8,7 @@ export const getRequest = async ({ url, params = {} }) => {
     const res = await axiosClient.get(url, { params });
 
     return res.data;
+    
   } catch (err) {
     return err;
   }
@@ -22,11 +24,12 @@ export const postRequest = async ({ url, data = {}, params = {} }) => {
 
     // Send request
     const res = await axiosClient.post(url, data, { params });
+
     // Return response
-    return res;
+    return res.data
+
   } catch (error) {
-    console.error(error);
-    return error.response ? error.response.data : error.message; // Return error response or message
+    throw error; // Throw the error to be caught in the hook
   }
 };
 

@@ -1,11 +1,9 @@
-import React, { useState } from "react";
-import Page from "../../../../components/common/Page";
-import { Link, Outlet, useLoaderData, useLocation } from "react-router-dom";
-import Section from "../../../../components/common/Section";
-import { Download, User, UserRoundPlus } from "lucide-react";
-import Button from "../../../../components/common/Button";
-import Heading from "../../../../components/common/Heading";
-import DynamicTable from "../../../../components/common/Table";
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import Section from "../../../components/common/Section";
+import { getRequest } from "../../../api/apiHelpers";
+import AdminUserTableView from "../../../components/tables/AdminUserTableView";
+import Table from "../../../components/tables/Table";
 
 // User Selection Links
 const navUsers = [
@@ -89,29 +87,40 @@ const userTypeLabels = [
 ];
 
 // Admin Manage Users Page
-const AdminManageUsers = () => {
+const AdminManageUsersPage = () => {
   // Open Location
   const location = useLocation();
-
   const [selectedUserType, setSelectedUserType] = useState(buttons[0].type);
 
-  // Load data
-  const data = useLoaderData();
+  // States
+  // Users
+  const [users, setUsers] = useState([]);
 
-  //
+  // Fetch Users
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const response = await getRequest({
+        url: "/api/v1/admin/users",
+      });
+
+      // Set users
+      setUsers(response);
+
+      /* console.log(response); */
+    };
+
+    fetchUsers();
+  }, []);
 
   return (
     <Section>
-      <DynamicTable
-        data={data}
-        enableDelete
-        enableFilters
-        enableSearch
-        itemsPerPage={10}
-        enableActions
-      />
+      {users.length !== 0 && (
+        <Table data={users}>
+          <AdminUserTableView />
+        </Table>
+      )}
     </Section>
   );
 };
 
-export default AdminManageUsers;
+export default AdminManageUsersPage;

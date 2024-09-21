@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const useSearch = (data, searchTerm) => {
+const useSearch = (data = [], searchTerm) => {
   const [term, setTerm] = useState(searchTerm || "");
 
   const handleSearchChange = (event) => {

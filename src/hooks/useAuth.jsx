@@ -55,6 +55,9 @@ export const AuthProvider = ({ children }) => {
           })
           .catch((error) => {
             // Check if status 422
+
+            console.log(error);
+
             if (error.status === 422) {
               console.log(error);
               return error.response.data.errors;

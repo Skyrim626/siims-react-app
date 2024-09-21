@@ -1,4 +1,5 @@
 import Axios from "axios";
+import { showSuccessAlert } from "../utils/toastify";
 
 // Axios Client Service
 const axiosClient = Axios.create({
@@ -29,6 +30,16 @@ axiosClient.interceptors.request.use((config) => {
 // Response Interceptors
 axiosClient.interceptors.response.use(
   (response) => {
+
+    // Successful Responses
+    // Status 200
+    
+    // Status 201
+    if(response && response.status === 201) {
+      showSuccessAlert(response.data.message);
+    }
+
+    // Return response
     return response;
   },
   (error) => {
@@ -43,18 +54,15 @@ axiosClient.interceptors.response.use(
 
       // ! DO NOT REMOVE
       // Pass the error message to the response
-      const errorMessage = response.data.errors.credentials || 'Unauthorized access. Please log in again.';
-      
-      // Optionally store the error message in localStorage or global state
+      const errorMessage = response.data.message || 'Unauthorized access. Please log in again.';
       localStorage.setItem('loginError', errorMessage);
-
-      // Remove Token
+      // Clear any tokens or user data
       localStorage.removeItem('ACCESS_TOKEN');
       localStorage.removeItem('user');
       localStorage.removeItem('token');
-
-      // window.location.href = '/login';
-      window.location.reload();
+      
+      // Redirect to login page
+      window.location.href = '/login'; 
     }
 
     return Promise.reject(error);

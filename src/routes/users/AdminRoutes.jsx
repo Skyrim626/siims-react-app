@@ -12,16 +12,17 @@ import AdminLayout from "../../components/layouts/AdminLayout";
 
 // Admin Pages
 import AdminDashboard from "../../pages/admin/AdminDashboard";
-import AdminManageUsers from "../../pages/admin/manage-users/companies/AdminManageUsers";
 import AdminManageStudent from "../../pages/admin/manage-users/student/AdminManageStudent";
 import AdminStudent from "../../pages/admin/manage-users/student/AdminAddStudent";
 import AdminMessages from "../../pages/admin/AdminMessages";
 import AdminLogs from "../../pages/admin/AdminLogs";
 import AdminInternshipPostingsPage from "../../pages/admin/AdminInternshipPostingsPage";
-import AdminCollegesPage from "../../pages/admin/AdminCollegesPage";
 import AdminManageCompaniesPage from "../../pages/admin/manage-users/companies/AdminManageCompaniesPage";
 import AdminManageUserSelection from "../../pages/admin/AdminManageUserSelection";
 import AdminManageDeansPage from "../../pages/admin/manage-users/deans/AdminManageDeansPage";
+import AdminManageUsersPage from "../../pages/admin/manage-users/AdminManageUsersPage";
+import AdminManageChairpersonsPage from "../../pages/admin/manage-users/chairpersons/AdminManageChairpersonsPage";
+import AdminManageCollegesPage from "../../pages/admin/AdminManageCollegesPage";
 
 // Routes for Admin
 const AdminRoutes = {
@@ -50,11 +51,15 @@ const AdminRoutes = {
       children: [
         {
           index: true,
-          element: <AdminManageUsers />,
-          loader: async () => {
-            const response = await axiosClient.get("/api/v1/users");
+          element: <AdminManageUsersPage />,
+          /* loader: async () => {
+            const response = await axiosClient.get("/api/v1/admin/users");
             return response.data;
-          },
+          }, */
+        },
+        {
+          path: "chairpersons",
+          element: <AdminManageChairpersonsPage />,
         },
         {
           path: "deans",
@@ -73,18 +78,18 @@ const AdminRoutes = {
         {
           path: "companies",
           element: <AdminManageCompaniesPage />,
-          loader: async () => {
+          /* loader: async () => {
             const response = await axiosClient.get(
               "/api/v1/admin/users/companies"
             );
             return response.data;
-          },
+          }, */
         },
       ],
     },
     {
       path: "colleges",
-      element: <AdminCollegesPage />,
+      element: <AdminManageCollegesPage />,
     },
     {
       path: "messages",

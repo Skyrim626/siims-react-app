@@ -35,6 +35,11 @@ const Auth = () => {
   if (roles.includes("student")) {
     return <Navigate to={"/student"} />;
   }
+
+  // Dean
+  if (roles.includes("dean")) {
+    return <Navigate to={"dean"} />;
+  }
   // Render children if authenticated
   // TODO: FINISH THIS
   return "Empty Page";

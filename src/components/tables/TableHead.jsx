@@ -7,6 +7,9 @@ const TableHead = ({
   visibleColumns,
   sortData,
   renderSortIcon,
+  handleEdit,
+  handleDelete,
+  handleView,
 }) => {
   return (
     <thead>
@@ -34,7 +37,9 @@ const TableHead = ({
             {renderSortIcon(column)}
           </th>
         ))}
-        <th className="py-2 px-4 border-b bg-gray-800 text-white">Actions</th>
+        {(handleEdit || handleDelete || handleView) && (
+          <th className="py-2 px-4 border-b bg-gray-800 text-white">Actions</th>
+        )}
       </tr>
     </thead>
   );

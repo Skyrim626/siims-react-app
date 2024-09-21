@@ -8,6 +8,7 @@ import DeanFormAdd from "../../forms/DeanFormAdd";
 import { deleteRequest, getRequest } from "../../../../api/apiHelpers";
 import AdminDeanTable from "../../../../components/tables/AdminDeanTable";
 import useToastOnReload from "../../../../hooks/useToastOnReload";
+import DeanFormEdit from "../../forms/DeanFormEdit";
 
 // Admin Manage Deans Page
 const AdminManageDeansPage = () => {
@@ -17,9 +18,11 @@ const AdminManageDeansPage = () => {
   /**
    * States
    */
+  const [selectedDeanId, setSelectedDeanId] = useState();
   const [deans, setDeans] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [colleges, setColleges] = useState([]);
+  const [isOpenEdit, setIsOpenEdit] = useState(false);
 
   // Load Dean
   useEffect(() => {
@@ -28,6 +31,8 @@ const AdminManageDeansPage = () => {
       const deanResponse = await getRequest({
         url: "/api/v1/admin/users/deans",
       });
+
+      console.log(deanResponse);
 
       // Set Deans
       setDeans(deanResponse);
@@ -76,7 +81,12 @@ const AdminManageDeansPage = () => {
     }
   };
 
-  // const
+  // Handle Edit
+  const handleEdit = (id) => {
+    // Set to true -- Open Edit Form
+    setSelectedDeanId(id);
+    setIsOpenEdit(true);
+  };
 
   return (
     <Section>
@@ -108,6 +118,7 @@ const AdminManageDeansPage = () => {
           collegesForFilter={colleges}
           handleArchive={handleArchive}
           handleArchiveBySelectedIds={handleArchiveBySelectedIds}
+          handleEdit={handleEdit}
         />
       )}
 
@@ -129,6 +140,22 @@ const AdminManageDeansPage = () => {
           )}
         </AnimatePresence>
       )}
+
+      <AnimatePresence>
+        {isOpenEdit && (
+          <Modal
+            modalTitle="Edit Dean"
+            isOpen={isOpenEdit}
+            setIsOpen={setIsOpenEdit}
+          >
+            <DeanFormEdit
+              selectedDeanId={selectedDeanId}
+              isOpen={isOpenEdit}
+              setIsOpen={setIsOpenEdit}
+            />
+          </Modal>
+        )}
+      </AnimatePresence>
     </Section>
   );
 };

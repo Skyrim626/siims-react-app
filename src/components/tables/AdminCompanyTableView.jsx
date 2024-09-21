@@ -1,21 +1,20 @@
 import React, { useState } from "react";
+import useSearch from "../../hooks/useSearch";
+import useSort from "../../hooks/useSort";
+import usePagination from "../../hooks/usePagination";
+import useCheckboxSelection from "../../hooks/useCheckboxSelection";
+import useColumnVisibility from "../../hooks/useColumnVisibility";
+import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
 import Section from "../common/Section";
 import ArchiveButton from "./ArchiveButton";
 import Pagination from "./Pagination";
+import Search from "./Search";
+import Filter from "./Filter";
 import TableHead from "./TableHead";
 import TableBody from "./TableBody";
 import TableShowResult from "./TableShowResult";
-import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
-import usePagination from "../../hooks/usePagination";
-import useCheckboxSelection from "../../hooks/useCheckboxSelection";
-import useSort from "../../hooks/useSort";
-import useSearch from "../../hooks/useSearch";
-import useColumnVisibility from "../../hooks/useColumnVisibility";
-import Search from "./Search";
-import Filter from "./Filter";
-import { Select } from "@headlessui/react";
 
-const AdminDeanTable = ({
+const AdminCompanyTableView = ({
   data,
   handleArchive,
   handleArchiveBySelectedIds,
@@ -29,23 +28,12 @@ const AdminDeanTable = ({
     { value: 500 },
   ],
 }) => {
-  // State for selected college filter
-  const [selectedCollege, setSelectedCollege] = useState("");
-
   // Search hook
   const { term, filteredData, handleSearchChange } = useSearch(data, "");
 
-  // Filtered by college
-  const filteredByCollege = selectedCollege
-    ? filteredData.filter((item) => {
-        console.log(selectedCollege);
-        return item.college_assigned === selectedCollege;
-      })
-    : filteredData;
-
   // Sorting hook
   const { sortedData, sortData, sortField, sortDirection } =
-    useSort(filteredByCollege);
+    useSort(filteredData);
 
   // Pagination hook
   const {
@@ -69,11 +57,6 @@ const AdminDeanTable = ({
   // Filter Toggle States
   const [isFilterOpen, setIsFilterOpen] = useState(false); // Dropdown for filters
 
-  // Handle college filter change
-  const handleCollegeChange = (e) => {
-    setSelectedCollege(e.target.value);
-  };
-
   // Render sorting icon
   const renderSortIcon = (field) => {
     if (sortField === field) {
@@ -88,21 +71,6 @@ const AdminDeanTable = ({
 
   return (
     <Section>
-      {/* Filter by College */}
-      <div className="mb-2">
-        <Select
-          className="px-4 py-2 outline-none text-sm cursor-pointer rounded-sm border-blue-500 border max-w-[150px]"
-          value={selectedCollege}
-          onChange={handleCollegeChange}
-        >
-          <option value="">--All Colleges--</option>
-          {collegesForFilter.map((college) => (
-            <option key={college["id"]} value={college.name}>
-              {college.name}
-            </option>
-          ))}
-        </Select>
-      </div>
       {handleArchiveBySelectedIds && (
         <ArchiveButton
           onClick={() => handleArchiveBySelectedIds(selectedIds)}
@@ -161,4 +129,4 @@ const AdminDeanTable = ({
   );
 };
 
-export default AdminDeanTable;
+export default AdminCompanyTableView;

@@ -3,7 +3,18 @@ import Heading from "../common/Heading";
 import { Input, Select } from "@headlessui/react";
 import FormField from "../common/FormField";
 
-const PersonalInfoFields = ({ personalInfo, handlePersonalInfoChange }) => {
+const PersonalInfoFields = ({
+  personalInfo,
+  handlePersonalInfoChange,
+  requiredFields = {
+    first_name: false,
+    middle_name: false,
+    last_name: false,
+    email: false,
+    phone_number: false,
+    gender: false,
+  },
+}) => {
   return (
     <>
       {/* Personal Information */}
@@ -21,6 +32,7 @@ const PersonalInfoFields = ({ personalInfo, handlePersonalInfoChange }) => {
               label={"First Name"}
               name={"first_name"}
               labelClassName="text-sm text-black font-semibold"
+              required={requiredFields["first_name"]}
             >
               <Input
                 type="text"
@@ -29,6 +41,7 @@ const PersonalInfoFields = ({ personalInfo, handlePersonalInfoChange }) => {
                 onChange={handlePersonalInfoChange}
                 placeholder="First name"
                 value={personalInfo.first_name}
+                required={requiredFields["first_name"]}
               />
             </FormField>
 
@@ -36,6 +49,7 @@ const PersonalInfoFields = ({ personalInfo, handlePersonalInfoChange }) => {
               label={"Middle Name"}
               name={"middle_name"}
               labelClassName="text-sm text-black font-semibold"
+              required={requiredFields["middle_name"]}
             >
               <Input
                 type="text"
@@ -44,20 +58,23 @@ const PersonalInfoFields = ({ personalInfo, handlePersonalInfoChange }) => {
                 onChange={handlePersonalInfoChange}
                 placeholder="Middle name"
                 value={personalInfo.middle_name}
+                required={requiredFields["middle_name"]}
               />
             </FormField>
             <FormField
               label={"Last Name"}
               name={"last_name"}
               labelClassName="text-sm text-black font-semibold"
+              required={requiredFields["last_name"]}
             >
-              <input
+              <Input
                 type="text"
                 className="outline-none text-black rounded-sm p-2 text-sm"
                 name="last_name"
                 onChange={handlePersonalInfoChange}
                 placeholder="Last name"
                 value={personalInfo.last_name}
+                required={requiredFields["last_name"]}
               />
             </FormField>
 
@@ -65,6 +82,7 @@ const PersonalInfoFields = ({ personalInfo, handlePersonalInfoChange }) => {
               label={"Email"}
               name={"email"}
               labelClassName="text-sm text-black font-semibold"
+              required={requiredFields["email"]}
             >
               <Input
                 type="email"
@@ -73,6 +91,7 @@ const PersonalInfoFields = ({ personalInfo, handlePersonalInfoChange }) => {
                 onChange={handlePersonalInfoChange}
                 placeholder="Email"
                 value={personalInfo.email}
+                required={requiredFields["email"]}
               />
             </FormField>
 
@@ -80,12 +99,15 @@ const PersonalInfoFields = ({ personalInfo, handlePersonalInfoChange }) => {
               label={"Gender"}
               name={"gender"}
               labelClassName="text-sm text-black font-semibold"
+              required={requiredFields["gender"]}
             >
               <Select
                 name="status"
                 className="border data-[hover]:shadow data-[focus]:bg-blue-100 h-full outline-none px-2"
                 aria-label="Project status"
                 onClick={handlePersonalInfoChange}
+                required={requiredFields["gender"]}
+                /* value={personalInfo.gender} */
               >
                 <option value="">-Select a Gender-</option>
                 <option value="Male">Male</option>
@@ -98,14 +120,16 @@ const PersonalInfoFields = ({ personalInfo, handlePersonalInfoChange }) => {
               label={"Phone Number"}
               name={"phone_number"}
               labelClassName="text-sm text-black font-semibold"
+              required={requiredFields["phone_number"]}
             >
-              <input
+              <Input
                 type="text"
                 className="outline-none text-black rounded-sm p-2 text-sm"
                 name="phone_number"
                 onChange={handlePersonalInfoChange}
                 placeholder="Phone Number"
                 value={personalInfo.phone_number}
+                required={requiredFields["phone_number"]}
               />
             </FormField>
           </div>
