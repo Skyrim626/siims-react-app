@@ -21,6 +21,8 @@ const IDPasswordInfoFields = ({
   setId,
   password,
   setPassword,
+  info,
+  handleInfoChange,
   requiredFields = {
     id: true,
     password: true,
@@ -43,15 +45,26 @@ const IDPasswordInfoFields = ({
               type="text"
               className="outline-none text-black rounded-sm p-2 text-sm bg-gray-300 h-full"
               name="id"
-              onChange={(e) => setId(e.target.value)}
+              /* onChange={(e) =>
+                handleInfoChange({
+                  target: { name: "id", value: e.target.value },
+                })
+              } */
+              onChange={handleInfoChange}
               placeholder="ID"
-              value={id}
+              value={info.id}
               readOnly
             />
+
             <Button
               type="button"
               className="py-1 bg-blue-700 transition duration-150 hover:bg-blue-800 h-full px-2 text-white font-semibold rounded-e-sm"
-              onClick={() => setId(generateID())}
+              /* onClick={() => setId(generateID())} */
+              onClick={() =>
+                handleInfoChange({
+                  target: { name: "id", value: generateID() },
+                })
+              }
             >
               Generate ID
             </Button>
@@ -67,14 +80,19 @@ const IDPasswordInfoFields = ({
               type="text"
               className="outline-none text-black rounded-sm p-2 text-sm"
               name="password"
-              onChange={(e) => setPassword(e.target.value)}
+              // onChange={(e) => handleInfoChange(e.target.value)}
+              onChange={handleInfoChange}
               placeholder="Password"
-              value={password}
+              value={info.password}
             />
             <Button
               type="button"
               className="py-1 bg-blue-700 whitespace-nowrap transition duration-150 hover:bg-blue-800 h-full px-2 text-white font-semibold rounded-e-sm"
-              onClick={() => setPassword(generatePassword(12))}
+              onClick={() =>
+                handleInfoChange({
+                  target: { name: "password", value: generatePassword(12) },
+                })
+              }
             >
               Generate Password
             </Button>

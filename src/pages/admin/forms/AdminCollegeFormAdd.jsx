@@ -5,17 +5,10 @@ import { Input } from "@headlessui/react";
 import Text from "../../../components/common/Text";
 
 const AdminCollegeFormAdd = ({
-  states = {
-    name: "",
-  },
-  setStates = {
-    setName: () => {},
-  },
+  collegeInfo,
+  handleCollegeInfoChange,
   requiredFields = {
     name: true,
-  },
-  errors = {
-    name: [""],
   },
 }) => {
   return (
@@ -41,9 +34,9 @@ const AdminCollegeFormAdd = ({
                 type="text"
                 className="outline-none text-black rounded-sm p-2 text-sm"
                 name="name"
-                onChange={setStates.setName}
+                onChange={handleCollegeInfoChange}
                 placeholder="College Name"
-                value={states.name}
+                value={collegeInfo.name}
                 required={requiredFields["name"]}
               />
             </FormField>

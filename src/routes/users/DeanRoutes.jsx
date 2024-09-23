@@ -1,9 +1,10 @@
 import { Navigate, Outlet } from "react-router-dom";
 import DeanLayout from "../../components/layouts/DeanLayout";
-import DeanDashboard from "../../pages/dean/DeanDashboard";
+import DeanDashboardPage from "../../pages/dean/DeanDashboardPage";
 import ProtectedRoute from "../handlers/ProtectedRoute";
 import DeanCompaniesPage from "../../pages/dean/DeanCompaniesPage";
 import DeanCompanyPage from "../../pages/dean/DeanCompanyPage";
+import DeanProfilePage from "../../pages/dean/DeanProfilePage";
 
 // Routes for Dean
 const DeanRoutes = {
@@ -20,7 +21,11 @@ const DeanRoutes = {
     },
     {
       index: true,
-      element: <DeanDashboard />,
+      element: <DeanDashboardPage />,
+    },
+    {
+      path: "profile",
+      element: <DeanProfilePage />,
     },
     {
       path: "companies",

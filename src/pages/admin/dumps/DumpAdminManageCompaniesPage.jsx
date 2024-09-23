@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from "react";
-import Page from "../../../../components/common/Page";
+import Page from "../../../components/common/Page";
 import { Download, FileDown, FileUp, UserRoundPlus, X } from "lucide-react";
-import Section from "../../../../components/common/Section";
-import Heading from "../../../../components/common/Heading";
-import Button from "../../../../components/common/Button";
+import Section from "../../../components/common/Section";
+import Heading from "../../../components/common/Heading";
+import Button from "../../../components/common/Button";
 import { useLoaderData, useLocation } from "react-router-dom";
 import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa"; // React Icons
 
 import { AnimatePresence, motion } from "framer-motion";
-import CompanyFormAdd from "../../forms/CompanyFormAdd";
-import Table from "../../../../components/tables/Table";
-import Modal from "../../../../components/common/Modal";
-import CompanyFormEdit from "../../forms/CompanyFormEdit";
-import findItemById from "../../../../utils/findItem";
-import AdminCompanyTable from "../../../../components/tables/AdminCompanyTable";
-import { getRequest } from "../../../../api/apiHelpers";
-import AdminDeanTable from "../../../../components/tables/AdminDeanTable";
-import AdminCompanyTableView from "../../../../components/tables/AdminCompanyTableView";
+import CompanyFormAdd from "../forms/CompanyFormAdd";
+import Table from "../../../components/tables/Table";
+import Modal from "../../../components/common/Modal";
+import CompanyFormEdit from "../forms/CompanyFormEdit";
+import findItemById from "../../../utils/findItem";
+import AdminCompanyTable from "../../../components/tables/AdminCompanyTable";
+import { getRequest } from "../../../api/apiHelpers";
+import AdminDeanTable from "../../../components/tables/AdminDeanTable";
+import AdminCompanyTableView from "../../../components/tables/AdminCompanyTableView";
 
 // A page component for managing companies
 const AdminManageCompaniesPage = () => {

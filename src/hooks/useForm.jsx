@@ -12,7 +12,11 @@ const useForm = (initialState) => {
     }));
   };
 
-  return [formData, handleInputChange];
+  const resetForm = () => {
+    setFormData(initialState); // Reset the form to the initial state
+  };
+
+  return [formData, handleInputChange, resetForm];
 };
 
 export default useForm;

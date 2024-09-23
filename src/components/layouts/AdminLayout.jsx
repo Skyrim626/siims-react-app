@@ -9,6 +9,7 @@ import SidebarLayout from "./SidebarLayout";
 import {
   BookCopy,
   Building,
+  ClipboardList,
   LayoutDashboard,
   Logs,
   MessageCircle,
@@ -25,7 +26,6 @@ const sidebarItemsConfig = [
     exact: true, // Add an `exact` property for exact path matching
     path: "/auth/admin",
   },
-
   {
     icon: <User size={20} />,
     text: "Users",
@@ -34,6 +34,15 @@ const sidebarItemsConfig = [
     exact: false, // No exact match needed for partial path
     path: "/auth/admin/users",
   },
+  {
+    icon: <ClipboardList />,
+    text: "Roles",
+    alert: true,
+    ariaLabel: "Roles",
+    exact: true,
+    path: "/auth/admin/roles",
+  },
+
   {
     icon: <Building size={20} />,
     text: "Colleges",

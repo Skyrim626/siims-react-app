@@ -17,12 +17,13 @@ import AdminStudent from "../../pages/admin/manage-users/student/AdminAddStudent
 import AdminMessages from "../../pages/admin/AdminMessages";
 import AdminLogs from "../../pages/admin/AdminLogs";
 import AdminInternshipPostingsPage from "../../pages/admin/AdminInternshipPostingsPage";
-import AdminManageCompaniesPage from "../../pages/admin/manage-users/companies/AdminManageCompaniesPage";
 import AdminManageUserSelection from "../../pages/admin/AdminManageUserSelection";
 import AdminManageDeansPage from "../../pages/admin/manage-users/deans/AdminManageDeansPage";
 import AdminManageUsersPage from "../../pages/admin/manage-users/AdminManageUsersPage";
 import AdminManageChairpersonsPage from "../../pages/admin/manage-users/chairpersons/AdminManageChairpersonsPage";
 import AdminManageCollegesPage from "../../pages/admin/AdminManageCollegesPage";
+import AdminManageRolesPage from "../../pages/admin/AdminManageRolesPage";
+import AdminManageCompaniesPage from "../../pages/admin/AdminManageCompaniesPage";
 
 // Routes for Admin
 const AdminRoutes = {
@@ -44,6 +45,10 @@ const AdminRoutes = {
         const response = await axiosClient.get("/api/v1/admin/dashboard");
         return response.data;
       },
+    },
+    {
+      path: "roles",
+      element: <AdminManageRolesPage />,
     },
     {
       path: "users",

@@ -1,5 +1,5 @@
 import Axios from "axios";
-import { showSuccessAlert } from "../utils/toastify";
+import { showFailedAlert, showSuccessAlert } from "../utils/toastify";
 
 // Axios Client Service
 const axiosClient = Axios.create({
@@ -22,7 +22,7 @@ axiosClient.interceptors.request.use((config) => {
       Authorization: `Bearer ${JSON.parse(localStorage.getItem('ACCESS_TOKEN'))}`,
     };
     
-    console.log(config);
+    // console.log(config);
     return config;
   }
 );
@@ -64,6 +64,11 @@ axiosClient.interceptors.response.use(
       // Redirect to login page
       window.location.href = '/login'; 
     }
+
+    // Status 404
+    if(response && response.status === 404) {
+      showFailedAlert(response.data.message);
+    } 
 
     return Promise.reject(error);
   }

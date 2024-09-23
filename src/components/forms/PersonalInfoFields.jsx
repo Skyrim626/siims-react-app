@@ -102,12 +102,12 @@ const PersonalInfoFields = ({
               required={requiredFields["gender"]}
             >
               <Select
-                name="status"
+                name="gender"
                 className="border data-[hover]:shadow data-[focus]:bg-blue-100 h-full outline-none px-2"
-                aria-label="Project status"
-                onClick={handlePersonalInfoChange}
+                aria-label="Select gender"
+                onChange={handlePersonalInfoChange}
                 required={requiredFields["gender"]}
-                /* value={personalInfo.gender} */
+                value={personalInfo.gender}
               >
                 <option value="">-Select a Gender-</option>
                 <option value="Male">Male</option>

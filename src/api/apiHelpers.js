@@ -35,32 +35,39 @@ export const postRequest = async ({ url, data = {}, params = {} }) => {
 
 export const putRequest = async ({ url, data = {}, params = {} }) => {
   try {
+    // Fetch the CSRF cookie
+    await axiosClient.get("/sanctum/csrf-cookie", {
+      withCredentials: true,
+    });
+
     // Send request
     const res = await axiosClient.put(url, data, { params });
 
     // Return response
-    return res;
+    return res.data
+
   } catch (error) {
     return error.response ? error.response.data : error.message; // Return error response or message
   }
 };
 
 // Delete Request
-export const deleteRequest = async ({ url, data = {}, params = {} }) => {
+export const deleteRequest = async ({ url, data = {}, params = {}, method = 'delete' }) => {
 
   try {
     // If data exist
-    if (data) {
-      console.log(url);
-      console.log(data);
+    if(method === 'post') {
       const res = await axiosClient.post(url, data, { params });
       // Return response
-      return res;
+      return res.data;
     }
 
-    const res = await axiosClient.delete(url, { params });
-    // Return response
-    return res;
+    else {
+      console.log(url);
+      const res = await axiosClient.delete(url, { params });
+      // Return response
+      return res.data;
+    }
 
 
   } catch (error) {
