@@ -14,6 +14,7 @@ import NotFoundPage from "../pages/NotFoundPage";
 import UnauthorizedPage from "../pages/UnauthorizedPage";
 import DeanRoutes from "./users/DeanRoutes";
 import ChairpersonRoutes from "./users/ChairpersonRoutes";
+import CompanyRoutes from "./users/CompanyRoutes";
 
 // Router
 const router = createBrowserRouter([
@@ -37,6 +38,9 @@ const router = createBrowserRouter([
 
       // path: chairperson
       ChairpersonRoutes,
+
+      // path: company
+      CompanyRoutes,
 
       {
         path: "unauthorized",

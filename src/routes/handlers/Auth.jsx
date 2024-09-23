@@ -33,7 +33,7 @@ const Auth = () => {
 
   // Student
   if (roles.includes("student")) {
-    return <Navigate to={"/student"} />;
+    return <Navigate to={"/my"} />;
   }
 
   // Dean
@@ -45,6 +45,12 @@ const Auth = () => {
   if (roles.includes("chairperson")) {
     return <Navigate to={"chairperson"} />;
   }
+
+  // Company
+  if (roles.includes("company")) {
+    return <Navigate to={"company"} />;
+  }
+
   // Render children if authenticated
   // TODO: FINISH THIS
   return "Empty Page";

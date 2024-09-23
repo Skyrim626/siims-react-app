@@ -14,11 +14,19 @@ const sidebarItemsConfig = [
     path: "/auth/company",
   },
   {
+    icon: <User size={20} />,
+    text: "Profile",
+    alert: true,
+    ariaLabel: "Profile",
+    exact: true,
+    path: "/auth/company/profile",
+  },
+  {
     icon: <Building size={20} />,
     text: "Offices",
     alert: true,
     ariaLabel: "Offices",
-    exact: true,
+    exact: false,
     path: "/auth/company/offices",
   },
 ];
