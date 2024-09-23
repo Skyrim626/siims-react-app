@@ -17,12 +17,13 @@ import FormField from "../common/FormField";
  * @returns
  */
 const IDPasswordInfoFields = ({
-  id,
-  setId,
-  password,
-  setPassword,
   info,
   handleInfoChange,
+  allowGenerateId = true,
+  allowedFields = {
+    id: true,
+    password: true,
+  },
   requiredFields = {
     id: true,
     password: true,
@@ -38,66 +39,71 @@ const IDPasswordInfoFields = ({
 
     <div className="flex flex-col gap-3">
       <div className="grid grid-cols-3 gap-2 mt-4">
-        <Field>
-          <Label>ID {requiredFields["id"] && <span>*</span>} </Label>
-          <div className="flex items-center">
-            <Input
-              type="text"
-              className="outline-none text-black rounded-sm p-2 text-sm bg-gray-300 h-full"
-              name="id"
-              /* onChange={(e) =>
+        {allowedFields.id && (
+          <Field>
+            <Label>ID {requiredFields["id"] && <span>*</span>} </Label>
+            <div className="flex items-center">
+              <Input
+                type="text"
+                className="outline-none text-black rounded-sm p-2 text-sm bg-gray-300 h-full"
+                name="id"
+                /* onChange={(e) =>
                 handleInfoChange({
                   target: { name: "id", value: e.target.value },
                 })
               } */
-              onChange={handleInfoChange}
-              placeholder="ID"
-              value={info.id}
-              readOnly
-            />
+                onChange={handleInfoChange}
+                placeholder="ID"
+                value={info.id}
+                readOnly
+              />
+              {allowGenerateId && (
+                <Button
+                  type="button"
+                  className="py-1 bg-blue-700 transition duration-150 hover:bg-blue-800 h-full px-2 text-white font-semibold rounded-e-sm"
+                  /* onClick={() => setId(generateID())} */
+                  onClick={() =>
+                    handleInfoChange({
+                      target: { name: "id", value: generateID() },
+                    })
+                  }
+                >
+                  Generate ID
+                </Button>
+              )}
+            </div>
+          </Field>
+        )}
 
-            <Button
-              type="button"
-              className="py-1 bg-blue-700 transition duration-150 hover:bg-blue-800 h-full px-2 text-white font-semibold rounded-e-sm"
-              /* onClick={() => setId(generateID())} */
-              onClick={() =>
-                handleInfoChange({
-                  target: { name: "id", value: generateID() },
-                })
-              }
-            >
-              Generate ID
-            </Button>
-          </div>
-        </Field>
-
-        <Field>
-          <Label>
-            Password {requiredFields["password"] && <span>*</span>}{" "}
-          </Label>
-          <div className="flex items-center">
-            <Input
-              type="text"
-              className="outline-none text-black rounded-sm p-2 text-sm"
-              name="password"
-              // onChange={(e) => handleInfoChange(e.target.value)}
-              onChange={handleInfoChange}
-              placeholder="Password"
-              value={info.password}
-            />
-            <Button
-              type="button"
-              className="py-1 bg-blue-700 whitespace-nowrap transition duration-150 hover:bg-blue-800 h-full px-2 text-white font-semibold rounded-e-sm"
-              onClick={() =>
-                handleInfoChange({
-                  target: { name: "password", value: generatePassword(12) },
-                })
-              }
-            >
-              Generate Password
-            </Button>
-          </div>
-        </Field>
+        {allowedFields.password && (
+          <Field>
+            <Label>
+              Password {requiredFields["password"] && <span>*</span>}{" "}
+            </Label>
+            <div className="flex items-center">
+              <Input
+                type="text"
+                className="outline-none text-black rounded-sm p-2 text-sm"
+                name="password"
+                // onChange={(e) => handleInfoChange(e.target.value)}
+                onChange={handleInfoChange}
+                placeholder="Password"
+                value={info.password}
+              />
+              <Button
+                type="button"
+                className="py-1 bg-blue-700 whitespace-nowrap transition duration-150 hover:bg-blue-800 h-full px-2 text-white font-semibold rounded-e-sm"
+                onClick={() =>
+                  handleInfoChange({
+                    target: { name: "password", value: generatePassword(12) },
+                  })
+                }
+              >
+                Generate Password
+              </Button>
+            </div>
+          </Field>
+        )}
       </div>
     </div>
   </div>

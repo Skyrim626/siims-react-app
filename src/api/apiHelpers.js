@@ -63,7 +63,7 @@ export const deleteRequest = async ({ url, data = {}, params = {}, method = 'del
     }
 
     else {
-      console.log(url);
+
       const res = await axiosClient.delete(url, { params });
       // Return response
       return res.data;

@@ -5,10 +5,16 @@ import Heading from "../../components/common/Heading";
 import Text from "../../components/common/Text";
 import AdminManageHeader from "../../components/users/admin/AdminManageUserHeader";
 import AdminCompaniesTable from "../../components/users/admin/table/AdminCompaniesTable";
-import { getRequest, postRequest } from "../../api/apiHelpers";
+import {
+  deleteRequest,
+  getRequest,
+  postRequest,
+  putRequest,
+} from "../../api/apiHelpers";
 import useForm from "../../hooks/useForm";
 import FormModal from "../../components/modals/FormModal";
 import AdminCompanyFormAdd from "./forms/AdminCompanyFormAdd";
+import AdminCompanyFormEdit from "./forms/AdminCompanyFormEdit";
 
 const AdminManageCompaniesPage = () => {
   // Modal State
@@ -22,8 +28,32 @@ const AdminManageCompaniesPage = () => {
   const [companies, setCompanies] = useState([]);
 
   // Form State
-  // Using the custom hook for Company Information
+  // Using the custom hook for Company Information (Add)
   const [companyInfo, handleCompanyInfoChange, resetCompanyInfo] = useForm({
+    id: "",
+    password: "",
+    first_name: "",
+    middle_name: "",
+    last_name: "",
+    email: "",
+    gender: "",
+    phone_number: "",
+    street: "",
+    barangay: "",
+    city_municipality: "",
+    province: "",
+    postal_code: "",
+    company_name: "",
+    website_url: "",
+  });
+
+  // Using the custom hook for Company Information (Edit)
+  const [
+    editCompanyInfo,
+    handleEditCompanyInfoChange,
+    resetEditCompanyInfo,
+    setEditCompanyInfo,
+  ] = useForm({
     id: "",
     password: "",
     first_name: "",
@@ -75,6 +105,84 @@ const AdminManageCompaniesPage = () => {
     setIsOpen(false);
   };
 
+  // Handle Edit Select Company
+  const handleEdit = (company) => {
+    console.log(company);
+
+    // Set Company State
+    setSelectedCompany(company);
+
+    // Pre-fill the editCompanyInfo with the selected company's details
+    setEditCompanyInfo({
+      id: company.id || "",
+      first_name: company.first_name || "",
+      middle_name: company.middle_name || "",
+      last_name: company.last_name || "",
+      email: company.email || "",
+      gender: company.gender || "",
+      phone_number: company.phone_number || "",
+      street: company.street || "",
+      barangay: company.barangay || "",
+      city_municipality: company.city_municipality || "",
+      province: company.province || "",
+      postal_code: company.postal_code || "",
+      company_name: company.company_name || "",
+      website_url: company.website_url || "",
+    });
+
+    // Open Modal
+    setEditIsOpen(true);
+  };
+
+  // Handle Edit Submit
+  const handleEditSubmit = async () => {
+    // Ready Payload
+    const payload = editCompanyInfo;
+
+    // Send Request
+    const response = await putRequest({
+      url: `/api/v1/admin/users/companies/${selectedCompany["id"]}`,
+      data: payload,
+    });
+
+    // Reset Input
+    resetEditCompanyInfo();
+
+    // Set Company Again
+    setCompanies(response.data);
+
+    // Close Modal
+    setEditIsOpen(false);
+  };
+
+  // Handle Archive
+  const handleArchive = async (id) => {
+    // Send Request
+    const response = await deleteRequest({
+      url: `/api/v1/admin/users/companies/archive/${id}`,
+      method: "delete",
+    });
+
+    // Set Company State
+    setCompanies(response.data);
+  };
+
+  // Handle Archive Selected Id's
+  const handleArchiveBySelectedIds = async (selectedIds) => {
+    // Ready Payload
+    const payload = { ids: Array.from(selectedIds) };
+
+    // Send Request
+    const response = await deleteRequest({
+      url: "/api/v1/admin/users/companies/archive/selected",
+      data: payload,
+      method: "post",
+    });
+
+    // Set Companies State
+    setCompanies(response.data);
+  };
+
   return (
     <>
       <Section>
@@ -87,10 +195,10 @@ const AdminManageCompaniesPage = () => {
         {/* Table */}
         {companies.length !== 0 && (
           <AdminCompaniesTable
-            /* handleArchiveBySelectedIds={handleArchiveBySelectedIds} */
+            handleArchiveBySelectedIds={handleArchiveBySelectedIds}
             data={companies}
-            /* handleEdit={handleEdit} */
-            /* handleArchive={handleArchive} */
+            handleEdit={handleEdit}
+            handleArchive={handleArchive}
           />
         )}
 
@@ -105,6 +213,19 @@ const AdminManageCompaniesPage = () => {
           <AdminCompanyFormAdd
             companyInfo={companyInfo}
             handleCompanyInfoChange={handleCompanyInfoChange}
+          />
+        </FormModal>
+
+        {/* Edit Form Modal */}
+        <FormModal
+          isOpen={editIsOpen}
+          setIsOpen={setEditIsOpen}
+          modalTitle="Edit Company"
+          onSubmit={handleEditSubmit}
+        >
+          <AdminCompanyFormEdit
+            companyInfo={editCompanyInfo}
+            handleCompanyInfoChange={handleEditCompanyInfoChange}
           />
         </FormModal>
       </Section>
