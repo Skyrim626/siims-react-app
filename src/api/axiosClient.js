@@ -70,6 +70,11 @@ axiosClient.interceptors.response.use(
       showFailedAlert(response.data.message);
     } 
 
+    // Status 403
+    if(response && response.status === 403) {
+      console.log(response.data.message);
+    }
+
     return Promise.reject(error);
   }
 );

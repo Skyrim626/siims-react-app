@@ -40,6 +40,11 @@ const Auth = () => {
   if (roles.includes("dean")) {
     return <Navigate to={"dean"} />;
   }
+
+  // Chairperson
+  if (roles.includes("chairperson")) {
+    return <Navigate to={"chairperson"} />;
+  }
   // Render children if authenticated
   // TODO: FINISH THIS
   return "Empty Page";

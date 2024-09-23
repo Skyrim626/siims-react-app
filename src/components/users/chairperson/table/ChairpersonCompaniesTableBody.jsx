@@ -2,7 +2,7 @@ import React from "react";
 import { FaArchive, FaEdit, FaEye } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 
-const DeanCompaniesTableBody = ({
+const ChairpersonCompaniesTableBody = ({
   paginatedData,
   selectedIds,
   handleCheckboxChange,
@@ -75,4 +75,4 @@ const DeanCompaniesTableBody = ({
   );
 };
 
-export default DeanCompaniesTableBody;
+export default ChairpersonCompaniesTableBody;
