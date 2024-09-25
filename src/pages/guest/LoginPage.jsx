@@ -1,20 +1,51 @@
-// Libraries
-import React from "react";
-
-// Assets
+import React, { useEffect } from "react";
 import logo from "../../assets/images/logo.svg";
-
-/**
- * Components
- */
 import Heading from "../../components/common/Heading";
-
-// Forms
 import LoginForm from "../../components/forms/LoginForm";
 import Text from "../../components/common/Text";
+import useForm from "../../hooks/useForm";
+import { useAuth } from "../../hooks/useAuth";
+import { showFailedAlert } from "../../utils/toastify";
 
 // Login Page Component
 export default function LoginPage() {
+  // Use Form State
+  const [loginInfo, handleLoginInfoChange, resetLoginInfo] = useForm({
+    id: "",
+    password: "",
+  });
+
+  // Auth Login
+  const { login } = useAuth();
+
+  // Use Effect: loginError
+  useEffect(() => {
+    const loginError = localStorage.getItem("loginError");
+    // console.log("Current login error in localStorage:", loginError);
+
+    if (loginError) {
+      // Show toast
+      showFailedAlert(loginError);
+
+      // Clear the login error from localStorage
+      // Delay the removal of loginError from localStorage
+      setTimeout(() => {
+        localStorage.removeItem("loginError");
+      }, 100); // Adjust the timing as needed
+    }
+  }, []);
+
+  // Handle Login
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Payload
+    const payload = loginInfo;
+
+    // Attempt to login user
+    login(payload);
+  };
+
   return (
     <>
       {/* Logo and Welcome */}
@@ -25,7 +56,11 @@ export default function LoginPage() {
       </div>
 
       {/* Login Form */}
-      <LoginForm />
+      <LoginForm
+        loginInfo={loginInfo}
+        handleLoginInfoChange={handleLoginInfoChange}
+        handleSubmit={handleSubmit}
+      />
     </>
   );
 }

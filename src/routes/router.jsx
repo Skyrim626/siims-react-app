@@ -11,7 +11,6 @@ import GuestRoutes from "./users/GuestRoutes";
 
 // Page
 import NotFoundPage from "../pages/NotFoundPage";
-import UnauthorizedPage from "../pages/UnauthorizedPage";
 import DeanRoutes from "./users/DeanRoutes";
 import ChairpersonRoutes from "./users/ChairpersonRoutes";
 import CompanyRoutes from "./users/CompanyRoutes";
@@ -41,11 +40,6 @@ const router = createBrowserRouter([
 
       // path: company
       CompanyRoutes,
-
-      {
-        path: "unauthorized",
-        element: <UnauthorizedPage />,
-      },
     ],
   },
 
