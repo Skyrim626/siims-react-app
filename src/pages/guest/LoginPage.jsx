@@ -7,55 +7,74 @@ import useForm from "../../hooks/useForm";
 import { useAuth } from "../../hooks/useAuth";
 import { showFailedAlert } from "../../utils/toastify";
 
-// Login Page Component
+/**
+ * LoginPage Component
+ * This component renders the login page of the application, which includes a logo,
+ * a heading, a brief welcome text, and the login form for user authentication.
+ *
+ * Features:
+ * - Uses a custom useForm hook to manage the login form state.
+ * - Uses the useAuth hook to perform login authentication.
+ * - Displays an error alert if a login error is stored in localStorage.
+ *
+ * @returns {JSX.Element} The login page with a form to authenticate users.
+ */
 export default function LoginPage() {
-  // Use Form State
+  // Initialize form state for login credentials (id and password)
   const [loginInfo, handleLoginInfoChange, resetLoginInfo] = useForm({
     id: "",
     password: "",
   });
 
-  // Auth Login
+  // Destructure login function from the useAuth hook for handling login requests
   const { login } = useAuth();
 
-  // Use Effect: loginError
+  /**
+   * useEffect hook to check for any login error stored in localStorage.
+   * If a login error exists, a toast notification is displayed, and the error
+   * is cleared from localStorage after a short delay.
+   */
   useEffect(() => {
     const loginError = localStorage.getItem("loginError");
-    // console.log("Current login error in localStorage:", loginError);
 
     if (loginError) {
-      // Show toast
+      // Show a toast alert for login failure
       showFailedAlert(loginError);
 
-      // Clear the login error from localStorage
-      // Delay the removal of loginError from localStorage
+      // Clear the login error from localStorage after a short delay
       setTimeout(() => {
         localStorage.removeItem("loginError");
-      }, 100); // Adjust the timing as needed
+      }, 100); // Adjust the delay timing as needed
     }
   }, []);
 
-  // Handle Login
+  /**
+   * Handles form submission for login.
+   * Prevents the default form submission behavior, prepares the payload,
+   * and invokes the login function to attempt user authentication.
+   *
+   * @param {Event} e - The form submission event.
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Payload
+    // Prepare the payload with the login information from the form
     const payload = loginInfo;
 
-    // Attempt to login user
+    // Attempt to log in the user with the provided credentials
     login(payload);
   };
 
   return (
     <>
-      {/* Logo and Welcome */}
+      {/* Logo and welcome message */}
       <div className="flex flex-col">
         <img src={logo} alt="SIIMS Logo" className="w-2/5 mx-auto md:mx-0" />
         <Heading text={"Welcome back"} className="mb-1" />
         <Text className="text-sm">Please enter log in details below.</Text>
       </div>
 
-      {/* Login Form */}
+      {/* Login form component */}
       <LoginForm
         loginInfo={loginInfo}
         handleLoginInfoChange={handleLoginInfoChange}

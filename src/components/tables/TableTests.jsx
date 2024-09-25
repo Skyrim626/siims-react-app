@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import useSearch from "../../hooks/useSearch";
-import useSort from "../../hooks/useSort";
 import usePagination from "../../hooks/usePagination";
 import useCheckboxSelection from "../../hooks/useCheckboxSelection";
 import useColumnVisibility from "../../hooks/useColumnVisibility";
@@ -10,7 +9,9 @@ import ArchiveButton from "./ArchiveButton";
 import Pagination from "./Pagination";
 import Search from "./Search";
 import Filter from "./Filter";
+import useSort from "../../hooks/useSort";
 import TableHead from "./TableHead";
+import TableShowResult from "./TableShowResult";
 import TableBody from "./TableBody";
 
 const Table = ({
@@ -21,6 +22,7 @@ const Table = ({
   handleEdit,
   handleDelete,
   handleView,
+
   ITEMS_PER_PAGE_LISTS = [
     { value: 25 },
     { value: 50 },
@@ -28,7 +30,6 @@ const Table = ({
     { value: 250 },
     { value: 500 },
   ],
-  IDsIsLink = true,
 }) => {
   // Search hook
   const { term, filteredData, handleSearchChange } = useSearch(data, "");
@@ -120,7 +121,6 @@ const Table = ({
             handleEdit={handleEdit}
             handleDelete={handleDelete}
             handleView={handleView}
-            handleArchive={handleArchive}
           />
           <TableBody
             paginatedData={paginatedData}
@@ -131,10 +131,10 @@ const Table = ({
             handleEdit={handleEdit}
             handleDelete={handleDelete}
             handleView={handleView}
-            IDsIsLink={IDsIsLink}
           />
         </table>
       </div>
+      <TableShowResult startIndex={startIndex} endIndex={endIndex} />
     </Section>
   );
 };

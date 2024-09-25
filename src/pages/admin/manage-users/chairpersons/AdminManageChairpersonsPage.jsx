@@ -7,7 +7,7 @@ import { AnimatePresence } from "framer-motion";
 import Modal from "../../../../components/common/Modal";
 import CompanyFormEdit from "../../forms/CompanyFormEdit";
 import AdminManageHeader from "../../../../components/users/admin/AdminManageUserHeader";
-import Table from "../../../../components/tables/Table";
+import Table from "../../../../components/tables/TableTests";
 import ChairpersonFormAdd from "../../forms/ChairpersonFormAdd";
 
 const AdminManageChairpersonsPage = () => {

@@ -1,3 +1,4 @@
+import { Input } from "@headlessui/react";
 import React from "react";
 
 const TableHead = ({
@@ -10,13 +11,14 @@ const TableHead = ({
   handleEdit,
   handleDelete,
   handleView,
+  handleArchive,
 }) => {
   return (
     <thead>
       <tr>
         <th className="py-2 px-4 border-b bg-gray-800 text-white">#</th>
         <th className="py-2 px-4 border-b bg-gray-800 text-white">
-          <input
+          <Input
             type="checkbox"
             checked={selectedIds.size === paginatedData.length}
             onChange={handleSelectAllChange}
@@ -37,7 +39,7 @@ const TableHead = ({
             {renderSortIcon(column)}
           </th>
         ))}
-        {(handleEdit || handleDelete || handleView) && (
+        {(handleEdit || handleDelete || handleView || handleArchive) && (
           <th className="py-2 px-4 border-b bg-gray-800 text-white">Actions</th>
         )}
       </tr>

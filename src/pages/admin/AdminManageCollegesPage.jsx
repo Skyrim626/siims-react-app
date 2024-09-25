@@ -9,7 +9,7 @@ import {
 import Section from "../../components/common/Section";
 import Text from "../../components/common/Text";
 import Heading from "../../components/common/Heading";
-import Table from "../../components/tables/Table";
+import Table from "../../components/tables/TableTests";
 import AdminManageHeader from "../../components/users/admin/AdminManageUserHeader";
 import ChairpersonFormAdd from "./forms/ChairpersonFormAdd";
 import FormModal from "../../components/modals/FormModal";
