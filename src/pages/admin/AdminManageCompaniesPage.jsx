@@ -15,7 +15,10 @@ import useForm from "../../hooks/useForm";
 import FormModal from "../../components/modals/FormModal";
 import AdminCompanyFormAdd from "./forms/AdminCompanyFormAdd";
 import AdminCompanyFormEdit from "./forms/AdminCompanyFormEdit";
+import useSearch from "../../hooks/useSearch";
+import Table from "../../components/tables/Table";
 
+// AdminManageCompaniesPage component handles the management of companies in the admin dashboard.
 const AdminManageCompaniesPage = () => {
   // Modal State
   const [isOpen, setIsOpen] = useState(false);
@@ -26,6 +29,9 @@ const AdminManageCompaniesPage = () => {
 
   // Fetch State
   const [companies, setCompanies] = useState([]);
+
+  // Custom Hook for Search Table
+  const { term, filteredData, handleSearchChange } = useSearch(companies, ""); // Using the custom hook to manage search term and filtered data
 
   // Form State
   // Using the custom hook for Company Information (Add)
@@ -107,7 +113,7 @@ const AdminManageCompaniesPage = () => {
 
   // Handle Edit Select Company
   const handleEdit = (company) => {
-    console.log(company);
+    // console.log(company);
 
     // Set Company State
     setSelectedCompany(company);
@@ -194,11 +200,14 @@ const AdminManageCompaniesPage = () => {
 
         {/* Table */}
         {companies.length !== 0 && (
-          <AdminCompaniesTable
+          <Table
             handleArchiveBySelectedIds={handleArchiveBySelectedIds}
             data={companies}
             handleEdit={handleEdit}
             handleArchive={handleArchive}
+            term={term}
+            filteredData={filteredData}
+            handleSearchChange={handleSearchChange}
           />
         )}
 

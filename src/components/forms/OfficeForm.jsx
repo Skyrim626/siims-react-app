@@ -3,6 +3,7 @@ import { Building, Hash, MapPin, Navigation, Phone } from "lucide-react";
 import React from "react";
 
 const OfficeForm = ({
+  method = "post",
   userRole = "",
   officeInfo = {
     office_type_id: "",
@@ -31,6 +32,20 @@ const OfficeForm = ({
     postal_code: false,
   },
 }) => {
+  // Method Checker
+  const buttonTitle = () => {
+    switch (method) {
+      case "post":
+        return "Add Office";
+
+      case "put":
+        return "Save Changes";
+
+      default:
+        return "Add Office";
+    }
+  };
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -262,7 +277,7 @@ const OfficeForm = ({
           className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md shadow-md w-full focus:outline-none focus:ring-2 focus:ring-blue-200"
           type="button"
         >
-          Add Office
+          {buttonTitle}
         </Button>
       </div>
     </form>

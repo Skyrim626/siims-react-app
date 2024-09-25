@@ -74,7 +74,7 @@ const CompanyAddOfficePage = () => {
           <Section>
             <Link
               to={strippedPath}
-              className="flex items-center text-sm font-bold text-blue-500"
+              className="flex items-center text-sm font-bold text-blue-500 hover:underline"
             >
               <ChevronLeft size={20} />
               Go Back

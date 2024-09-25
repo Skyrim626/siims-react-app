@@ -38,7 +38,7 @@ const AdminDeanTable = ({
   // Filtered by college
   const filteredByCollege = selectedCollege
     ? filteredData.filter((item) => {
-        console.log(selectedCollege);
+        // console.log(selectedCollege);
         return item.college_assigned === selectedCollege;
       })
     : filteredData;

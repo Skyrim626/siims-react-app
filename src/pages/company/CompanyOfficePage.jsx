@@ -25,12 +25,11 @@ const buttonTabs = [
 
 const CompanyOfficePage = () => {
   const { id } = useParams();
-  const location = useLocation();
+  const location = useLocation().pathname;
   // Use the concatenateLocation function to build the path
-  const strippedLocation = concatenateLocation(
-    location.pathname,
-    `edit-office/${id}`
-  );
+  const strippedLocation = concatenateLocation(location, `edit-office/${id}`);
+
+  console.log(`${location}/add-job`);
 
   const [office, setOffice] = useState(null);
   const [jobs, setJobs] = useState([]);
@@ -242,7 +241,7 @@ const CompanyOfficePage = () => {
                 {/* Manage Office Section */}
                 <div className="bg-white p-6 rounded-lg shadow-md mt-6">
                   <Text className="text-xl font-bold mb-6">Manage Office</Text>
-                  <Link>
+                  <Link to={`${location}/add-job`}>
                     <Button className="bg-green-500 hover:bg-green-600 text-white text-center font-bold py-2 px-4 rounded-lg w-full focus:outline-none focus:shadow-outline mt-4">
                       Add Job
                     </Button>

@@ -68,7 +68,7 @@ const TableBody = ({
 
                   {handleEdit && (
                     <Button
-                      onClick={() => handleEdit(data.id)}
+                      onClick={() => handleEdit(data)}
                       className="text-yellow-600 hover:underline"
                     >
                       <FaEdit size={18} />

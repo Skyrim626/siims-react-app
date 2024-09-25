@@ -7,6 +7,7 @@ import CompanyProfilePage from "../../pages/company/CompanyProfilePage";
 import CompanyAddOfficePage from "../../pages/company/CompanyAddOfficePage";
 import CompanyOfficePage from "../../pages/company/CompanyOfficePage";
 import CompanyEditOfficePage from "../../pages/company/CompanyEditOfficePage";
+import CompanyAddJobPage from "../../pages/company/CompanyAddJobPage";
 
 // Routes for Company
 const CompanyRoutes = {
@@ -48,6 +49,10 @@ const CompanyRoutes = {
         {
           path: ":id",
           element: <CompanyOfficePage />,
+        },
+        {
+          path: ":id/add-job",
+          element: <CompanyAddJobPage />,
         },
       ],
     },
