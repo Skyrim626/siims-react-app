@@ -1,7 +1,7 @@
 import React from "react";
-import Heading from "../common/Heading";
+import Heading from "../../common/Heading";
 import { Input, Select } from "@headlessui/react";
-import FormField from "../common/FormField";
+import FormField from "../../common/FormField";
 
 const PersonalInfoFields = ({
   personalInfo,

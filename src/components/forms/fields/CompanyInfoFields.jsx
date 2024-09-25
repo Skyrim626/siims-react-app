@@ -1,6 +1,6 @@
 import React from "react";
-import Heading from "../common/Heading";
-import FormField from "../common/FormField";
+import Heading from "../../common/Heading";
+import FormField from "../../common/FormField";
 import { Input } from "@headlessui/react";
 
 const CompanyInfoFields = ({

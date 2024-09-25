@@ -2,7 +2,8 @@ import { Button, Field, Input, Label, Select } from "@headlessui/react";
 import { Building, Hash, MapPin, Navigation, Phone } from "lucide-react";
 import React from "react";
 
-const CompanyOfficeFormAdd = ({
+const OfficeForm = ({
+  userRole = "",
   officeInfo = {
     office_type_id: "",
     supervisor_id: "",
@@ -268,4 +269,4 @@ const CompanyOfficeFormAdd = ({
   );
 };
 
-export default CompanyOfficeFormAdd;
+export default OfficeForm;

@@ -1,11 +1,8 @@
 import React, { useState } from "react";
-import Heading from "../../../components/common/Heading";
-import FormField from "../../../components/common/FormField";
-import { Input } from "@headlessui/react";
-import IDPasswordInfoFields from "../../../components/forms/IDPasswordInfoFields";
-import PersonalInfoFields from "../../../components/forms/PersonalInfoFields";
-import AddressInfoFields from "../../../components/forms/AddressInfoFields";
-import CompanyInfoFields from "../../../components/forms/CompanyInfoFields";
+import IDPasswordInfoFields from "../../../components/forms/fields/IDPasswordInfoFields";
+import PersonalInfoFields from "../../../components/forms/fields/PersonalInfoFields";
+import AddressInfoFields from "../../../components/forms/fields/AddressInfoFields";
+import CompanyInfoFields from "../../../components/forms/fields/CompanyInfoFields";
 
 const AdminCompanyFormEdit = ({ companyInfo, handleCompanyInfoChange }) => {
   return (

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import useForm from "../../../hooks/useForm";
-import LoginInfoFields from "../../../components/forms/LoginInfoFields";
-import PersonalInfoFields from "../../../components/forms/PersonalInfoFields";
-import AddressInfoFields from "../../../components/forms/AddressInfoFields";
-import ChairpersonInfoFields from "../../../components/forms/ChairpersonInfoFields";
+import LoginInfoFields from "../../../components/forms/fields/LoginInfoFields";
+import PersonalInfoFields from "../../../components/forms/fields/PersonalInfoFields";
+import AddressInfoFields from "../../../components/forms/fields/AddressInfoFields";
+import ChairpersonInfoFields from "../../../components/forms/fields/ChairpersonInfoFields";
 
 const ChairpersonFormAdd = () => {
   // States for id and password

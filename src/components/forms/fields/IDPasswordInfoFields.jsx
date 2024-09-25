@@ -1,8 +1,8 @@
 import React from "react";
-import Heading from "../common/Heading";
-import { generateID, generatePassword } from "../../utils/generator";
+import Heading from "../../common/Heading";
+import { generateID, generatePassword } from "../../../utils/generator";
 import { Button, Field, Input, Label } from "@headlessui/react";
-import FormField from "../common/FormField";
+import FormField from "../../common/FormField";
 
 /**
  * Fields:

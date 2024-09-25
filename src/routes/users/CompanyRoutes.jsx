@@ -5,6 +5,8 @@ import ProtectedRoute from "../handlers/ProtectedRoute";
 import CompanyManageOfficesPage from "../../pages/company/CompanyManageOfficesPage";
 import CompanyProfilePage from "../../pages/company/CompanyProfilePage";
 import CompanyAddOfficePage from "../../pages/company/CompanyAddOfficePage";
+import CompanyOfficePage from "../../pages/company/CompanyOfficePage";
+import CompanyEditOfficePage from "../../pages/company/CompanyEditOfficePage";
 
 // Routes for Company
 const CompanyRoutes = {
@@ -38,6 +40,14 @@ const CompanyRoutes = {
         {
           path: "add",
           element: <CompanyAddOfficePage />,
+        },
+        {
+          path: "edit-office/:id",
+          element: <CompanyEditOfficePage />,
+        },
+        {
+          path: ":id",
+          element: <CompanyOfficePage />,
         },
       ],
     },

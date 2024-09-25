@@ -1,7 +1,7 @@
-import AddressInfoFields from "../../../forms/AddressInfoFields";
-import CompanyInfoFields from "../../../forms/CompanyInfoFields";
-import IDPasswordInfoFields from "../../../forms/IDPasswordInfoFields";
-import PersonalInfoFields from "../../../forms/PersonalInfoFields";
+import AddressInfoFields from "../../../forms/fields/AddressInfoFields";
+import CompanyInfoFields from "../../../forms/fields/CompanyInfoFields";
+import IDPasswordInfoFields from "../../../forms/fields/IDPasswordInfoFields";
+import PersonalInfoFields from "../../../forms/fields/PersonalInfoFields";
 
 const ChairpersonCompanyFormAdd = ({
   companyInfo,

@@ -2,13 +2,9 @@ import React, { useEffect, useState } from "react";
 import Section from "../../../../components/common/Section";
 import { Button } from "@headlessui/react";
 import { FileDown, FileUp, UserRoundPlus } from "lucide-react";
-import { AnimatePresence } from "framer-motion";
-import Modal from "../../../../components/common/Modal";
-import DeanFormAdd from "../../forms/DeanFormAdd";
 import { deleteRequest, getRequest } from "../../../../api/apiHelpers";
 import AdminDeanTable from "../../../../components/tables/AdminDeanTable";
 import useToastOnReload from "../../../../hooks/useToastOnReload";
-import DeanFormEdit from "../../forms/DeanFormEdit";
 
 // Admin Manage Deans Page
 const AdminManageDeansPage = () => {
@@ -122,7 +118,7 @@ const AdminManageDeansPage = () => {
         />
       )}
 
-      {deans && colleges.length !== 0 && (
+      {/* {deans && colleges.length !== 0 && (
         <AnimatePresence>
           {isOpen && (
             <Modal
@@ -139,9 +135,9 @@ const AdminManageDeansPage = () => {
             </Modal>
           )}
         </AnimatePresence>
-      )}
+      )} */}
 
-      <AnimatePresence>
+      {/* <AnimatePresence>
         {isOpenEdit && (
           <Modal
             modalTitle="Edit Dean"
@@ -155,7 +151,7 @@ const AdminManageDeansPage = () => {
             />
           </Modal>
         )}
-      </AnimatePresence>
+      </AnimatePresence> */}
     </Section>
   );
 };

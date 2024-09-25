@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import Heading from "../common/Heading";
-import FormField from "../common/FormField";
-import { getRequest } from "../../api/apiHelpers";
+import Heading from "../../common/Heading";
+import FormField from "../../common/FormField";
+import { getRequest } from "../../../api/apiHelpers";
 import { Select } from "@headlessui/react";
 
 const ChairpersonInfoFields = ({
