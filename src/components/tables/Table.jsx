@@ -110,7 +110,6 @@ const Table = ({
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500">
-          {" "}
           {/* Table structure */}
           <TableHead
             selectedIds={selectedIds} // Currently selected IDs for checkboxes

@@ -50,7 +50,9 @@ const TableBody = ({
                         {role.name.charAt(0).toUpperCase() + role.name.slice(1)}
                       </p>
                     ))
-                  : data[column]}
+                  : data[column]
+                  ? data[column]
+                  : null}
               </td>
             ))}
 

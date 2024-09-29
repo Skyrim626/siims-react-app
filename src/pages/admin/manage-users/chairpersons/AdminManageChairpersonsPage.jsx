@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { getRequest } from "../../../../api/apiHelpers";
 import Section from "../../../../components/common/Section";
-import Button from "../../../../components/common/Button";
-import { FileDown, FileUp, UserRoundPlus } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
 import Modal from "../../../../components/common/Modal";
-import CompanyFormEdit from "../../forms/CompanyFormEdit";
 import AdminManageHeader from "../../../../components/users/admin/AdminManageUserHeader";
-import Table from "../../../../components/tables/TableTests";
 import ChairpersonFormAdd from "../../forms/ChairpersonFormAdd";
+import useSearch from "../../../../hooks/useSearch";
+import Table from "../../../../components/tables/Table";
 
 const AdminManageChairpersonsPage = () => {
   // States
@@ -16,8 +14,12 @@ const AdminManageChairpersonsPage = () => {
 
   // Create Chairperson
   const [isOpen, setIsOpen] = useState(false);
-  // Edit Chairperson
-  const [isOpenEdit, setIsOpenEdit] = useState(false);
+
+  // Custom Hook for Search Table
+  const { term, filteredData, handleSearchChange } = useSearch(
+    chairpersons,
+    ""
+  ); // Using the custom hook to manage search term and filtered data
 
   // Selected Data State
   const [selectedData, setSelectedData] = useState({});
@@ -29,12 +31,12 @@ const AdminManageChairpersonsPage = () => {
         url: "/api/v1/admin/users/chairpersons",
       });
 
-      // Set chairperson
-      setChairpersons(chairpersonResponse);
+      // Update the state with the fetched chairperson data
+      setChairpersons(chairpersonResponse); // Setting the fetched user data in state
     };
 
-    fetchChairpersons();
-  }, []);
+    fetchChairpersons(); // Call the fetch function
+  }, []); // Empty dependency array ensures this runs only once on component mount
 
   return (
     <Section>
@@ -46,7 +48,14 @@ const AdminManageChairpersonsPage = () => {
 
       {/* {companies.length !== 0 && <AdminCompanyTableView data={companies} />} */}
       {/* {companies.length !== 0 && <Table data={companies} />} */}
-      {chairpersons.length !== 0 && <Table data={chairpersons} />}
+      {chairpersons.length !== 0 && (
+        <Table
+          data={chairpersons}
+          term={term}
+          filteredData={filteredData}
+          handleSearchChange={handleSearchChange}
+        />
+      )}
 
       {/* Modals */}
       {/* <AnimatePresence>

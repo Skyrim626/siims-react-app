@@ -3,7 +3,15 @@ import { motion } from "framer-motion";
 import { Button, Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { X } from "lucide-react";
 
-const Modal = ({ isOpen, setIsOpen, modalTitle = "Create User", children }) => {
+const Modal = ({
+  modalTitle = "Create User",
+  children,
+  modalType = "form",
+  handleSubmit = () => console.log("Testing"),
+  isOpen,
+  setIsOpen,
+  modalWidth = "",
+}) => {
   return (
     <Dialog
       static
@@ -25,7 +33,7 @@ const Modal = ({ isOpen, setIsOpen, modalTitle = "Create User", children }) => {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="max-w-4xl space-y-4 bg-gray-100"
+            className={`max-w-4xl space-y-4 bg-gray-100 ${modalWidth}`}
           >
             <div className="px-8 py-5 bg-blue-800 flex items-center justify-between">
               <DialogTitle className="text-md text-white font-bold">
@@ -40,7 +48,33 @@ const Modal = ({ isOpen, setIsOpen, modalTitle = "Create User", children }) => {
             </div>
 
             {/* Children here */}
-            <div className="px-8 pb-4">{children}</div>
+            <div className="px-8 pb-4">
+              {modalType === "form" && (
+                <>
+                  <form onSubmit={handleSubmit} className="space-y-3">
+                    {children}
+                  </form>
+
+                  {/* Close and Submit  */}
+                  <div className="flex justify-end items-end mt-3 gap-2">
+                    <Button
+                      type="button"
+                      className="py-2 px-4 text-sm rounded-sm font-bold text-white transition duration-300 bg-gray-500 hover:bg-gray-600 "
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Close
+                    </Button>
+                    <Button
+                      type="button"
+                      className="py-2 px-4 text-sm rounded-sm font-bold text-white transition duration-300 bg-blue-600 hover:bg-blue-700"
+                      onClick={handleSubmit}
+                    >
+                      Submit
+                    </Button>
+                  </div>
+                </>
+              )}
+            </div>
           </DialogPanel>
         </div>
       </div>

@@ -33,7 +33,7 @@ const Auth = () => {
 
   // Student
   if (roles.includes("student")) {
-    return <Navigate to={"/my"} />;
+    return <Navigate to={"my"} />;
   }
 
   // Dean

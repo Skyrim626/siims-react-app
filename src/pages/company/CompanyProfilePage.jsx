@@ -11,83 +11,78 @@ import { Button } from "@headlessui/react";
 import { Link } from "react-router-dom";
 
 const CompanyProfilePage = () => {
-  // Select State
+  // Tab and Profile State
   const [selectedTab, setSelectedTab] = useState("company");
-
-  // Fetch State
   const [profile, setProfile] = useState({});
 
-  // Use Effect: Fetch Profile
+  // Fetch company profile
   useEffect(() => {
-    // Method: fetchProfile
     const fetchProfile = async () => {
       const response = await getRequest({
         url: "/api/v1/company/profile",
       });
-
-      // Set Profile State
       setProfile(response);
     };
-
-    // Call fetchProfile
     fetchProfile();
   }, []);
 
-  // Address Concatenation
-  // Concatenate Full Address
+  // Full address concatenation
   const fullAddress = `${profile.street}, ${profile.barangay}, ${profile.city_municipality}, ${profile.postal_code}, ${profile.province}`;
 
   return (
-    <>
+    <Page>
       {profile && (
-        <Page>
-          <Section>
-            <Heading level={3} text={"Profile"} />
-            <Text className="text-sm text-blue-950">
-              This is where you manage your profile.
+        <>
+          {/* Profile Header */}
+          <Section className="mb-6">
+            <Heading level={3} text="Company Profile" />
+            <Text className="text-sm text-gray-600">
+              Manage your company profile and settings.
             </Text>
-            <hr className="my-3" />
+            <hr className="my-4" />
           </Section>
-          <div className="w-full h-[320px]">
+
+          {/* Cover Photo */}
+          <div className="relative w-full h-80 overflow-hidden rounded-t-md">
             <img
               src={coverPhoto}
-              alt="Cover Photo"
-              className="object-cover w-full h-full rounded-t-md"
+              alt="Company Cover"
+              className="object-cover w-full h-full"
             />
           </div>
-          <div className="grid grid-cols-3 items-center ">
-            <div className="flex items-center gap-2 col-span-2">
-              <div>
-                <div>
-                  <img
-                    src={profilePhoto}
-                    alt="Company Profile Photo"
-                    className="w-[180px] h-[150px] border-white object-cover rounded-b-md"
-                  />
-                </div>
-              </div>
-              <div className="flex flex-col gap-1">
-                <Text className="text-xl font-bold">
+
+          {/* Profile Info */}
+          <div className="grid grid-cols-3 items-center gap-4 p-4 bg-white shadow-md rounded-b-md">
+            {/* Profile Photo and Company Info */}
+            <div className="grid col-span-2 gap-4">
+              <img
+                src={profilePhoto}
+                alt="Company Profile"
+                className="w-36 h-36 object-cover rounded-md border-4 border-white shadow-lg"
+              />
+              <div className="flex flex-col">
+                <Text className="text-2xl font-bold text-gray-900">
                   {profile.company_name}
                 </Text>
-
-                <div className="flex items-center text-sm">
-                  <MapPin />
-                  <Text className="font-bold">{fullAddress}</Text>
+                <div className="flex items-center gap-2 text-gray-700 max-w-">
+                  <MapPin className="text-blue-600" size={18} />
+                  <Text className="text-sm">{fullAddress}</Text>
                 </div>
               </div>
             </div>
-            <div className="flex gap-3 items-center justify-center">
-              <Button className="p-2 py-3 border-2 rounded-md flex items-center gap-1 font-bold border-gray-700 transition duration-100 hover:bg-gray-700 hover:text-white">
+
+            {/* Action Buttons */}
+            <div className="flex gap-2 justify-end">
+              <Button className="whitespace-nowrap  flex items-center gap-2 px-4 py-2 border rounded-sm text-gray-700 border-gray-300 hover:bg-gray-100">
                 <Eye size={20} />
-                <Text>See Public View</Text>
+                <Text>Public View</Text>
               </Button>
-              <Button className="p-2 py-3 border-2 rounded-md flex items-center gap-1 font-bold border-gray-700 transition duration-100 hover:bg-gray-700 hover:text-white">
+              <Button className="whitespace-nowrap  flex items-center gap-2 px-4 py-2 border rounded-sm text-gray-700 border-gray-300 hover:bg-gray-100">
                 <Edit size={20} />
-                <Text>Edit</Text>
+                <Text>Edit Profile</Text>
               </Button>
-              <Link to={"/auth/company/offices/add"}>
-                <Button className="p-2 py-3 border-2 rounded-md flex items-center gap-1 font-bold text-white bg-blue-600 transition duration-100 hover:bg-blue-700">
+              <Link to="/auth/company/offices/add">
+                <Button className="whitespace-nowrap flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-sm hover:bg-blue-700">
                   <Plus size={20} />
                   <Text>Add Office</Text>
                 </Button>
@@ -95,30 +90,26 @@ const CompanyProfilePage = () => {
             </div>
           </div>
 
-          {/* Tabs */}
-          <div className="mt-3">
+          {/* Tabs Section */}
+          <div className="mt-6">
             <hr />
-            <div className="flex items-center gap-5 mt-3">
+            <div className="flex gap-6 mt-4">
               <Button
-                onClick={() => {
-                  setSelectedTab("company");
-                }}
-                className={`transition text-black duration-100 font-bold border-b-2 border-b-transparent ${
+                onClick={() => setSelectedTab("company")}
+                className={`text-md font-semibold pb-2 border-b-2 transition duration-150 ${
                   selectedTab === "company"
-                    ? "text-blue-700 border-b-blue-700"
-                    : "hover:border-blue-700"
+                    ? "text-blue-600 border-blue-600"
+                    : "text-gray-600 border-transparent hover:border-blue-600 hover:text-blue-600"
                 }`}
               >
                 Company
               </Button>
               <Button
-                onClick={() => {
-                  setSelectedTab("about me");
-                }}
-                className={`transition text-black duration-100 font-bold border-b-2 border-b-transparent ${
+                onClick={() => setSelectedTab("about me")}
+                className={`text-md font-semibold pb-2 border-b-2 transition duration-150 ${
                   selectedTab === "about me"
-                    ? "text-blue-700 border-b-blue-700"
-                    : "hover:border-blue-700"
+                    ? "text-blue-600 border-blue-600"
+                    : "text-gray-600 border-transparent hover:border-blue-600 hover:text-blue-600"
                 }`}
               >
                 About Me
@@ -126,10 +117,24 @@ const CompanyProfilePage = () => {
             </div>
           </div>
 
-          {/* Section Switch Tab */}
-        </Page>
+          {/* Dynamic Content Based on Tab */}
+          <div className="mt-6">
+            {selectedTab === "company" && (
+              <Section>
+                <Heading level={4} text="Company Overview" />
+                <Text>This is the company information...</Text>
+              </Section>
+            )}
+            {selectedTab === "about me" && (
+              <Section>
+                <Heading level={4} text="About Me" />
+                <Text>This is the personal information...</Text>
+              </Section>
+            )}
+          </div>
+        </>
       )}
-    </>
+    </Page>
   );
 };
 

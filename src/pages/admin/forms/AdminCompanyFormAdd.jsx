@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import IDPasswordInfoFields from "../../../components/forms/fields/IDPasswordInfoFields";
+import IDPasswordInfoFields from "../../../components/forms/fields/LoginInfoFields";
 import PersonalInfoFields from "../../../components/forms/fields/PersonalInfoFields";
 import AddressInfoFields from "../../../components/forms/fields/AddressInfoFields";
 import CompanyInfoFields from "../../../components/forms/fields/CompanyInfoFields";

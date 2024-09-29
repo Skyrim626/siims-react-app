@@ -9,8 +9,11 @@ import {
   HelpCircle,
   Home,
   MessageCircle,
+  MessageSquare,
+  Search,
 } from "lucide-react";
 import NavItem from "../atoms/NavItem";
+import profilePhoto from "../../assets/images/company/company-profile-photo.jpg";
 
 // Customize Student Navigation Links
 const navlinks = [
@@ -72,7 +75,7 @@ export default function StudentLayout() {
 
   return (
     <div className="min-h-full">
-      <Navbar>
+      {/* <Navbar>
         {navlinks.map((navlink, index) => {
           return (
             <NavItem
@@ -86,7 +89,8 @@ export default function StudentLayout() {
             />
           );
         })}
-      </Navbar>
+      </Navbar> */}
+      <Navbar />
       <Outlet />
     </div>
   );

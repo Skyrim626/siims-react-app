@@ -1,4 +1,4 @@
-import {
+/* import {
   Disclosure,
   DisclosureButton,
   MenuButton,
@@ -63,5 +63,99 @@ export default function Navbar({ companyLogo = logo, children }) {
         </div>
       </nav>
     </>
+  );
+}
+ */
+
+// Libraries
+import React, { useState } from "react";
+import { Bell, Search, User } from "lucide-react";
+import profilePhoto from "../../assets/images/company/company-profile-photo.jpg";
+
+// Components (Common)
+import Heading from "../../components/common/Heading";
+import Text from "../../components/common/Text";
+import { Link, useLocation } from "react-router-dom";
+
+export default function Navbar() {
+  // Dropdown state
+  const [showNotificationDropdown, setShowNotificationDropdown] =
+    useState(false);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+
+  const location = useLocation();
+
+  return (
+    <div className="flex items-center justify-between p-4 bg-white shadow-md">
+      {/* Search Bar */}
+      <div className="flex items-center bg-gray-100 rounded-md p-2">
+        <Search size={20} className="text-gray-500 mr-2" />
+        <input
+          type="text"
+          placeholder="Search"
+          className="w-full p-2 text-sm focus:outline-none bg-transparent"
+        />
+      </div>
+
+      {/* Right Side Icons */}
+      <div className="flex items-center gap-4">
+        {/* Bell Icon with Dropdown */}
+        <div className="relative">
+          <button
+            onClick={() =>
+              setShowNotificationDropdown(!showNotificationDropdown)
+            }
+            className="focus:outline-none"
+          >
+            <Bell size={24} className="text-gray-700" />
+          </button>
+          {showNotificationDropdown && (
+            <div className="absolute right-0 mt-2 w-64 bg-white shadow-lg rounded-md p-4">
+              <Heading level={6} text="Notifications" />
+              <ul className="mt-2">
+                <li className="text-sm text-gray-600">
+                  New course available: React Basics
+                </li>
+                <li className="text-sm text-gray-600">
+                  2 new messages from classmates
+                </li>
+              </ul>
+            </div>
+          )}
+        </div>
+
+        {/* Profile Icon with Dropdown */}
+        <div className="relative">
+          <button
+            onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+            className="focus:outline-none"
+          >
+            <img
+              src={profilePhoto}
+              alt="Profile"
+              className="w-8 h-8 rounded-full object-cover"
+            />
+          </button>
+          {showProfileDropdown && (
+            <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-md p-2">
+              <ul>
+                <Link
+                  to={`${location.pathname}/profile`}
+                  className="text-sm text-gray-600 hover:bg-gray-100 p-2 rounded-md cursor-pointer"
+                >
+                  Profile
+                </Link>
+                <li className="text-sm text-gray-600 hover:bg-gray-100 p-2 rounded-md cursor-pointer">
+                  Settings
+                </li>
+                <li className="text-sm text-red-600 hover:bg-red-100 p-2 rounded-md cursor-pointer">
+                  Logout
+                </li>
+              </ul>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

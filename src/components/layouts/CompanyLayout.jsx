@@ -1,7 +1,7 @@
 import React from "react";
 import SidebarLayout from "./SidebarLayout";
 import { Outlet } from "react-router-dom";
-import { Building, LayoutDashboard, User } from "lucide-react";
+import { Building, LayoutDashboard, User, Users } from "lucide-react";
 
 // Configuration for sidebar items for Admin
 const sidebarItemsConfig = [
@@ -13,6 +13,7 @@ const sidebarItemsConfig = [
     exact: true, // Add an `exact` property for exact path matching
     path: "/auth/company",
   },
+
   {
     icon: <User size={20} />,
     text: "Profile",
@@ -28,6 +29,14 @@ const sidebarItemsConfig = [
     ariaLabel: "Offices",
     exact: false,
     path: "/auth/company/offices",
+  },
+  {
+    icon: <Users size={20} />,
+    text: "Supervisors",
+    alert: true,
+    ariaLabel: "Supervisors",
+    exact: true,
+    path: "/auth/company/supervisors",
   },
 ];
 

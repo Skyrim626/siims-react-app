@@ -26,7 +26,7 @@ const sidebarItemsConfig = [
     text: "Companies",
     alert: true,
     ariaLabel: "Companies",
-    exact: true,
+    exact: false,
     path: "/auth/dean/companies",
   },
 ];

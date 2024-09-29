@@ -14,7 +14,24 @@ import { Input } from "@headlessui/react";
  * @param {*} param0
  * @returns
  */
-const AddressInfoFields = ({ addressInfo, handleAddressInfoChange }) => (
+const AddressInfoFields = ({
+  addressInfo = {
+    street: "",
+    barangay: "",
+    city_municipality: "",
+    province: "",
+    postal_code: "",
+  },
+  handleAddressInfoChange,
+  requiredFields = {
+    street: false,
+    barangay: false,
+    city_municipality: false,
+    province: false,
+    postal_code: false,
+    college_id: true,
+  },
+}) => (
   <>
     {/*  Address Information */}
     <div>
@@ -31,6 +48,7 @@ const AddressInfoFields = ({ addressInfo, handleAddressInfoChange }) => (
             label={"Street"}
             name={"street"}
             labelClassName="text-sm text-black font-semibold"
+            required={requiredFields["street"]}
           >
             <Input
               type="text"
@@ -46,6 +64,7 @@ const AddressInfoFields = ({ addressInfo, handleAddressInfoChange }) => (
             label={"Barangay"}
             name={"barangay"}
             labelClassName="text-sm text-black font-semibold"
+            required={requiredFields["barangay"]}
           >
             <Input
               type="text"
@@ -60,6 +79,7 @@ const AddressInfoFields = ({ addressInfo, handleAddressInfoChange }) => (
             label={"City/Municipality"}
             name={"city_municipality"}
             labelClassName="text-sm text-black font-semibold"
+            required={requiredFields["city_municipality"]}
           >
             <Input
               type="text"
@@ -75,8 +95,9 @@ const AddressInfoFields = ({ addressInfo, handleAddressInfoChange }) => (
             label={"Province"}
             name={"province"}
             labelClassName="text-sm text-black font-semibold"
+            required={requiredFields["province"]}
           >
-            <input
+            <Input
               type="province"
               className="outline-none text-black rounded-sm p-2 text-sm"
               name="province"
@@ -89,8 +110,9 @@ const AddressInfoFields = ({ addressInfo, handleAddressInfoChange }) => (
             label={"Postal Code"}
             name={"post_code"}
             labelClassName="text-sm text-black font-semibold"
+            required={requiredFields["postal_code"]}
           >
-            <input
+            <Input
               type="text"
               className="outline-none text-black rounded-sm p-2 text-sm"
               name="postal_code"

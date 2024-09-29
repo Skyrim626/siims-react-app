@@ -8,8 +8,9 @@ import { Navigate } from "react-router-dom";
 import StudentLayout from "../../components/layouts/StudentLayout";
 
 // Student Pages
-import StudentDashboardPage from "../../pages/student/StudentDashboardPage";
+import StudentHomePage from "../../pages/student/StudentHomePage";
 import ProtectedRoute from "../handlers/ProtectedRoute";
+import StudentProfilePage from "../../pages/student/StudentProfilePage";
 
 // Routes for Student
 const StudentRoutes = {
@@ -26,7 +27,11 @@ const StudentRoutes = {
     },
     {
       index: true,
-      element: <StudentDashboardPage />,
+      element: <StudentHomePage />,
+    },
+    {
+      path: "profile",
+      element: <StudentProfilePage />,
     },
   ],
 };

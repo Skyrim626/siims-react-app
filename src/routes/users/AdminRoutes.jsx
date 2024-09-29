@@ -24,6 +24,7 @@ import AdminManageChairpersonsPage from "../../pages/admin/manage-users/chairper
 import AdminManageCollegesPage from "../../pages/admin/AdminManageCollegesPage"; // Importing the page to manage colleges
 import AdminManageRolesPage from "../../pages/admin/AdminManageRolesPage"; // Importing the page to manage user roles
 import AdminManageCompaniesPage from "../../pages/admin/AdminManageCompaniesPage"; // Importing the page to manage companies
+import AdminManageOfficesPage from "../../pages/admin/AdminManageOfficesPage";
 
 // Define routes for the Admin section
 const AdminRoutes = {
@@ -87,6 +88,10 @@ const AdminRoutes = {
     {
       path: "colleges", // Route for managing colleges
       element: <AdminManageCollegesPage />,
+    },
+    {
+      path: "offices", // Route for managing offices
+      element: <AdminManageOfficesPage />,
     },
     {
       path: "messages", // Route for managing messages

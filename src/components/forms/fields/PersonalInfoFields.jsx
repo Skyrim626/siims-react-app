@@ -4,7 +4,14 @@ import { Input, Select } from "@headlessui/react";
 import FormField from "../../common/FormField";
 
 const PersonalInfoFields = ({
-  personalInfo,
+  personalInfo = {
+    first_name: "",
+    middle_name: "",
+    last_name: "",
+    email: "",
+    gender: "",
+    phone_number: "",
+  },
   handlePersonalInfoChange,
   requiredFields = {
     first_name: false,
@@ -103,16 +110,16 @@ const PersonalInfoFields = ({
             >
               <Select
                 name="gender"
-                className="border data-[hover]:shadow data-[focus]:bg-blue-100 h-full outline-none px-2"
+                className="border data-[hover]:shadow data-[focus]:bg-blue-100 h-full outline-none p-2"
                 aria-label="Select gender"
                 onChange={handlePersonalInfoChange}
                 required={requiredFields["gender"]}
                 value={personalInfo.gender}
               >
                 <option value="">-Select a Gender-</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
               </Select>
             </FormField>
 

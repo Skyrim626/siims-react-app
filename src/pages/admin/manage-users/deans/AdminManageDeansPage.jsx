@@ -2,62 +2,98 @@ import React, { useEffect, useState } from "react";
 import Section from "../../../../components/common/Section";
 import { Button } from "@headlessui/react";
 import { FileDown, FileUp, UserRoundPlus } from "lucide-react";
-import { deleteRequest, getRequest } from "../../../../api/apiHelpers";
-import AdminDeanTable from "../../../../components/tables/AdminDeanTable";
-import useToastOnReload from "../../../../hooks/useToastOnReload";
+import useSearch from "../../../../hooks/useSearch";
+import Table from "../../../../components/tables/Table";
+import useForm from "../../../../hooks/useForm";
+import DeanForm from "../../../../components/forms/DeanForm";
+import { getRequest, postRequest } from "../../../../api/apiHelpers";
+import { AnimatePresence } from "framer-motion";
+import Modal from "../../../../components/common/Modal";
+import DeanModalFormFields from "../../../../components/forms/modal-forms/DeanModalFormFields";
+import ManageHeader from "../../../../components/common/ManageHeader";
 
-// Admin Manage Deans Page
+// AdminManageDeansPage component handles the management of deans in the admin dashboard.
 const AdminManageDeansPage = () => {
-  // load toast
-  useToastOnReload();
+  // State to store the list of deans
+  const [deans, setDeans] = useState([]); // Initializing state to hold dean data
+  // State to store the list of colleges
+  const [colleges, setColleges] = useState([]); // Initializing state to hold college data
 
-  /**
-   * States
-   */
-  const [selectedDeanId, setSelectedDeanId] = useState();
-  const [deans, setDeans] = useState([]);
+  // Custom Hook for Search Table
+  const { term, filteredData, handleSearchChange } = useSearch(deans, ""); // Using the custom hook to manage search term and filtered data
+
+  // Select State for Dean
+  const [selectedDean, setSelectedDean] = useState();
+
+  // Modal State
   const [isOpen, setIsOpen] = useState(false);
-  const [colleges, setColleges] = useState([]);
-  const [isOpenEdit, setIsOpenEdit] = useState(false);
+  const [editIsOpen, setEditIsOpen] = useState(false);
 
-  // Load Dean
+  // Form State
+  // Using the custom hook for Role Information
+  const [deanInfo, handleDeanInfoChange] = useForm({
+    id: "",
+    password: "",
+    first_name: "",
+    middle_name: "",
+    last_name: "",
+    email: "",
+    gender: "",
+    phone_number: "",
+    street: "",
+    barangay: "",
+    city_municipality: "",
+    province: "",
+    postal_code: "",
+    college_id: "",
+  });
+
+  // useEffect hook to fetch deans from the API when the component mounts
   useEffect(() => {
     const fetchData = async () => {
-      // Fetch Dean
+      // Perform GET request to retrieve deans
       const deanResponse = await getRequest({
-        url: "/api/v1/admin/users/deans",
+        url: "/api/v1/admin/users/deans", // API endpoint for fetching deans
       });
 
-      console.log(deanResponse);
+      // Update the state with the fetched dean data
+      setDeans(deanResponse); // Setting the fetched dean data in state
 
-      // Set Deans
-      setDeans(deanResponse);
-
-      // Fetch College
+      // Perform GET request to retrieve colleges
       const collegeResponse = await getRequest({
-        url: "/api/v1/admin/colleges",
+        url: "/api/v1/admin/colleges", // API endpoint for fetching colleges
       });
 
-      // Set Colleges
-      setColleges(collegeResponse);
+      // Update the state with the fetched college data
+      setColleges(collegeResponse); // Setting the fetched college data in state
     };
 
-    fetchData();
-  }, []);
+    fetchData(); // Call the fetch function
+  }, []); // Empty dependency array ensures this runs only once on component mount
 
-  // Archive
-  const handleArchive = async (id) => {
-    // Archive Dean
-    const response = await deleteRequest({
-      url: `/api/v1/admin/users/deans/${id}`,
+  // Handle Add Submit
+  const handleAddSubmit = async () => {
+    // Payload
+    const payload = deanInfo;
+
+    // Send Request
+    const response = await postRequest({
+      url: "/api/v1/admin/users/deans",
+      data: payload,
     });
 
-    // Check response
-    if (response.status === 200) {
-      // reload window
-      // Reload the page to display new data
-      window.location.reload();
-    }
+    // Reset Input
+    handleDeanInfoChange({ target: { name: "name", value: "" } });
+
+    // Set Deans Again
+    setDeans(response.data);
+    // Close Modal
+    setIsOpen(false);
+  };
+
+  // Archive
+  const handleArchive = async (data) => {
+    console.log(data);
   };
 
   // Archive All
@@ -78,64 +114,54 @@ const AdminManageDeansPage = () => {
   };
 
   // Handle Edit
-  const handleEdit = (id) => {
+  const handleEdit = (data) => {
     // Set to true -- Open Edit Form
-    setSelectedDeanId(id);
-    setIsOpenEdit(true);
+    setSelectedDean(data);
+    setEditIsOpen(true);
   };
 
   return (
     <Section>
-      <div className="flex justify-end items-center">
-        <div className="button-group | flex gap-2">
-          <Button className="transition text-sm px-3 py-1 font-bold flex items-center justify-center gap-2 border-2 rounded-lg border-blue-950 hover:bg-blue-950 hover:text-white">
-            <FileUp size={15} />
-            <p>Export</p>
-          </Button>
-          <Button className="transition text-sm px-3 py-1 font-bold flex items-center justify-center gap-2 border-2 rounded-lg border-blue-950 hover:bg-blue-950 hover:text-white">
-            <FileDown size={15} />
-            <p>Import</p>
-          </Button>
-          <Button
-            onClick={() => setIsOpen(true)}
-            className={`transition text-sm py-1 px-3 font-bold text-white flex items-center justify-center gap-2 border-2 rounded-md border-transparent ${
-              isOpen ? "bg-blue-700" : "bg-blue-500 hover:bg-blue-600"
-            }`}
-          >
-            <UserRoundPlus size={15} />
-            <p>Add New Dean</p>
-          </Button>
-        </div>
-      </div>
+      <ManageHeader
+        addPlaceholder="Add Dean"
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+      />
 
-      {deans.length !== 0 && colleges.length !== 0 && (
-        <AdminDeanTable
+      {deans.length > 0 ? (
+        <Table
           data={deans}
-          collegesForFilter={colleges}
+          searchPlaceholder="Search Dean..."
+          term={term}
+          filteredData={filteredData}
+          handleSearchChange={handleSearchChange}
           handleArchive={handleArchive}
           handleArchiveBySelectedIds={handleArchiveBySelectedIds}
           handleEdit={handleEdit}
         />
+      ) : (
+        <div>No Data</div>
       )}
 
-      {/* {deans && colleges.length !== 0 && (
+      {deans && colleges.length !== 0 && (
         <AnimatePresence>
           {isOpen && (
             <Modal
               modalTitle="Create Dean"
               isOpen={isOpen}
               setIsOpen={setIsOpen}
+              modalType="form"
+              handleSubmit={handleAddSubmit}
             >
-              <DeanFormAdd
-                setIsOpen={setIsOpen}
-                deans={deans}
+              <DeanModalFormFields
                 colleges={colleges}
-                setDeans={setDeans}
+                deanInfo={deanInfo}
+                handleDeanInfoChange={handleDeanInfoChange}
               />
             </Modal>
           )}
         </AnimatePresence>
-      )} */}
+      )}
 
       {/* <AnimatePresence>
         {isOpenEdit && (

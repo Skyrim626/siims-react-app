@@ -52,6 +52,14 @@ const sidebarItemsConfig = [
     path: "/auth/admin/colleges",
   },
   {
+    icon: <Building size={20} />,
+    text: "Offices",
+    alert: true,
+    ariaLabel: "Offices",
+    exact: false,
+    path: "/auth/admin/offices",
+  },
+  {
     icon: <MessageCircle size={20} />,
     text: "Messages",
     alert: true,

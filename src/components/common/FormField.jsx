@@ -16,7 +16,8 @@ export default function FormField({
         {/* Render label if it has value */}
         {label && (
           <Label htmlFor={name} className={labelClassName}>
-            {label} {required && "*"}
+            {label}{" "}
+            {required && <span className="text-red-600 font-bold">*</span>}
           </Label>
         )}
         {children}
