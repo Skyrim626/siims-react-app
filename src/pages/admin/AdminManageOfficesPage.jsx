@@ -5,17 +5,20 @@ import Heading from "../../components/common/Heading";
 import Text from "../../components/common/Text";
 import ManageHeader from "../../components/common/ManageHeader";
 import useSearch from "../../hooks/useSearch";
-import { getRequest } from "../../api/apiHelpers";
+import { getRequest, postRequest } from "../../api/apiHelpers";
 import Table from "../../components/tables/Table";
 import { AnimatePresence } from "framer-motion";
 import Modal from "../../components/common/Modal";
 import OfficeForm from "../../components/forms/OfficeForm";
+import useForm from "../../hooks/useForm";
 
 const AdminManageOfficesPage = () => {
   // State to store the list of offices
   const [offices, setOffices] = useState([]); // Initializing state to hold office data
   // State to store the list of office types
   const [officeTypes, setOfficeTypes] = useState([]); // Initializing state to hold office type data
+  // State to store the list of companies
+  const [companies, setCompanies] = useState([]); // Initializing state to hold companies data
 
   // Custom Hook for Search Table
   const { term, filteredData, handleSearchChange } = useSearch(offices, ""); // Using the custom hook to manage search term and filtered data
@@ -23,6 +26,20 @@ const AdminManageOfficesPage = () => {
   // Modal State
   const [isOpen, setIsOpen] = useState(false);
   const [editIsOpen, setEditIsOpen] = useState(false);
+
+  // Form State
+  // Using the custom hook for Role Information
+  const [officeInfo, handleOfficeInfoChange] = useForm({
+    company_id: "",
+    name: "",
+    phone_number: "",
+    street: "",
+    barangay: "",
+    city_municipality: "",
+    province: "",
+    postal_code: "",
+    office_type_id: "",
+  });
 
   // useEffect hook to fetch offices from the API when the component mounts
   useEffect(() => {
@@ -42,13 +59,45 @@ const AdminManageOfficesPage = () => {
 
       // Update the state with the fetched office type data
       setOfficeTypes(officeTypeResponse); // Setting the fetched office type data in state
+
+      // Perform GET request to retrieve companies
+      const companyResponse = await getRequest({
+        url: "/api/v1/admin/users/companies", // API endpoint for fetching companies
+      });
+
+      // Update the state with the fetched company data
+      setCompanies(
+        companyResponse.map((company) => {
+          return {
+            id: company.id,
+            name: company.company_name, // Include the name here
+          };
+        })
+      ); // Setting the fetched company data in state
     };
 
     fetchData(); // Call the fetch function
   }, []); // Empty dependency array ensures this runs only once on component mount
 
   // Handle Add Submit
-  const handleAddSubmit = async () => {};
+  const handleAddSubmit = async () => {
+    // Payload
+    const payload = officeInfo;
+
+    // Send Request
+    const response = await postRequest({
+      url: "/api/v1/admin/offices",
+      data: payload,
+    });
+
+    // Reset Input
+    handleOfficeInfoChange({ target: { name: "name", value: "" } });
+
+    // Set Role Again
+    setOffices(response.data);
+    // Close Modal
+    setIsOpen(false);
+  };
 
   return (
     <>
@@ -83,14 +132,23 @@ const AdminManageOfficesPage = () => {
             <AnimatePresence>
               {isOpen && (
                 <Modal
-                  modalTitle="Create Dean"
+                  modalTitle="Create Office"
                   isOpen={isOpen}
                   setIsOpen={setIsOpen}
                   modalType="form"
                   handleSubmit={handleAddSubmit}
                   modalWidth="min-w-[1000px]"
                 >
-                  <OfficeForm officeTypes={officeTypes} />
+                  <OfficeForm
+                    officeInfo={officeInfo}
+                    handleOfficeInfoChange={handleOfficeInfoChange}
+                    companies={companies}
+                    officeTypes={officeTypes}
+                    displayFields={{
+                      company_id: true,
+                      office_type_id: true,
+                    }}
+                  />
                 </Modal>
               )}
             </AnimatePresence>

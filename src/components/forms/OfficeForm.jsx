@@ -5,8 +5,8 @@ import React from "react";
 const OfficeForm = ({
   isFormModal = false,
   method = "post",
-  userRole = "",
   officeInfo = {
+    company_id: "",
     office_type_id: "",
     supervisor_id: "",
     name: "",
@@ -17,13 +17,14 @@ const OfficeForm = ({
     province: "",
     postal_code: "",
   },
-  handleOfficeInfoChange,
+  handleOfficeInfoChange = () => console.log("Testing"),
   officeTypes = [],
   supervisors = [],
+  companies = [],
   handleSubmit,
   requiredFields = {
-    type: true,
-    supervisor: false,
+    company_id: true,
+    office_type_id: true,
     name: true,
     phone_number: true,
     street: false,
@@ -33,7 +34,8 @@ const OfficeForm = ({
     postal_code: false,
   },
   displayFields = {
-    supervisor: false,
+    company_id: false,
+    office_type_id: false,
   },
 }) => {
   // Method Checker
@@ -54,6 +56,37 @@ const OfficeForm = ({
     return (
       <>
         <div className="text-sm">
+          {/* Company */}
+          {displayFields.company_id && (
+            <Field className="mb-4">
+              <Label
+                htmlFor="company_id"
+                className="text-gray-700 font-bold mb-2 flex items-center"
+              >
+                <Building size={20} className="mr-2 text-blue-600" />
+                Company{" "}
+                {requiredFields.company_id && (
+                  <span className="text-red-500">*</span>
+                )}
+              </Label>
+              <Select
+                id="company_id"
+                name="company_id"
+                className="border rounded-lg w-full py-2 px-3 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
+                value={officeInfo.company_id}
+                onChange={handleOfficeInfoChange}
+                required={requiredFields.company_id}
+              >
+                <option value="">-Select Company-</option>
+                {companies.map((company) => (
+                  <option key={company.id} value={company.id}>
+                    {company.name}
+                  </option>
+                ))}
+              </Select>
+            </Field>
+          )}
+
           {/* Office Type */}
           <Field className="mb-4">
             <Label
@@ -82,7 +115,7 @@ const OfficeForm = ({
           </Field>
 
           {/* Supervisor */}
-          {displayFields.supervisor && (
+          {displayFields.supervisor_id && (
             <Field className="mb-4">
               <Label
                 htmlFor="supervisor_id"
@@ -100,7 +133,7 @@ const OfficeForm = ({
                 className="border rounded-lg w-full py-2 px-3 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
                 value={officeInfo.supervisor_id}
                 onChange={handleOfficeInfoChange}
-                required={requiredFields.supervisor}
+                required={requiredFields.supervisor_id}
               >
                 <option value="">-Select Supervisor-</option>
                 {supervisors.map((supervisor) => (
