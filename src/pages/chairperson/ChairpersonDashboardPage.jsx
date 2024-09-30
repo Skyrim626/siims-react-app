@@ -11,27 +11,25 @@ import Text from "../../components/common/Text";
 export default function ChairpersonDashboardPage() {
   return (
     <>
-      <Page>
-        <Section>
-          <Heading level={3} text={"Dashboard"} />
-          <Text className="text-blue-950 text-sm">
-            Overview of the system data.
-          </Text>
-          <hr className="my-3" />
-        </Section>
+      <Section>
+        <Heading level={3} text={"Dashboard"} />
+        <Text className="text-blue-950 text-sm">
+          Overview of the system data.
+        </Text>
+        <hr className="my-3" />
+      </Section>
 
-        <div className="bg-blue-600 w-100 rounded-md px-2 py-7">
-          <Heading
-            level={3}
-            text={"Welcome, Chairperson! 👋"}
-            textColor="text-white"
-          />
-        </div>
+      <div className="bg-blue-600 w-100 rounded-md px-2 py-7">
+        <Heading
+          level={3}
+          text={"Welcome, Chairperson! 👋"}
+          textColor="text-white"
+        />
+      </div>
 
-        <Section>
-          <Heading level={4} text={"Overview"} fontStyle="font-semibold" />
-        </Section>
-      </Page>
+      <Section>
+        <Heading level={4} text={"Overview"} fontStyle="font-semibold" />
+      </Section>
     </>
   );
 }
