@@ -146,7 +146,7 @@ const AdminManageCollegesPage = () => {
   };
 
   return (
-    <Page>
+    <>
       <Section>
         <Heading level={3} text={"Colleges"} />
         <Text className="text-sm text-blue-950">
@@ -200,7 +200,7 @@ const AdminManageCollegesPage = () => {
           />
         </FormModal>
       )}
-    </Page>
+    </>
   );
 };
 

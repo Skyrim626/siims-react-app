@@ -3,7 +3,7 @@ import { Building, Hash, MapPin, Navigation, Phone } from "lucide-react";
 import React from "react";
 
 const OfficeForm = ({
-  isFormModal = false,
+  isFormModal = true,
   method = "post",
   officeInfo = {
     company_id: "",
@@ -315,7 +315,7 @@ const OfficeForm = ({
           </Field>
 
           {/* Submit Button */}
-          {isFormModal && (
+          {!isFormModal && (
             <div className="pt-3">
               <Button
                 onClick={handleSubmit}
@@ -334,14 +334,14 @@ const OfficeForm = ({
   return (
     <>
       {isFormModal ? (
+        renderOfficeFormFields()
+      ) : (
         <form
           onSubmit={handleSubmit}
           className=" bg-white shadow-lg rounded-lg p-8 space-y-6"
         >
           {renderOfficeFormFields()}
         </form>
-      ) : (
-        renderOfficeFormFields()
       )}
     </>
   );

@@ -1,8 +1,9 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import ChairpersonLayout from "../../components/layouts/ChairpersonLayout";
 import ProtectedRoute from "../handlers/ProtectedRoute";
 import ChairpersonDashboardPage from "../../pages/chairperson/ChairpersonDashboardPage";
 import ChairpersonManageCompaniesPage from "../../pages/chairperson/ChairpersonManageCompaniesPage";
+import ChairpersonCompanyPage from "../../pages/chairperson/ChairpersonCompanyPage";
 
 // Routes for Chairperson
 const ChairpersonRoutes = {
@@ -23,7 +24,17 @@ const ChairpersonRoutes = {
     },
     {
       path: "companies",
-      element: <ChairpersonManageCompaniesPage />,
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: <ChairpersonManageCompaniesPage />,
+        },
+        {
+          path: ":company_id",
+          element: <ChairpersonCompanyPage />,
+        },
+      ],
     },
   ],
 };

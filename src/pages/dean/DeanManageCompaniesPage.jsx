@@ -75,7 +75,7 @@ const DeanManageCompaniesPage = () => {
   };
 
   return (
-    <Page>
+    <>
       <Section>
         <Heading level={3} text={"Companies"} />
         <Text className="text-sm text-blue-950">
@@ -108,7 +108,7 @@ const DeanManageCompaniesPage = () => {
           handleCompanyInfoChange={handleCompanyInfoChange}
         />
       </FormModal>
-    </Page>
+    </>
   );
 };
 

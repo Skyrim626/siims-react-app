@@ -30,7 +30,7 @@ const AdminManageDeansPage = () => {
   const [editIsOpen, setEditIsOpen] = useState(false);
 
   // Form State
-  // Using the custom hook for Role Information
+  // Using the custom hook for Dean Information
   const [deanInfo, handleDeanInfoChange] = useForm({
     id: "",
     password: "",

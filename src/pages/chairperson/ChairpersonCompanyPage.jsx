@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getRequest } from "../../api/apiHelpers";
 import Section from "../../components/common/Section";
+import useSearch from "../../hooks/useSearch";
+import { getRequest } from "../../api/apiHelpers";
+import Heading from "../../components/common/Heading";
+import Text from "../../components/common/Text";
+import Table from "../../components/tables/Table";
+import { Button } from "@headlessui/react";
 import coverPhoto from "../../assets/images/company/company-cover-photo.jpg";
 import profilePhoto from "../../assets/images/company/company-profile-photo.jpg";
-import Text from "../../components/common/Text";
 import { MapPin, MessageCircle } from "lucide-react";
-import { Button } from "@headlessui/react";
-import useSearch from "../../hooks/useSearch";
-import Heading from "../../components/common/Heading";
-import Table from "../../components/tables/Table";
 
 // Render Button Tabs
 const buttonTabs = [
@@ -24,7 +24,7 @@ const buttonTabs = [
 ];
 
 // Companies Page
-const DeanCompanyPage = () => {
+const ChairpersonCompanyPage = () => {
   // Use params
   const { company_id } = useParams();
 
@@ -44,7 +44,7 @@ const DeanCompanyPage = () => {
     const fetchData = async () => {
       // Perform GET request to retrieve company
       const companyResponse = await getRequest({
-        url: `/api/v1/dean/companies/${company_id}`, // API endpoint for fetching company
+        url: `/api/v1/chairperson/companies/${company_id}`, // API endpoint for fetching company
       });
 
       // Update the state with the fetched company data
@@ -52,7 +52,7 @@ const DeanCompanyPage = () => {
 
       // Perform GET request to retrieve offices
       const companyOfficesResponse = await getRequest({
-        url: `/api/v1/dean/companies/${company_id}/offices`, // API endpoint for fetching offices
+        url: `/api/v1/chairperson/companies/${company_id}/offices`, // API endpoint for fetching offices
       });
 
       // Update the state with the fetched offices data
@@ -185,4 +185,4 @@ const DeanCompanyPage = () => {
   );
 };
 
-export default DeanCompanyPage;
+export default ChairpersonCompanyPage;

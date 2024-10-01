@@ -9,7 +9,6 @@ import FormField from "../../common/FormField";
 const DeanModalFormFields = ({
   colleges = [],
   method = "post",
-  userRole = "",
   deanInfo = {
     id: "",
     password: "",

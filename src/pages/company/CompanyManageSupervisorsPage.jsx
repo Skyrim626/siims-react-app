@@ -7,11 +7,15 @@ import Modal from "../../components/common/Modal";
 import { getRequest } from "../../api/apiHelpers";
 import Page from "../../components/common/Page";
 import Table from "../../components/tables/Table";
-import SupervisorModalFormAdd from "../../components/forms/modal-forms/SupervisorModalFormAdd";
+import Heading from "../../components/common/Heading";
+import SupervisorForm from "../../components/forms/SupervisorForm";
+import useForm from "../../hooks/useForm";
 
 const CompanyManageSupervisorsPage = () => {
-  // States
-  const [supervisors, setSupervisors] = useState([]);
+  // State to store the list of supervisors
+  const [supervisors, setSupervisors] = useState([]); // Initializing state to hold supervisor data
+  // State to store the list of offices
+  const [offices, setOffices] = useState([]); // Initializing state to hold offices data
 
   // Create Modal Modal
   const [isOpen, setIsOpen] = useState(false);
@@ -22,15 +26,41 @@ const CompanyManageSupervisorsPage = () => {
   // Selected Data State
   const [selectedData, setSelectedData] = useState({});
 
-  // Fetch supervisors data
+  // Form State
+  // Using the custom hook for Dean Information
+  const [supervisorInfo, handleSupervisorInfoChange] = useForm({
+    id: "",
+    password: "",
+    first_name: "",
+    middle_name: "",
+    last_name: "",
+    email: "",
+    gender: "",
+    phone_number: "",
+    street: "",
+    barangay: "",
+    city_municipality: "",
+    province: "",
+    postal_code: "",
+    office_id: "",
+  });
+
+  // Fetch data
   useEffect(() => {
     const fetch = async () => {
-      const response = await getRequest({
+      const supervisorsResponse = await getRequest({
         url: "/api/v1/company/supervisors",
       });
 
-      // Update the state with the fetched supevisor data
-      setSupervisors(response); // Setting the fetched user data in state
+      // Update the state with the fetched supervisor data
+      setSupervisors(supervisorsResponse); // Setting the fetched supervisor data in state
+
+      const officesResponse = await getRequest({
+        url: "/api/v1/company/offices",
+      });
+
+      // Update the state with the fetched office data
+      setOffices(officesResponse); // Setting the fetched office data in state
     };
 
     fetch(); // Call the fetch function
@@ -39,11 +69,23 @@ const CompanyManageSupervisorsPage = () => {
   return (
     <>
       <Page>
+        <Section className="mt-4">
+          <div className="flex justify-between items-center">
+            {/* Display the heading and description */}
+            <div>
+              <Heading level={3} text={"Manage Supervisors"} />
+              <p className="text-blue-950 text-sm">
+                This is where you can manage your supervisors.
+              </p>
+            </div>
+          </div>
+          <hr className="my-3" />
+        </Section>
         <Section>
           <ManageHeader
             isOpen={isOpen}
             setIsOpen={setIsOpen}
-            addPlaceholder="Add New Chairperson"
+            addPlaceholder="Add New Supervisor"
           />
 
           {/* {companies.length !== 0 && <AdminCompanyTableView data={companies} />} */}
@@ -58,13 +100,19 @@ const CompanyManageSupervisorsPage = () => {
           )}
 
           <AnimatePresence>
-            {isOpen && (
+            {isOpen && offices.length > 0 && (
               <Modal
                 modalTitle="Create Supervisor"
                 isOpen={isOpen}
                 setIsOpen={setIsOpen}
               >
-                <SupervisorModalFormAdd isOpen={isOpen} setIsOpen={setIsOpen} />
+                <SupervisorForm
+                  isFormModal={true}
+                  method={"post"}
+                  supervisorInfo={supervisorInfo}
+                  handleSupervisorInfoChange={handleSupervisorInfoChange}
+                  offices={offices}
+                />
               </Modal>
             )}
           </AnimatePresence>

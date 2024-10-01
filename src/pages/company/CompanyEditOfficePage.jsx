@@ -87,7 +87,7 @@ const CompanyEditOfficePage = () => {
 
     console.log(response);
     // Reset Form
-    resetOfficeInfo();
+    // resetOfficeInfo();
   };
   return (
     <>
@@ -113,6 +113,7 @@ const CompanyEditOfficePage = () => {
 
           <Section>
             <OfficeForm
+              isFormModal={false}
               method="put"
               userRole="company"
               officeTypes={officeTypes}

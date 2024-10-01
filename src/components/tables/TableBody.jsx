@@ -43,7 +43,10 @@ const TableBody = ({
               )}
             </td>
             {visibleColumns.map((column) => (
-              <td key={column} className="py-2 px-4 border-b text-blue-700">
+              <td
+                key={column}
+                className="py-2 px-4 border-b font-bold text-black"
+              >
                 {Array.isArray(data[column])
                   ? data[column].map((role, index) => (
                       <p key={index} className="font-bold">

@@ -5,7 +5,7 @@ import Heading from "../../components/common/Heading";
 import Text from "../../components/common/Text";
 import ManageHeader from "../../components/common/ManageHeader";
 import useSearch from "../../hooks/useSearch";
-import { getRequest, postRequest } from "../../api/apiHelpers";
+import { getRequest, postRequest, putRequest } from "../../api/apiHelpers";
 import Table from "../../components/tables/Table";
 import { AnimatePresence } from "framer-motion";
 import Modal from "../../components/common/Modal";
@@ -14,11 +14,14 @@ import useForm from "../../hooks/useForm";
 
 const AdminManageOfficesPage = () => {
   // State to store the list of offices
-  const [offices, setOffices] = useState([]); // Initializing state to hold office data
+  const [offices, setOffices] = useState([]); // Initializing state to hold offices data
   // State to store the list of office types
   const [officeTypes, setOfficeTypes] = useState([]); // Initializing state to hold office type data
   // State to store the list of companies
   const [companies, setCompanies] = useState([]); // Initializing state to hold companies data
+
+  // Select Office State
+  const [selectedOffice, setSelectedOffice] = useState(null);
 
   // Custom Hook for Search Table
   const { term, filteredData, handleSearchChange } = useSearch(offices, ""); // Using the custom hook to manage search term and filtered data
@@ -28,8 +31,27 @@ const AdminManageOfficesPage = () => {
   const [editIsOpen, setEditIsOpen] = useState(false);
 
   // Form State
-  // Using the custom hook for Role Information
-  const [officeInfo, handleOfficeInfoChange] = useForm({
+  // Using the custom hook for Office Information (Add)
+  const [officeInfo, handleOfficeInfoChange, resetOfficeInfo] = useForm({
+    company_id: "",
+    name: "",
+    phone_number: "",
+    street: "",
+    barangay: "",
+    city_municipality: "",
+    province: "",
+    postal_code: "",
+    office_type_id: "",
+  });
+
+  // Form State
+  // Using the custom hook for Office Information (Edit)
+  const [
+    editOfficeInfo,
+    handleEditOfficeInfoChange,
+    resetEditOfficeInfo,
+    setEditOfficeInfo,
+  ] = useForm({
     company_id: "",
     name: "",
     phone_number: "",
@@ -91,12 +113,57 @@ const AdminManageOfficesPage = () => {
     });
 
     // Reset Input
-    handleOfficeInfoChange({ target: { name: "name", value: "" } });
+    resetOfficeInfo();
 
     // Set Role Again
     setOffices(response.data);
     // Close Modal
     setIsOpen(false);
+  };
+
+  // Handle Edit Office
+  const handleEdit = (office) => {
+    // Set to true -- Open Edit Form
+    console.log(office);
+
+    setSelectedOffice(office);
+
+    // Pre-fill the editCompanyInfo with the selected company's details
+    setEditOfficeInfo({
+      company_id: office.company_id,
+      company_name: office.company_name,
+      office_type_id: office.office_type_id,
+      name: office.office_name,
+      phone_number: office.phone_number,
+      street: office.street,
+      barangay: office.barangay,
+      city_municipality: office.city_municipality,
+      province: office.province,
+      postal_code: office.postal_code,
+    });
+
+    setEditIsOpen(true);
+  };
+
+  // Handle Edit Submit
+  const handleEditSubmit = async () => {
+    // Ready Payload
+    const payload = editOfficeInfo;
+
+    // Send Request
+    const response = await putRequest({
+      url: `/api/v1/admin/offices/${selectedOffice["id"]}`,
+      data: payload,
+    });
+
+    // Reset Input
+    resetEditOfficeInfo();
+
+    // Set Office State
+    setOffices(response.data);
+
+    // Close Edit Modal
+    setEditIsOpen(false);
   };
 
   return (
@@ -123,6 +190,7 @@ const AdminManageOfficesPage = () => {
               term={term}
               filteredData={filteredData}
               handleSearchChange={handleSearchChange}
+              handleEdit={handleEdit}
             />
           ) : (
             <div>No Data</div>
@@ -142,6 +210,27 @@ const AdminManageOfficesPage = () => {
                   <OfficeForm
                     officeInfo={officeInfo}
                     handleOfficeInfoChange={handleOfficeInfoChange}
+                    companies={companies}
+                    officeTypes={officeTypes}
+                    displayFields={{
+                      company_id: true,
+                      office_type_id: true,
+                    }}
+                  />
+                </Modal>
+              )}
+              {editIsOpen && selectedOffice && (
+                <Modal
+                  modalTitle="Edit Office"
+                  isOpen={editIsOpen}
+                  setIsOpen={setEditIsOpen}
+                  modalType="form"
+                  handleSubmit={handleEditSubmit}
+                  modalWidth="min-w-[1000px]"
+                >
+                  <OfficeForm
+                    officeInfo={editOfficeInfo}
+                    handleOfficeInfoChange={handleEditOfficeInfoChange}
                     companies={companies}
                     officeTypes={officeTypes}
                     displayFields={{

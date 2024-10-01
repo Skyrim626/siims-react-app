@@ -4,6 +4,7 @@ import { Navigate, Outlet, useNavigate } from "react-router-dom";
 
 // Custom Hooks
 import { useAuth } from "../../hooks/useAuth";
+import RoleSelectionPage from "./RoleSelectionPage";
 
 /**
  * Auth Handler Component
@@ -23,37 +24,27 @@ const Auth = () => {
     return <Navigate to={"/login"} replace={true} />;
   }
 
+  if (roles.length > 1) {
+    return <RoleSelectionPage roles={roles} />; // Show selection for multiple roles
+  }
+
+  const role = roles[0]; // Single role
+
   // Check Roles
-  // Admin
-  if (roles.includes("admin")) {
-    console.log(roles);
-    // return navigate("admin");
-    return <Navigate to={"admin"} />;
+  switch (role) {
+    case "admin":
+      return <Navigate to={"admin"} />;
+    case "student":
+      return <Navigate to={"my"} />;
+    case "dean":
+      return <Navigate to={"dean"} />;
+    case "chairperson":
+      return <Navigate to={"chairperson"} />;
+    case "company":
+      return <Navigate to={"company"} />;
+    default:
+      return <Navigate to={"unauthorized"} />;
   }
-
-  // Student
-  if (roles.includes("student")) {
-    return <Navigate to={"my"} />;
-  }
-
-  // Dean
-  if (roles.includes("dean")) {
-    return <Navigate to={"dean"} />;
-  }
-
-  // Chairperson
-  if (roles.includes("chairperson")) {
-    return <Navigate to={"chairperson"} />;
-  }
-
-  // Company
-  if (roles.includes("company")) {
-    return <Navigate to={"company"} />;
-  }
-
-  // Render children if authenticated
-  // TODO: FINISH THIS
-  return "Empty Page";
 };
 
 export default Auth;
