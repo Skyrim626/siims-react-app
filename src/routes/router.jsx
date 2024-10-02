@@ -14,6 +14,7 @@ import NotFoundPage from "../pages/NotFoundPage";
 import DeanRoutes from "./users/DeanRoutes";
 import ChairpersonRoutes from "./users/ChairpersonRoutes";
 import CompanyRoutes from "./users/CompanyRoutes";
+import SupervisorRoutes from "./users/SupervisorRoutes";
 
 // Router
 const router = createBrowserRouter([
@@ -40,6 +41,9 @@ const router = createBrowserRouter([
 
       // path: company
       CompanyRoutes,
+
+      // path: supervisor
+      SupervisorRoutes,
     ],
   },
 

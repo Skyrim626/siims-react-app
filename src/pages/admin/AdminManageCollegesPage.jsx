@@ -1,26 +1,16 @@
 import React, { useEffect, useState } from "react";
 import Page from "../../components/common/Page";
-import {
-  deleteRequest,
-  getRequest,
-  postRequest,
-  putRequest,
-} from "../../api/apiHelpers";
+import { deleteRequest, getRequest } from "../../api/apiHelpers";
 import Section from "../../components/common/Section";
 import Text from "../../components/common/Text";
 import Heading from "../../components/common/Heading";
-import Table from "../../components/tables/TableTests";
 import AdminManageHeader from "../../components/users/admin/AdminManageUserHeader";
-import ChairpersonFormAdd from "./forms/ChairpersonFormAdd";
 import FormModal from "../../components/modals/FormModal";
 import AdminCollegeFormAdd from "./forms/AdminCollegeFormAdd";
-import { showSuccessAlert } from "../../utils/toastify";
-import useSubmitForm from "../../hooks/useSubmitForm";
 import AdminCollegeFormEdit from "./forms/AdminCollegeFormEdit";
-import { AnimatePresence } from "framer-motion";
-import Modal from "../../components/common/Modal";
 import useForm from "../../hooks/useForm";
 import AdminCollegesTable from "../../components/users/admin/table/AdminCollegesTable";
+import useHandleSubmit from "../../hooks/useHandleSubmit";
 
 const AdminManageCollegesPage = () => {
   // Modal State
@@ -32,6 +22,9 @@ const AdminManageCollegesPage = () => {
 
   // Fetch State
   const [colleges, setColleges] = useState([]);
+
+  // Custom hook for handling submit
+  const { error, handleSubmit } = useHandleSubmit();
 
   // Form State
   // Using the custom hook for College Information (Add)
@@ -59,25 +52,22 @@ const AdminManageCollegesPage = () => {
   }, []);
 
   // Handle Add Submit
-  const handleAddSubmit = async () => {
+  const handleAddSubmit = () => {
     // Payload
     const payload = collegeInfo;
 
-    // Send Request
-    const response = await postRequest({
+    // Submit Form
+    handleSubmit({
+      method: "post",
       url: "/api/v1/admin/colleges",
       data: payload,
+      resetField: () =>
+        handleCollegeInfoChange({
+          target: { name: "name", value: "" },
+        }),
+      setState: setColleges,
+      closeModal: () => setIsOpen(false),
     });
-
-    // Reset Input
-    handleCollegeInfoChange({
-      target: { name: "name", value: "" },
-    });
-
-    // Set College State
-    setColleges(response.data);
-    // Close Modal
-    setIsOpen(false);
   };
 
   // Handle Edit Submit
@@ -85,22 +75,18 @@ const AdminManageCollegesPage = () => {
     // Ready Payload
     const payload = editCollegeInfo;
 
-    // Send Request
-    const response = await putRequest({
+    // Submit Form
+    handleSubmit({
+      method: "put",
       url: `/api/v1/admin/colleges/${selectedCollege["id"]}`,
       data: payload,
+      resetField: () =>
+        handleEditCollegeInfoChange({
+          target: { name: "name", value: "" },
+        }),
+      setState: setColleges,
+      closeModal: () => setEditIsOpen(false),
     });
-
-    // Reset Input
-    handleEditCollegeInfoChange({
-      target: { name: "name", value: "" },
-    });
-
-    // Set College State
-    setColleges(response.data);
-
-    // Close Edit Modal
-    setEditIsOpen(false);
   };
 
   // Handle Edit Select College
@@ -147,59 +133,61 @@ const AdminManageCollegesPage = () => {
 
   return (
     <>
-      <Section>
-        <Heading level={3} text={"Colleges"} />
-        <Text className="text-sm text-blue-950">
-          This is where you manage the colleges.
-        </Text>
-        <hr className="my-3" />
-      </Section>
+      <Page>
+        <Section>
+          <Heading level={3} text={"Colleges"} />
+          <Text className="text-sm text-blue-950">
+            This is where you manage the colleges.
+          </Text>
+          <hr className="my-3" />
+        </Section>
 
-      <AdminManageHeader
-        addPlaceholder="Add New College"
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-      />
-
-      {/* Table */}
-      {colleges.length !== 0 && (
-        <AdminCollegesTable
-          handleArchiveBySelectedIds={handleArchiveBySelectedIds}
-          data={colleges}
-          handleEdit={handleEdit}
-          handleArchive={handleArchive}
+        <AdminManageHeader
+          addPlaceholder="Add New College"
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
         />
-      )}
 
-      {/* Form Modal */}
-      {/* Add Form Modal */}
-      <FormModal
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        modalTitle="Add College"
-        onSubmit={handleAddSubmit}
-      >
-        <AdminCollegeFormAdd
-          collegeInfo={collegeInfo}
-          handleCollegeInfoChange={handleCollegeInfoChange}
-        />
-      </FormModal>
+        {/* Table */}
+        {colleges.length !== 0 && (
+          <AdminCollegesTable
+            handleArchiveBySelectedIds={handleArchiveBySelectedIds}
+            data={colleges}
+            handleEdit={handleEdit}
+            handleArchive={handleArchive}
+          />
+        )}
 
-      {/* Edit Form Modal */}
-      {selectedCollege && (
+        {/* Form Modal */}
+        {/* Add Form Modal */}
         <FormModal
-          isOpen={editIsOpen}
-          setIsOpen={setEditIsOpen}
-          modalTitle="Edit College"
-          onSubmit={handleEditSubmit}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          modalTitle="Add College"
+          onSubmit={handleAddSubmit}
         >
-          <AdminCollegeFormEdit
-            role={selectedCollege}
-            editCollegeInfo={editCollegeInfo}
-            handleEditCollegeInfoChange={handleEditCollegeInfoChange}
+          <AdminCollegeFormAdd
+            collegeInfo={collegeInfo}
+            handleCollegeInfoChange={handleCollegeInfoChange}
           />
         </FormModal>
-      )}
+
+        {/* Edit Form Modal */}
+        {selectedCollege && (
+          <FormModal
+            isOpen={editIsOpen}
+            setIsOpen={setEditIsOpen}
+            modalTitle="Edit College"
+            onSubmit={handleEditSubmit}
+          >
+            <AdminCollegeFormEdit
+              role={selectedCollege}
+              editCollegeInfo={editCollegeInfo}
+              handleEditCollegeInfoChange={handleEditCollegeInfoChange}
+            />
+          </FormModal>
+        )}
+      </Page>
     </>
   );
 };

@@ -1,10 +1,9 @@
+import { Briefcase, LayoutDashboard } from "lucide-react";
 import React from "react";
-import SidebarLayout from "./SidebarLayout";
 import { Outlet, useLocation, useParams } from "react-router-dom";
-import { Building, LayoutDashboard, User, Users } from "lucide-react";
-import Breadcrumb from "../common/Breadcrumb";
 import { findBreadcrumbPath } from "../../utils/breadcrumbUtils";
-import Page from "../common/Page";
+import SidebarLayout from "./SidebarLayout";
+import Breadcrumb from "../common/Breadcrumb";
 
 // Configuration for sidebar items for Admin
 const sidebarItemsConfig = [
@@ -14,42 +13,25 @@ const sidebarItemsConfig = [
     alert: true,
     ariaLabel: "Dashboard",
     exact: true, // Add an `exact` property for exact path matching
-    path: "/auth/company",
-  },
-
-  {
-    icon: <User size={20} />,
-    text: "Profile",
-    alert: true,
-    ariaLabel: "Profile",
-    exact: true,
-    path: "/auth/company/profile",
+    path: "/auth/supervisor",
   },
   {
-    icon: <Building size={20} />,
-    text: "Offices",
+    icon: <Briefcase size={20} />,
+    text: "Manage Jobs",
     alert: true,
-    ariaLabel: "Offices",
-    exact: false,
-    path: "/auth/company/offices",
+    ariaLabel: "Manage Jobs",
+    exact: false, // Add an `exact` property for exact path matching
+    path: "/auth/supervisor/work-posts",
     sublinks: [
       {
-        text: "Add Office",
-        path: "/auth/company/offices/add", // Dynamic path
+        text: "Add Job",
+        path: "/auth/supervisor/work-posts/add", // Dynamic path
       },
     ],
   },
-  {
-    icon: <Users size={20} />,
-    text: "Supervisors",
-    alert: true,
-    ariaLabel: "Supervisors",
-    exact: true,
-    path: "/auth/company/supervisors",
-  },
 ];
 
-const CompanyLayout = () => {
+const SupervisorLayout = () => {
   const location = useLocation();
   const params = useParams(); // Extract dynamic route parameters, like company_id
   const breadcrumbPaths = findBreadcrumbPath(
@@ -67,4 +49,4 @@ const CompanyLayout = () => {
   );
 };
 
-export default CompanyLayout;
+export default SupervisorLayout;

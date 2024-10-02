@@ -91,6 +91,7 @@ const CompanyAddOfficePage = () => {
 
           <Section>
             <OfficeForm
+              isFormModal={false}
               userRole="company"
               officeTypes={officeTypes}
               supervisors={supervisors}

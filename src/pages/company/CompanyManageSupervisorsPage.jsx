@@ -4,7 +4,7 @@ import ManageHeader from "../../components/common/ManageHeader";
 import useSearch from "../../hooks/useSearch";
 import { AnimatePresence } from "framer-motion";
 import Modal from "../../components/common/Modal";
-import { getRequest } from "../../api/apiHelpers";
+import { getRequest, postRequest } from "../../api/apiHelpers";
 import Page from "../../components/common/Page";
 import Table from "../../components/tables/Table";
 import Heading from "../../components/common/Heading";
@@ -28,22 +28,23 @@ const CompanyManageSupervisorsPage = () => {
 
   // Form State
   // Using the custom hook for Dean Information
-  const [supervisorInfo, handleSupervisorInfoChange] = useForm({
-    id: "",
-    password: "",
-    first_name: "",
-    middle_name: "",
-    last_name: "",
-    email: "",
-    gender: "",
-    phone_number: "",
-    street: "",
-    barangay: "",
-    city_municipality: "",
-    province: "",
-    postal_code: "",
-    office_id: "",
-  });
+  const [supervisorInfo, handleSupervisorInfoChange, resetSupervisorInfo] =
+    useForm({
+      id: "",
+      password: "",
+      first_name: "",
+      middle_name: "",
+      last_name: "",
+      email: "",
+      gender: "",
+      phone_number: "",
+      street: "",
+      barangay: "",
+      city_municipality: "",
+      province: "",
+      postal_code: "",
+      office_id: "",
+    });
 
   // Fetch data
   useEffect(() => {
@@ -65,6 +66,28 @@ const CompanyManageSupervisorsPage = () => {
 
     fetch(); // Call the fetch function
   }, []); // Empty dependency array ensures this runs only once on component mount
+
+  // Handle Add Submit
+  const handleAddSubmit = async () => {
+    // Payload
+    const payload = supervisorInfo;
+
+    console.log(payload);
+
+    // Send Request
+    const response = await postRequest({
+      url: "/api/v1/company/supervisors",
+      data: payload,
+    });
+
+    // Reset Input
+    resetSupervisorInfo();
+
+    // Set Supervisor State
+    setSupervisors(response.data);
+    // Close Modal
+    setIsOpen(false);
+  };
 
   return (
     <>
@@ -105,6 +128,7 @@ const CompanyManageSupervisorsPage = () => {
                 modalTitle="Create Supervisor"
                 isOpen={isOpen}
                 setIsOpen={setIsOpen}
+                handleSubmit={handleAddSubmit}
               >
                 <SupervisorForm
                   isFormModal={true}
