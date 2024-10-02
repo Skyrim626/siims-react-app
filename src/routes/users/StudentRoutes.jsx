@@ -11,6 +11,7 @@ import StudentLayout from "../../components/layouts/StudentLayout";
 import StudentHomePage from "../../pages/student/StudentHomePage";
 import ProtectedRoute from "../handlers/ProtectedRoute";
 import StudentProfilePage from "../../pages/student/StudentProfilePage";
+import StudentApplyJobPage from "../../pages/student/StudentApplyJobPage";
 
 // Routes for Student
 const StudentRoutes = {
@@ -23,7 +24,7 @@ const StudentRoutes = {
   children: [
     {
       path: "dashboard",
-      element: <Navigate to={"/student"} />,
+      element: <Navigate to={"/my"} />,
     },
     {
       index: true,
@@ -32,6 +33,10 @@ const StudentRoutes = {
     {
       path: "profile",
       element: <StudentProfilePage />,
+    },
+    {
+      path: "apply/:job_id",
+      element: <StudentApplyJobPage />,
     },
   ],
 };

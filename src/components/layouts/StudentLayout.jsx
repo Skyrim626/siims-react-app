@@ -4,6 +4,7 @@ import { NavLink, Outlet, useLocation } from "react-router-dom";
 import {
   Bell,
   Box,
+  Briefcase,
   Calendar,
   Handshake,
   HelpCircle,
@@ -11,87 +12,88 @@ import {
   MessageCircle,
   MessageSquare,
   Search,
+  Users,
 } from "lucide-react";
 import NavItem from "../atoms/NavItem";
 import profilePhoto from "../../assets/images/company/company-profile-photo.jpg";
-
-// Customize Student Navigation Links
-const navlinks = [
-  {
-    icon: <HelpCircle size={20} />,
-    name: "Help",
-    to: "help",
-    active: true,
-    ariaLabel: "Help",
-  },
-  {
-    icon: <Handshake />,
-    name: "Internship Offers",
-    to: "internship-offers",
-    active: true,
-    ariaLabel: "Internship Offers",
-  },
-  {
-    icon: <Box size={20} />,
-    name: "Storage",
-    to: "storage",
-    active: true,
-    ariaLabel: "Storage",
-  },
-  { isDivider: true },
-  {
-    icon: <Home size={20} />,
-    name: "Home",
-    to: "home",
-    active: true,
-    ariaLabel: "Home",
-  },
-  {
-    icon: <MessageCircle size={20} />,
-    name: "Messages",
-    to: "messages",
-    active: true,
-    ariaLabel: "Messages",
-  },
-  {
-    icon: <Calendar size={20} />,
-    name: "Calendar",
-    to: "calendar",
-    active: true,
-    ariaLabel: "Calendar",
-  },
-  {
-    icon: <Bell size={20} />,
-    name: "Notifications",
-    to: "notifications",
-    active: true,
-    ariaLabel: "Notifications",
-  },
-];
+import Text from "../common/Text";
 
 // Layout for Student Pages
 export default function StudentLayout() {
   const location = useLocation(); // Open Use Location
 
+  // Customize Student Navigation Links
+  const studentLinks = [
+    {
+      icon: <Home size={20} />,
+      name: "Home",
+      to: `${location.pathname}`,
+      active: true,
+      ariaLabel: "Home",
+    },
+  ];
+
   return (
     <div className="min-h-full">
-      {/* <Navbar>
-        {navlinks.map((navlink, index) => {
-          return (
-            <NavItem
-              className="text-white font-light"
-              key={index}
-              icon={navlink.icon}
-              name={navlink.name}
-              to={navlink.to}
-              active={location.pathname === navlink.to} // Set active state based on current path
-              ariaLabel={navlink.ariaLabel}
+      <div className="grid grid-cols-5 mt-16">
+        <Navbar links={studentLinks} />
+        <div className=" bg-white shadow-lg p-4 col-span-1">
+          {/* User Info Section */}
+          <div className="flex items-center mb-4">
+            <img
+              className="w-12 h-12 rounded-full shadow-md"
+              src="https://via.placeholder.com/150"
+              alt="Profile"
             />
-          );
-        })}
-      </Navbar> */}
-      <Navbar />
-      <Outlet />
+            <div className="ml-2">
+              <h3 className="font-bold">Student Name</h3>
+              <p className="text-sm text-gray-600">Student Role</p>
+            </div>
+          </div>
+
+          {/* Navigation Links */}
+          <nav className="flex-grow">
+            {studentLinks.map((studentLink) => (
+              <NavLink
+                className={({ isActive }) =>
+                  `flex items-center space-x-2 p-2 rounded ${
+                    isActive ? "bg-gray-100" : "hover:bg-gray-100"
+                  }`
+                }
+                to={`${studentLink.to}`}
+              >
+                {studentLink.icon} <Text>{studentLink.name}</Text>
+              </NavLink>
+            ))}
+          </nav>
+
+          {/* Additional Links / Sections */}
+          <div className="mt-4">
+            <h4 className="font-semibold mb-2">Groups</h4>
+            <ul>
+              <li>
+                <NavLink
+                  to="/my/groups"
+                  className="block p-2 rounded hover:bg-gray-100"
+                >
+                  My Groups
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/my/create-group"
+                  className="block p-2 rounded hover:bg-gray-100"
+                >
+                  Create Group
+                </NavLink>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div className="col-span-4">
+          <Outlet />
+        </div>
+      </div>
     </div>
   );
 }

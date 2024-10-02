@@ -43,6 +43,7 @@ export default function Sidebar({
   children,
   name = "no name",
   email = "no email",
+  userType = "",
 }) {
   // Manage the sidebar's expanded/collapsed state
   const [expanded, setExpanded] = useState(true);

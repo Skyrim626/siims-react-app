@@ -1,117 +1,136 @@
-// Libraries
-import React from "react";
-
-// Components (Common)
+import React, { useEffect, useState } from "react";
 import Page from "../../components/common/Page";
-import Section from "../../components/common/Section";
-import Heading from "../../components/common/Heading";
+import { NavLink, useLocation } from "react-router-dom";
+import { Button } from "@headlessui/react";
+import { getRequest } from "../../api/apiHelpers";
 import Text from "../../components/common/Text";
-import {
-  User,
-  Briefcase,
-  MessageSquare,
-  Bell,
-  Search,
-  Home,
-} from "lucide-react";
-import profilePhoto from "../../assets/images/company/company-profile-photo.jpg";
 
-export default function StudentHomePage() {
+const StudentHomePage = () => {
+  // Location
+  const location = useLocation();
+
+  console.log(location.pathname);
+
+  // Fetch State
+  const [jobs, setJobs] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const jobsPerPage = 5; // Maximum jobs per page
+
+  // Use Effect Fetch
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await getRequest({
+        url: "/api/v1/student/jobs",
+      });
+
+      setJobs(response);
+    };
+
+    fetchData();
+  }, []);
+
+  // Calculate the total number of pages
+  const totalPages = Math.ceil(jobs.length / jobsPerPage);
+
+  // Get the jobs for the current page
+  const indexOfLastJob = currentPage * jobsPerPage;
+  const indexOfFirstJob = indexOfLastJob - jobsPerPage;
+  const currentJobs = jobs.slice(indexOfFirstJob, indexOfLastJob);
+
   return (
     <Page>
-      {/* LinkedIn-style Layout */}
-      <div className="flex w-full min-h-screen bg-gray-100">
-        {/* Left Sidebar (Profile Summary) */}
-        <div className="w-1/4 p-4 bg-white shadow-lg">
-          {/* Profile Section */}
-          <div className="flex flex-col items-center p-4">
-            <img
-              src={profilePhoto}
-              alt="Profile Photo"
-              className="w-24 h-24 rounded-full object-cover mb-4"
-            />
-            <Heading level={5} text="Student Name" />
-            <Text className="text-sm text-gray-600">Student Role</Text>
-            <hr className="my-4" />
-          </div>
+      <div className="flex-1 p-4">
+        <h1 className="text-2xl font-bold mb-4">Welcome to Your Dashboard</h1>
+        <Text className="mb-8">
+          Explore the latest job postings below and apply to the ones that
+          interest you!
+        </Text>
 
-          {/* Quick Links */}
-          <ul className="flex flex-col gap-2">
-            <li className="text-blue-600 font-bold hover:text-blue-800">
-              <Briefcase size={18} className="inline-block mr-2" />
-              My Courses
-            </li>
-            <li className="text-blue-600 font-bold hover:text-blue-800">
-              <MessageSquare size={18} className="inline-block mr-2" />
-              Messages
-            </li>
-            <li className="text-blue-600 font-bold hover:text-blue-800">
-              <User size={18} className="inline-block mr-2" />
-              Connections
-            </li>
-          </ul>
+        <h2 className="text-xl font-semibold mb-4">Job Postings</h2>
+        {/* Pagination Controls */}
+        <div className="flex justify-between mt-4">
+          <Button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors duration-200"
+          >
+            Previous
+          </Button>
+          <Text className="self-center">
+            Page {currentPage} of {totalPages}
+          </Text>
+          <Button
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
+            disabled={currentPage === totalPages}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors duration-200"
+          >
+            Next
+          </Button>
         </div>
-
-        {/* Main Content (Feed) */}
-        <div className="w-2/4 p-4">
-          {/* Post Feed */}
-          <Section>
-            <Heading level={4} text="What's on your mind?" />
-            <textarea
-              rows="3"
-              placeholder="Share an update..."
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none mb-4"
-            />
-            <div className="flex justify-between items-center">
-              <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
-                Post
-              </button>
-            </div>
-          </Section>
-
-          <Section className="mt-4">
-            <div className="p-4 bg-white rounded-md shadow-lg">
-              <div className="flex items-center mb-4">
-                <img
-                  src={profilePhoto}
-                  alt="User Profile"
-                  className="w-10 h-10 rounded-full object-cover mr-3"
-                />
-                <div>
-                  <Heading level={5} text="John Doe" />
-                  <Text className="text-sm text-gray-600">Student</Text>
+        <div className="mt-3">
+          {jobs.length > 0 ? (
+            <div className="space-y-4">
+              {currentJobs.map((job) => (
+                <div
+                  key={job.id}
+                  className="border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow duration-200"
+                >
+                  <h3 className="text-lg font-bold">{job.title}</h3>
+                  <Text className="text-gray-600">{job.company_name}</Text>
+                  <Text className="text-gray-500">{job.responsibilities}</Text>
+                  <Text className="text-gray-700 mb-4">
+                    {job.qualifications}
+                  </Text>
+                  <Text className="text-gray-500">
+                    Start Date: {new Date(job.start_date).toLocaleDateString()}
+                  </Text>
+                  <Text className="text-gray-500">
+                    End Date: {new Date(job.end_date).toLocaleDateString()}
+                  </Text>
+                  <p className="text-gray-500">Duration: {job.work_duration}</p>
+                  <Button className="mt-3">
+                    <NavLink
+                      to={`${location.pathname}/apply/${job.id}`} // Link to the apply page for the job
+                      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors duration-200"
+                    >
+                      Apply Now
+                    </NavLink>
+                  </Button>
                 </div>
-              </div>
-              <Text className="text-sm text-gray-800 mb-2">
-                Just completed my final project! Excited to share what I've
-                learned.
-              </Text>
-              <div className="flex justify-between text-gray-500 text-sm">
-                <span>Like</span>
-                <span>Comment</span>
-                <span>Share</span>
-              </div>
+              ))}
             </div>
-          </Section>
+          ) : (
+            <Text>No jobs available</Text>
+          )}
         </div>
 
-        {/* Right Sidebar (Extra Info) */}
-        <div className="w-1/4 p-4 bg-white shadow-lg">
-          <Section>
-            <Heading level={5} text="Notifications" />
-            <ul className="flex flex-col gap-3 mt-4">
-              <li className="flex items-center gap-2 text-gray-800">
-                <Bell size={18} className="text-blue-600" />
-                <span>New course available: React Basics</span>
-              </li>
-              <li className="flex items-center gap-2 text-gray-800">
-                <Bell size={18} className="text-blue-600" />
-                <span>2 new messages from classmates</span>
-              </li>
-            </ul>
-          </Section>
+        {/* Pagination Controls */}
+        <div className="flex justify-between mt-4">
+          <Button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors duration-200"
+          >
+            Previous
+          </Button>
+          <span className="self-center">
+            Page {currentPage} of {totalPages}
+          </span>
+          <Button
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
+            disabled={currentPage === totalPages}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors duration-200"
+          >
+            Next
+          </Button>
         </div>
       </div>
     </Page>
   );
-}
+};
+
+export default StudentHomePage;
