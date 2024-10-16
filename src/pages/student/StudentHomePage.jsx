@@ -38,15 +38,8 @@ const StudentHomePage = () => {
   const currentJobs = jobs.slice(indexOfFirstJob, indexOfLastJob);
 
   return (
-    <Page>
-      <div className="flex-1 p-4">
-        <h1 className="text-2xl font-bold mb-4">Welcome to Your Dashboard</h1>
-        <Text className="mb-8">
-          Explore the latest job postings below and apply to the ones that
-          interest you!
-        </Text>
-
-        <h2 className="text-xl font-semibold mb-4">Job Postings</h2>
+    <Page className="px-0">
+      <div className="flex-1">
         {/* Pagination Controls */}
         <div className="flex justify-between mt-4">
           <Button

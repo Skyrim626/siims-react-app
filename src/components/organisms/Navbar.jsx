@@ -1,101 +1,86 @@
-import React from "react";
-import { NavLink, useLocation } from "react-router-dom";
-import {
-  Search,
-  Home,
-  Users,
-  Briefcase,
-  MessageSquare,
-  Bell,
-  LogOut,
-} from "lucide-react";
-import { Button, Input } from "@headlessui/react";
-import Text from "../common/Text";
-import { useAuth } from "../../hooks/useAuth";
+import { useState } from "react";
+import { useLocation, NavLink } from "react-router-dom";
+import { Search, Bell } from "lucide-react";
+import logo from "../../assets/images/logo.svg";
 
-const Navbar = ({ links = [] }) => {
-  // Logout Function
-  const { logout } = useAuth();
+const Navbar = ({ links }) => {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const location = useLocation();
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
 
   return (
-    <nav className="bg-white shadow-md w-full transition-all duration-300 ease-in-out">
-      <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-        {/* Left side (Logo + Search) */}
-        <div className="flex items-center space-x-4">
-          {/* SIIMS Logo */}
-          <Text className="text-blue-600 text-2xl font-bold cursor-pointer hover:text-blue-800 transition-colors duration-300">
-            SIIMS
-          </Text>
-
-          {/* Search Bar */}
-          <div className="relative flex items-center">
-            <Input
-              type="text"
-              className="w-72 bg-gray-100 border border-gray-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-              placeholder="Search"
-            />
-            <Search
-              className="absolute right-3 top-2 text-gray-400 hover:text-gray-600 transition-colors duration-300 cursor-pointer"
-              size={18}
-            />
-          </div>
+    <nav className="bg-white shadow-md p-4 flex justify-between items-center sticky top-0 z-10">
+      <div className="flex items-center gap-3">
+        {/* Left section: Logo */}
+        <div>
+          <img src={logo} alt="LinkedIn Logo" width={120} />
         </div>
 
-        {/* Right side (Navigation Links) */}
-        <div className="flex items-center gap-5">
-          <div className="flex gap-5 self-end">
-            {links.map((link, index) => {
-              return (
-                <NavItem
-                  path={link.path}
-                  key={index}
-                  icon={link.icon}
-                  text={link.text}
-                />
-              );
-            })}
-            <Button
-              onClick={logout}
-              className="flex flex-col items-center text-gray-600 hover:text-blue-600 cursor-pointer transition-colors duration-300 ease-in-out"
-              type="submit"
-            >
-              <div className="hover:scale-110 transform transition-transform duration-300">
-                <LogOut size={20} />
-              </div>
-              <Text className="text-xs">Logout</Text>
-            </Button>
-          </div>
+        {/* Middle section: Search bar */}
+        <div className="flex items-center bg-gray-200 p-2 rounded-md">
+          <Search className="w-5 h-5 text-gray-600" />
+          <input
+            type="text"
+            placeholder="Search"
+            className="bg-transparent outline-none pl-2 text-gray-700"
+          />
+        </div>
+      </div>
 
-          {/* Profile Picture */}
-          <div className="relative cursor-pointer hover:scale-105 transition-transform duration-300 flex items-center flex-col">
-            <img
-              className="w-7 h-7 rounded-full shadow-md"
-              src="https://via.placeholder.com/150"
-              alt="Profile"
-            />
-            <Text className="text-xs">Me</Text>
-          </div>
+      {/* Right section: Navigation icons */}
+      <div className="flex items-center space-x-6 text-gray-600">
+        {links.map(({ icon, text, path, ariaLabel }, index) => (
+          <NavLink
+            key={index}
+            to={path}
+            aria-label={ariaLabel}
+            className={`flex flex-col items-center hover:text-blue-600 cursor-pointer ${
+              location.pathname === path ? "text-blue-600" : ""
+            }`}
+          >
+            {icon}
+            <span className="text-xs">{text}</span>
+          </NavLink>
+        ))}
+
+        {/* Profile section with dropdown */}
+        <div className="relative flex items-center space-x-2">
+          <img
+            src="/profile-pic.jpg"
+            alt="Profile"
+            className="w-8 h-8 rounded-full cursor-pointer"
+            onClick={toggleDropdown}
+          />
+          <span
+            className="hidden md:block text-sm font-semibold cursor-pointer"
+            onClick={toggleDropdown}
+          >
+            Me
+          </span>
+
+          {/* Dropdown */}
+          {dropdownOpen && (
+            <div className="absolute top-8 right-0 mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg z-10">
+              <ul className="py-1">
+                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                  Profile
+                </li>
+                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                  Settings & Privacy
+                </li>
+                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                  Sign Out
+                </li>
+              </ul>
+            </div>
+          )}
         </div>
       </div>
     </nav>
   );
 };
-
-// NavItem component using NavLink for active state
-const NavItem = ({ path, icon, text }) => (
-  <NavLink
-    to={path}
-    className={({ isActive }) =>
-      isActive
-        ? "flex flex-col items-center text-blue-600 cursor-pointer transition-colors duration-300 ease-in-out"
-        : "flex flex-col items-center text-gray-600 hover:text-blue-600 cursor-pointer transition-colors duration-300 ease-in-out"
-    }
-  >
-    <div className="hover:scale-110 transform transition-transform duration-300">
-      {icon}
-    </div>
-    <Text className="text-xs">{text}</Text>
-  </NavLink>
-);
 
 export default Navbar;
