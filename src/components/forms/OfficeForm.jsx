@@ -95,7 +95,9 @@ const OfficeForm = ({
             >
               <Building size={20} className="mr-2 text-blue-600" />
               Office Type{" "}
-              {requiredFields.type && <span className="text-red-500">*</span>}
+              {requiredFields.office_type_id && (
+                <span className="text-red-500">*</span>
+              )}
             </Label>
             <Select
               id="office_type_id"

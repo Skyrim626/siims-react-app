@@ -52,9 +52,7 @@ const DeanLayout = () => {
     <SidebarLayout sidebarItemsConfig={sidebarItemsConfig}>
       <main className="flex-1 overflow-auto">
         <Breadcrumb paths={breadcrumbPaths} />
-        <Page>
-          <Outlet />
-        </Page>
+        <Outlet />
       </main>
     </SidebarLayout>
   );

@@ -31,7 +31,6 @@ const AdminRoutes = {
   path: "admin", // Base path for admin routes
   element: (
     <ProtectedRoute roleAllowed={"admin"}>
-      {" "}
       {/* Protect routes to allow access only to admin role */}
       <AdminLayout /> {/* Render AdminLayout for the admin section */}
     </ProtectedRoute>

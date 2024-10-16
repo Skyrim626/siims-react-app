@@ -69,7 +69,7 @@ const CompanyAddOfficePage = () => {
 
   return (
     <>
-      {officeTypes.length !== 0 ? (
+      {officeTypes.length > 0 ? (
         <Page>
           <Section>
             <Link

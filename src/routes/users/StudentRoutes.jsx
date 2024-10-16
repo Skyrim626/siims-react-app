@@ -12,6 +12,7 @@ import StudentHomePage from "../../pages/student/StudentHomePage";
 import ProtectedRoute from "../handlers/ProtectedRoute";
 import StudentProfilePage from "../../pages/student/StudentProfilePage";
 import StudentApplyJobPage from "../../pages/student/StudentApplyJobPage";
+import StudentRequestEndorsementPage from "../../pages/student/StudentRequestEndorsementPage";
 
 // Routes for Student
 const StudentRoutes = {
@@ -37,6 +38,10 @@ const StudentRoutes = {
     {
       path: "apply/:job_id",
       element: <StudentApplyJobPage />,
+    },
+    {
+      path: "apply/:job_id/request-endorsement",
+      element: <StudentRequestEndorsementPage />,
     },
   ],
 };

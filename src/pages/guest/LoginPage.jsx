@@ -1,11 +1,9 @@
 import React, { useEffect } from "react";
-import logo from "../../assets/images/logo.svg";
-import Heading from "../../components/common/Heading";
 import LoginForm from "../../components/forms/LoginForm";
-import Text from "../../components/common/Text";
 import useForm from "../../hooks/useForm";
 import { useAuth } from "../../hooks/useAuth";
 import { showFailedAlert } from "../../utils/toastify";
+import AuthPrompt from "../../components/auth/AuthPrompt";
 
 /**
  * LoginPage Component
@@ -68,12 +66,10 @@ export default function LoginPage() {
   return (
     <>
       {/* Logo and welcome message */}
-      <div className="flex flex-col">
-        <img src={logo} alt="SIIMS Logo" className="w-2/5 mx-auto md:mx-0" />
-        <Heading text={"Welcome back"} className="mb-1" />
-        <Text className="text-sm">Please enter log in details below.</Text>
-      </div>
-
+      <AuthPrompt
+        heading={"Welcome back"}
+        description={"Please enter log in details below."}
+      />
       {/* Login form component */}
       <LoginForm
         loginInfo={loginInfo}

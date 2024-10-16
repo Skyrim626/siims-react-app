@@ -216,6 +216,17 @@ const AdminManageOfficesPage = () => {
                       company_id: true,
                       office_type_id: true,
                     }}
+                    requiredFields={{
+                      company_id: true,
+                      office_type_id: true,
+                      name: true,
+                      phone_number: true,
+                      street: false,
+                      barangay: false,
+                      city_municipality: false,
+                      province: false,
+                      postal_code: false,
+                    }}
                   />
                 </Modal>
               )}

@@ -15,6 +15,7 @@ import { Button } from "@headlessui/react";
 
 // Custom Hooks
 import { useAuth } from "../../hooks/useAuth";
+import Text from "../common/Text";
 
 // Create and Export Contexts
 // * Purpose: To provide the current state of sidebar expansion to child components
@@ -39,11 +40,12 @@ export const SidebarContext = createContext();
  * @returns {JSX.Element} - The sidebar layout with a toggle feature and user information.
  */
 export default function Sidebar({
+  withLogo = true,
   logo = companyLogo,
   children,
   name = "no name",
   email = "no email",
-  userType = "",
+  bgColor = "bg-gray-900",
 }) {
   // Manage the sidebar's expanded/collapsed state
   const [expanded, setExpanded] = useState(true);
@@ -53,19 +55,27 @@ export default function Sidebar({
 
   return (
     <aside className="h-screen">
-      <nav className="h-full flex flex-col bg-gray-900 border-r shadow-sm">
-        <div className="p-4 pb-2 flex justify-between items-center">
-          <img
-            src={logo}
-            className={`overflow-hidden transition-all ${
-              expanded ? "w-32" : "w-0"
-            }`}
-            alt="Company Logo"
-          />
+      <nav className={`h-full flex flex-col ${bgColor} border-r shadow-sm`}>
+        <div
+          className={`p-4 pb-2 flex items-center ${
+            withLogo ? "justify-between" : "justify-end"
+          }`}
+        >
+          {/* Allow Display Logo */}
+          {withLogo && (
+            <img
+              src={logo}
+              className={`overflow-hidden transition-all ${
+                expanded ? "w-32" : "w-0"
+              }`}
+              alt="Company Logo"
+            />
+          )}
+
           <Button
             type="button"
             onClick={() => setExpanded((current) => !current)}
-            className="p-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white"
+            className="p-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white "
           >
             {expanded ? <ChevronFirst /> : <ChevronLast />}
           </Button>
@@ -75,11 +85,9 @@ export default function Sidebar({
           <ul className="flex-1 px-3">{children}</ul>
         </SidebarContext.Provider>
         <div className="border-t flex p-3">
-          <img
-            src="https://ui-avatars.com/api/?background=c7d2f3&color=3730a3&bold=true"
-            alt=""
-            className="w-10 h-10 rounded-md"
-          />
+          <div className="rounded-sm h-full bg-blue-300 flex items-center justify-center px-2">
+            <Text className="font-bold tracking-wider">JD</Text>
+          </div>
           <div
             className={`flex justify-between items-center overflow-hidden transition-all ${
               expanded ? "w-52 ml-3" : "w-0"

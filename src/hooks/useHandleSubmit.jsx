@@ -40,10 +40,8 @@ const useHandleSubmit = () => {
 
       // Reset Input Field
       if (resetField) resetField();
-
       // Update State
       if (setState) setState(response.data);
-
       // Close Modal if applicable
       if (closeModal) closeModal();
     } catch (err) {

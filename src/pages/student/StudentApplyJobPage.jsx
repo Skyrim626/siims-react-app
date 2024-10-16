@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, NavLink } from "react-router-dom";
+import { useParams, NavLink, useLocation } from "react-router-dom";
 import Page from "../../components/common/Page";
 import { Button, Textarea } from "@headlessui/react";
 import { getRequest } from "../../api/apiHelpers";
@@ -11,6 +11,11 @@ const StudentApplyJobPage = () => {
   const [coverLetter, setCoverLetter] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [files, setFiles] = useState([]);
+
+  const location = useLocation();
+
+  console.log(location);
+  console.log(job);
 
   useEffect(() => {
     const fetchJobDetails = async () => {
@@ -140,7 +145,7 @@ const StudentApplyJobPage = () => {
 
         <div className="mt-6 text-center">
           <NavLink
-            to="/request-endorsement" // Link to the endorsement letter request page
+            to={`${location.pathname}/request-endorsement`} // Link to the endorsement letter request page
             className="inline-block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
           >
             Request Endorsement Letter
