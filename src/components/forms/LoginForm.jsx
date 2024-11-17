@@ -2,26 +2,15 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Field, Input, Label, Button } from "@headlessui/react";
 import { Eye, EyeOff } from "lucide-react";
+import Text from "../common/Text";
 
-/**
- * LoginForm Component
- * This component renders a login form with input fields for User ID and Password.
- * It supports password visibility toggle and includes a "Forgot Password" link.
- *
- * Props:
- * @param {Object} loginInfo - The current state of the login form inputs.
- * @param {function} handleLoginInfoChange - Function to handle changes in form inputs.
- * @param {function} handleSubmit - Function to handle form submission.
- *
- * @returns {JSX.Element} The login form UI.
- */
 const LoginForm = ({
-  loginInfo = {
-    id: "",
-    password: "",
-  },
-  handleLoginInfoChange,
+  id,
+  setId,
+  password,
+  setPassword,
   handleSubmit,
+  errors,
 }) => {
   // State to manage the visibility toggle for the password field
   const [toggleVisible, setToggleVisible] = useState(false);
@@ -37,13 +26,18 @@ const LoginForm = ({
           </Label>
           <Input
             type="text"
-            value={loginInfo.id} // Controlled input tied to loginInfo.id
+            value={id} // Controlled input tied to loginInfo.id
             className={"outline-none rounded-md text-black p-3"}
             name="id"
             placeholder="Enter your ID"
-            onChange={handleLoginInfoChange} // Updates form state on input change
+            onChange={(e) => {
+              setId(e.target.value);
+            }} // Updates form state on input change
             autoComplete="off"
+            required
           />
+          {errors.id && <Text className="text-red-500">{errors.id[0]}</Text>}{" "}
+          {/* Display ID errors */}
         </Field>
 
         {/* Password Input Field */}
@@ -54,12 +48,15 @@ const LoginForm = ({
           <div className="flex items-center bg-white rounded-md text-black">
             <Input
               type={toggleVisible ? "text" : "password"} // Toggles between 'text' and 'password'
-              value={loginInfo.password} // Controlled input tied to loginInfo.password
+              value={password} // Controlled input tied to loginInfo.password
               className={"w-full outline-none p-3 bg-transparent"}
               name="password"
               placeholder="Enter your password"
-              onChange={handleLoginInfoChange} // Updates form state on input change
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }} // Updates form state on input change
               autoComplete="off"
+              required
             />
             <Button
               className="mr-3 text-gray-600"
@@ -71,6 +68,10 @@ const LoginForm = ({
               {/* Eye icon for visibility */}
             </Button>
           </div>
+          {errors.password && (
+            <Text className="text-red-500">{errors.password[0]}</Text>
+          )}{" "}
+          {/* Display Password errors */}
         </Field>
 
         {/* Forgot Password Link */}

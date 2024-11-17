@@ -12,7 +12,7 @@ import Filter from "../../../tables/Filter";
 import TableHead from "../../../tables/TableHead";
 import TableShowResult from "../../../tables/TableShowResult";
 import Section from "../../../common/Section";
-import AdminRolesTableBody from "./AdminRolesTableBody";
+import AdminCollegesTableBody from "./AdminCollegesTableBody";
 
 const AdminCollegesTable = ({
   data,
@@ -122,7 +122,7 @@ const AdminCollegesTable = ({
             handleDelete={handleDelete}
             handleView={handleView}
           />
-          <AdminRolesTableBody
+          <AdminCollegesTableBody
             paginatedData={paginatedData}
             selectedIds={selectedIds}
             handleCheckboxChange={handleCheckboxChange}

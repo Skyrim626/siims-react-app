@@ -1,92 +1,116 @@
 import React, { useEffect, useState } from "react";
 import Page from "../../components/common/Page";
-import { deleteRequest, getRequest } from "../../api/apiHelpers";
+import {
+  deleteRequest,
+  getRequest,
+  postRequest,
+  putRequest,
+} from "../../api/apiHelpers";
 import Section from "../../components/common/Section";
 import Text from "../../components/common/Text";
 import Heading from "../../components/common/Heading";
-import AdminManageHeader from "../../components/users/admin/AdminManageUserHeader";
 import FormModal from "../../components/modals/FormModal";
 import AdminCollegeFormAdd from "./forms/AdminCollegeFormAdd";
 import AdminCollegeFormEdit from "./forms/AdminCollegeFormEdit";
 import useForm from "../../hooks/useForm";
 import AdminCollegesTable from "../../components/users/admin/table/AdminCollegesTable";
 import useHandleSubmit from "../../hooks/useHandleSubmit";
+import ManageHeader from "../../components/common/ManageHeader";
+import { useLoaderData } from "react-router-dom";
 
 const AdminManageCollegesPage = () => {
-  // Modal State
+  // Retrieve the user_roles data from the loader
+  const { initial_colleges, list_of_deans } = useLoaderData();
+
+  // State for colleges and form modal
+  const [colleges, setColleges] = useState(initial_colleges);
   const [isOpen, setIsOpen] = useState(false);
   const [editIsOpen, setEditIsOpen] = useState(false);
 
+  // Form input and errors
+  const [collegeName, setCollegeName] = useState("");
+  const [editCollegeName, setEditCollegeName] = useState("");
+  const [editDeanId, setEditDeanId] = useState(null);
+  const [errors, setErrors] = useState({});
+
   // Select State
-  const [selectedCollege, setSelectedCollege] = useState(null);
-
-  // Fetch State
-  const [colleges, setColleges] = useState([]);
-
-  // Custom hook for handling submit
-  const { error, handleSubmit } = useHandleSubmit();
-
-  // Form State
-  // Using the custom hook for College Information (Add)
-  const [collegeInfo, handleCollegeInfoChange] = useForm({
-    name: "",
-  });
-
-  // Using the custom hook for College Information (Edit)
-  const [editCollegeInfo, handleEditCollegeInfoChange] = useForm({
-    name: "",
-  });
-
-  // Use Effect: Fetching Data
-  useEffect(() => {
-    // Method: fetchColleges
-    const fetchColleges = async () => {
-      const response = await getRequest({
-        url: "/api/v1/admin/colleges",
-      });
-      // Set College State
-      setColleges(response);
-    };
-    // Call Method: fetchColleges
-    fetchColleges();
-  }, []);
+  const [selectedCollege, setSelectedCollege] = useState({});
 
   // Handle Add Submit
-  const handleAddSubmit = () => {
-    // Payload
-    const payload = collegeInfo;
+  const handleAddSubmit = async () => {
+    try {
+      // Payload
+      const payload = {
+        name: collegeName,
+      };
 
-    // Submit Form
-    handleSubmit({
-      method: "post",
-      url: "/api/v1/admin/colleges",
-      data: payload,
-      resetField: () =>
-        handleCollegeInfoChange({
-          target: { name: "name", value: "" },
-        }),
-      setState: setColleges,
-      closeModal: () => setIsOpen(false),
-    });
+      // Make the POST request
+      const response = await postRequest({
+        url: "/api/v1/admin/colleges",
+        data: payload,
+      });
+
+      // Add the new college to the local state
+      setColleges((prevColleges) => [...prevColleges, response.data]);
+      // Reset form and close modal on success
+      setCollegeName("");
+      setErrors({});
+      setIsOpen(false);
+    } catch (error) {
+      // Handle and set errors
+      if (error.response && error.response.data && error.response.data.errors) {
+        console.log(error.response.data.errors);
+        setErrors(error.response.data.errors); // Assuming validation errors are in `errors`
+      } else {
+        console.error("An unexpected error occurred:", error);
+        setErrors({
+          general: "An unexpected error occurred. Please try again.",
+        });
+      }
+    }
   };
 
   // Handle Edit Submit
   const handleEditSubmit = async () => {
-    // Ready Payload
-    const payload = editCollegeInfo;
+    try {
+      // Ready Payload
+      const payload = {
+        dean_id: editDeanId,
+        name: editCollegeName,
+      };
 
-    // Submit Form
-    handleSubmit({
-      method: "put",
-      url: `/api/v1/admin/colleges/${selectedCollege["id"]}`,
-      data: payload,
-      resetField: () =>
-        handleEditCollegeInfoChange({
-          target: { name: "name", value: "" },
-        }),
-      setState: setColleges,
-      closeModal: () => setEditIsOpen(false),
-    });
+      // Send update request to the backend
+      const response = await putRequest({
+        url: `/api/v1/admin/colleges/${selectedCollege["id"]}`,
+        data: payload,
+      });
+
+      // Update the college in the state
+      setColleges((prevColleges) =>
+        prevColleges.map((college) =>
+          college.id === selectedCollege["id"]
+            ? { ...college, ...response.data }
+            : college
+        )
+      );
+
+      // Reset inputs and modals
+      setEditCollegeName("");
+      setEditDeanId(null);
+      setEditIsOpen(false);
+    } catch (error) {
+      // Handle and set errors
+      if (error.response && error.response.data && error.response.data.errors) {
+        console.log(error.response.data.errors);
+        setErrors(error.response.data.errors); // Assuming validation errors are in `errors`
+      } else {
+        console.error("An unexpected error occurred:", error);
+        setErrors({
+          general: "An unexpected error occurred. Please try again.",
+        });
+      }
+      console.error("Error updating role:", error);
+    }
   };
 
   // Handle Edit Select College
@@ -94,41 +118,12 @@ const AdminManageCollegesPage = () => {
     // Set College State
     setSelectedCollege(college);
 
-    // Pre-fill the editCollegeInfo
-    handleEditCollegeInfoChange({
-      target: { name: "name", value: college.name },
-    });
+    // Pre-fill the collegeName and dean_id
+    setEditCollegeName(college.name);
+    setEditDeanId(college.dean_id);
 
     // Open Modal
     setEditIsOpen(true);
-  };
-
-  // Handle Archive
-  const handleArchive = async (id) => {
-    // Send Request
-    const response = await deleteRequest({
-      url: `/api/v1/admin/colleges/archive/${id}`,
-      method: "delete",
-    });
-
-    // Set College State
-    setColleges(response.data);
-  };
-
-  // Handle Archive Selected Id's
-  const handleArchiveBySelectedIds = async (selectedIds) => {
-    // Ready Payload
-    const payload = { ids: Array.from(selectedIds) };
-
-    // Send Request
-    const response = await deleteRequest({
-      url: "/api/v1/admin/colleges/archive/selected",
-      data: payload,
-      method: "post",
-    });
-
-    // Set College State
-    setColleges(response.data);
   };
 
   return (
@@ -142,21 +137,15 @@ const AdminManageCollegesPage = () => {
           <hr className="my-3" />
         </Section>
 
-        <AdminManageHeader
-          addPlaceholder="Add New College"
+        <ManageHeader
           isOpen={isOpen}
           setIsOpen={setIsOpen}
+          addPlaceholder="Add New College"
+          showExportButton={false}
         />
 
         {/* Table */}
-        {colleges.length !== 0 && (
-          <AdminCollegesTable
-            handleArchiveBySelectedIds={handleArchiveBySelectedIds}
-            data={colleges}
-            handleEdit={handleEdit}
-            handleArchive={handleArchive}
-          />
-        )}
+        <AdminCollegesTable data={colleges} handleEdit={handleEdit} />
 
         {/* Form Modal */}
         {/* Add Form Modal */}
@@ -167,8 +156,9 @@ const AdminManageCollegesPage = () => {
           onSubmit={handleAddSubmit}
         >
           <AdminCollegeFormAdd
-            collegeInfo={collegeInfo}
-            handleCollegeInfoChange={handleCollegeInfoChange}
+            collegeName={collegeName}
+            setCollegeName={setCollegeName}
+            errors={errors}
           />
         </FormModal>
 
@@ -181,9 +171,11 @@ const AdminManageCollegesPage = () => {
             onSubmit={handleEditSubmit}
           >
             <AdminCollegeFormEdit
-              role={selectedCollege}
-              editCollegeInfo={editCollegeInfo}
-              handleEditCollegeInfoChange={handleEditCollegeInfoChange}
+              editCollegeName={editCollegeName}
+              editDeanId={editDeanId}
+              setEditCollegeName={setEditCollegeName}
+              setEditDeanId={setEditDeanId}
+              deans={list_of_deans} // Pass deans list to the form
             />
           </FormModal>
         )}

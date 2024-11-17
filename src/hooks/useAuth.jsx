@@ -29,43 +29,42 @@ export const AuthProvider = ({ children }) => {
 
   // Function to authenticate the user
   const login = async (payload = {}) => {
-    await axiosClient
-      .get("/sanctum/csrf-cookie", {
-        withCredentials: true,
-      })
-      .then(async (response) => {
-        // Attempt Login (After getting cookies)
-        await axiosClient
-          .post("/api/v1/auth/login", payload)
-          .then((response) => {
-            // Remove loginError in the localStorage
-            localStorage.removeItem("loginError");
+    try {
+      // Fetch CSRF token
+      await axiosClient.get("/sanctum/csrf-cookie", { withCredentials: true });
 
-            // Set User State
-            setUser(response.data.user); // User
-            setToken(response.data.token); // Token
-            setRoles(response.data.roles); // Roles
+      // Attempt login
+      const response = await axiosClient.post("/api/v1/auth/login", payload);
 
-            // Add to localStorage
-            localStorage.setItem("user", JSON.parse(response.data.user));
-            localStorage.setItem("roles", JSON.parse(response.data.roles));
+      // Remove any previous login errors
+      localStorage.removeItem("loginError");
 
-            // Navigate the authenticated user to the /auth
-            return <Navigate to={"/auth"} />;
-          })
-          .catch((error) => {
-            // Check if status 422
+      // Set user, token, and roles
+      setUser(response.data.user);
+      setToken(response.data.token);
+      setRoles(response.data.roles);
 
-            console.log(error);
+      // Store data in localStorage
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+      localStorage.setItem("roles", JSON.stringify(response.data.roles));
 
-            if (error.status === 422) {
-              console.log(error);
-              return error.response.data.errors;
-            }
+      // Redirect user after successful login
+      return <Navigate to={"/auth"} />;
+    } catch (error) {
+      // Handle validation errors (422)
+      if (error.response && error.response.status === 422) {
+        // console.log(error.response);
+        // console.log(error.response.data.errors);
+        return error.response.data.errors; // Return validation errors
+      }
 
-            throw error;
-          });
-      });
+      // Handle other errors
+      /* localStorage.setItem(
+        "loginError",
+        error.message || "An unexpected error occurred."
+      );
+      throw error; */
+    }
   };
 
   // Function to log out the authenticated user

@@ -2,7 +2,7 @@ import React from "react";
 import { FaArchive, FaEdit, FaEye } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 
-const AdminUserRolesTableBody = ({
+const AdminProgramsTableBody = ({
   paginatedData,
   selectedIds,
   handleCheckboxChange,
@@ -20,30 +20,24 @@ const AdminUserRolesTableBody = ({
         {paginatedData.map((data, index) => (
           <tr key={data.id} className={index % 2 === 0 ? "bg-gray-100" : ""}>
             <td className="py-2 px-4 border-b">{index + 1}</td>
-            {/* <td className="py-2 px-4 border-b">
+            <td className="py-2 px-4 border-b">
               <input
                 type="checkbox"
                 checked={selectedIds.has(data.id)}
                 onChange={() => handleCheckboxChange(data.id)}
                 className="form-checkbox"
               />
-            </td> */}
+            </td>
             <td className="py-2 px-4 border-b text-blue-600 font-bold">
               {/* <Link to={`${location.pathname}/${data.id}`}>{data.id}</Link> */}
               {data.id}
             </td>
             {visibleColumns.map((column) => (
-              <td key={column} className="py-2 px-4 border-b text-blue-700">
-                {column === "roles"
-                  ? data[column]["name"].map((role) => {
-                      return (
-                        <p key={role}>
-                          {" "}
-                          {role.charAt(0).toUpperCase() + role.slice(1)}
-                        </p>
-                      );
-                    })
-                  : data[column]}
+              <td
+                key={column}
+                className="py-2 px-4 border-b text-blue-700 font-bold"
+              >
+                {data[column]}
               </td>
             ))}
 
@@ -61,7 +55,7 @@ const AdminUserRolesTableBody = ({
 
                   {handleEdit && (
                     <button
-                      onClick={() => handleEdit(data.id)}
+                      onClick={() => handleEdit(data)}
                       className="text-yellow-600 hover:underline"
                     >
                       <FaEdit size={18} />
@@ -86,4 +80,4 @@ const AdminUserRolesTableBody = ({
   );
 };
 
-export default AdminUserRolesTableBody;
+export default AdminProgramsTableBody;

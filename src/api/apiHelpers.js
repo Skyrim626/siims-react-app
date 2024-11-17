@@ -1,6 +1,43 @@
 // apiHelpers.js
-import { showSuccessAlert } from "../utils/toastify";
+import { Navigate, useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 import axiosClient from "./axiosClient";
+
+// For Login Request
+export const loginRequest = async ({url, params = {}}) => {
+
+  const {setUser, setToken, setRoles} = useAuth();
+  const navigate = useNavigate();
+
+  await axiosClient.get("/sanctum/csrf-cookie", {
+    withCredentials: true,
+  }).then(async (response) => {
+    // Remove loginError inthe localStorage
+    localStorage.removeItem("loginError");
+
+    // Set User State
+    setUser(response.data.user); // User
+    setToken(response.data.token); // Token
+    setRoles(response.data.roles); // Roles
+
+    // Add to local storage
+    localStorage.setItem("user", JSON.parse(response.data.user));
+    localStorage.setItem("roles", JSON.parse(response.data.roles));
+
+    // Navigate the authenticated user to the /auth
+    return navigate('/auth');
+
+  }).catch((error) => {
+    // Check if status is 422
+    console.log(error);
+
+    if(error.status === 422) {
+      console.log(error);
+      return error.response.data.errors;
+    }
+  })
+
+}
 
 // For Get Request
 export const getRequest = async ({ url, params = {} }) => {
@@ -47,7 +84,8 @@ export const putRequest = async ({ url, data = {}, params = {} }) => {
     return res.data
 
   } catch (error) {
-    return error.response ? error.response.data : error.message; // Return error response or message
+    throw error;
+    // return error.response ? error.response.data : error.message; // Return error response or message
   }
 };
 

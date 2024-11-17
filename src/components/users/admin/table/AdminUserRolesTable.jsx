@@ -13,6 +13,7 @@ import TableHead from "../../../tables/TableHead";
 import TableShowResult from "../../../tables/TableShowResult";
 import Section from "../../../common/Section";
 import AdminUserRolesTableBody from "./AdminUserRolesTableBody";
+import AdminUserRolesTableHead from "./AdminUserRolesTableHead";
 
 const AdminUserRolesTable = ({
   data,
@@ -111,7 +112,7 @@ const AdminUserRolesTable = ({
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500">
-          <TableHead
+          <AdminUserRolesTableHead
             selectedIds={selectedIds}
             handleSelectAllChange={handleSelectAllChange}
             visibleColumns={visibleColumns}

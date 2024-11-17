@@ -9,12 +9,12 @@ import ArchiveButton from "../../../tables/ArchiveButton";
 import Pagination from "../../../tables/Pagination";
 import Search from "../../../tables/Search";
 import Filter from "../../../tables/Filter";
+import TableHead from "../../../tables/TableHead";
 import TableShowResult from "../../../tables/TableShowResult";
 import Section from "../../../common/Section";
-import AdminRolesTableBody from "./AdminRolesTableBody";
-import AdminRolesTableHead from "./AdminRolesTableHead";
+import AdminProgramsTableBody from "./AdminProgramsTableBody";
 
-const AdminRolesTable = ({
+const AdminProgramsTable = ({
   data,
   searchPlaceholder = "Search something...",
   handleArchiveBySelectedIds,
@@ -111,7 +111,7 @@ const AdminRolesTable = ({
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500">
-          <AdminRolesTableHead
+          <TableHead
             selectedIds={selectedIds}
             handleSelectAllChange={handleSelectAllChange}
             visibleColumns={visibleColumns}
@@ -122,7 +122,7 @@ const AdminRolesTable = ({
             handleDelete={handleDelete}
             handleView={handleView}
           />
-          <AdminRolesTableBody
+          <AdminProgramsTableBody
             paginatedData={paginatedData}
             selectedIds={selectedIds}
             handleCheckboxChange={handleCheckboxChange}
@@ -139,4 +139,4 @@ const AdminRolesTable = ({
   );
 };
 
-export default AdminRolesTable;
+export default AdminProgramsTable;

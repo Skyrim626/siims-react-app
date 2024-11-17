@@ -3,7 +3,7 @@ import { Outlet, useLocation, useParams } from "react-router-dom"; // Import use
 import SidebarLayout from "./SidebarLayout";
 import Breadcrumb from "../common/Breadcrumb";
 import Page from "../common/Page";
-import { Building, LayoutDashboard } from "lucide-react";
+import { Building, LayoutDashboard, User } from "lucide-react";
 import { findBreadcrumbPath } from "../../utils/breadcrumbUtils";
 
 // Configuration for sidebar items for chairperson
@@ -16,6 +16,15 @@ const sidebarItemsConfig = [
     exact: true,
     active: true,
     path: "/auth/chairperson",
+  },
+  {
+    icon: <User size={20} />,
+    text: "Students",
+    alert: true,
+    ariaLabel: "Students",
+    exact: false,
+    active: true,
+    path: "/auth/chairperson/students",
   },
   {
     icon: <Building size={20} />,

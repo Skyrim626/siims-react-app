@@ -3,158 +3,118 @@ import Page from "../../components/common/Page";
 import Section from "../../components/common/Section";
 import Text from "../../components/common/Text";
 import Heading from "../../components/common/Heading";
-import { getRequest } from "../../api/apiHelpers";
+import { postRequest } from "../../api/apiHelpers";
 import AdminRolesTable from "../../components/users/admin/table/AdminRolesTable";
 import { Button } from "@headlessui/react";
 import AdminUserRolesTable from "../../components/users/admin/table/AdminUserRolesTable";
 import FormModal from "../../components/modals/FormModal";
 import AdminRoleFormAdd from "./forms/AdminRoleFormAdd";
-import useForm from "../../hooks/useForm";
-import AdminRoleFormEdit from "./forms/AdminRoleFormEdit";
-import useHandleSubmit from "../../hooks/useHandleSubmit"; // Import your custom hook
 import ManageHeader from "../../components/common/ManageHeader";
+import { useLoaderData } from "react-router-dom";
 
 const AdminManageRolesPage = () => {
+  // Retrieve the user_roles data from the loader
+  const { initialRoles, userRoles } = useLoaderData();
+
+  // State for roles and form modal
+  const [roles, setRoles] = useState(initialRoles);
   const [isOpen, setIsOpen] = useState(false);
-  const [editIsOpen, setEditIsOpen] = useState(false);
-  const [selectedRole, setSelectedRole] = useState(null);
   const [selectedTab, setSelectedTab] = useState(0);
-  const [userRoles, setUserRoles] = useState([]);
-  const [roles, setRoles] = useState([]);
 
-  const [roleInfo, handleRoleInfoChange] = useForm({ name: "" });
-  const [editRoleInfo, handleEditRoleInfoChange] = useForm({ name: "" });
-  const { handleSubmit, isSubmitting, error } = useHandleSubmit();
+  // Form input and errors
+  const [roleName, setRoleName] = useState("");
+  const [errors, setErrors] = useState({});
 
-  // Combined fetch logic
-  const fetchRolesData = async () => {
-    const userRolesResponse = await getRequest({
-      url: "/api/v1/admin/roles/user-roles",
-    });
-    const rolesResponse = await getRequest({ url: "/api/v1/admin/roles" });
-    setUserRoles(userRolesResponse);
-    setRoles(rolesResponse);
-  };
+  // Submit new role data
+  const submitRole = async () => {
+    try {
+      // Prepare the payload
+      const payload = {
+        name: roleName,
+      };
 
-  useEffect(() => {
-    fetchRolesData();
-  }, []);
+      // Make the POST request
+      const response = await postRequest({
+        url: "/api/v1/admin/roles",
+        data: payload,
+      });
 
-  // Submits Data
-  const submitRole = async (isEdit) => {
-    const payload = isEdit ? editRoleInfo : roleInfo;
-    const url = isEdit
-      ? `/api/v1/admin/roles/${selectedRole.id}`
-      : "/api/v1/admin/roles";
+      // Add the new role to the local state
+      setRoles((prevRoles) => [...prevRoles, response.data]);
 
-    await handleSubmit({
-      url,
-      method: isEdit ? "put" : "post",
-      data: payload,
-      resetField: isEdit
-        ? handleEditRoleInfoChange({
-            target: { name: "name", value: "" },
-          })
-        : handleRoleInfoChange({
-            target: { name: "name", value: "" },
-          }),
-      setState: setRoles,
-      closeModal: () => {
-        if (isEdit) {
-          setEditIsOpen(false);
-        } else {
-          setIsOpen(false);
-        }
-      },
-    });
-  };
-
-  const handleEdit = (role) => {
-    setSelectedRole(role);
-    handleEditRoleInfoChange({ target: { name: "name", value: role.name } });
-    setEditIsOpen(true);
+      // Reset form and close modal on success
+      setRoleName("");
+      setErrors({});
+      setIsOpen(false);
+    } catch (error) {
+      // Handle and set errors
+      if (error.response && error.response.data && error.response.data.errors) {
+        console.log(error.response.data.errors);
+        setErrors(error.response.data.errors); // Assuming validation errors are in `errors`
+      } else {
+        console.error("An unexpected error occurred:", error);
+        setErrors({
+          general: "An unexpected error occurred. Please try again.",
+        });
+      }
+    }
   };
 
   return (
-    <>
-      <Page>
-        <Section>
-          <Heading level={3} text={"Roles"} />
-          <Text className="text-md text-blue-950">
-            This is where you manage the roles.
-          </Text>
-          <hr className="my-3" />
-        </Section>
-        <Section className="flex gap-5 text-md">
-          <Button
-            onClick={() => setSelectedTab(0)}
-            className={`transition duration-300 border-b-2 border-transparent ${
-              selectedTab === 0
-                ? "border-b-blue-800 font-bold"
-                : "hover:border-blue-900"
-            }`}
-          >
-            User Roles
-          </Button>
-          <Button
-            onClick={() => setSelectedTab(1)}
-            className={`transition duration-300 border-b-2 border-transparent ${
-              selectedTab === 1
-                ? "border-b-blue-800 font-bold"
-                : "hover:border-blue-900"
-            }`}
-          >
-            Roles
-          </Button>
-        </Section>
-        <ManageHeader
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-          addPlaceholder="Add New Role"
-        />
-        {userRoles.length > 0 &&
-          roles.length > 0 &&
-          (selectedTab === 0 ? (
-            <AdminUserRolesTable
-              searchPlaceholder={"Search User"}
-              data={userRoles}
-            />
-          ) : (
-            <AdminRolesTable
-              handleEdit={handleEdit}
-              searchPlaceholder="Search Role"
-              data={roles}
-            />
-          ))}
-        <FormModal
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-          modalTitle="Add Role"
-          onSubmit={() => submitRole(false)}
+    <Page>
+      <Section>
+        <Heading level={3} text="Roles" />
+        <Text className="text-md text-blue-950">
+          This is where you manage the roles.
+        </Text>
+        <hr className="my-3" />
+      </Section>
+      <Section className="flex gap-5 text-md">
+        <Button
+          onClick={() => setSelectedTab(0)}
+          className={`transition duration-300 border-b-2 border-transparent ${
+            selectedTab === 0
+              ? "border-b-blue-800 font-bold"
+              : "hover:border-blue-900"
+          }`}
         >
-          <AdminRoleFormAdd
-            roleInfo={roleInfo}
-            handleRoleInfoChange={handleRoleInfoChange}
-          />
-        </FormModal>
-        {selectedRole && (
-          <FormModal
-            isOpen={editIsOpen}
-            setIsOpen={setEditIsOpen}
-            modalTitle="Edit Role"
-            onSubmit={() => submitRole(true)}
-          >
-            <AdminRoleFormEdit
-              role={selectedRole}
-              editRoleInfo={editRoleInfo}
-              handleEditRoleInfoChange={handleEditRoleInfoChange}
-            />
-          </FormModal>
-        )}
-        {isSubmitting && <p>Submitting...</p>}
-        {error && <p>Error: {error}</p>}
-      </Page>
-    </>
+          User Roles
+        </Button>
+        <Button
+          onClick={() => setSelectedTab(1)}
+          className={`transition duration-300 border-b-2 border-transparent ${
+            selectedTab === 1
+              ? "border-b-blue-800 font-bold"
+              : "hover:border-blue-900"
+          }`}
+        >
+          Roles
+        </Button>
+      </Section>
+      <ManageHeader
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        addPlaceholder="Add New Role"
+        showAllButtons={selectedTab === 1}
+      />
+      {selectedTab === 0 ? (
+        <AdminUserRolesTable searchPlaceholder="Search User" data={userRoles} />
+      ) : (
+        <AdminRolesTable searchPlaceholder="Search Role" data={roles} />
+      )}
+      <FormModal
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        modalTitle="Add Role"
+        onSubmit={submitRole}
+      >
+        <AdminRoleFormAdd
+          roleName={roleName}
+          setRoleName={setRoleName}
+          errors={errors}
+        />
+      </FormModal>
+    </Page>
   );
 };
 

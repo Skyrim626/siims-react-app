@@ -25,6 +25,7 @@ import AdminManageCollegesPage from "../../pages/admin/AdminManageCollegesPage";
 import AdminManageRolesPage from "../../pages/admin/AdminManageRolesPage"; // Importing the page to manage user roles
 import AdminManageCompaniesPage from "../../pages/admin/AdminManageCompaniesPage"; // Importing the page to manage companies
 import AdminManageOfficesPage from "../../pages/admin/AdminManageOfficesPage";
+import AdminManageProgramsPage from "../../pages/admin/AdminManageProgramsPage";
 
 // Define routes for the Admin section
 const AdminRoutes = {
@@ -51,6 +52,34 @@ const AdminRoutes = {
     {
       path: "roles", // Route for managing user roles
       element: <AdminManageRolesPage />,
+      loader: async () => {
+        try {
+          const response = await axiosClient.get("/api/v1/admin/roles");
+
+          // Fetch the list of roles and user roles
+          const { initialRoles, userRoles } = response.data;
+          return { initialRoles, userRoles }; // Return both as an object
+        } catch (error) {
+          console.error("Error fetching user roles: ", error);
+          throw error; // Let the router handle errors
+        }
+      },
+    },
+    {
+      path: "colleges", // Route for managing colleges
+      element: <AdminManageCollegesPage />,
+      loader: async () => {
+        try {
+          const response = await axiosClient.get("/api/v1/admin/colleges");
+          // Fetch the list of colleges
+          const { initial_colleges, list_of_deans } = response.data;
+
+          return { initial_colleges, list_of_deans };
+        } catch (error) {
+          console.error("Error fetching colleges: ", error);
+          throw error; // Let the router handle errors
+        }
+      },
     },
     {
       path: "users", // Base path for user management
@@ -84,9 +113,10 @@ const AdminRoutes = {
         },
       ],
     },
+
     {
-      path: "colleges", // Route for managing colleges
-      element: <AdminManageCollegesPage />,
+      path: "programs",
+      element: <AdminManageProgramsPage />,
     },
     {
       path: "offices", // Route for managing offices

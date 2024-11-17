@@ -5,11 +5,12 @@ import { Input } from "@headlessui/react";
 import Text from "../../../components/common/Text";
 
 const AdminCollegeFormAdd = ({
-  collegeInfo,
-  handleCollegeInfoChange,
+  collegeName = "",
+  setCollegeName = () => {},
   requiredFields = {
-    name: true,
+    collegeName: true,
   },
+  errors,
 }) => {
   return (
     <>
@@ -26,19 +27,24 @@ const AdminCollegeFormAdd = ({
           <div className="grid grid-cols-3 gap-2 mt-4">
             <FormField
               label={"College Name"}
-              name={"college_name"}
+              name={"collegeName"}
               labelClassName="text-sm text-black font-semibold"
-              required={requiredFields["name"]}
+              required={requiredFields["collegeName"]}
             >
               <Input
                 type="text"
                 className="outline-none text-black rounded-sm p-2 text-sm"
-                name="name"
-                onChange={handleCollegeInfoChange}
+                name="collegeName"
+                onChange={(e) => {
+                  setCollegeName(e.target.value);
+                }}
                 placeholder="College Name"
-                value={collegeInfo.name}
-                required={requiredFields["name"]}
+                value={collegeName}
+                required={requiredFields["collegeName"]}
               />
+              {errors.name && (
+                <Text className="text-red-500">{errors.name[0]}</Text>
+              )}
             </FormField>
           </div>
         </div>

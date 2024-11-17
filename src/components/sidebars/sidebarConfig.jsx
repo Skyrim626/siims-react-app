@@ -6,6 +6,7 @@ import {
   Logs,
   MessageCircle,
   User,
+  Presentation,
 } from "lucide-react";
 
 // Configuration for sidebar items for Admin
@@ -19,14 +20,6 @@ const adminSidebarItemsConfig = [
     path: "/auth/admin",
   },
   {
-    icon: <User size={20} />,
-    text: "Users",
-    alert: true,
-    ariaLabel: "Users",
-    exact: false, // No exact match needed for partial path
-    path: "/auth/admin/users",
-  },
-  {
     icon: <ClipboardList />,
     text: "Roles",
     alert: true,
@@ -34,7 +27,6 @@ const adminSidebarItemsConfig = [
     exact: true,
     path: "/auth/admin/roles",
   },
-
   {
     icon: <Building size={20} />,
     text: "Colleges",
@@ -43,6 +35,23 @@ const adminSidebarItemsConfig = [
     exact: false,
     path: "/auth/admin/colleges",
   },
+  {
+    icon: <Presentation size={20} />,
+    text: "Programs",
+    alert: true,
+    ariaLabel: "Programs",
+    exact: false,
+    path: "/auth/admin/programs",
+  },
+  {
+    icon: <User size={20} />,
+    text: "Users",
+    alert: true,
+    ariaLabel: "Users",
+    exact: false, // No exact match needed for partial path
+    path: "/auth/admin/users",
+  },
+
   {
     icon: <Building size={20} />,
     text: "Offices",

@@ -20,14 +20,14 @@ const AdminRolesTableBody = ({
         {paginatedData.map((data, index) => (
           <tr key={data.id} className={index % 2 === 0 ? "bg-gray-100" : ""}>
             <td className="py-2 px-4 border-b">{index + 1}</td>
-            <td className="py-2 px-4 border-b">
+            {/* <td className="py-2 px-4 border-b">
               <input
                 type="checkbox"
                 checked={selectedIds.has(data.id)}
                 onChange={() => handleCheckboxChange(data.id)}
                 className="form-checkbox"
               />
-            </td>
+            </td> */}
             <td className="py-2 px-4 border-b text-blue-600 font-bold">
               {/* <Link to={`${location.pathname}/${data.id}`}>{data.id}</Link> */}
               {data.id}

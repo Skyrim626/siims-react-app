@@ -1,28 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import LoginForm from "../../components/forms/LoginForm";
 import useForm from "../../hooks/useForm";
 import { useAuth } from "../../hooks/useAuth";
 import { showFailedAlert } from "../../utils/toastify";
 import AuthPrompt from "../../components/auth/AuthPrompt";
 
-/**
- * LoginPage Component
- * This component renders the login page of the application, which includes a logo,
- * a heading, a brief welcome text, and the login form for user authentication.
- *
- * Features:
- * - Uses a custom useForm hook to manage the login form state.
- * - Uses the useAuth hook to perform login authentication.
- * - Displays an error alert if a login error is stored in localStorage.
- *
- * @returns {JSX.Element} The login page with a form to authenticate users.
- */
 export default function LoginPage() {
   // Initialize form state for login credentials (id and password)
-  const [loginInfo, handleLoginInfoChange, resetLoginInfo] = useForm({
-    id: "",
-    password: "",
-  });
+  const [id, setId] = useState("");
+  const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({});
 
   // Destructure login function from the useAuth hook for handling login requests
   const { login } = useAuth();
@@ -57,10 +44,19 @@ export default function LoginPage() {
     e.preventDefault();
 
     // Prepare the payload with the login information from the form
-    const payload = loginInfo;
+    const payload = {
+      id,
+      password,
+    };
 
-    // Attempt to log in the user with the provided credentials
-    login(payload);
+    // Attempt login and handle validation errors
+    const validationErrors = await login(payload);
+
+    console.log(validationErrors);
+
+    if (validationErrors) {
+      setErrors(validationErrors); // Set errors in state
+    }
   };
 
   return (
@@ -72,9 +68,12 @@ export default function LoginPage() {
       />
       {/* Login form component */}
       <LoginForm
-        loginInfo={loginInfo}
-        handleLoginInfoChange={handleLoginInfoChange}
+        id={id}
+        password={password}
+        setId={setId}
+        setPassword={setPassword}
         handleSubmit={handleSubmit}
+        errors={errors} // Pass validation errors
       />
     </>
   );

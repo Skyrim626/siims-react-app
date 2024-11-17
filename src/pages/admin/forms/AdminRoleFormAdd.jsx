@@ -2,12 +2,14 @@ import React from "react";
 import Heading from "../../../components/common/Heading";
 import FormField from "../../../components/common/FormField";
 import { Input } from "@headlessui/react";
+import Text from "../../../components/common/Text";
 
 const AdminRoleFormAdd = ({
-  roleInfo,
-  handleRoleInfoChange,
+  roleName = "",
+  setRoleName = () => {},
+  errors,
   requiredFields = {
-    name: true,
+    roleName: false,
   },
 }) => {
   return (
@@ -23,20 +25,25 @@ const AdminRoleFormAdd = ({
         <div className="flex flex-col">
           <div className="grid grid-cols-3 gap-2 mt-4">
             <FormField
-              label={"Name"}
-              name={"name"}
+              label={"Role Name"}
+              name={"roleName"}
               labelClassName="text-sm text-black font-semibold"
-              required={requiredFields["name"]}
+              required={requiredFields["roleName"]}
             >
               <Input
                 type="text"
                 className="outline-none text-black rounded-sm p-2 text-sm"
-                name="name"
-                onChange={handleRoleInfoChange}
+                name="roleName"
+                onChange={(e) => {
+                  setRoleName(e.target.value);
+                }}
                 placeholder="Role Name"
-                value={roleInfo.name}
-                required={requiredFields["name"]}
+                value={roleName}
+                required={requiredFields["roleName"]}
               />
+              {errors.name && (
+                <Text className="text-red-500">{errors.name[0]}</Text>
+              )}
             </FormField>
           </div>
         </div>
