@@ -19,11 +19,11 @@ import useHandleSubmit from "../../hooks/useHandleSubmit";
 import { useLoaderData } from "react-router-dom";
 
 const AdminManageProgramsPage = () => {
-  // Retrieve the user_roles data from the loader
+  // Retrieve the programs, list_of_chairperson, and list_of_colleges data from the loader
   const { initial_programs, list_of_chairpersons, list_of_colleges } =
     useLoaderData();
 
-  // State for colleges and form modal
+  // State for programs and form modal
   const [programs, setPrograms] = useState(initial_programs);
   const [isOpen, setIsOpen] = useState(false);
   const [editIsOpen, setEditIsOpen] = useState(false);
@@ -138,7 +138,7 @@ const AdminManageProgramsPage = () => {
   // Handle Edit Select Program
   const handleEdit = (program) => {
     // Set Program State
-    console.log(program);
+    // console.log(program);
     setSelectedProgram(program);
 
     // Pre-fill the college_id, chairperson_id, name with in each fields
