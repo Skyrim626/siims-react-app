@@ -23,19 +23,25 @@ import {
 import React from "react";
 
 const WorkPostForm = ({
+  requestMethod = "post",
+  workTypeId = "",
+  title = "",
+  responsibilities = "",
+  qualifications = "",
+  startDate = "",
+  endDate = "",
+  workDuration = "",
+  maxApplicants = "",
+  setWorkTypeId = () => {},
+  setTitle = () => {},
+  setResponsibilities = () => {},
+  setQualifications = () => {},
+  setStartDate = () => {},
+  setEndDate = () => {},
+  setMaxApplicants = () => {},
+  setWorkDuration = () => {},
   isFormModal = true,
   method = "post",
-  workPostInfo = {
-    work_type_id: "",
-    title: "",
-    max_applicants: "",
-    responsibilities: "",
-    qualifications: "",
-    date_start: "",
-    date_end: "",
-    work_duration: "",
-  },
-  handleWorkPostInfoChange = () => console.log("Testing"),
   workTypes = [
     {
       id: 1,
@@ -46,31 +52,35 @@ const WorkPostForm = ({
       name: "Immersion",
     },
   ],
-  handleSubmit,
+  handleSubmit = () => {
+    console.log("Submit");
+  },
   requiredFields = {
-    work_type_id: true,
+    workTypeId: true,
     title: true,
     responsibilities: true,
     qualifications: true,
-    date_start: true,
-    date_end: true,
-    max_applicants: true,
-    work_duration: true,
+    startDate: true,
+    endDate: true,
+    maxApplicants: true,
+    workDuration: true,
   },
   displayFields = {
-    work_type_id: true,
+    workTypeId: true,
     title: true,
     responsibilities: true,
     qualifications: true,
-    date_start: true,
-    date_end: true,
-    work_duration: true,
-    max_applicants: true,
+    startDate: true,
+    endDate: true,
+    workDuration: true,
+    maxApplicants: true,
   },
 }) => {
+  // console.log(startDate);
+
   // Method Checker
   const buttonTitle = () => {
-    switch (method) {
+    switch (requestMethod) {
       case "put":
         return "Save Changes";
 
@@ -84,27 +94,29 @@ const WorkPostForm = ({
       <>
         <div className="text-sm">
           {/* Work Types */}
-          {displayFields.work_type_id && (
+          {displayFields.workTypeId && (
             <Field className="mb-4">
               <Label
-                htmlFor="work_type_id"
+                htmlFor="workTypeId"
                 className="text-gray-700 font-bold mb-2 flex items-center"
               >
                 <Briefcase size={20} className="mr-2 text-blue-600" />
                 Work Type
-                {requiredFields.work_type_id && (
+                {requiredFields.workTypeId && (
                   <span className="text-red-500">*</span>
                 )}
               </Label>
               <Select
-                id="work_type_id"
-                name="work_type_id"
+                id="workTypeId"
+                name="workTypeId"
                 className="border rounded-lg w-full py-2 px-3 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
-                value={workPostInfo.work_type_id}
-                onChange={handleWorkPostInfoChange}
-                required={requiredFields.work_type_id}
+                value={workTypeId}
+                onChange={(e) => {
+                  setWorkTypeId(e.target.value);
+                }}
+                required={requiredFields.workTypeId}
               >
-                <option value="">-Select Work Type-</option>
+                <option value=" ">-Select Work Type-</option>
                 {workTypes.map((workTypes) => (
                   <option key={workTypes.id} value={workTypes.id}>
                     {workTypes.name}
@@ -130,8 +142,10 @@ const WorkPostForm = ({
               name="title"
               className="border rounded-lg w-full py-2 px-3 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
               placeholder="e.g. Software Engineer"
-              value={workPostInfo.title}
-              onChange={handleWorkPostInfoChange}
+              value={title}
+              onChange={(e) => {
+                setTitle(e.target.value);
+              }}
               required={requiredFields.title}
             />
           </Field>
@@ -153,8 +167,10 @@ const WorkPostForm = ({
               name="responsibilities"
               className="border rounded-lg w-full py-2 px-3 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
               placeholder="Enter the responsibilities for this job title..."
-              value={workPostInfo.responsibilities}
-              onChange={handleWorkPostInfoChange}
+              value={responsibilities}
+              onChange={(e) => {
+                setResponsibilities(e.target.value);
+              }}
               required={requiredFields.responsibilities}
               rows={3}
             />
@@ -177,14 +193,16 @@ const WorkPostForm = ({
               name="qualifications"
               className="border rounded-lg w-full py-2 px-3 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
               placeholder="Enter the qualifications for this job title..."
-              value={workPostInfo.qualifications}
-              onChange={handleWorkPostInfoChange}
+              value={qualifications}
+              onChange={(e) => {
+                setQualifications(e.target.value);
+              }}
               required={requiredFields.qualifications}
               rows={3}
             />
           </Field>
 
-          {/* Max_applicants */}
+          {/* MaxApplicants */}
           <Field className="mb-4">
             <Label
               htmlFor="phone_number"
@@ -192,19 +210,21 @@ const WorkPostForm = ({
             >
               <Users size={20} className="mr-2 text-blue-600" />
               Max Applicants
-              {requiredFields.max_applicants && (
+              {requiredFields.maxApplicants && (
                 <span className="text-red-500">*</span>
               )}
             </Label>
             <Input
               type="number"
-              id="max_applicants"
-              name="max_applicants"
+              id="maxApplicants"
+              name="maxApplicants"
               className="border rounded-lg w-full py-2 px-3 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
               placeholder="e.g. 5"
-              value={workPostInfo.max_applicants}
-              onChange={handleWorkPostInfoChange}
-              required={requiredFields.max_applicants}
+              value={maxApplicants}
+              onChange={(e) => {
+                setMaxApplicants(e.target.value);
+              }}
+              required={requiredFields.maxApplicants}
             />
           </Field>
 
@@ -212,86 +232,89 @@ const WorkPostForm = ({
             {/* Date Start */}
             <Field className="mb-4 flex-grow">
               <Label
-                htmlFor="date_start"
+                htmlFor="startDate"
                 className="text-gray-700 font-bold mb-2 flex items-center"
               >
                 <CalendarClock size={20} className="mr-2 text-blue-600" />
                 Start Date
-                {requiredFields.date_start && (
+                {requiredFields.startDate && (
                   <span className="text-red-500">*</span>
                 )}
               </Label>
               <Input
                 type="date"
-                id="date_start"
-                name="date_start"
+                id="startDate"
+                name="startDate"
                 className="border rounded-lg w-full py-2 px-3 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
-                value={workPostInfo.date_start}
-                onChange={handleWorkPostInfoChange}
-                required={requiredFields.date_start}
+                value={startDate}
+                onChange={(e) => {
+                  setStartDate(e.target.value);
+                }}
+                required={requiredFields.startDate}
               />
             </Field>
 
             {/* Date End */}
             <Field className="mb-4 flex-grow">
               <Label
-                htmlFor="date_end"
+                htmlFor="endDate"
                 className="text-gray-700 font-bold mb-2 flex items-center"
               >
                 <CalendarCheck size={20} className="mr-2 text-blue-600" />
                 End Date
-                {requiredFields.date_end && (
+                {requiredFields.endDate && (
                   <span className="text-red-500">*</span>
                 )}
               </Label>
               <Input
                 type="date"
-                id="date_end"
-                name="date_end"
+                id="endDate"
+                name="endDate"
                 className="border rounded-lg w-full py-2 px-3 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
-                value={workPostInfo.date_end}
-                onChange={handleWorkPostInfoChange}
-                required={requiredFields.date_end}
+                value={endDate}
+                onChange={(e) => {
+                  setEndDate(e.target.value);
+                }}
+                required={requiredFields.endDate}
               />
             </Field>
 
             {/* Work Duration */}
             <Field className="mb-4 flex-grow">
               <Label
-                htmlFor="work_duration"
+                htmlFor="workDuration"
                 className="text-gray-700 font-bold mb-2 flex items-center"
               >
                 <Hourglass size={20} className="mr-2 text-blue-600" />
                 Work Duration (in hours)
-                {requiredFields.work_duration && (
+                {requiredFields.workDuration && (
                   <span className="text-red-500">*</span>
                 )}
               </Label>
               <Input
                 type="text"
-                id="work_duration"
-                name="work_duration"
+                id="workDuration"
+                name="workDuration"
                 className="border rounded-lg w-full py-2 px-3 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
                 placeholder="e.g. 40"
-                value={workPostInfo.work_duration}
-                onChange={handleWorkPostInfoChange}
-                required={requiredFields.work_duration}
+                value={workDuration}
+                onChange={(e) => {
+                  setWorkDuration(e.target.value);
+                }}
+                required={requiredFields.workDuration}
               />
             </Field>
           </div>
 
           {/* Submit Button */}
-          {!isFormModal && (
-            <div className="pt-3">
-              <Button
-                onClick={handleSubmit}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md shadow-md w-full focus:outline-none focus:ring-2 focus:ring-blue-200"
-                type="button"
-              >
-                {buttonTitle}
-              </Button>
-            </div>
-          )}
+          <div className="pt-3">
+            <Button
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md shadow-md w-full focus:outline-none focus:ring-2 focus:ring-blue-200"
+              type="submit"
+            >
+              {buttonTitle}
+            </Button>
+          </div>
         </div>
       </>
     );
@@ -299,16 +322,12 @@ const WorkPostForm = ({
 
   return (
     <>
-      {isFormModal ? (
-        renderWorkPostFormFields()
-      ) : (
-        <form
-          onSubmit={handleSubmit}
-          className=" bg-white shadow-lg rounded-lg p-8 space-y-6"
-        >
-          {renderWorkPostFormFields()}
-        </form>
-      )}
+      <form
+        onSubmit={handleSubmit}
+        className=" bg-white shadow-lg rounded-lg p-8 space-y-6"
+      >
+        {renderWorkPostFormFields()}
+      </form>
     </>
   );
 };

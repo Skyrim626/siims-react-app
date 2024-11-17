@@ -8,6 +8,8 @@ import {
   User,
   Presentation,
   File,
+  Briefcase,
+  FileText,
 } from "lucide-react";
 
 // Configuration for sidebar items for Admin
@@ -96,6 +98,82 @@ const adminSidebarItemsConfig = [
   },
 ];
 
+// Configuration for sidebar items for Chairperson
+const chairpersonSidebarItemsConfig = [
+  {
+    icon: <LayoutDashboard size={20} />,
+    text: "Dashboard",
+    alert: true,
+    ariaLabel: "Dashboard",
+    exact: true,
+    active: true,
+    path: "/auth/chairperson",
+  },
+  {
+    icon: <User size={20} />,
+    text: "Students",
+    alert: true,
+    ariaLabel: "Students",
+    exact: false,
+    active: true,
+    path: "/auth/chairperson/students",
+  },
+  {
+    icon: <Building size={20} />,
+    text: "Companies",
+    alert: true,
+    ariaLabel: "Companies",
+    exact: false,
+    active: true,
+    path: "/auth/chairperson/companies",
+    sublinks: [
+      {
+        text: "Company_ID",
+        path: "/auth/chairperson/companies/:company_id", // Dynamic path
+      },
+    ],
+  },
+  {
+    icon: <FileText size={20} />,
+    text: "Endorsement Requests",
+    alert: true,
+    ariaLabel: "Endorsement Request",
+    exact: false,
+    active: true,
+    path: "/auth/chairperson/endorsement-requests",
+  },
+];
+
+// Configuration for sidebar items for Supervisor
+const supervisorSidebarItemsConfig = [
+  {
+    icon: <LayoutDashboard size={20} />,
+    text: "Dashboard",
+    alert: true,
+    ariaLabel: "Dashboard",
+    exact: true, // Add an `exact` property for exact path matching
+    path: "/auth/supervisor",
+  },
+  {
+    icon: <Briefcase size={20} />,
+    text: "Manage Jobs",
+    alert: true,
+    ariaLabel: "Manage Jobs",
+    exact: false, // Add an `exact` property for exact path matching
+    path: "/auth/supervisor/work-posts",
+    sublinks: [
+      {
+        text: "Add Job",
+        path: "/auth/supervisor/work-posts/add", // Dynamic path
+      },
+      {
+        text: "Edit Job",
+        path: "/auth/supervisor/work-posts/edit/:id", // Dynamic path
+      },
+    ],
+  },
+];
+
 // Configuration for sidebar items for OSA
 const osaSidebarItemsConfig = [
   {
@@ -162,4 +240,6 @@ export {
   adminSidebarItemsConfig,
   deanSidebarItemsConfig,
   osaSidebarItemsConfig,
+  supervisorSidebarItemsConfig,
+  chairpersonSidebarItemsConfig,
 };

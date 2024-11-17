@@ -4,6 +4,7 @@ import ProtectedRoute from "../handlers/ProtectedRoute";
 import ChairpersonDashboardPage from "../../pages/chairperson/ChairpersonDashboardPage";
 import ChairpersonManageCompaniesPage from "../../pages/chairperson/ChairpersonManageCompaniesPage";
 import ChairpersonCompanyPage from "../../pages/chairperson/ChairpersonCompanyPage";
+import ChairpersonEndorsementRequestsPage from "../../pages/chairperson/ChairpersonEndorsementRequestsPage";
 
 // Routes for Chairperson
 const ChairpersonRoutes = {
@@ -35,6 +36,10 @@ const ChairpersonRoutes = {
           element: <ChairpersonCompanyPage />,
         },
       ],
+    },
+    {
+      path: "endorsement-requests",
+      element: <ChairpersonEndorsementRequestsPage />,
     },
   ],
 };

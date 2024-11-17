@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
+import { useLoaderData, useNavigate } from "react-router-dom"; // Import useNavigate for redirection
 import Page from "../../components/common/Page";
 import Section from "../../components/common/Section";
 import Heading from "../../components/common/Heading";
@@ -9,38 +9,30 @@ import JobCard from "../../components/common/JobCard";
 import { getRequest } from "../../api/apiHelpers";
 
 const SupervisorManageJobsPage = () => {
-  const navigate = useNavigate(); // Initialize navigate
+  // Initialize navigate
+  const navigate = useNavigate();
+
+  // Retrieve the programs data from the loader
+  const { initial_work_posts, work_types } = useLoaderData();
+
+  // console.log(initial_work_posts);
+  // console.log(work_types);
 
   // Filter State
   const [jobType, setJobType] = useState("all");
   // Search State
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Fetch State
-  const [jobs, setJobs] = useState([]);
-
-  // Use Effect
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await getRequest({
-        url: "/api/v1/supervisor/work-posts",
-      });
-
-      // Set State
-      setJobs(response);
-    };
-
-    fetchData();
-  }, []);
-
   // Filter Jobs
-  const filteredJobs = jobs
-    .filter(
-      (job) => jobType === "all" || job.work_type_id === parseInt(jobType)
-    )
-    .filter((job) =>
-      job.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+  const filteredJobs =
+    initial_work_posts &&
+    initial_work_posts
+      .filter(
+        (job) => jobType === "all" || job.work_type_id === parseInt(jobType)
+      )
+      .filter((job) =>
+        job.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
 
   return (
     <Page>

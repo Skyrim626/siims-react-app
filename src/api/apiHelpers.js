@@ -2,6 +2,7 @@
 import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import axiosClient from "./axiosClient";
+import axios from "axios"; // Add this line at the top of the file
 
 // For Login Request
 export const loginRequest = async ({url, params = {}}) => {
@@ -115,17 +116,16 @@ export const deleteRequest = async ({ url, data = {}, params = {}, method = 'del
 };
 
 // For Post FormDat request
-export const postFormDataRequest = async ({ url, data = {}, params = {} }) => {
+export const postFormDataRequest = async ({ url, data }) => {
   try {
-    const res = await axios.post(url, data, {
-      params,
+    const response = await axiosClient.post(url, data, {
       headers: {
-        "Content-Type": "multipart/form-data",
+        "Content-Type": "multipart/form-data", // Ensures the request is sent as form-data
       },
     });
-    return res.data;
-  } catch (err) {
-    return err;
+    return response.data;
+  } catch (error) {
+    throw error;
   }
 };
 
