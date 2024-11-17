@@ -87,4 +87,46 @@ const adminSidebarItemsConfig = [
   },
 ];
 
-export { adminSidebarItemsConfig };
+// Configuration for sidebar items for Dean
+const deanSidebarItemsConfig = [
+  {
+    icon: <LayoutDashboard size={20} />,
+    text: "Dashboard",
+    alert: true,
+    ariaLabel: "Dashboard",
+    exact: true, // Add an `exact` property for exact path matching
+    path: "/auth/dean",
+  },
+  {
+    icon: <User size={20} />,
+    text: "Profile",
+    alert: true,
+    ariaLabel: "Profile",
+    exact: true,
+    path: "/auth/dean/profile",
+  },
+  {
+    icon: <Presentation size={20} />,
+    text: "Programs",
+    alert: true,
+    ariaLabel: "Programs",
+    exact: false,
+    path: "/auth/dean/programs",
+  },
+  {
+    icon: <Building size={20} />,
+    text: "Companies",
+    alert: true,
+    ariaLabel: "Companies",
+    exact: false,
+    path: "/auth/dean/companies",
+    sublinks: [
+      {
+        text: "Company_ID",
+        path: "/auth/dean/companies/:company_id", // Dynamic path
+      },
+    ],
+  },
+];
+
+export { adminSidebarItemsConfig, deanSidebarItemsConfig };

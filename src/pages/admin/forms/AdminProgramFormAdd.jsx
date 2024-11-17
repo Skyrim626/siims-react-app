@@ -5,15 +5,16 @@ import { Input, Select } from "@headlessui/react";
 
 const AdminProgramFormAdd = ({
   colleges = [],
-  programInfo,
-  handleProgramInfoChange,
+  collegeId = "",
+  programName = "",
+  setCollegeId = () => {},
+  setProgramName = () => {},
   requiredFields = {
-    college_id: true,
-    name: true,
+    collegeId: true,
+    programName: true,
   },
+  errors = {},
 }) => {
-  console.log(colleges);
-
   return (
     <>
       <div>
@@ -28,19 +29,21 @@ const AdminProgramFormAdd = ({
           <div className="grid grid-cols-3 gap-2 mt-4">
             <FormField
               label={"College"}
-              name={"college_id"}
+              name={"collegeId"}
               labelClassName="text-sm text-black font-semibold"
-              required={requiredFields["college_id"]}
+              required={requiredFields["collegeId"]}
             >
               <Select
                 typeof="text"
                 className="outline-none text-black rounded-sm p-2 text-sm"
-                name="college_id"
-                onChange={handleProgramInfoChange}
-                value={programInfo.college_id}
-                required={requiredFields["college_id"]}
+                name="collegeId"
+                onChange={(e) => {
+                  setCollegeId(e.target.value);
+                }}
+                value={collegeId}
+                required={requiredFields["collegeId"]}
               >
-                <option value="">-Select a College</option>
+                <option value="">-Select a College-</option>
                 {colleges.map((college) => {
                   return (
                     <option key={college.id} value={college.id}>
@@ -49,22 +52,30 @@ const AdminProgramFormAdd = ({
                   );
                 })}
               </Select>
+              {errors.college_id && (
+                <Text className="text-red-500">{errors.college_id[0]}</Text>
+              )}
             </FormField>
             <FormField
-              label={"Name"}
-              name={"name"}
+              label={"Program Name"}
+              name={"programName"}
               labelClassName="text-sm text-black font-semibold"
-              required={requiredFields["name"]}
+              required={requiredFields["programName"]}
             >
               <Input
                 type="text"
                 className="outline-none text-black rounded-sm p-2 text-sm"
-                name="name"
-                onChange={handleProgramInfoChange}
+                name="programName"
+                onChange={(e) => {
+                  setProgramName(e.target.value);
+                }}
                 placeholder="Program Name"
-                value={programInfo.name}
-                required={requiredFields["name"]}
+                value={programName}
+                required={requiredFields["programName"]}
               />
+              {errors.name && (
+                <Text className="text-red-500">{errors.name[0]}</Text>
+              )}
             </FormField>
           </div>
         </div>

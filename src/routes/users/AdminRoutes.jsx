@@ -82,6 +82,24 @@ const AdminRoutes = {
       },
     },
     {
+      path: "programs",
+      element: <AdminManageProgramsPage />,
+      loader: async () => {
+        try {
+          const response = await axiosClient.get("/api/v1/admin/programs");
+
+          // Fetch the list of programs and chairpersons
+          const { initial_programs, list_of_chairpersons, list_of_colleges } =
+            response.data;
+
+          return { initial_programs, list_of_chairpersons, list_of_colleges };
+        } catch (error) {
+          console.error("Error fetching programs and chairpersons: ", error);
+          throw error; // Let the router handle errors
+        }
+      },
+    },
+    {
       path: "users", // Base path for user management
       element: <AdminManageUserSelection />, // Render user selection component
       children: [
@@ -114,10 +132,6 @@ const AdminRoutes = {
       ],
     },
 
-    {
-      path: "programs",
-      element: <AdminManageProgramsPage />,
-    },
     {
       path: "offices", // Route for managing offices
       element: <AdminManageOfficesPage />,

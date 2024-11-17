@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { getRequest } from "../../api/apiHelpers";
+import {
+  deleteRequest,
+  getRequest,
+  postRequest,
+  putRequest,
+} from "../../api/apiHelpers";
 import Page from "../../components/common/Page";
 import Heading from "../../components/common/Heading";
 import Section from "../../components/common/Section";
@@ -11,117 +16,135 @@ import useForm from "../../hooks/useForm";
 import AdminProgramFormEdit from "./forms/AdminProgramFormEdit";
 import AdminProgramFormAdd from "./forms/AdminProgramFormAdd";
 import useHandleSubmit from "../../hooks/useHandleSubmit";
+import { useLoaderData } from "react-router-dom";
 
 const AdminManageProgramsPage = () => {
-  // Modal State
+  // Retrieve the user_roles data from the loader
+  const { initial_programs, list_of_chairpersons, list_of_colleges } =
+    useLoaderData();
+
+  // State for colleges and form modal
+  const [programs, setPrograms] = useState(initial_programs);
   const [isOpen, setIsOpen] = useState(false);
   const [editIsOpen, setEditIsOpen] = useState(false);
 
-  // Fetch state
-  const [programs, setPrograms] = useState([]);
-  const [colleges, setColleges] = useState([]);
-  const [chairpersons, setChairpersons] = useState([]);
+  // Form input and errors
+  const [collegeId, setCollegeId] = useState(null);
+  const [chairpersonId, setChairpersonId] = useState(null);
+  const [programName, setProgramName] = useState("");
+  const [errors, setErrors] = useState({});
 
   // Select State
   const [selectedProgram, setSelectedProgram] = useState(null);
 
-  // Input State
-  const [programInfo, handleProgramInfoChange] = useForm({
-    college_id: null,
-    name: "",
-  });
+  // Delete a program
+  const deleteProgram = async (id) => {
+    try {
+      // console.log(id);
 
-  // Using the custom hook for College Information (Edit)
-  const [editProgramInfo, handleEditProgramInfoChange] = useForm({
-    id: "",
-    name: "",
-    college_id: "",
-    chairperson_id: "",
-  });
-
-  const { handleSubmit, isSubmitting, error } = useHandleSubmit();
-
-  useEffect(() => {
-    // Fetch programs
-    const fetchPrograms = async () => {
-      const response = await getRequest({
-        url: "/api/v1/admin/programs",
+      // Make the DELETE request
+      const response = await deleteRequest({
+        url: `/api/v1/admin/programs/${id}`,
       });
 
-      setPrograms(response);
-    };
-
-    // Fetch colleges
-    const fetchColleges = async () => {
-      const response = await getRequest({
-        url: "/api/v1/admin/colleges",
-      });
-
-      setColleges(response.data);
-    };
-
-    // Fetch chairpersons
-    const fetchChairpersons = async () => {
-      const response = await getRequest({
-        url: "/api/v1/admin/users/chairpersons",
-      });
-
-      setChairpersons(response);
-    };
-
-    fetchPrograms();
-    fetchColleges();
-    fetchChairpersons();
-  }, []);
+      setPrograms((prevPrograms) =>
+        prevPrograms.filter((program) => program.id !== id)
+      );
+    } catch (error) {
+      console.log(`Cannot delete a program: `, error);
+    }
+  };
 
   // Submit new program data
   const submitProgram = async () => {
-    await handleSubmit({
-      url: "/api/v1/admin/programs",
-      method: "post",
-      data: programInfo,
-      resetField: handleProgramInfoChange({
-        target: { name: "name", value: "" },
-      }),
-      setState: setPrograms,
-      closeModal: () => setIsOpen(false),
-    });
+    try {
+      const payload = {
+        college_id: collegeId,
+        name: programName,
+      };
+
+      // Make the POST request
+      const response = await postRequest({
+        url: "/api/v1/admin/programs",
+        data: payload,
+      });
+
+      // Add the new program to the local state
+      setPrograms((prevPrograms) => [...prevPrograms, response.data]);
+      // Reset form and close modal on success
+      setCollegeId("");
+      setProgramName("");
+      setErrors({});
+      setIsOpen(false);
+    } catch (error) {
+      // Handle and set errors
+      if (error.response && error.response.data && error.response.data.errors) {
+        console.log(error.response.data.errors);
+        setErrors(error.response.data.errors); // Assuming validation errors are in `errors`
+      } else {
+        console.error("An unexpected error occurred:", error);
+        setErrors({
+          general: "An unexpected error occurred. Please try again.",
+        });
+      }
+    }
   };
 
   // Handle Edit Submit
   const handleEditSubmit = async () => {
-    // Ready Payload
-    const payload = editProgramInfo;
+    try {
+      // Ready Payload
+      const payload = {
+        college_id: collegeId,
+        chairperson_id: chairpersonId,
+        name: programName,
+      };
 
-    // Submit Form
-    handleSubmit({
-      method: "put",
-      url: `/api/v1/admin/programs/${selectedProgram["id"]}`,
-      data: payload,
-      resetField: () =>
-        handleEditProgramInfoChange({
-          target: { name: "name", value: "" },
-        }),
-      setState: setPrograms,
-      closeModal: () => setEditIsOpen(false),
-    });
+      // console.log(payload);
+      // Send update request to the backend
+      const response = await putRequest({
+        url: `/api/v1/admin/programs/${selectedProgram["id"]}`,
+        data: payload,
+      });
+
+      // Update the program in the state
+      setPrograms((prevPrograms) =>
+        prevPrograms.map((program) =>
+          program.id === selectedProgram["id"]
+            ? { ...program, ...response.data }
+            : program
+        )
+      );
+
+      // Reset inputs and modals
+      setProgramName(null);
+      setCollegeId(null);
+      setChairpersonId(null);
+      setEditIsOpen(false);
+    } catch (error) {
+      // Handle and set errors
+      if (error.response && error.response.data && error.response.data.errors) {
+        console.log(error.response.data.errors);
+        setErrors(error.response.data.errors); // Assuming validation errors are in `errors`
+      } else {
+        console.error("An unexpected error occurred:", error);
+        setErrors({
+          general: "An unexpected error occurred. Please try again.",
+        });
+      }
+    }
   };
 
   // Handle Edit Select Program
   const handleEdit = (program) => {
     // Set Program State
+    console.log(program);
     setSelectedProgram(program);
 
-    // Pre-fill the editProgramInfo with multiple fields
-    handleEditProgramInfoChange({
-      target: { name: "name", value: program.name },
-    });
-    handleEditProgramInfoChange({
-      target: { name: "college_id", value: program.college_id },
-    });
-    handleEditProgramInfoChange({
-      target: { name: "chairperson_id", value: program.chairperson_id },
-    });
+    // Pre-fill the college_id, chairperson_id, name with in each fields
+    setCollegeId(program["id"]);
+    setChairpersonId(program["chairperson_id"]);
+    setProgramName(program["name"]);
 
     // Open Modal
     setEditIsOpen(true);
@@ -146,42 +169,47 @@ const AdminManageProgramsPage = () => {
       />
 
       {/* Table */}
-      {programs.length > 1 && (
-        <AdminProgramsTable data={programs} handleEdit={handleEdit} />
-      )}
+      <AdminProgramsTable
+        data={programs}
+        handleEdit={handleEdit}
+        handleArchive={deleteProgram}
+      />
 
-      {colleges && (
-        <>
-          <FormModal
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-            modalTitle="Add Program"
-            onSubmit={submitProgram}
-          >
-            <AdminProgramFormAdd
-              colleges={colleges}
-              programInfo={programInfo}
-              handleProgramInfoChange={handleProgramInfoChange}
-            />
-          </FormModal>
+      {/* Modals */}
+      <FormModal
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        modalTitle="Add Program"
+        onSubmit={submitProgram}
+      >
+        <AdminProgramFormAdd
+          colleges={list_of_colleges}
+          collegeId={collegeId}
+          programName={programName}
+          setCollegeId={setCollegeId}
+          setProgramName={setProgramName}
+          errors={errors}
+        />
+      </FormModal>
 
-          {chairpersons && (
-            <FormModal
-              isOpen={editIsOpen}
-              setIsOpen={setEditIsOpen}
-              modalTitle="Edit College"
-              onSubmit={handleEditSubmit}
-            >
-              <AdminProgramFormEdit
-                role={selectedProgram}
-                editProgramInfo={editProgramInfo}
-                handleEditProgramInfoChange={handleEditProgramInfoChange}
-                chairpersons={chairpersons} // Pass chairperson list to the form
-                colleges={colleges}
-              />
-            </FormModal>
-          )}
-        </>
+      {selectedProgram && (
+        <FormModal
+          isOpen={editIsOpen}
+          setIsOpen={setEditIsOpen}
+          modalTitle="Edit College"
+          onSubmit={handleEditSubmit}
+        >
+          <AdminProgramFormEdit
+            collegeId={collegeId}
+            chairpersonId={chairpersonId}
+            programName={programName}
+            setCollegeId={setCollegeId}
+            setProgramName={setProgramName}
+            setChairpersonId={setChairpersonId}
+            chairpersons={list_of_chairpersons} // Pass chairperson list to the form
+            colleges={list_of_colleges}
+          />
+        </FormModal>
       )}
     </Page>
   );

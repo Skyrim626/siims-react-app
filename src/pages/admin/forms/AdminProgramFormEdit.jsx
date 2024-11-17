@@ -4,19 +4,21 @@ import FormField from "../../../components/common/FormField";
 import { Input, Select } from "@headlessui/react";
 
 const AdminProgramFormEdit = ({
-  selectedProgram,
-  editProgramInfo,
-  handleEditProgramInfoChange,
-  requiredFields = {
-    name: true,
-    college_id: true,
-    chairpeson_id: false,
-  },
+  collegeId = "",
+  chairpersonId = "",
+  programName = "",
+  setCollegeId = () => {},
+  setChairpersonId = () => {},
+  setProgramName = () => {},
   colleges = [],
   chairpersons = [],
+  requiredFields = {
+    programName: true,
+    collegeId: true,
+    chairpersonId: false,
+  },
+  errors = {},
 }) => {
-  console.log(chairpersons);
-
   return (
     <>
       {/* Program Information Fields */}
@@ -32,34 +34,41 @@ const AdminProgramFormEdit = ({
           <div className="grid grid-cols-3 gap-2 mt-4">
             <FormField
               label={"Program Name"}
-              name={"name"}
+              name={"programName"}
               labelClassName="text-sm text-black font-semibold"
-              required={requiredFields["name"]}
+              required={requiredFields["programName"]}
             >
               <Input
                 type="text"
                 className="outline-none text-black rounded-sm p-2 text-sm"
-                name="name"
-                onChange={handleEditProgramInfoChange}
+                name="programName"
+                onChange={(e) => {
+                  setProgramName(e.target.value);
+                }}
                 placeholder="Program Name"
-                value={editProgramInfo.name}
-                required={requiredFields["name"]}
+                value={programName}
+                required={requiredFields["programName"]}
               />
+              {errors.name && (
+                <Text className="text-red-500">{errors.name[0]}</Text>
+              )}
             </FormField>
 
             <FormField
               label={"College"}
-              name={"college_id"}
+              name={"collegeId"}
               labelClassName="text-sm text-black font-semibold"
-              required={requiredFields["college_id"]}
+              required={requiredFields["collegeId"]}
             >
               <Select
                 typeof="text"
                 className="outline-none text-black rounded-sm p-2 text-sm"
-                name="college_id"
-                onChange={handleEditProgramInfoChange}
-                value={editProgramInfo.college_id}
-                required={requiredFields["college_id"]}
+                name="collegeId"
+                onChange={(e) => {
+                  setCollegeId(e.target.value);
+                }}
+                value={collegeId}
+                required={requiredFields["collegeId"]}
               >
                 <option value="">-Select a College-</option>
                 {colleges.map((college) => {
@@ -70,31 +79,39 @@ const AdminProgramFormEdit = ({
                   );
                 })}
               </Select>
+              {errors.college_id && (
+                <Text className="text-red-500">{errors.college_id[0]}</Text>
+              )}
             </FormField>
 
             <FormField
               label={"Chairperson Assign"}
-              name={"chairperson_id"}
+              name={"chairpersonId"}
               labelClassName="text-sm text-black font-semibold"
-              required={requiredFields["chairperson_id"]}
+              required={requiredFields["chairpersonId"]}
             >
               <Select
                 typeof="text"
                 className="outline-none text-black rounded-sm p-2 text-sm"
-                name="chairperson_id"
-                onChange={handleEditProgramInfoChange}
-                value={editProgramInfo.chairperson_id}
-                required={requiredFields["chairperson_id"]}
+                name="chairpersonId"
+                onChange={(e) => {
+                  setChairpersonId(e.target.value);
+                }}
+                value={chairpersonId}
+                required={requiredFields["chairpersonId"]}
               >
                 <option value="">-Assign a Chairperson-</option>
                 {chairpersons.map((chairperson) => {
                   return (
                     <option key={chairperson.id} value={chairperson.id}>
-                      {`${chairperson.first_name} ${chairperson.middle_name} ${chairperson.last_name}`}
+                      {chairperson.name} | {chairperson.program_assigned}
                     </option>
                   );
                 })}
               </Select>
+              {errors.chairperson_id && (
+                <Text className="text-red-500">{errors.chairperson_id[0]}</Text>
+              )}
             </FormField>
           </div>
         </div>
