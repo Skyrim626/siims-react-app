@@ -2,7 +2,7 @@ import React from "react";
 import { FaArchive, FaEdit, FaEye } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 
-const DeanProgramsTableBody = ({
+const AdminDocumentTypesTableBody = ({
   paginatedData,
   selectedIds,
   handleCheckboxChange,
@@ -80,4 +80,4 @@ const DeanProgramsTableBody = ({
   );
 };
 
-export default DeanProgramsTableBody;
+export default AdminDocumentTypesTableBody;

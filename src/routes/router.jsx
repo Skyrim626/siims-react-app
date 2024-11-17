@@ -15,6 +15,7 @@ import DeanRoutes from "./users/DeanRoutes";
 import ChairpersonRoutes from "./users/ChairpersonRoutes";
 import CompanyRoutes from "./users/CompanyRoutes";
 import SupervisorRoutes from "./users/SupervisorRoutes";
+import OsaRoutes from "./users/OsaRoutes";
 
 // Router
 const router = createBrowserRouter([
@@ -44,6 +45,9 @@ const router = createBrowserRouter([
 
       // path: supervisor
       SupervisorRoutes,
+
+      // path: osa
+      OsaRoutes,
     ],
   },
 

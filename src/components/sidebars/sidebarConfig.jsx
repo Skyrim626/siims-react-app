@@ -7,6 +7,7 @@ import {
   MessageCircle,
   User,
   Presentation,
+  File,
 } from "lucide-react";
 
 // Configuration for sidebar items for Admin
@@ -18,6 +19,14 @@ const adminSidebarItemsConfig = [
     ariaLabel: "Dashboard",
     exact: true, // Add an `exact` property for exact path matching
     path: "/auth/admin",
+  },
+  {
+    icon: <File />,
+    text: "Document Types",
+    alert: true,
+    ariaLabel: "Document Types",
+    exact: true,
+    path: "/auth/admin/document-types",
   },
   {
     icon: <ClipboardList />,
@@ -87,6 +96,26 @@ const adminSidebarItemsConfig = [
   },
 ];
 
+// Configuration for sidebar items for OSA
+const osaSidebarItemsConfig = [
+  {
+    icon: <LayoutDashboard size={20} />,
+    text: "Dashboard",
+    alert: true,
+    ariaLabel: "Dashboard",
+    exact: true, // Add an `exact` property for exact path matching
+    path: "/auth/osa",
+  },
+  {
+    icon: <File />,
+    text: "Document Types",
+    alert: true,
+    ariaLabel: "Document Types",
+    exact: true,
+    path: "/auth/osa/document-types",
+  },
+];
+
 // Configuration for sidebar items for Dean
 const deanSidebarItemsConfig = [
   {
@@ -129,4 +158,8 @@ const deanSidebarItemsConfig = [
   },
 ];
 
-export { adminSidebarItemsConfig, deanSidebarItemsConfig };
+export {
+  adminSidebarItemsConfig,
+  deanSidebarItemsConfig,
+  osaSidebarItemsConfig,
+};

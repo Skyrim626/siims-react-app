@@ -113,7 +113,7 @@ const DeanProgramsPage = () => {
       }
     }
 
-    console.log(programName);
+    // console.log(programName);
   };
 
   return (

@@ -26,6 +26,7 @@ import AdminManageRolesPage from "../../pages/admin/AdminManageRolesPage"; // Im
 import AdminManageCompaniesPage from "../../pages/admin/AdminManageCompaniesPage"; // Importing the page to manage companies
 import AdminManageOfficesPage from "../../pages/admin/AdminManageOfficesPage";
 import AdminManageProgramsPage from "../../pages/admin/AdminManageProgramsPage";
+import AdminManageDocumentTypesPage from "../../pages/admin/AdminManageDocumentTypesPage";
 
 // Define routes for the Admin section
 const AdminRoutes = {
@@ -49,6 +50,24 @@ const AdminRoutes = {
         return response.data; // Return fetched data for the loader
       },
     },
+    {
+      path: "document-types",
+      element: <AdminManageDocumentTypesPage />,
+      loader: async () => {
+        try {
+          const response = await axiosClient.get(
+            "/api/v1/admin/document-types"
+          );
+          const initial_document_types = response.data;
+          // console.log(initial_document_types);
+          return initial_document_types;
+        } catch (error) {
+          console.error("Error fetching document types: ", error);
+          throw error; // Let the router handle errors
+        }
+      },
+    },
+
     {
       path: "roles", // Route for managing user roles
       element: <AdminManageRolesPage />,
@@ -144,6 +163,7 @@ const AdminRoutes = {
       path: "internship-postings", // Route for managing internship postings
       element: <AdminInternshipPostingsPage />,
     },
+
     {
       path: "logs", // Route for viewing logs
       element: <AdminLogs />,
