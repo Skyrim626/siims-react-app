@@ -12,12 +12,9 @@ import {
   MessageSquare,
   Search,
   Users,
+  School,
   Briefcase,
 } from "lucide-react";
-import NavItem from "../atoms/NavItem";
-import profilePhoto from "../../assets/images/company/company-profile-photo.jpg";
-import Text from "../common/Text";
-import SidebarLayout from "./SidebarLayout";
 
 // Layout for Student Pages
 export default function StudentLayout() {
@@ -43,6 +40,15 @@ export default function StudentLayout() {
       alert: true,
       exact: false,
     },
+    {
+      icon: <School size={20} />,
+      text: "Program",
+      path: "/auth/my/program",
+      active: true,
+      ariaLabel: "Program",
+      alert: true,
+      exact: false,
+    },
   ];
 
   return (
@@ -50,53 +56,12 @@ export default function StudentLayout() {
       <Navbar links={studentLinks} />
       <div className="min-h-screen bg-gray-100 relative">
         <div className="container mx-auto flex">
-          {/* Left Sidebar */}
-          <aside className="w-1/4 p-4 max-h-screen sticky top-[80px] overflow-y-auto">
-            {/* Profile Summary */}
-            <div className="bg-white p-4 rounded-lg shadow-md mb-4">
-              <img
-                src="/profile-pic.jpg"
-                alt="Profile"
-                className="w-16 h-16 rounded-full mx-auto"
-              />
-              <h2 className="mt-2 text-center font-semibold">John Doe</h2>
-              <p className="text-center text-gray-500 text-sm">
-                Software Engineer
-              </p>
-              <div className="mt-4 flex flex-col items-center">
-                <button className="text-blue-600 font-semibold">
-                  View Profile
-                </button>
-              </div>
-            </div>
-
-            {/* Quick Links */}
-            <div className="bg-white p-4 rounded-lg shadow-md">
-              <h3 className="font-semibold mb-2">Recent</h3>
-              <ul className="space-y-2">
-                <li>
-                  <a href="#" className="text-gray-700 hover:underline">
-                    #ReactJS
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-gray-700 hover:underline">
-                    #WebDevelopment
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-gray-700 hover:underline">
-                    #TailwindCSS
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </aside>
-
+          <main className="w-full p-4 overflow-y-auto">
+            {/* Content Feed */}
+            <Outlet />
+            <div className="space-y-4"></div>
+          </main>
           {/* Feed Section */}
-
-          {/* Posts Feed */}
-          <Outlet />
         </div>
       </div>
     </>
