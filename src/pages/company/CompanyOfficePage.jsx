@@ -283,11 +283,11 @@ const CompanyOfficePage = () => {
               {/* Manage Office Section */}
               <div className="bg-white p-6 rounded-lg shadow-md mt-6">
                 <Text className="text-xl font-bold mb-6">Manage Office</Text>
-                <Link to={`${location}/add-job`}>
+                {/* <Link to={`${location}/add-job`}>
                   <Button className="bg-green-500 hover:bg-green-600 text-white text-center font-bold py-2 px-4 rounded-lg w-full focus:outline-none focus:shadow-outline mt-4">
                     Add Job
                   </Button>
-                </Link>
+                </Link> */}
                 <Link to={strippedLocation}>
                   <Button className="bg-blue-500 hover:bg-blue-600 text-white text-center font-bold py-2 px-4 rounded-lg w-full focus:outline-none focus:shadow-outline mt-4">
                     Edit Office

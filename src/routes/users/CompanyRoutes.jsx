@@ -10,6 +10,9 @@ import CompanyEditOfficePage from "../../pages/company/CompanyEditOfficePage";
 import CompanyAddJobPage from "../../pages/company/CompanyAddJobPage";
 import CompanyManageSupervisorsPage from "../../pages/company/CompanyManageSupervisorsPage";
 import axiosClient from "../../api/axiosClient";
+import CompanyManageWorkPostsPage from "../../pages/company/CompanyManageWorkPostsPage";
+import CompanyAddWorkPostPage from "../../pages/company/CompanyAddWorkPostPage";
+import CompanyEditWorkPostPage from "../../pages/company/CompanyEditWorkPostPage";
 
 // Routes for Company
 const CompanyRoutes = {
@@ -31,6 +34,95 @@ const CompanyRoutes = {
     {
       path: "profile",
       element: <CompanyProfilePage />,
+    },
+    {
+      path: "work-posts",
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: <CompanyManageWorkPostsPage />,
+          loader: async () => {
+            try {
+              const response = await axiosClient.get(
+                "/api/v1/company/work-posts"
+              );
+
+              const { initial_work_posts, work_types } = response.data;
+
+              // console.log(initial_work_posts);
+
+              return { initial_work_posts, work_types };
+            } catch (error) {
+              console.error(
+                "Error fetching programs and chairpersons: ",
+                error
+              );
+              throw error; // Let the router handle errors
+            }
+          },
+        },
+        {
+          path: "edit/:id",
+          element: <CompanyEditWorkPostPage />,
+          loader: async ({ params }) => {
+            try {
+              const { id } = params;
+
+              // console.log(id);
+              // Get work post and work types response
+              const workPostResponse = await axiosClient(
+                `/api/v1/company/work-posts/${id}`
+              );
+              const workTypesResponse = await axiosClient("/api/v1/work-types");
+
+              const work_post = workPostResponse.data;
+              const work_types = workTypesResponse.data;
+
+              // console.log(work_post);
+              // console.log(work_types);
+
+              return { work_post, work_types };
+            } catch (error) {
+              console.error(
+                "Error fetching programs and chairpersons: ",
+                error
+              );
+              throw error; // Let the router handle errors
+            }
+          },
+        },
+        {
+          path: "add",
+          element: <CompanyAddWorkPostPage />,
+          loader: async () => {
+            try {
+              // Get work_types and offices
+              const officesResponse = await axiosClient.get(
+                "/api/v1/company/offices"
+              );
+              const workTypesResponse = await axiosClient.get(
+                "/api/v1/work-types"
+              );
+
+              // console.log(officesResponse.data);
+              const offices = officesResponse.data;
+              const work_types = workTypesResponse.data;
+
+              // console.log(offices);
+              // console.log(work_types);
+
+              return { offices, work_types };
+            } catch (error) {
+              console.error(
+                "Error fetching programs and chairpersons: ",
+                error
+              );
+              throw error; // Let the router handle errors
+            }
+          },
+        },
+      ],
     },
     {
       path: "offices",

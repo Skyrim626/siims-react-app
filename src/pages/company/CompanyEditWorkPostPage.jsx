@@ -13,32 +13,37 @@ import Text from "../../components/common/Text";
 import WorkPostForm from "../../components/forms/WorkPostForm";
 import { stripLocation } from "../../utils/strip";
 import ContentLoader from "../../components/atoms/ContentLoader";
-import { getRequest, postRequest } from "../../api/apiHelpers";
-import useForm from "../../hooks/useForm";
-import useHandleSubmit from "../../hooks/useHandleSubmit";
+import { getRequest, postRequest, putRequest } from "../../api/apiHelpers";
 
-const SupervisorAddJobPage = () => {
+const CompanyEditWorkPostPage = () => {
+  // Fetch offices and work_types
+  const { work_post, work_types } = useLoaderData();
+
+  // console.log(work_post);
+
   // Open Location
   const location = useLocation();
-  const strippedPath = stripLocation(location.pathname, "/add");
+  const strippedPath = stripLocation(location.pathname, "/edit/2");
   const navigate = useNavigate();
 
-  // Retrieve the programs data from the loader
-  const workTypes = useLoaderData();
-
   // Input State
-  const [workTypeId, setWorkTypeId] = useState(null);
-  const [title, setTitle] = useState("");
-  const [responsibilities, setResponsibilities] = useState("");
-  const [qualifications, setQualifications] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [maxApplicants, setMaxApplicants] = useState(1);
-  const [endDate, setEndDate] = useState("");
-  const [workDuration, setWorkDuration] = useState("");
+  const [workTypeId, setWorkTypeId] = useState(work_post["work_type_id"]);
+  const [title, setTitle] = useState(work_post["title"]);
+  const [responsibilities, setResponsibilities] = useState(
+    work_post["responsibilities"]
+  );
+  const [qualifications, setQualifications] = useState(
+    work_post["qualifications"]
+  );
+  const [startDate, setStartDate] = useState(work_post["start_date"]);
+  const [maxApplicants, setMaxApplicants] = useState(
+    work_post["max_applicants"]
+  );
+  const [endDate, setEndDate] = useState(work_post["end_date"]);
+  const [workDuration, setWorkDuration] = useState(work_post["work_duration"]);
   const [errors, setErrors] = useState({});
-
-  // Add work post
-  const addWorkPost = async (e) => {
+  // Update work post
+  const updateWorkPost = async (e) => {
     e.preventDefault(); // Prevent page refresh
 
     try {
@@ -56,15 +61,12 @@ const SupervisorAddJobPage = () => {
       // console.log(payload);
 
       // Make POST Request
-      const response = await postRequest({
-        url: "/api/v1/supervisor/work-posts",
+      const response = await putRequest({
+        url: `/api/v1/company/work-posts/${work_post["id"]}`,
         data: payload,
       });
 
-      // Redirect after success
-      if (response) {
-        navigate(strippedPath); // Redirect to strippedPath
-      }
+      navigate(strippedPath);
     } catch (error) {
       // Handle and set errors
       if (error.response && error.response.data && error.response.data.errors) {
@@ -93,15 +95,16 @@ const SupervisorAddJobPage = () => {
         </Section>
 
         <Section>
-          <Heading level={3} text={"Add Job"} />
+          <Heading level={3} text={"Edit Job"} />
           <Text className="text-sm text-blue-950">
-            This is where you add a job opportunity.
+            This is where you edit a job opportunity.
           </Text>
           <hr className="my-3" />
         </Section>
 
         <Section>
           <WorkPostForm
+            requestMethod="put"
             workTypeId={workTypeId}
             title={title}
             responsibilities={responsibilities}
@@ -119,8 +122,8 @@ const SupervisorAddJobPage = () => {
             setMaxApplicants={setMaxApplicants}
             setWorkDuration={setWorkDuration}
             isFormModal={false}
-            workTypes={workTypes}
-            handleSubmit={addWorkPost}
+            workTypes={work_types}
+            handleSubmit={updateWorkPost}
           />
         </Section>
       </Page>
@@ -128,4 +131,4 @@ const SupervisorAddJobPage = () => {
   );
 };
 
-export default SupervisorAddJobPage;
+export default CompanyEditWorkPostPage;

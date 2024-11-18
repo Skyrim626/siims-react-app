@@ -10,6 +10,7 @@ import {
   File,
   Briefcase,
   FileText,
+  Users,
 } from "lucide-react";
 
 // Configuration for sidebar items for Admin
@@ -196,6 +197,57 @@ const supervisorSidebarItemsConfig = [
   },
 ];
 
+// Configuration for sidebar items for Company
+const companySidebarItemsConfig = [
+  {
+    icon: <LayoutDashboard size={20} />,
+    text: "Dashboard",
+    alert: true,
+    ariaLabel: "Dashboard",
+    exact: true, // Add an `exact` property for exact path matching
+    path: "/auth/company",
+  },
+
+  {
+    icon: <User size={20} />,
+    text: "Profile",
+    alert: true,
+    ariaLabel: "Profile",
+    exact: true,
+    path: "/auth/company/profile",
+  },
+  {
+    icon: <Briefcase size={20} />,
+    text: "Manage Jobs",
+    alert: true,
+    ariaLabel: "Manage Jobs",
+    exact: false, // Add an `exact` property for exact path matching
+    path: "/auth/company/work-posts",
+  },
+  {
+    icon: <Building size={20} />,
+    text: "Offices",
+    alert: true,
+    ariaLabel: "Offices",
+    exact: false,
+    path: "/auth/company/offices",
+    sublinks: [
+      {
+        text: "Add Office",
+        path: "/auth/company/offices/add", // Dynamic path
+      },
+    ],
+  },
+  {
+    icon: <Users size={20} />,
+    text: "Supervisors",
+    alert: true,
+    ariaLabel: "Supervisors",
+    exact: true,
+    path: "/auth/company/supervisors",
+  },
+];
+
 // Configuration for sidebar items for OSA
 const osaSidebarItemsConfig = [
   {
@@ -264,4 +316,5 @@ export {
   osaSidebarItemsConfig,
   supervisorSidebarItemsConfig,
   chairpersonSidebarItemsConfig,
+  companySidebarItemsConfig,
 };

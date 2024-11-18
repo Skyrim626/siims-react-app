@@ -17,16 +17,17 @@ import { getRequest, postRequest } from "../../api/apiHelpers";
 import useForm from "../../hooks/useForm";
 import useHandleSubmit from "../../hooks/useHandleSubmit";
 
-const SupervisorAddJobPage = () => {
+const CompanyAddWorkPostPage = () => {
+  // Fetch offices and work_types
+  const { offices, work_types } = useLoaderData();
+
   // Open Location
   const location = useLocation();
   const strippedPath = stripLocation(location.pathname, "/add");
   const navigate = useNavigate();
 
-  // Retrieve the programs data from the loader
-  const workTypes = useLoaderData();
-
   // Input State
+  const [officeId, setOfficeId] = useState(null);
   const [workTypeId, setWorkTypeId] = useState(null);
   const [title, setTitle] = useState("");
   const [responsibilities, setResponsibilities] = useState("");
@@ -43,6 +44,7 @@ const SupervisorAddJobPage = () => {
 
     try {
       const payload = {
+        office_id: officeId,
         work_type_id: workTypeId,
         title: title,
         responsibilities: responsibilities,
@@ -57,7 +59,7 @@ const SupervisorAddJobPage = () => {
 
       // Make POST Request
       const response = await postRequest({
-        url: "/api/v1/supervisor/work-posts",
+        url: "/api/v1/company/work-posts",
         data: payload,
       });
 
@@ -102,6 +104,7 @@ const SupervisorAddJobPage = () => {
 
         <Section>
           <WorkPostForm
+            officeId={officeId}
             workTypeId={workTypeId}
             title={title}
             responsibilities={responsibilities}
@@ -110,6 +113,7 @@ const SupervisorAddJobPage = () => {
             endDate={endDate}
             maxApplicants={maxApplicants}
             workDuration={workDuration}
+            setOfficeId={setOfficeId}
             setWorkTypeId={setWorkTypeId}
             setTitle={setTitle}
             setResponsibilities={setResponsibilities}
@@ -119,8 +123,20 @@ const SupervisorAddJobPage = () => {
             setMaxApplicants={setMaxApplicants}
             setWorkDuration={setWorkDuration}
             isFormModal={false}
-            workTypes={workTypes}
+            workTypes={work_types}
+            offices={offices}
             handleSubmit={addWorkPost}
+            displayFields={{
+              officeId: true,
+              workTypeId: true,
+              title: true,
+              responsibilities: true,
+              qualifications: true,
+              startDate: true,
+              endDate: true,
+              workDuration: true,
+              maxApplicants: true,
+            }}
           />
         </Section>
       </Page>
@@ -128,4 +144,4 @@ const SupervisorAddJobPage = () => {
   );
 };
 
-export default SupervisorAddJobPage;
+export default CompanyAddWorkPostPage;

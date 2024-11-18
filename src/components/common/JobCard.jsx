@@ -5,7 +5,7 @@ import Text from "./Text";
 import { FaCalendarAlt, FaBriefcase, FaUsers } from "react-icons/fa";
 import { Button } from "@headlessui/react";
 
-const JobCard = ({ job = {} }) => {
+const JobCard = ({ job = {}, deleteWorkPost = { deleteWorkPost } }) => {
   const navigate = useNavigate(); // Initialize navigate
 
   return (
@@ -40,6 +40,14 @@ const JobCard = ({ job = {} }) => {
         </Button>
         <Button className="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">
           View Applications
+        </Button>
+        <Button
+          onClick={() => {
+            deleteWorkPost(job.id);
+          }}
+          className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300"
+        >
+          Delete
         </Button>
       </div>
     </div>

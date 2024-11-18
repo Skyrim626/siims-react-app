@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { useLoaderData, useNavigate } from "react-router-dom"; // Import useNavigate for redirection
+import { useLoaderData, useNavigate, useLocation } from "react-router-dom"; // Import useNavigate for redirection
 import Page from "../../components/common/Page";
 import Section from "../../components/common/Section";
 import Heading from "../../components/common/Heading";
 import Text from "../../components/common/Text";
 import { Button, Input, Select } from "@headlessui/react";
 import JobCard from "../../components/common/JobCard";
-import { getRequest } from "../../api/apiHelpers";
+import { deleteRequest, getRequest } from "../../api/apiHelpers";
 
 const SupervisorManageJobsPage = () => {
-  // Initialize navigate
+  // Initialize navigate and location
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Retrieve the programs data from the loader
   const { initial_work_posts, work_types } = useLoaderData();
@@ -33,6 +34,24 @@ const SupervisorManageJobsPage = () => {
       .filter((job) =>
         job.title.toLowerCase().includes(searchTerm.toLowerCase())
       );
+
+  // Delete a work post
+  const deleteWorkPost = async (id) => {
+    // console.log(id);
+
+    try {
+      // console.log(id);
+
+      // Make the DELETE request
+      const response = await deleteRequest({
+        url: `/api/v1/supervisor/work-posts/${id}`,
+      });
+
+      navigate(location.pathname);
+    } catch (error) {
+      console.log(`Cannot delete a program: `, error);
+    }
+  };
 
   return (
     <Page>
@@ -88,7 +107,9 @@ const SupervisorManageJobsPage = () => {
         <Heading level={4} text={"Job Listings"} />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredJobs.length > 0 ? (
-            filteredJobs.map((job) => <JobCard key={job.id} job={job} />)
+            filteredJobs.map((job) => (
+              <JobCard key={job.id} job={job} deleteWorkPost={deleteWorkPost} />
+            ))
           ) : (
             <Text className="text-gray-600">
               No jobs available for the selected type.

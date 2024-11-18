@@ -9,7 +9,6 @@ import {
 import {
   Book,
   Briefcase,
-  Building,
   CalendarCheck,
   CalendarClock,
   Hash,
@@ -18,12 +17,14 @@ import {
   MapPin,
   Navigation,
   Phone,
+  Building,
   Users,
 } from "lucide-react";
 import React from "react";
 
 const WorkPostForm = ({
   requestMethod = "post",
+  officeId = "",
   workTypeId = "",
   title = "",
   responsibilities = "",
@@ -32,6 +33,7 @@ const WorkPostForm = ({
   endDate = "",
   workDuration = "",
   maxApplicants = "",
+  setOfficeId = () => {},
   setWorkTypeId = () => {},
   setTitle = () => {},
   setResponsibilities = () => {},
@@ -42,6 +44,7 @@ const WorkPostForm = ({
   setWorkDuration = () => {},
   isFormModal = true,
   method = "post",
+  offices = [],
   workTypes = [
     {
       id: 1,
@@ -56,6 +59,7 @@ const WorkPostForm = ({
     console.log("Submit");
   },
   requiredFields = {
+    officeId: true,
     workTypeId: true,
     title: true,
     responsibilities: true,
@@ -66,6 +70,7 @@ const WorkPostForm = ({
     workDuration: true,
   },
   displayFields = {
+    officeId: false,
     workTypeId: true,
     title: true,
     responsibilities: true,
@@ -93,6 +98,39 @@ const WorkPostForm = ({
     return (
       <>
         <div className="text-sm">
+          {/* Office Id */}
+          {displayFields.officeId && (
+            <Field className="mb-4">
+              <Label
+                htmlFor="officeId"
+                className="text-gray-700 font-bold mb-2 flex items-center"
+              >
+                <Building size={20} className="mr-2 text-blue-600" />
+                Office Name
+                {requiredFields.officeId && (
+                  <span className="text-red-500">*</span>
+                )}
+              </Label>
+              <Select
+                id="officeId"
+                name="officeId"
+                className="border rounded-lg w-full py-2 px-3 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
+                value={officeId}
+                onChange={(e) => {
+                  setOfficeId(e.target.value);
+                }}
+                required={requiredFields.officeId}
+              >
+                <option value=" ">-Select Office Name-</option>
+                {offices.map((office) => (
+                  <option key={office.id} value={office.id}>
+                    {office.name}
+                  </option>
+                ))}
+              </Select>
+            </Field>
+          )}
+
           {/* Work Types */}
           {displayFields.workTypeId && (
             <Field className="mb-4">

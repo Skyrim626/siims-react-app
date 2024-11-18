@@ -80,9 +80,9 @@ const SupervisorRoutes = {
                 `/api/v1/supervisor/work-posts/${id}`
               );
 
-              const workPost = response.data;
-              // console.log(workPost);
-              return workPost;
+              const { initial_work_post, work_types } = response.data;
+              // console.log(initial_work_post);
+              return { initial_work_post, work_types };
             } catch (error) {
               console.error("Error fetching job: ", error);
               throw error; // Let the router handle errors

@@ -16,14 +16,15 @@ import { putRequest } from "../../api/apiHelpers";
 
 const SupervisorEditJobPage = () => {
   // Retrieve the work post data from the loader
-  const workPost = useLoaderData();
-  // console.log(workPost);
+  const { initial_work_post, work_types } = useLoaderData();
+  // console.log(initial_work_post);
+  // console.log(work_types);
 
   // Open Location
   const location = useLocation();
   const strippedPath = stripLocation(
     location.pathname,
-    `/edit/${workPost["id"]}`
+    `/edit/${initial_work_post["id"]}`
   );
   const navigate = useNavigate();
 
@@ -41,24 +42,28 @@ const SupervisorEditJobPage = () => {
   };
 
   // Input State
-  const [workTypeId, setWorkTypeId] = useState(workPost["work_type_id"]);
-  const [title, setTitle] = useState(workPost["title"]);
+  const [workTypeId, setWorkTypeId] = useState(
+    initial_work_post["work_type_id"]
+  );
+  const [title, setTitle] = useState(initial_work_post["title"]);
   const [responsibilities, setResponsibilities] = useState(
-    workPost["responsibilities"]
+    initial_work_post["responsibilities"]
   );
   const [qualifications, setQualifications] = useState(
-    workPost["qualifications"]
+    initial_work_post["qualifications"]
   );
   const [startDate, setStartDate] = useState(
-    formatToMMDDYYYY(workPost["start_date"])
+    formatToMMDDYYYY(initial_work_post["start_date"])
   );
   const [maxApplicants, setMaxApplicants] = useState(
-    workPost["max_applicants"]
+    initial_work_post["max_applicants"]
   );
   const [endDate, setEndDate] = useState(
-    formatToMMDDYYYY(workPost["end_date"])
+    formatToMMDDYYYY(initial_work_post["end_date"])
   );
-  const [workDuration, setWorkDuration] = useState(workPost["work_duration"]);
+  const [workDuration, setWorkDuration] = useState(
+    initial_work_post["work_duration"]
+  );
   const [errors, setErrors] = useState({});
 
   // Update a job
@@ -71,8 +76,8 @@ const SupervisorEditJobPage = () => {
         title: title,
         responsibilities: responsibilities,
         qualifications: qualifications,
-        date_start: startDate,
-        date_end: endDate,
+        start_date: startDate,
+        end_date: endDate,
         work_duration: workDuration,
         max_applicants: maxApplicants,
       };
@@ -81,7 +86,7 @@ const SupervisorEditJobPage = () => {
 
       // Make PUT Request
       const response = await putRequest({
-        url: `/api/v1/supervisor/work-posts/${workPost["id"]}`,
+        url: `/api/v1/supervisor/work-posts/${initial_work_post["id"]}`,
         data: payload,
       });
 
