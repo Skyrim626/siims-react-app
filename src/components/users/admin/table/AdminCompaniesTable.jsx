@@ -9,134 +9,136 @@ import ArchiveButton from "../../../tables/ArchiveButton";
 import Pagination from "../../../tables/Pagination";
 import Search from "../../../tables/Search";
 import Filter from "../../../tables/Filter";
-import TableHead from "../../../tables/TableHead";
-import TableShowResult from "../../../tables/TableShowResult";
 import Section from "../../../common/Section";
 import AdminCompaniesTableBody from "./AdminCompaniesTableBody";
+import AdminCompaniesTableHead from "./AdminCompaniesTableHead";
 
 const AdminCompaniesTable = ({
-  data,
-  searchPlaceholder = "Search something...",
-  handleArchiveBySelectedIds,
-  handleArchive,
-  handleEdit,
-  handleDelete,
-  handleView,
-
+  data, // Data to be displayed in the table
+  searchPlaceholder = "Search something...", // Placeholder for the search input
+  handleArchiveBySelectedIds, // Function to handle archiving selected users
+  handleArchive, // Function to handle archiving a single user
+  handleEdit, // Function to handle editing a user
+  handleDelete, // Function to handle deleting a user
+  handleView, // Function to handle viewing user details
   ITEMS_PER_PAGE_LISTS = [
+    // Options for items per page
     { value: 25 },
     { value: 50 },
     { value: 100 },
     { value: 250 },
     { value: 500 },
   ],
+  IDsIsLink = true, // Flag to determine if IDs should be displayed as links
+  term, // Current search term
+  filteredData, // Data after filtering
+  handleSearchChange, // Function to handle changes in the search input
 }) => {
-  // Search hook
-  const { term, filteredData, handleSearchChange } = useSearch(data, "");
-
   // Sorting hook
   const { sortedData, sortData, sortField, sortDirection } =
-    useSort(filteredData);
+    useSort(filteredData); // Using the custom hook to sort the filtered data
 
   // Pagination hook
   const {
-    currentPage,
-    totalPages,
-    startIndex,
-    endIndex,
-    paginatedData,
-    handlePageChange,
-    handleItemsPerPageChange,
-  } = usePagination(sortedData, ITEMS_PER_PAGE_LISTS[0].value);
+    currentPage, // Current page number
+    totalPages, // Total number of pages
+    startIndex, // Start index of paginated data
+    endIndex, // End index of paginated data
+    paginatedData, // Data for the current page
+    handlePageChange, // Function to change the current page
+    handleItemsPerPageChange, // Function to change the number of items per page
+  } = usePagination(sortedData, ITEMS_PER_PAGE_LISTS[0].value); // Using the custom hook for pagination
 
   // Checkbox selection hook
   const { selectedIds, handleCheckboxChange, handleSelectAllChange } =
-    useCheckboxSelection(paginatedData);
+    useCheckboxSelection(paginatedData); // Using the custom hook for checkbox selection
 
   // Column visibility hook
   const { visibleColumns, handleColumnVisibilityChange } =
-    useColumnVisibility(data);
+    useColumnVisibility(data); // Using the custom hook for managing column visibility
 
   // Filter Toggle States
-  const [isFilterOpen, setIsFilterOpen] = useState(false); // Dropdown for filters
+  const [isFilterOpen, setIsFilterOpen] = useState(false); // State to manage filter dropdown visibility
 
-  // Render sorting icon
+  // Render sorting icon based on current sort field and direction
   const renderSortIcon = (field) => {
     if (sortField === field) {
-      return sortDirection === "asc" ? (
-        <FaSortUp className="inline-block ml-1" />
+      return sortDirection === "asc" ? ( // Check if the current field is sorted in ascending order
+        <FaSortUp className="inline-block ml-1" /> // Render ascending icon
       ) : (
-        <FaSortDown className="inline-block ml-1" />
+        <FaSortDown className="inline-block ml-1" /> // Render descending icon
       );
     }
-    return <FaSort className="inline-block ml-1" />;
+    return <FaSort className="inline-block ml-1" />; // Render default sort icon
   };
 
   return (
     <Section>
-      {handleArchiveBySelectedIds && (
+      {handleArchiveBySelectedIds && ( // Render ArchiveButton if archiving function is provided
         <ArchiveButton
-          onClick={() => handleArchiveBySelectedIds(selectedIds)}
+          onClick={() => handleArchiveBySelectedIds(selectedIds)} // Call the archiving function with selected IDs
         />
       )}
       <div className="flex justify-between items-center mb-4 mt-2">
         <Pagination
-          totalPages={totalPages}
-          currentPage={currentPage}
-          setCurrentPage={handlePageChange} // or setCurrentPage if you have that handler in your state
-          ITEMS_PER_PAGE_LISTS={ITEMS_PER_PAGE_LISTS} // make sure to pass the itemsPerPage value
-          totalItems={sortedData.length} // pass the total number of items
-          handleItemsPerPageChange={handleItemsPerPageChange}
-          handleNextPage={() => handlePageChange(currentPage + 1)} // go to next page
-          handlePrevPage={() => handlePageChange(currentPage - 1)} // go to previous page
+          totalPages={totalPages} // Total number of pages for pagination
+          currentPage={currentPage} // Current active page
+          setCurrentPage={handlePageChange} // Function to set the current page
+          ITEMS_PER_PAGE_LISTS={ITEMS_PER_PAGE_LISTS} // Options for items per page
+          totalItems={sortedData.length} // Total number of items
+          handleItemsPerPageChange={handleItemsPerPageChange} // Function to change items per page
+          handleNextPage={() => handlePageChange(currentPage + 1)} // Function to go to the next page
+          handlePrevPage={() => handlePageChange(currentPage - 1)} // Function to go to the previous page
         />
         <div className="flex items-center gap-2">
           {/* Search */}
-          {searchPlaceholder && (
+          {searchPlaceholder && ( // Render Search component if a placeholder is provided
             <Search
-              placeholder={searchPlaceholder}
-              searchTerm={term}
-              handleSearchChange={handleSearchChange}
+              placeholder={searchPlaceholder} // Search input placeholder
+              searchTerm={term} // Current search term
+              handleSearchChange={handleSearchChange} // Function to handle search input changes
             />
           )}
           {/* Filter */}
           <Filter
-            isFilterOpen={isFilterOpen}
-            setIsFilterOpen={setIsFilterOpen}
-            data={data}
-            visibleColumns={visibleColumns}
-            handleColumnVisibilityChange={handleColumnVisibilityChange}
+            isFilterOpen={isFilterOpen} // Current state of the filter dropdown
+            setIsFilterOpen={setIsFilterOpen} // Function to set the filter dropdown state
+            data={data} // Data for the filter component
+            visibleColumns={visibleColumns} // Columns currently visible
+            handleColumnVisibilityChange={handleColumnVisibilityChange} // Function to change column visibility
           />
         </div>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500">
-          <TableHead
-            selectedIds={selectedIds}
-            handleSelectAllChange={handleSelectAllChange}
-            visibleColumns={visibleColumns}
-            sortData={sortData}
-            renderSortIcon={renderSortIcon}
-            paginatedData={paginatedData}
-            handleEdit={handleEdit}
-            handleDelete={handleDelete}
-            handleView={handleView}
+          {/* Table structure */}
+          <AdminCompaniesTableHead
+            selectedIds={selectedIds} // Currently selected IDs for checkboxes
+            handleSelectAllChange={handleSelectAllChange} // Function to handle "Select All" checkbox
+            visibleColumns={visibleColumns} // Columns that are visible
+            sortData={sortData} // Function to sort data
+            renderSortIcon={renderSortIcon} // Function to render sorting icons
+            paginatedData={paginatedData} // Data for the current page
+            handleEdit={handleEdit} // Function to handle editing a user
+            handleDelete={handleDelete} // Function to handle deleting a user
+            handleView={handleView} // Function to handle viewing user details
+            handleArchive={handleArchive} // Function to handle archiving a user
           />
           <AdminCompaniesTableBody
-            paginatedData={paginatedData}
-            selectedIds={selectedIds}
-            handleCheckboxChange={handleCheckboxChange}
-            visibleColumns={visibleColumns}
-            handleArchive={handleArchive}
-            handleEdit={handleEdit}
-            handleDelete={handleDelete}
-            handleView={handleView}
+            paginatedData={paginatedData} // Data for the current page
+            selectedIds={selectedIds} // Currently selected IDs for checkboxes
+            handleCheckboxChange={handleCheckboxChange} // Function to handle checkbox changes
+            visibleColumns={visibleColumns} // Columns that are visible
+            handleArchive={handleArchive} // Function to handle archiving a user
+            handleEdit={handleEdit} // Function to handle editing a user
+            handleDelete={handleDelete} // Function to handle deleting a user
+            handleView={handleView} // Function to handle viewing user details
+            IDsIsLink={IDsIsLink} // Flag to determine if IDs should be displayed as links
           />
         </table>
       </div>
-      <TableShowResult startIndex={startIndex} endIndex={endIndex} />
     </Section>
   );
 };
 
-export default AdminCompaniesTable;
+export default AdminCompaniesTable; // Exporting the Table component for use in other parts of the application

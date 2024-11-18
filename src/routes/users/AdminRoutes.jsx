@@ -27,6 +27,8 @@ import AdminManageCompaniesPage from "../../pages/admin/AdminManageCompaniesPage
 import AdminManageOfficesPage from "../../pages/admin/AdminManageOfficesPage";
 import AdminManageProgramsPage from "../../pages/admin/AdminManageProgramsPage";
 import AdminManageDocumentTypesPage from "../../pages/admin/AdminManageDocumentTypesPage";
+import AdminManageCompanyOfficesPage from "../../pages/admin/manage-users/AdminManageCompanyOfficesPage";
+import TestViewPage from "../../pages/TestViewPage";
 
 // Define routes for the Admin section
 const AdminRoutes = {
@@ -119,6 +121,29 @@ const AdminRoutes = {
       },
     },
     {
+      path: "companies/:id",
+      element: <AdminManageCompanyOfficesPage />,
+      loader: async ({ params }) => {
+        try {
+          const { id } = params;
+          const response = await axiosClient.get(
+            `/api/v1/admin/users/companies/${id}/offices`
+          );
+
+          // Fetch the offices and company (owner)
+          const { initial_offices, company, office_types, supervisors } =
+            response.data;
+
+          // console.log(initial_offices);
+
+          return { initial_offices, company, office_types, supervisors };
+        } catch (error) {
+          console.error("Error fetching programs and chairpersons: ", error);
+          throw error; // Let the router handle errors
+        }
+      },
+    },
+    {
       path: "users", // Base path for user management
       element: <AdminManageUserSelection />, // Render user selection component
       children: [
@@ -144,9 +169,40 @@ const AdminRoutes = {
             },
           ],
         },
+
         {
           path: "companies", // Route for managing companies
           element: <AdminManageCompaniesPage />,
+          children: [
+            {
+              path: ":id",
+              element: <AdminManageCompanyOfficesPage />,
+              loader: async ({ params }) => {
+                try {
+                  const { id } = params;
+
+                  console.log(id);
+
+                  const response = await axiosClient.get(
+                    `/api/v1/admin/users/companies/${id}/offices`
+                  );
+
+                  // Fetch the offices
+                  const initial_offices = response.data;
+
+                  // console.log(initial_offices);
+
+                  return initial_offices;
+                } catch (error) {
+                  console.error(
+                    "Error fetching programs and chairpersons: ",
+                    error
+                  );
+                  throw error; // Let the router handle errors
+                }
+              },
+            },
+          ],
         },
       ],
     },

@@ -200,7 +200,7 @@ const AdminManageCompaniesPage = () => {
 
         {/* Table */}
         {companies.length !== 0 && (
-          <Table
+          <AdminCompaniesTable
             handleArchiveBySelectedIds={handleArchiveBySelectedIds}
             data={companies}
             handleEdit={handleEdit}

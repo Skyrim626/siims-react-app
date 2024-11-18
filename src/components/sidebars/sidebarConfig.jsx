@@ -38,6 +38,7 @@ const adminSidebarItemsConfig = [
     exact: true,
     path: "/auth/admin/roles",
   },
+
   {
     icon: <Building size={20} />,
     text: "Colleges",
@@ -54,23 +55,44 @@ const adminSidebarItemsConfig = [
     exact: false,
     path: "/auth/admin/programs",
   },
+
   {
     icon: <User size={20} />,
     text: "Users",
     alert: true,
     ariaLabel: "Users",
-    exact: false, // No exact match needed for partial path
+    exact: true, // No exact match needed for partial path
     path: "/auth/admin/users",
+    sublinks: [
+      {
+        text: "Chairpersons",
+        path: "/auth/admin/users/chairpersons",
+      },
+      {
+        text: "Companies",
+        path: "/auth/admin/users/companies",
+        sublinks: [
+          {
+            text: "Test",
+            path: "/auth/admin/users/companies/test",
+          },
+          /* {
+            text: "Companies ID",
+            path: "/auth/admin/users/companies/:id", // Dynamic path
+          }, */
+        ],
+      },
+    ],
   },
 
-  {
+  /* {
     icon: <Building size={20} />,
     text: "Offices",
     alert: true,
     ariaLabel: "Offices",
     exact: false,
     path: "/auth/admin/offices",
-  },
+  }, */
   {
     icon: <MessageCircle size={20} />,
     text: "Messages",

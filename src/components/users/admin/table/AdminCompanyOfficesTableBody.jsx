@@ -1,10 +1,8 @@
-import { Button, Input } from "@headlessui/react";
 import React from "react";
 import { FaArchive, FaEdit, FaEye } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 
-const AdminCompaniesTableBody = ({
-  IDsIsLink = true,
+const AdminCompanyOfficesTableBody = ({
   paginatedData,
   selectedIds,
   handleCheckboxChange,
@@ -14,9 +12,8 @@ const AdminCompaniesTableBody = ({
   handleDelete,
   handleArchive,
 }) => {
-  // Open Location
   const location = useLocation();
-  console.log(location.pathname);
+
   return (
     <>
       <tbody>
@@ -24,69 +21,54 @@ const AdminCompaniesTableBody = ({
           <tr key={data.id} className={index % 2 === 0 ? "bg-gray-100" : ""}>
             <td className="py-2 px-4 border-b">{index + 1}</td>
             <td className="py-2 px-4 border-b">
-              <Input
+              <input
                 type="checkbox"
                 checked={selectedIds.has(data.id)}
                 onChange={() => handleCheckboxChange(data.id)}
                 className="form-checkbox"
               />
             </td>
-            <td
-              className={`py-2 px-4 border-b text-blue-600 font-bold ${
-                IDsIsLink && "cursor-pointer hover:underline"
-              } `}
-            >
-              {IDsIsLink ? (
-                <Link to={`/auth/admin/companies/${data.id}`}>{data.id}</Link>
-              ) : (
-                data.id
-              )}
+            <td className="py-2 px-4 border-b text-blue-600 font-bold">
+              {/* <Link to={`${location.pathname}/${data.id}`}>{data.id}</Link> */}
+              {data.id}
             </td>
             {visibleColumns.map((column) => (
               <td
                 key={column}
-                className="py-2 px-4 border-b font-bold text-black"
+                className="py-2 px-4 border-b text-blue-700 font-bold"
               >
-                {Array.isArray(data[column])
-                  ? data[column].map((role, index) => (
-                      <p key={index} className="font-bold">
-                        {role.name.charAt(0).toUpperCase() + role.name.slice(1)}
-                      </p>
-                    ))
-                  : data[column]
-                  ? data[column]
-                  : null}
+                {data[column]}
               </td>
             ))}
 
-            {(handleEdit || handleDelete || handleView || handleArchive) && (
+            {(handleEdit || handleDelete || handleView) && (
               <td className="py-2 px-4 border-b">
                 <div className="flex justify-center gap-2">
                   {handleView && (
-                    <Button
+                    <button
                       onClick={() => handleView(data.id)}
                       className="text-blue-600 hover:underline"
                     >
                       <FaEye size={18} />
-                    </Button>
+                    </button>
                   )}
 
                   {handleEdit && (
-                    <Button
+                    <button
                       onClick={() => handleEdit(data)}
                       className="text-yellow-600 hover:underline"
                     >
                       <FaEdit size={18} />
-                    </Button>
+                    </button>
                   )}
 
                   {handleArchive && (
-                    <Button
+                    <button
                       onClick={() => handleArchive(data.id)}
                       className="text-red-600 hover:underline"
                     >
                       <FaArchive size={18} />
-                    </Button>
+                    </button>
                   )}
                 </div>
               </td>
@@ -98,4 +80,4 @@ const AdminCompaniesTableBody = ({
   );
 };
 
-export default AdminCompaniesTableBody;
+export default AdminCompanyOfficesTableBody;

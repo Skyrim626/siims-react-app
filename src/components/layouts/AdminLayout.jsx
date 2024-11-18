@@ -13,10 +13,13 @@ import { adminSidebarItemsConfig } from "../sidebars/sidebarConfig";
 export default function AdminLayout() {
   const location = useLocation();
   const params = useParams(); // Extract dynamic route parameters, like company_id
+
+  /*  console.log(location.pathname); */
+
   const breadcrumbPaths = findBreadcrumbPath(
     location.pathname,
     adminSidebarItemsConfig,
-    params
+    params || {} // Ensure params is an empty object if it's undefined
   ); // Use the helper
   return (
     <SidebarLayout sidebarItemsConfig={adminSidebarItemsConfig}>

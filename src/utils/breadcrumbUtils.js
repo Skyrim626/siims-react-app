@@ -1,7 +1,16 @@
 // breadcrumbUtils.js
 
 export const replaceDynamicSegments = (path, params) => {
-  let updatedPath = path;
+
+  if(!path) {
+    return path;
+  }
+
+  if(!params) {
+    return params;
+  }
+
+ let updatedPath = path;
 
   // Replace all dynamic segments (like ":company_id") with actual values from params
   Object.keys(params).forEach((paramKey) => {
@@ -9,6 +18,7 @@ export const replaceDynamicSegments = (path, params) => {
   });
 
   return updatedPath;
+
 };
 
 export const findBreadcrumbPath = (locationPath, sidebarConfig, params) => {
