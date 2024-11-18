@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Page from "../../components/common/Page";
 import { NavLink, useLocation } from "react-router-dom";
 import { Button } from "@headlessui/react";

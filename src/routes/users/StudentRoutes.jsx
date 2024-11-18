@@ -1,5 +1,4 @@
 // Libraries
-import React from "react";
 import { Navigate } from "react-router-dom";
 
 // Route Handlers
@@ -13,6 +12,7 @@ import ProtectedRoute from "../handlers/ProtectedRoute";
 import StudentProfilePage from "../../pages/student/StudentProfilePage";
 import StudentApplyJobPage from "../../pages/student/StudentApplyJobPage";
 import StudentRequestEndorsementPage from "../../pages/student/StudentRequestEndorsementPage";
+import StudentProgramPage from "../../pages/student/StudentProgramPage"
 
 // Routes for Student
 const StudentRoutes = {
@@ -42,6 +42,10 @@ const StudentRoutes = {
     {
       path: "apply/:job_id/request-endorsement",
       element: <StudentRequestEndorsementPage />,
+    },
+    {
+      path: "program",
+      element: <StudentProgramPage />,
     },
   ],
 };
