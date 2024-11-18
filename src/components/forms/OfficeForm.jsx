@@ -3,349 +3,299 @@ import { Building, Hash, MapPin, Navigation, Phone } from "lucide-react";
 import React from "react";
 
 const OfficeForm = ({
-  isFormModal = true,
-  method = "post",
-  officeInfo = {
-    company_id: "",
-    office_type_id: "",
-    supervisor_id: "",
-    name: "",
-    phone_number: "",
-    street: "",
-    barangay: "",
-    city_municipality: "",
-    province: "",
-    postal_code: "",
-  },
-  handleOfficeInfoChange = () => console.log("Testing"),
-  officeTypes = [],
-  supervisors = [],
-  companies = [],
-  handleSubmit,
+  isModal = false,
+  buttonTitle = "Save Changes",
+  officeTypeId = "",
+  setOfficeTypeId = () => {},
+  officeName = "",
+  setOfficeName = () => {},
+  phoneNumber = "",
+  setPhoneNumber = () => {},
+  street = "",
+  setStreet = () => {},
+  barangay = "",
+  setBarangay = () => {},
+  cityMunicipality = "",
+  setCityMunicipality = () => {},
+  province = "",
+  setProvince = () => {},
+  postalCode = "",
+  setPostalCode = () => {},
+  errors = {},
+  setErrors = () => {},
+  supervisorId = "",
+  setSupervisorId = () => {},
   requiredFields = {
-    company_id: true,
-    office_type_id: true,
+    officeTypeId: true,
     name: true,
-    phone_number: true,
+    phoneNumber: false,
     street: false,
     barangay: false,
-    city_municipality: false,
+    cityMunicipality: false,
     province: false,
-    postal_code: false,
+    postalCode: false,
   },
   displayFields = {
-    company_id: false,
-    office_type_id: false,
+    officeTypeId: true,
+    supervisorId: false,
   },
+  supervisors = [],
+  officeTypes = [],
 }) => {
-  // Method Checker
-  const buttonTitle = () => {
-    switch (method) {
-      case "post":
-        return "Add Office";
-
-      case "put":
-        return "Save Changes";
-
-      default:
-        return "Add Office";
-    }
-  };
-
-  const renderOfficeFormFields = () => {
-    return (
-      <>
-        <div className="text-sm">
-          {/* Company */}
-          {displayFields.company_id && (
-            <Field className="mb-4">
-              <Label
-                htmlFor="company_id"
-                className="text-gray-700 font-bold mb-2 flex items-center"
-              >
-                <Building size={20} className="mr-2 text-blue-600" />
-                Company{" "}
-                {requiredFields.company_id && (
-                  <span className="text-red-500">*</span>
-                )}
-              </Label>
-              <Select
-                id="company_id"
-                name="company_id"
-                className="border rounded-lg w-full py-2 px-3 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
-                value={officeInfo.company_id}
-                onChange={handleOfficeInfoChange}
-                required={requiredFields.company_id}
-              >
-                <option value="">-Select Company-</option>
-                {companies.map((company) => (
-                  <option key={company.id} value={company.id}>
-                    {company.name}
-                  </option>
-                ))}
-              </Select>
-            </Field>
-          )}
-
-          {/* Office Type */}
-          <Field className="mb-4">
-            <Label
-              htmlFor="office_type_id"
-              className="text-gray-700 font-bold mb-2 flex items-center"
-            >
-              <Building size={20} className="mr-2 text-blue-600" />
-              Office Type{" "}
-              {requiredFields.office_type_id && (
-                <span className="text-red-500">*</span>
-              )}
-            </Label>
-            <Select
-              id="office_type_id"
-              name="office_type_id"
-              className="border rounded-lg w-full py-2 px-3 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
-              required={requiredFields.office_type_id}
-              value={officeInfo.office_type_id}
-              onChange={handleOfficeInfoChange}
-            >
-              <option value="">-Select Office Type-</option>
-              {officeTypes.map((officeType) => (
-                <option key={officeType.id} value={officeType.id}>
-                  {officeType.name}
-                </option>
-              ))}
-            </Select>
-          </Field>
-
-          {/* Supervisor */}
-          {displayFields.supervisor_id && (
-            <Field className="mb-4">
-              <Label
-                htmlFor="supervisor_id"
-                className="text-gray-700 font-bold mb-2 flex items-center"
-              >
-                <Building size={20} className="mr-2 text-blue-600" />
-                Supervisor{" "}
-                {requiredFields.supervisor && (
-                  <span className="text-red-500">*</span>
-                )}
-              </Label>
-              <Select
-                id="supervisor_id"
-                name="supervisor_id"
-                className="border rounded-lg w-full py-2 px-3 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
-                value={officeInfo.supervisor_id}
-                onChange={handleOfficeInfoChange}
-                required={requiredFields.supervisor_id}
-              >
-                <option value="">-Select Supervisor-</option>
-                {supervisors.map((supervisor) => (
-                  <option key={supervisor.id} value={supervisor.id}>
-                    {supervisor.first_name}
-                  </option>
-                ))}
-              </Select>
-            </Field>
-          )}
-
-          {/* Office Name */}
-          <Field className="mb-4">
-            <Label
-              htmlFor="name"
-              className="text-gray-700 font-bold mb-2 flex items-center"
-            >
-              <Building size={20} className="mr-2 text-blue-600" />
-              Office Name{" "}
-              {requiredFields.name && <span className="text-red-500">*</span>}
-            </Label>
-            <Input
-              type="text"
-              id="name"
-              name="name"
-              className="border rounded-lg w-full py-2 px-3 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
-              placeholder="e.g. Newton Branch Office"
-              value={officeInfo.name}
-              onChange={handleOfficeInfoChange}
-              required={requiredFields.name}
-            />
-          </Field>
-
-          {/* Phone Number */}
-          <Field className="mb-4">
-            <Label
-              htmlFor="phone_number"
-              className="text-gray-700 font-bold mb-2 flex items-center"
-            >
-              <Phone size={20} className="mr-2 text-blue-600" />
-              Contact Phone{" "}
-              {requiredFields.phone_number && (
-                <span className="text-red-500">*</span>
-              )}
-            </Label>
-            <Input
-              type="text"
-              id="phone_number"
-              name="phone_number"
-              className="border rounded-lg w-full py-2 px-3 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
-              placeholder="+63 9XX-___-____"
-              value={officeInfo.phone_number}
-              onChange={handleOfficeInfoChange}
-              required={requiredFields.phone_number}
-            />
-          </Field>
-
-          {/* Location Header */}
-          <h3 className="text-lg font-bold text-gray-800 mb-5 border-b pb-2">
-            Location
-          </h3>
-
-          {/* Street Address */}
-          <Field className="mb-4">
-            <Label
-              htmlFor="street"
-              className="text-gray-700 font-bold mb-2 flex items-center"
-            >
-              <MapPin size={20} className="mr-2 text-blue-600" />
-              Street Address{" "}
-              {requiredFields.street && <span className="text-red-500">*</span>}
-            </Label>
-            <Input
-              type="text"
-              id="street"
-              name="street"
-              className="border rounded-lg w-full py-2 px-3 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
-              placeholder="House No., Street Name"
-              value={officeInfo.street}
-              onChange={handleOfficeInfoChange}
-              required={requiredFields.street}
-            />
-          </Field>
-
-          {/* Barangay */}
-          <Field className="mb-4">
-            <Label
-              htmlFor="barangay"
-              className="text-gray-700 font-bold mb-2 flex items-center"
-            >
-              <Navigation size={20} className="mr-2 text-blue-600" />
-              Barangay{" "}
-              {requiredFields.barangay && (
-                <span className="text-red-500">*</span>
-              )}
-            </Label>
-            <Input
-              type="text"
-              id="barangay"
-              name="barangay"
-              className="border rounded-lg w-full py-2 px-3 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
-              placeholder="Barangay"
-              value={officeInfo.barangay}
-              onChange={handleOfficeInfoChange}
-              required={requiredFields.barangay}
-            />
-          </Field>
-
-          {/* City/Municipality */}
-          <Field className="mb-4">
-            <Label
-              htmlFor="city_municipality"
-              className="text-gray-700 font-bold mb-2 flex items-center"
-            >
-              <MapPin size={20} className="mr-2 text-blue-600" />
-              City/Municipality{" "}
-              {requiredFields.city_municipality && (
-                <span className="text-red-500">*</span>
-              )}
-            </Label>
-            <Input
-              type="text"
-              id="city_municipality"
-              name="city_municipality"
-              className="border rounded-lg w-full py-2 px-3 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
-              placeholder="City/Municipality"
-              value={officeInfo.city_municipality}
-              onChange={handleOfficeInfoChange}
-              required={requiredFields.city_municipality}
-            />
-          </Field>
-
-          {/* Province */}
-          <Field className="mb-4">
-            <Label
-              htmlFor="province"
-              className="text-gray-700 font-bold mb-2 flex items-center"
-            >
-              <MapPin size={20} className="mr-2 text-blue-600" />
-              Province{" "}
-              {requiredFields.province && (
-                <span className="text-red-500">*</span>
-              )}
-            </Label>
-            <Input
-              type="text"
-              id="province"
-              name="province"
-              className="border rounded-lg w-full py-2 px-3 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
-              placeholder="Province"
-              value={officeInfo.province}
-              onChange={handleOfficeInfoChange}
-              required={requiredFields.province}
-            />
-          </Field>
-
-          {/* Postal Code */}
-          <Field className="mb-4">
-            <Label
-              htmlFor="postal_code"
-              className="text-gray-700 font-bold mb-2 flex items-center"
-            >
-              <Hash size={20} className="mr-2 text-blue-600" />
-              Postal Code{" "}
-              {requiredFields.postal_code && (
-                <span className="text-red-500">*</span>
-              )}
-            </Label>
-            <Input
-              type="text"
-              id="postal_code"
-              name="postal_code"
-              className="border rounded-lg w-full py-2 px-3 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
-              placeholder="4-digit Postal Code"
-              value={officeInfo.postal_code}
-              onChange={handleOfficeInfoChange}
-              required={requiredFields.postal_code}
-            />
-          </Field>
-
-          {/* Submit Button */}
-          {!isFormModal && (
-            <div className="pt-3">
-              <Button
-                onClick={handleSubmit}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md shadow-md w-full focus:outline-none focus:ring-2 focus:ring-blue-200"
-                type="button"
-              >
-                {buttonTitle}
-              </Button>
-            </div>
-          )}
-        </div>
-      </>
-    );
-  };
-
   return (
-    <>
-      {isFormModal ? (
-        renderOfficeFormFields()
-      ) : (
-        <form
-          onSubmit={handleSubmit}
-          className=" bg-white shadow-lg rounded-lg p-8 space-y-6"
+    <div className="text-sm">
+      {/* Office Type */}
+      <Field className="mb-4">
+        <Label
+          htmlFor="officeTypeId"
+          className="text-gray-700 font-bold mb-2 flex items-center"
         >
-          {renderOfficeFormFields()}
-        </form>
+          <Building size={20} className="mr-2 text-blue-600" />
+          Office Type{" "}
+          {requiredFields.officeTypeId && (
+            <span className="text-red-500">*</span>
+          )}
+        </Label>
+        <Select
+          id="officeTypeId"
+          name="officeTypeId"
+          className="border rounded-lg w-full py-2 px-3 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
+          required={requiredFields.officeTypeId}
+          value={officeTypeId}
+          onChange={(e) => {
+            setOfficeTypeId(e.target.value);
+          }}
+        >
+          <option value="x">-Select Office Type-</option>
+          {officeTypes.map((officeType) => (
+            <option key={officeType.id} value={officeType.id}>
+              {officeType.name}
+            </option>
+          ))}
+        </Select>
+      </Field>
+
+      {/* Supervisor */}
+      {displayFields.supervisorId && (
+        <Field className="mb-4">
+          <Label
+            htmlFor="supervisorId"
+            className="text-gray-700 font-bold mb-2 flex items-center"
+          >
+            <Building size={20} className="mr-2 text-blue-600" />
+            Supervisor{" "}
+            {requiredFields.supervisor && (
+              <span className="text-red-500">*</span>
+            )}
+          </Label>
+          <Select
+            id="supervisorId"
+            name="supervisorId"
+            className="border rounded-lg w-full py-2 px-3 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
+            value={supervisorId}
+            onChange={(e) => {
+              setSupervisorId(e.target.value);
+            }}
+            required={requiredFields.supervisorId}
+          >
+            <option value="">-Select Supervisor-</option>
+            {supervisors.map((supervisor) => {
+              return (
+                <option key={supervisor.id} value={supervisor.id}>
+                  {supervisor.full_name}
+                </option>
+              );
+            })}
+          </Select>
+        </Field>
       )}
-    </>
+
+      {/* Office Name */}
+      <Field className="mb-4">
+        <Label
+          htmlFor="officeName"
+          className="text-gray-700 font-bold mb-2 flex items-center"
+        >
+          <Building size={20} className="mr-2 text-blue-600" />
+          Office Name{" "}
+          {requiredFields.name && <span className="text-red-500">*</span>}
+        </Label>
+        <Input
+          type="text"
+          id="officeName"
+          name="officeName"
+          className="border rounded-lg w-full py-2 px-3 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
+          placeholder="e.g. Newton Branch Office"
+          value={officeName}
+          onChange={(e) => {
+            setOfficeName(e.target.value);
+          }}
+          required={requiredFields.name}
+        />
+      </Field>
+
+      {/* Phone Number */}
+      <Field className="mb-4">
+        <Label
+          htmlFor="phoneNumber"
+          className="text-gray-700 font-bold mb-2 flex items-center"
+        >
+          <Phone size={20} className="mr-2 text-blue-600" />
+          Contact Phone{" "}
+          {requiredFields.phoneNumber && (
+            <span className="text-red-500">*</span>
+          )}
+        </Label>
+        <Input
+          type="text"
+          id="phoneNumber"
+          name="phoneNumber"
+          className="border rounded-lg w-full py-2 px-3 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
+          placeholder="+63 9XX-___-____"
+          value={phoneNumber}
+          onChange={(e) => {
+            setPhoneNumber(e.target.value);
+          }}
+          required={requiredFields.phoneNumber}
+        />
+      </Field>
+
+      {/* Location Header */}
+      <h3 className="text-lg font-bold text-gray-800 mb-5 border-b pb-2">
+        Location
+      </h3>
+
+      {/* Street Address */}
+      <Field className="mb-4">
+        <Label
+          htmlFor="street"
+          className="text-gray-700 font-bold mb-2 flex items-center"
+        >
+          <MapPin size={20} className="mr-2 text-blue-600" />
+          Street Address{" "}
+          {requiredFields.street && <span className="text-red-500">*</span>}
+        </Label>
+        <Input
+          type="text"
+          id="street"
+          name="street"
+          className="border rounded-lg w-full py-2 px-3 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
+          placeholder="House No., Street Name"
+          value={street}
+          onChange={(e) => {
+            setStreet(e.target.value);
+          }}
+          required={requiredFields.street}
+        />
+      </Field>
+
+      {/* Barangay */}
+      <Field className="mb-4">
+        <Label
+          htmlFor="barangay"
+          className="text-gray-700 font-bold mb-2 flex items-center"
+        >
+          <Navigation size={20} className="mr-2 text-blue-600" />
+          Barangay{" "}
+          {requiredFields.barangay && <span className="text-red-500">*</span>}
+        </Label>
+        <Input
+          type="text"
+          id="barangay"
+          name="barangay"
+          className="border rounded-lg w-full py-2 px-3 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
+          placeholder="Barangay"
+          value={barangay}
+          onChange={(e) => {
+            setBarangay(e.target.value);
+          }}
+          required={requiredFields.barangay}
+        />
+      </Field>
+
+      {/* City/Municipality */}
+      <Field className="mb-4">
+        <Label
+          htmlFor="cityMunicipality"
+          className="text-gray-700 font-bold mb-2 flex items-center"
+        >
+          <MapPin size={20} className="mr-2 text-blue-600" />
+          City/Municipality{" "}
+          {requiredFields.cityMunicipality && (
+            <span className="text-red-500">*</span>
+          )}
+        </Label>
+        <Input
+          type="text"
+          id="cityMunicipality"
+          name="cityMunicipality"
+          className="border rounded-lg w-full py-2 px-3 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
+          placeholder="City/Municipality"
+          value={cityMunicipality}
+          onChange={(e) => {
+            setCityMunicipality(e.target.value);
+          }}
+          required={requiredFields.cityMunicipality}
+        />
+      </Field>
+
+      {/* Province */}
+      <Field className="mb-4">
+        <Label
+          htmlFor="province"
+          className="text-gray-700 font-bold mb-2 flex items-center"
+        >
+          <MapPin size={20} className="mr-2 text-blue-600" />
+          Province{" "}
+          {requiredFields.province && <span className="text-red-500">*</span>}
+        </Label>
+        <Input
+          type="text"
+          id="province"
+          name="province"
+          className="border rounded-lg w-full py-2 px-3 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
+          placeholder="Province"
+          value={province}
+          onChange={(e) => {
+            setProvince(e.target.value);
+          }}
+          required={requiredFields.province}
+        />
+      </Field>
+
+      {/* Postal Code */}
+      <Field className="mb-4">
+        <Label
+          htmlFor="postalCode"
+          className="text-gray-700 font-bold mb-2 flex items-center"
+        >
+          <Hash size={20} className="mr-2 text-blue-600" />
+          Postal Code{" "}
+          {requiredFields.postalCode && <span className="text-red-500">*</span>}
+        </Label>
+        <Input
+          type="text"
+          id="postalCode"
+          name="postalCode"
+          className="border rounded-lg w-full py-2 px-3 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
+          placeholder="4-digit Postal Code"
+          value={postalCode}
+          onChange={(e) => {
+            setPostalCode(e.target.value);
+          }}
+          required={requiredFields.postalCode}
+        />
+      </Field>
+
+      {isModal && (
+        <Button
+          type="submit"
+          className="bg-blue-600 p-2 rounded-md w-full text-md mb-3 text-white font-bold"
+        >
+          {buttonTitle}
+        </Button>
+      )}
+    </div>
   );
 };
 

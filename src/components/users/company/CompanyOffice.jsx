@@ -7,6 +7,8 @@ const CompanyOffice = ({ office }) => {
   // Open Location
   const location = useLocation();
 
+  // console.log(office);
+
   return (
     <>
       <div className="bg-white rounded-md shadow-md h-full flex flex-col justify-between">
@@ -18,6 +20,15 @@ const CompanyOffice = ({ office }) => {
             </Text>
             <Text className="text-2xl font-semibold text-gray-900 overflow-hidden text-ellipsis whitespace-nowrap max-w-full">
               {office.name}
+            </Text>
+            <Text
+              className={`text-sm uppercase ${
+                office.supervisor_name ? "bg-green-500" : "bg-red-500"
+              } text-white w-fit p-1 rounded-md`}
+            >
+              {office.supervisor_name
+                ? office.supervisor_name
+                : "No supervisor"}
             </Text>
             <div className="flex items-center gap-2 text-blue-600 mt-3">
               <Phone size={18} />

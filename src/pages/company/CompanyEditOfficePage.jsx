@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useParams,
+  useLoaderData,
+  useNavigate,
+} from "react-router-dom";
 import { getRequest, putRequest } from "../../api/apiHelpers";
 import useForm from "../../hooks/useForm";
 import Page from "../../components/common/Page";
@@ -12,121 +18,120 @@ import ContentLoader from "../../components/atoms/ContentLoader";
 import Text from "../../components/common/Text";
 
 const CompanyEditOfficePage = () => {
-  // Use Params
-  const { id } = useParams();
+  // Fetch office
+  const { initial_office, office_types } = useLoaderData();
+  // console.log(initial_office);
 
-  // Open Location
+  // Form input and errors
+  const [officeTypeId, setOfficeTypeId] = useState(
+    initial_office.office_type_id
+  );
+  const [officeName, setOfficeName] = useState(initial_office.name || "");
+  const [phoneNumber, setPhoneNumber] = useState(
+    initial_office.phone_number || ""
+  );
+  const [street, setStreet] = useState(initial_office.street || "");
+  const [barangay, setBarangay] = useState(initial_office.barangay || "");
+  const [cityMunicipality, setCityMunicipality] = useState(
+    initial_office.city_municipality || ""
+  );
+  const [province, setProvince] = useState(initial_office.province || "");
+  const [postalCode, setPostalCode] = useState(
+    initial_office.postal_code || ""
+  );
+  const [errors, setErrors] = useState({});
+
+  // Open Location and naviate
   const location = useLocation();
+  const navigate = useNavigate();
   const strippedPath =
-    stripLocation(location.pathname, `/edit-office/${id}`) + `/${id}`;
+    stripLocation(location.pathname, `/edit-office/${initial_office.id}`) +
+    `/${initial_office.id}`;
 
-  // Form State
-  // Using the custom hook for Office Information (Add)
-  const [officeInfo, handleOfficeInfoChange, resetOfficeInfo, setOfficeInfo] =
-    useForm({
-      office_type_id: "",
-      supervisor_id: "",
-      name: "",
-      phone_number: "",
-      street: "",
-      barangay: "",
-      city_municipality: "",
-      province: "",
-      postal_code: "",
-    });
+  // Update office
+  const updateOffice = async (e) => {
+    e.preventDefault();
 
-  // Fetch State
-  const [officeTypes, setOfficeTypes] = useState([]);
-  const [supervisors, setSupervisors] = useState([]);
+    try {
+      const payload = {
+        office_type_id: officeTypeId,
+        name: officeName,
+        phone_number: phoneNumber,
+        street: street,
+        barangay: barangay,
+        city_municipality: cityMunicipality,
+        province: province,
+        postal_code: postalCode,
+      };
 
-  // UseEffect: Fetch Office
-  useEffect(() => {
-    // Method: fetchOffice
-    const fetchOffice = async () => {
-      const response = await getRequest({
-        url: `/api/v1/company/offices/${id}`,
+      // console.log(payload);
+
+      // Make the PUT request
+      const response = await putRequest({
+        url: `/api/v1/company/offices/${initial_office.id}`,
+        data: payload,
       });
 
-      // Set Office
-      setOfficeInfo({
-        office_type_id: response.office_type_id,
-        supervisor_id: response.supervisor_id,
-        name: response.name,
-        phone_number: response.phone_number,
-        street: response.street,
-        barangay: response.barangay,
-        city_municipality: response.city_municipality,
-        province: response.province,
-        postal_code: response.postal_code,
-      });
-
-      // Office Types
-
-      const officeTypeResponse = await getRequest({
-        url: "/api/v1/company/office-types",
-      });
-
-      // Set States
-      setOfficeTypes(officeTypeResponse);
-    };
-
-    // Call Method: fetchOffice
-    fetchOffice();
-  }, []);
-
-  // Handle Submit Form
-  const handleSubmit = async () => {
-    // Ready Payload
-    const payload = officeInfo;
-
-    // Submit Request
-    const response = await putRequest({
-      url: `/api/v1/company/offices/${id}`,
-      data: payload,
-    });
-
-    console.log(response);
-    // Reset Form
-    // resetOfficeInfo();
+      navigate("/auth/company/offices");
+    } catch (error) {
+      // Handle and set errors
+      if (error.response && error.response.data && error.response.data.errors) {
+        console.log(error.response.data.errors);
+        setErrors(error.response.data.errors); // Assuming validation errors are in `errors`
+      } else {
+        console.error("An unexpected error occurred:", error);
+        setErrors({
+          general: "An unexpected error occurred. Please try again.",
+        });
+      }
+    }
   };
   return (
     <>
-      {officeTypes.length !== 0 ? (
-        <Page>
-          <Section>
-            <Link
-              to={strippedPath}
-              className="flex items-center text-sm font-bold text-blue-500 hover:underline"
-            >
-              <ChevronLeft size={20} />
-              Go Back
-            </Link>
-          </Section>
+      <Page>
+        <Section>
+          <Link
+            to={strippedPath}
+            className="flex items-center text-sm font-bold text-blue-500 hover:underline"
+          >
+            <ChevronLeft size={20} />
+            Go Back
+          </Link>
+        </Section>
 
-          <Section>
-            <Heading level={3} text={"Edit Office"} />
-            <Text className="text-sm text-blue-950">
-              This is where you add an office for your company.
-            </Text>
-            <hr className="my-3" />
-          </Section>
+        <Section>
+          <Heading level={3} text={"Edit Office"} />
+          <Text className="text-sm text-blue-950">
+            This is where you edit an office for your company.
+          </Text>
+          <hr className="my-3" />
+        </Section>
 
-          <Section>
+        <Section>
+          <form onSubmit={updateOffice}>
             <OfficeForm
-              isFormModal={false}
-              method="put"
-              userRole="company"
-              officeTypes={officeTypes}
-              supervisors={supervisors}
-              officeInfo={officeInfo}
-              handleOfficeInfoChange={handleOfficeInfoChange}
-              handleSubmit={handleSubmit}
+              isModal={true}
+              officeTypeId={officeTypeId}
+              setOfficeTypeId={setOfficeTypeId}
+              officeName={officeName}
+              setOfficeName={setOfficeName}
+              phoneNumber={phoneNumber}
+              setPhoneNumber={setPhoneNumber}
+              street={street}
+              setStreet={setStreet}
+              barangay={barangay}
+              setBarangay={setBarangay}
+              cityMunicipality={cityMunicipality}
+              setCityMunicipality={setCityMunicipality}
+              province={province}
+              setProvince={setProvince}
+              postalCode={postalCode}
+              setPostalCode={setPostalCode}
+              officeTypes={office_types}
             />
-          </Section>
-        </Page>
-      ) : (
-        <ContentLoader />
-      )}
+          </form>
+        </Section>
+      </Page>
     </>
   );
 };
