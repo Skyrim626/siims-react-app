@@ -39,8 +39,32 @@ const StudentHomePage = () => {
 
   return (
     <>
-      <Page className="w-1/2 p-4 overflow-y-auto">
+      <Page className="p-4 overflow-y-auto mx-auto">
         {/* New Post Box */}
+        <header className="bg-blue-600 text-white py-4 shadow-md mb-3">
+          <div className="container mx-auto px-4">
+            <h1 className="text-2xl font-bold">Home Page</h1>
+            <p className="text-sm mt-1">
+              Manage your Internship/Immersion Program efficiently.
+            </p>
+          </div>
+        </header>
+
+        <div className="bg-white shadow-md rounded-lg p-6 mb-6">
+          <h2 className="text-xl font-semibold mb-4">Reports</h2>
+          <div className="flex flex-wrap gap-2">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+              Manage DTR
+            </button>
+            <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
+              Submit Weekly Report
+            </button>
+            <button className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600">
+              Personal Insights
+            </button>
+          </div>
+        </div>
+
         <div className="bg-white p-4 rounded-lg shadow-md mb-4">
           <input
             type="text"
@@ -142,56 +166,6 @@ const StudentHomePage = () => {
           </div>
         </div>
       </Page>
-      {/* Right Sidebar */}
-      <aside className="w-1/4 p-4 max-h-screen sticky top-[80px] overflow-y-auto">
-        {/* Recommendations */}
-        <div className="bg-white p-4 rounded-lg shadow-md mb-4">
-          <h3 className="font-semibold">People You May Know</h3>
-          <ul className="space-y-2 mt-2">
-            <li className="flex items-center space-x-3">
-              <img
-                src="/profile-pic.jpg"
-                alt="Profile"
-                className="w-10 h-10 rounded-full"
-              />
-              <div>
-                <h4 className="font-semibold">Michael Scott</h4>
-                <p className="text-sm text-gray-500">Regional Manager</p>
-              </div>
-              <button className="text-blue-600 font-semibold">Connect</button>
-            </li>
-            <li className="flex items-center space-x-3">
-              <img
-                src="/profile-pic.jpg"
-                alt="Profile"
-                className="w-10 h-10 rounded-full"
-              />
-              <div>
-                <h4 className="font-semibold">Pam Beesly</h4>
-                <p className="text-sm text-gray-500">Office Administrator</p>
-              </div>
-              <button className="text-blue-600 font-semibold">Connect</button>
-            </li>
-          </ul>
-        </div>
-
-        {/* Job Suggestions */}
-        <div className="bg-white p-4 rounded-lg shadow-md">
-          <h3 className="font-semibold">Recommended Jobs</h3>
-          <ul className="space-y-2 mt-2">
-            <li>
-              <a href="#" className="text-gray-700 hover:underline">
-                Frontend Developer at XYZ Corp
-              </a>
-            </li>
-            <li>
-              <a href="#" className="text-gray-700 hover:underline">
-                Fullstack Engineer at ABC Inc.
-              </a>
-            </li>
-          </ul>
-        </div>
-      </aside>
     </>
   );
 };

@@ -12,7 +12,9 @@ import ProtectedRoute from "../handlers/ProtectedRoute";
 import StudentProfilePage from "../../pages/student/StudentProfilePage";
 import StudentApplyJobPage from "../../pages/student/StudentApplyJobPage";
 import StudentRequestEndorsementPage from "../../pages/student/StudentRequestEndorsementPage";
-import StudentProgramPage from "../../pages/student/StudentProgramPage"
+import StudentProgramPage from "../../pages/student/StudentProgramPage";
+import StudentManageDtrPage from "../../pages/student/StudentManageDtrPage";
+import StudentViewEvaluationPage from "../../pages/student/StudentViewEvaluationPage";
 
 // Routes for Student
 const StudentRoutes = {
@@ -46,6 +48,14 @@ const StudentRoutes = {
     {
       path: "program",
       element: <StudentProgramPage />,
+    },
+    {
+      path: "daily-time-records",
+      element: <StudentManageDtrPage />,
+    },
+    {
+      path: "view-evaluations",
+      element: <StudentViewEvaluationPage />,
     },
   ],
 };
