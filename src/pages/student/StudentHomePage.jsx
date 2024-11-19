@@ -72,8 +72,15 @@ const StudentHomePage = () => {
         url: `/api/v1/student/jobs/${selectedWorkPostId}/apply`,
       });
 
+      console.log(response);
+
       setIsModalOpen(false);
-      navigate(`${location.pathname}/apply/${selectedWorkPostId}`);
+
+      if (response) {
+        navigate(
+          `${location.pathname}/applications/${response.application_id}`
+        );
+      }
     } catch (error) {
       // Handle and set errors
       if (error.response && error.response.data && error.response.data.errors) {

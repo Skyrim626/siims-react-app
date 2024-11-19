@@ -1,12 +1,25 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import {
+  useLoaderData,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import Page from "../../components/common/Page";
 import { Button } from "@headlessui/react";
-import { getRequest } from "../../api/apiHelpers";
+import { getRequest, postFormDataRequest } from "../../api/apiHelpers";
 import Text from "../../components/common/Text";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import StudentFileUploader from "../../components/users/student/StudentFileUploader";
 
 const StudentJobApplicationPage = () => {
+  // Fetch loader data
+  const stepOneDocuments = useLoaderData();
+
+  // Open navigate and location
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const { job_id } = useParams();
 
   const [job, setJob] = useState(null);
@@ -31,14 +44,41 @@ const StudentJobApplicationPage = () => {
     setIsRequestSubmitted(true);
   };
 
-  const handleFileUpload = (e, fileType) => {
+  const handleFileUpload = async (e, fileType) => {
     const file = e.target.files[0];
     if (file) {
+      console.log(file);
+
       setUploadedFiles((prevFiles) => ({
         ...prevFiles,
         [fileType]: file,
       }));
+
+      // Simulate API call to send the file to the backend
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("type", file);
+
+      try {
+        console.log("Uploading file to the backend...");
+
+        const response = await postFormDataRequest({
+          url: `/api/v1/student/applications/10/upload-document/${fileType}`, // ID of that document
+          data: formData,
+        });
+
+        // Navigate after submitting
+        if (response) {
+          navigate(location.pathname);
+        }
+      } catch (error) {
+        console.log(error);
+      }
     }
+  };
+
+  const requestEndorsement = () => {
+    console.log("Requesting...");
   };
 
   const handleSubmitApplication = () => {
@@ -90,7 +130,7 @@ const StudentJobApplicationPage = () => {
 
   // Progress Indicator Data (now 4 steps)
   const steps = [
-    "Submit Documents",
+    "Application Requirements",
     "Request Endorsement",
     "Requirements",
     "Summary",
@@ -149,7 +189,7 @@ const StudentJobApplicationPage = () => {
                 </div>
                 {/* Step Title */}
                 <span
-                  className={`mt-2 text-sm font-medium ${
+                  className={`mt-2 text-center text-sm font-medium ${
                     currentStep >= index + 1 ? "text-blue-600" : "text-gray-500"
                   }`}
                 >
@@ -162,7 +202,107 @@ const StudentJobApplicationPage = () => {
 
         {/* Step-Based Content */}
         <div className="border border-gray-300 rounded-lg p-4 mb-6 bg-gray-50">
-          {currentStep === 1 && <>{/* Make Here */}</>}
+          {currentStep === 1 && (
+            <div className="space-y-6">
+              <h2 className="text-2xl font-semibold text-gray-800">
+                Upload Required Documents
+              </h2>
+              <p className="text-gray-600">
+                Please upload the following documents to proceed with your
+                application. All documents must be marked as
+                <span className="font-medium text-green-600"> Complete</span> to
+                move to the next step.
+              </p>
+
+              {/* Document List */}
+              <div className="space-y-4">
+                {stepOneDocuments.map((doc) => (
+                  <div
+                    key={doc.id}
+                    className="flex items-center justify-between p-4 border rounded-lg bg-white shadow-sm"
+                  >
+                    {/* Document Name */}
+                    <div>
+                      <h3 className="text-lg font-medium text-gray-800">
+                        {doc.name}
+                      </h3>
+                      <p
+                        className={`text-sm ${
+                          doc.status === "Complete"
+                            ? "text-green-600"
+                            : "text-red-600"
+                        }`}
+                      >
+                        Status: {doc.status}
+                      </p>
+                    </div>
+
+                    {/* Upload or View */}
+                    <div className="flex items-center space-x-4">
+                      {doc.file_path ? (
+                        <>
+                          <a
+                            href={doc.file_path}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+                          >
+                            View File
+                          </a>
+                          <label className="flex items-center space-x-2">
+                            <input
+                              type="file"
+                              accept=".pdf,.doc,.docx"
+                              onChange={(e) => handleFileUpload(e, doc.id)}
+                              className="hidden"
+                            />
+                            <span className="px-4 py-2 text-sm font-medium text-gray-800 bg-gray-200 rounded-lg cursor-pointer hover:bg-gray-300">
+                              Change File
+                            </span>
+                          </label>
+                        </>
+                      ) : (
+                        <input
+                          type="file"
+                          accept=".pdf,.doc,.docx"
+                          onChange={(e) => handleFileUpload(e, doc.id)}
+                          className="file:mr-2 file:py-2 file:px-4 file:border-0 file:rounded-lg file:bg-blue-500 file:text-white file:cursor-pointer"
+                        />
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Request Endorsement Button */}
+              <div className="flex justify-start mt-4">
+                <Button
+                  onClick={requestEndorsement}
+                  className="px-6 py-2 rounded-lg bg-indigo-500 text-white font-medium hover:bg-indigo-600"
+                >
+                  Request Endorsement
+                </Button>
+              </div>
+
+              {/* Next Step Button */}
+              <div className="flex justify-end mt-6">
+                <Button
+                  onClick={handleNextStep}
+                  disabled={
+                    !stepOneDocuments.every((doc) => doc.status === "Approved")
+                  }
+                  className={`flex items-center justify-center px-6 py-3 rounded-lg font-semibold ${
+                    !stepOneDocuments.every((doc) => doc.status === "Complete")
+                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      : "bg-blue-500 text-white hover:bg-blue-600"
+                  }`}
+                >
+                  Next
+                  <ChevronRight className="ml-2 h-5 w-5" />
+                </Button>
+              </div>
+            </div>
+          )}
 
           {currentStep === 2 && (
             <>

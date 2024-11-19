@@ -18,16 +18,6 @@ const Navbar = ({ links }) => {
         <div>
           <img src={logo} alt="LinkedIn Logo" width={120} />
         </div>
-
-        {/* Middle section: Search bar */}
-        <div className="flex items-center bg-gray-200 p-2 rounded-md">
-          <Search className="w-5 h-5 text-gray-600" />
-          <input
-            type="text"
-            placeholder="Search"
-            className="bg-transparent outline-none pl-2 text-gray-700"
-          />
-        </div>
       </div>
 
       {/* Right section: Navigation icons */}
