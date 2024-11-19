@@ -6,6 +6,7 @@ export default {
   ],
   theme: {
     extend: {},
+   
     fontFamily: {
       // Configure your font-families here
       sans: ['Roboto', 'sans-serif'],
