@@ -6,8 +6,9 @@ import { getRequest } from "../../api/apiHelpers";
 import Text from "../../components/common/Text";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const StudentApplyJobPage = () => {
+const StudentJobApplicationPage = () => {
   const { job_id } = useParams();
+
   const [job, setJob] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [studentName, setStudentName] = useState("");
@@ -373,4 +374,4 @@ const StudentApplyJobPage = () => {
   );
 };
 
-export default StudentApplyJobPage;
+export default StudentJobApplicationPage;

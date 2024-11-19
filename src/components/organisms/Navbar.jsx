@@ -32,19 +32,28 @@ const Navbar = ({ links }) => {
 
       {/* Right section: Navigation icons */}
       <div className="flex items-center space-x-6 text-gray-600">
-        {links.map(({ icon, text, path, ariaLabel }, index) => (
-          <NavLink
-            key={index}
-            to={path}
-            aria-label={ariaLabel}
-            className={`flex flex-col items-center hover:text-blue-600 cursor-pointer ${
-              location.pathname === path ? "text-blue-600" : ""
-            }`}
-          >
-            {icon}
-            <span className="text-xs">{text}</span>
-          </NavLink>
-        ))}
+        {links.map(
+          ({ icon, text, path, ariaLabel, display, hidden }, index) => {
+            // Only for student
+            if (hidden && hidden()) {
+              return null;
+            }
+
+            return (
+              <NavLink
+                key={index}
+                to={path}
+                aria-label={ariaLabel}
+                className={`flex flex-col items-center hover:text-blue-600 cursor-pointer ${
+                  location.pathname === path ? "text-blue-600" : ""
+                }`}
+              >
+                {icon}
+                <span className="text-xs">{text}</span>
+              </NavLink>
+            );
+          }
+        )}
 
         {/* Profile section with dropdown */}
         <div className="relative flex items-center space-x-2">

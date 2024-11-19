@@ -10,16 +10,28 @@ import { Button, Dialog } from "@headlessui/react";
 import { getRequest, postRequest } from "../../api/apiHelpers";
 import Text from "../../components/common/Text";
 
+/**
+ *
+ * Status_id of Student Display Features:
+ * 08 - Not yet applied - [Display Job List Features]
+ * 09 - Applying        - [Display Job List Features]
+ * 10 - Applied         - [Hide Job List Features, Display Reports Features]
+ */
+
 const StudentHomePage = () => {
   // Fetch initial_workPost_posts
-  const workPosts = useLoaderData();
+  const { workPosts, student, currently_applied_work_post, application_id } =
+    useLoaderData();
   // console.log(workPosts);
+  // console.log(student);
 
   // Location and Navigate
   const location = useLocation();
   const navigate = useNavigate();
 
   // Fetch State
+  const studentStatus = student["status_id"] || 8;
+  // console.log(studentStatus);
   const [currentPage, setCurrentPage] = useState(1);
   const workPostsPerPage = 5; // Maximum workPost per page
 
@@ -42,6 +54,14 @@ const StudentHomePage = () => {
   const handleApplyClick = (workPostId) => {
     setSelectedWorkPostId(workPostId);
     setIsModalOpen(true);
+  };
+
+  const navigateToApplication = () => {
+    // console.log(`${location.pathname}/application/${application_id}`);
+    const to = `${location.pathname}/applications/${application_id}`;
+
+    // apply/:job_id
+    navigate(to);
   };
 
   const handleConfirmApply = async () => {
@@ -76,90 +96,149 @@ const StudentHomePage = () => {
           <div className="container mx-auto px-4">
             <h1 className="text-2xl font-bold">Home Page</h1>
             <p className="text-sm mt-1">
-              Manage your Internship/Immersion Program efficiently.
+              Browse Job Lists for Internship and Immersion
             </p>
           </div>
         </header>
-
-        <div className="bg-white shadow-md rounded-lg p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4">Reports</h2>
-          <div className="flex flex-wrap gap-2">
-            <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
-              Manage DTR
-            </button>
-            <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
-              Submit Weekly Report
-            </button>
-            <button className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600">
-              Personal Insights
-            </button>
+        {/* Reports Section */}
+        {/* Applied - 10 */}
+        {studentStatus === 10 && (
+          <div className="bg-white shadow-md rounded-lg p-6 mb-6">
+            <h2 className="text-xl font-semibold mb-4">Reports</h2>
+            <div className="flex flex-wrap gap-2">
+              <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+                Manage DTR
+              </button>
+              <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
+                Submit Weekly Report
+              </button>
+              <button className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600">
+                Personal Insights
+              </button>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* WorkPost List Section */}
-        <div className="container mx-auto">
-          <h2 className="text-2xl font-semibold mb-4">Available Internships</h2>
-          <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            {currentWorkPost.map((workPost) => (
-              <div
-                key={workPost.id}
-                className="bg-white rounded-lg shadow-md p-4 transition-transform transform hover:scale-105"
-              >
-                <h3 className="text-xl font-bold mb-2">{workPost.title}</h3>
-                <Text className="text-gray-600 mb-2">
-                  {workPost.company_name}
-                </Text>
-                <Text className="text-gray-500 mb-4 line-clamp-2">
-                  {workPost.responsibilities}
-                </Text>
-                <Text className="text-sm text-gray-500">
-                  Start Date:{" "}
-                  {new Date(workPost.start_date).toLocaleDateString()}
-                </Text>
-                <Text className="text-sm text-gray-500 mb-4">
-                  End Date: {new Date(workPost.end_date).toLocaleDateString()}
-                </Text>
-                <button
-                  onClick={() => handleApplyClick(workPost.id)}
-                  className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+        {/* Not yet applied - 10 */}
+        {studentStatus === 8 && (
+          <div className="container mx-auto">
+            <h2 className="text-2xl font-semibold mb-4">
+              Available Internships
+            </h2>
+            <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+              {currentWorkPost.map((workPost) => (
+                <div
+                  key={workPost.id}
+                  className="bg-white rounded-lg shadow-md p-4 transition-transform transform hover:scale-105"
                 >
-                  Apply Now
-                </button>
-              </div>
-            ))}
-          </div>
+                  <h3 className="text-xl font-bold mb-2">{workPost.title}</h3>
+                  <Text className="text-gray-600 mb-2">
+                    {workPost.company_name}
+                  </Text>
+                  <Text className="text-gray-500 mb-4 line-clamp-2">
+                    {workPost.responsibilities}
+                  </Text>
+                  <Text className="text-sm text-gray-500">
+                    Start Date:{" "}
+                    {new Date(workPost.start_date).toLocaleDateString()}
+                  </Text>
+                  <Text className="text-sm text-gray-500 mb-4">
+                    End Date: {new Date(workPost.end_date).toLocaleDateString()}
+                  </Text>
+                  <button
+                    onClick={() => handleApplyClick(workPost.id)}
+                    className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+                  >
+                    Apply Now
+                  </button>
+                </div>
+              ))}
+            </div>
 
-          {/* Pagination */}
-          <div className="mt-8 flex justify-between items-center">
-            <button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-              className={`px-4 py-2 rounded-md ${
-                currentPage === 1
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-blue-600 text-white hover:bg-blue-700"
-              }`}
-            >
-              Previous
-            </button>
-            <span className="text-gray-700">
-              Page {currentPage} of {totalPages}
-            </span>
-            <button
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-              }
-              disabled={currentPage === totalPages}
-              className={`px-4 py-2 rounded-md ${
-                currentPage === totalPages
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-blue-600 text-white hover:bg-blue-700"
-              }`}
-            >
-              Next
-            </button>
+            {/* Pagination */}
+            <div className="mt-8 flex justify-between items-center">
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className={`px-4 py-2 rounded-md ${
+                  currentPage === 1
+                    ? "bg-gray-300 cursor-not-allowed"
+                    : "bg-blue-600 text-white hover:bg-blue-700"
+                }`}
+              >
+                Previous
+              </button>
+              <span className="text-gray-700">
+                Page {currentPage} of {totalPages}
+              </span>
+              <button
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+                disabled={currentPage === totalPages}
+                className={`px-4 py-2 rounded-md ${
+                  currentPage === totalPages
+                    ? "bg-gray-300 cursor-not-allowed"
+                    : "bg-blue-600 text-white hover:bg-blue-700"
+                }`}
+              >
+                Next
+              </button>
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* If the student already applied then display this */}
+        {currently_applied_work_post && (
+          <div className="container mx-auto">
+            <h2 className="text-2xl font-semibold mb-4">
+              Currently Applied Job
+            </h2>
+            <div
+              key={currently_applied_work_post.id}
+              className="bg-white rounded-lg shadow-md p-4 transition-transform transform"
+            >
+              <h3 className="text-xl font-bold mb-2">
+                {currently_applied_work_post.title}
+              </h3>
+              <Text className="text-gray-600 mb-2">
+                {currently_applied_work_post.company_name}
+              </Text>
+              <Text className="text-gray-500 mb-4 line-clamp-2">
+                {currently_applied_work_post.responsibilities}
+              </Text>
+              <Text className="text-sm text-gray-500">
+                Start Date:{" "}
+                {new Date(
+                  currently_applied_work_post.start_date
+                ).toLocaleDateString()}
+              </Text>
+              <Text className="text-sm text-gray-500 mb-4">
+                End Date:{" "}
+                {new Date(
+                  currently_applied_work_post.end_date
+                ).toLocaleDateString()}
+              </Text>
+              <div className="mt-2 space-x-3">
+                <Button
+                  onClick={() =>
+                    handleApplyClick(currently_applied_work_post.id)
+                  }
+                  className="p-3 bg-gray-600 text-white py-2 rounded-lg hover:bg-gray-700 transition"
+                >
+                  Withdraw
+                </Button>
+                <Button
+                  onClick={navigateToApplication}
+                  className="p-3 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+                >
+                  View Application
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Modal */}
         <Dialog

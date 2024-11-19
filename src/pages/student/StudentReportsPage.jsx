@@ -1,4 +1,4 @@
-const StudentProgramPage = () => {
+const StudentReportsPage = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       <header className="bg-blue-600 text-white py-4 shadow-md">
@@ -103,4 +103,4 @@ const StudentProgramPage = () => {
   );
 };
 
-export default StudentProgramPage;
+export default StudentReportsPage;

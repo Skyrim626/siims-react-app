@@ -10,12 +10,14 @@ import StudentLayout from "../../components/layouts/StudentLayout";
 import StudentHomePage from "../../pages/student/StudentHomePage";
 import ProtectedRoute from "../handlers/ProtectedRoute";
 import StudentProfilePage from "../../pages/student/StudentProfilePage";
-import StudentApplyJobPage from "../../pages/student/StudentApplyJobPage";
+import StudentApplyJobPage from "../../pages/student/StudentJobApplicationPage";
 import StudentRequestEndorsementPage from "../../pages/student/StudentRequestEndorsementPage";
-import StudentProgramPage from "../../pages/student/StudentProgramPage";
+import StudentProgramPage from "../../pages/student/StudentReportsPage";
 import StudentManageDtrPage from "../../pages/student/StudentManageDtrPage";
 import StudentViewEvaluationPage from "../../pages/student/StudentViewEvaluationPage";
 import axiosClient from "../../api/axiosClient";
+import StudentReportsPage from "../../pages/student/StudentReportsPage";
+import StudentJobApplicationPage from "../../pages/student/StudentJobApplicationPage";
 
 // Routes for Student
 const StudentRoutes = {
@@ -25,6 +27,21 @@ const StudentRoutes = {
       <StudentLayout />
     </ProtectedRoute>
   ),
+  loader: async () => {
+    try {
+      const response = await axiosClient.get("/api/v1/student/auth");
+      // console.log(response);
+
+      const auth = response.data;
+
+      // console.log(auth);
+
+      return auth;
+    } catch (error) {
+      console.error("Error fetching programs and chairpersons: ", error);
+      throw error; // Let the router handle errors
+    }
+  },
   children: [
     {
       path: "dashboard",
@@ -37,11 +54,26 @@ const StudentRoutes = {
         try {
           const response = await axiosClient.get("/api/v1/student/jobs");
 
-          const jobs = response.data;
+          const { initial_job_posts, student } = response.data;
+          const workPosts = initial_job_posts;
 
-          // console.log(jobs);
+          const currentAppliedWorkResponse = await axiosClient.get(
+            "/api/v1/student/jobs/currently-applied"
+          );
+          const { currently_applied_work_post, application_id } =
+            currentAppliedWorkResponse.data;
 
-          return jobs;
+          // console.log(initial_job_posts);
+          // console.log(student);
+          // console.log(currently_applied_work_post);
+          // console.log(application_id);
+
+          return {
+            workPosts,
+            student,
+            currently_applied_work_post,
+            application_id,
+          };
         } catch (error) {
           console.error("Error fetching programs and chairpersons: ", error);
           throw error; // Let the router handle errors
@@ -53,11 +85,13 @@ const StudentRoutes = {
       element: <StudentProfilePage />,
     },
     {
-      path: "apply/:job_id",
-      element: <StudentApplyJobPage />,
+      path: "applications/:application_id",
+      element: <StudentJobApplicationPage />,
       loader: async ({ params }) => {
         try {
           const { job_id } = params;
+
+          return null;
         } catch (error) {
           console.error("Error fetching programs and chairpersons: ", error);
           throw error; // Let the router handle errors
@@ -69,8 +103,8 @@ const StudentRoutes = {
       element: <StudentRequestEndorsementPage />,
     },
     {
-      path: "program",
-      element: <StudentProgramPage />,
+      path: "my-reports",
+      element: <StudentReportsPage />,
     },
     {
       path: "daily-time-records",
