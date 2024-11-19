@@ -1,41 +1,72 @@
 import { useEffect, useState } from "react";
 import Page from "../../components/common/Page";
-import { NavLink, useLocation } from "react-router-dom";
-import { Button } from "@headlessui/react";
-import { getRequest } from "../../api/apiHelpers";
+import {
+  NavLink,
+  useLoaderData,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
+import { Button, Dialog } from "@headlessui/react";
+import { getRequest, postRequest } from "../../api/apiHelpers";
 import Text from "../../components/common/Text";
 
 const StudentHomePage = () => {
-  // Location
-  const location = useLocation();
+  // Fetch initial_workPost_posts
+  const workPosts = useLoaderData();
+  // console.log(workPosts);
 
-  console.log(location.pathname);
+  // Location and Navigate
+  const location = useLocation();
+  const navigate = useNavigate();
 
   // Fetch State
-  const [jobs, setJobs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const jobsPerPage = 5; // Maximum jobs per page
+  const workPostsPerPage = 5; // Maximum workPost per page
 
-  // Use Effect Fetch
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await getRequest({
-        url: "/api/v1/student/jobs",
-      });
-
-      setJobs(response);
-    };
-
-    fetchData();
-  }, []);
+  // Modal State
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedWorkPostId, setSelectedWorkPostId] = useState(null);
 
   // Calculate the total number of pages
-  const totalPages = Math.ceil(jobs.length / jobsPerPage);
+  const totalPages = Math.ceil(workPosts.length / workPostsPerPage);
 
-  // Get the jobs for the current page
-  const indexOfLastJob = currentPage * jobsPerPage;
-  const indexOfFirstJob = indexOfLastJob - jobsPerPage;
-  const currentJobs = jobs.slice(indexOfFirstJob, indexOfLastJob);
+  // Get the workPosts for the current page
+  const indexOfLastWorkPost = currentPage * workPostsPerPage;
+  const indexOfFirstWorkPost = indexOfLastWorkPost - workPostsPerPage;
+  const currentWorkPost = workPosts.slice(
+    indexOfFirstWorkPost,
+    indexOfLastWorkPost
+  );
+
+  // Modal Logic
+  const handleApplyClick = (workPostId) => {
+    setSelectedWorkPostId(workPostId);
+    setIsModalOpen(true);
+  };
+
+  const handleConfirmApply = async () => {
+    // Method POST
+    // Create a new application record
+    try {
+      const response = await postRequest({
+        url: `/api/v1/student/jobs/${selectedWorkPostId}/apply`,
+      });
+
+      setIsModalOpen(false);
+      navigate(`${location.pathname}/apply/${selectedWorkPostId}`);
+    } catch (error) {
+      // Handle and set errors
+      if (error.response && error.response.data && error.response.data.errors) {
+        console.log(error.response.data.errors);
+        setErrors(error.response.data.errors); // Assuming validation errors are in `errors`
+      } else {
+        console.error("An unexpected error occurred:", error);
+        setErrors({
+          general: "An unexpected error occurred. Please try again.",
+        });
+      }
+    }
+  };
 
   return (
     <>
@@ -65,106 +96,100 @@ const StudentHomePage = () => {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow-md mb-4">
-          <input
-            type="text"
-            placeholder="Start a post"
-            className="w-full p-2 border border-gray-300 rounded-lg"
-          />
-          <div className="mt-2 flex space-x-4">
-            <button className="text-blue-600">Photo</button>
-            <button className="text-blue-600">Video</button>
-            <button className="text-blue-600">Event</button>
-          </div>
-        </div>
-        <div className="flex-1">
-          {/* Pagination Controls */}
-          <div className="flex justify-between mt-4">
-            <Button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors duration-200"
-            >
-              Previous
-            </Button>
-            <Text className="self-center">
-              Page {currentPage} of {totalPages}
-            </Text>
-            <Button
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-              }
-              disabled={currentPage === totalPages}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors duration-200"
-            >
-              Next
-            </Button>
-          </div>
-          <div className="mt-3">
-            {jobs.length > 0 ? (
-              <div className="space-y-4">
-                {currentJobs.map((job) => (
-                  <div
-                    key={job.id}
-                    className="border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow duration-200"
-                  >
-                    <h3 className="text-lg font-bold">{job.title}</h3>
-                    <Text className="text-gray-600">{job.company_name}</Text>
-                    <Text className="text-gray-500">
-                      {job.responsibilities}
-                    </Text>
-                    <Text className="text-gray-700 mb-4">
-                      {job.qualifications}
-                    </Text>
-                    <Text className="text-gray-500">
-                      Start Date:{" "}
-                      {new Date(job.start_date).toLocaleDateString()}
-                    </Text>
-                    <Text className="text-gray-500">
-                      End Date: {new Date(job.end_date).toLocaleDateString()}
-                    </Text>
-                    <p className="text-gray-500">
-                      Duration: {job.work_duration}
-                    </p>
-                    <Button className="mt-3">
-                      <NavLink
-                        to={`${location.pathname}/apply/${job.id}`} // Link to the apply page for the job
-                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors duration-200"
-                      >
-                        Apply Now
-                      </NavLink>
-                    </Button>
-                  </div>
-                ))}
+        {/* WorkPost List Section */}
+        <div className="container mx-auto">
+          <h2 className="text-2xl font-semibold mb-4">Available Internships</h2>
+          <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            {currentWorkPost.map((workPost) => (
+              <div
+                key={workPost.id}
+                className="bg-white rounded-lg shadow-md p-4 transition-transform transform hover:scale-105"
+              >
+                <h3 className="text-xl font-bold mb-2">{workPost.title}</h3>
+                <Text className="text-gray-600 mb-2">
+                  {workPost.company_name}
+                </Text>
+                <Text className="text-gray-500 mb-4 line-clamp-2">
+                  {workPost.responsibilities}
+                </Text>
+                <Text className="text-sm text-gray-500">
+                  Start Date:{" "}
+                  {new Date(workPost.start_date).toLocaleDateString()}
+                </Text>
+                <Text className="text-sm text-gray-500 mb-4">
+                  End Date: {new Date(workPost.end_date).toLocaleDateString()}
+                </Text>
+                <button
+                  onClick={() => handleApplyClick(workPost.id)}
+                  className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+                >
+                  Apply Now
+                </button>
               </div>
-            ) : (
-              <Text>No jobs available</Text>
-            )}
+            ))}
           </div>
 
-          {/* Pagination Controls */}
-          <div className="flex justify-between mt-4">
-            <Button
+          {/* Pagination */}
+          <div className="mt-8 flex justify-between items-center">
+            <button
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors duration-200"
+              className={`px-4 py-2 rounded-md ${
+                currentPage === 1
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-blue-600 text-white hover:bg-blue-700"
+              }`}
             >
               Previous
-            </Button>
-            <span className="self-center">
+            </button>
+            <span className="text-gray-700">
               Page {currentPage} of {totalPages}
             </span>
-            <Button
+            <button
               onClick={() =>
                 setCurrentPage((prev) => Math.min(prev + 1, totalPages))
               }
               disabled={currentPage === totalPages}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors duration-200"
+              className={`px-4 py-2 rounded-md ${
+                currentPage === totalPages
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-blue-600 text-white hover:bg-blue-700"
+              }`}
             >
               Next
-            </Button>
+            </button>
           </div>
         </div>
+
+        {/* Modal */}
+        <Dialog
+          open={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+        >
+          <Dialog.Panel className="bg-white rounded-lg p-6 shadow-lg w-96">
+            <Dialog.Title className="text-lg font-bold mb-4">
+              Confirm Application
+            </Dialog.Title>
+            <Dialog.Description className="mb-4 text-gray-600">
+              Are you sure you want to apply for this workPost?
+            </Dialog.Description>
+            <div className="flex justify-between">
+              <button
+                onClick={handleConfirmApply}
+                className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
+              >
+                Yes
+              </button>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+              >
+                No
+              </button>
+            </div>
+          </Dialog.Panel>
+        </Dialog>
       </Page>
     </>
   );

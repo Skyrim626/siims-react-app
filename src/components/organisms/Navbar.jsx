@@ -12,7 +12,7 @@ const Navbar = ({ links }) => {
   };
 
   return (
-    <nav className="bg-white shadow-md p-4 flex justify-between items-center sticky top-0 z-10">
+    <nav className="bg-white shadow-md p-4 flex justify-between items-center sticky top-0 z-50">
       <div className="flex items-center gap-3">
         {/* Left section: Logo */}
         <div>

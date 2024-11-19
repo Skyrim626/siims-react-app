@@ -15,6 +15,7 @@ import StudentRequestEndorsementPage from "../../pages/student/StudentRequestEnd
 import StudentProgramPage from "../../pages/student/StudentProgramPage";
 import StudentManageDtrPage from "../../pages/student/StudentManageDtrPage";
 import StudentViewEvaluationPage from "../../pages/student/StudentViewEvaluationPage";
+import axiosClient from "../../api/axiosClient";
 
 // Routes for Student
 const StudentRoutes = {
@@ -32,6 +33,20 @@ const StudentRoutes = {
     {
       index: true,
       element: <StudentHomePage />,
+      loader: async () => {
+        try {
+          const response = await axiosClient.get("/api/v1/student/jobs");
+
+          const jobs = response.data;
+
+          // console.log(jobs);
+
+          return jobs;
+        } catch (error) {
+          console.error("Error fetching programs and chairpersons: ", error);
+          throw error; // Let the router handle errors
+        }
+      },
     },
     {
       path: "profile",
@@ -40,6 +55,14 @@ const StudentRoutes = {
     {
       path: "apply/:job_id",
       element: <StudentApplyJobPage />,
+      loader: async ({ params }) => {
+        try {
+          const { job_id } = params;
+        } catch (error) {
+          console.error("Error fetching programs and chairpersons: ", error);
+          throw error; // Let the router handle errors
+        }
+      },
     },
     {
       path: "apply/:job_id/request-endorsement",
