@@ -16,10 +16,7 @@
     "axios": "^1.7.2",
     "framer-motion": "^11.5.2",
     "jspdf": "^2.5.2",
-<<<<<<< HEAD
-=======
     "jspdf-autotable": "^3.8.4",
->>>>>>> c8f994ff51d6db31ec6121b2219d8d32466dfcfd
     "lucide-react": "^0.417.0",
     "react": "^18.3.1",
     "react-calendar": "^5.0.0",
