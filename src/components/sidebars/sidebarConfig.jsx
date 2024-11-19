@@ -11,6 +11,8 @@ import {
   Briefcase,
   FileText,
   Users,
+  UserRoundCheck,
+  UserPen,
 } from "lucide-react";
 
 // Configuration for sidebar items for Admin
@@ -121,6 +123,28 @@ const adminSidebarItemsConfig = [
   },
 ];
 
+// Configuration for sidebar items for Coordinator
+const coordinatorSidebarItemsConfig = [
+  {
+    icon: <LayoutDashboard size={20} />,
+    text: "Dashboard",
+    alert: true,
+    ariaLabel: "Dashboard",
+    exact: true,
+    active: true,
+    path: "/auth/coordinator",
+  },
+  {
+    icon: <UserPen size={20} />,
+    text: "My Profile",
+    alert: true,
+    ariaLabel: "My Profile",
+    exact: true,
+    active: true,
+    path: "/auth/coordinator/profile",
+  },
+];
+
 // Configuration for sidebar items for Chairperson
 const chairpersonSidebarItemsConfig = [
   {
@@ -131,6 +155,15 @@ const chairpersonSidebarItemsConfig = [
     exact: true,
     active: true,
     path: "/auth/chairperson",
+  },
+  {
+    icon: <UserRoundCheck size={20} />,
+    text: "Coordinators",
+    alert: true,
+    ariaLabel: "Coordinators",
+    exact: false,
+    active: true,
+    path: "/auth/chairperson/coordinators",
   },
   {
     icon: <User size={20} />,
@@ -317,4 +350,5 @@ export {
   supervisorSidebarItemsConfig,
   chairpersonSidebarItemsConfig,
   companySidebarItemsConfig,
+  coordinatorSidebarItemsConfig,
 };

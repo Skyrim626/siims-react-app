@@ -5,6 +5,8 @@ import ChairpersonDashboardPage from "../../pages/chairperson/ChairpersonDashboa
 import ChairpersonManageCompaniesPage from "../../pages/chairperson/ChairpersonManageCompaniesPage";
 import ChairpersonCompanyPage from "../../pages/chairperson/ChairpersonCompanyPage";
 import ChairpersonEndorsementRequestsPage from "../../pages/chairperson/ChairpersonEndorsementRequestsPage";
+import ChairpersonViewCoordinatorPage from "../../pages/chairperson/ChairpersonViewCoordinatorPage";
+import axiosClient from "../../api/axiosClient";
 
 // Routes for Chairperson
 const ChairpersonRoutes = {
@@ -22,6 +24,24 @@ const ChairpersonRoutes = {
     {
       index: true,
       element: <ChairpersonDashboardPage />,
+    },
+    {
+      path: "coordinators",
+      element: <ChairpersonViewCoordinatorPage />,
+      loader: async () => {
+        try {
+          const response = await axiosClient.get(
+            "/api/v1/chairperson/coordinators"
+          );
+
+          const coordinators = response.data;
+
+          return coordinators;
+        } catch (error) {
+          console.error("Error fetching coordinators: ", error);
+          throw error; // Let the router handle errors
+        }
+      },
     },
     {
       path: "companies",

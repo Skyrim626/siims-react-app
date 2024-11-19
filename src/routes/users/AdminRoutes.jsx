@@ -12,8 +12,6 @@ import AdminLayout from "../../components/layouts/AdminLayout"; // Importing the
 
 // Admin Pages
 import AdminDashboard from "../../pages/admin/AdminDashboard"; // Importing the Admin Dashboard page
-import AdminManageStudent from "../../pages/admin/manage-users/student/AdminManageStudent"; // Importing the page to manage students
-import AdminStudent from "../../pages/admin/manage-users/student/AdminAddStudent"; // Importing the page to add a new student
 import AdminMessages from "../../pages/admin/AdminMessages"; // Importing the messages management page
 import AdminLogs from "../../pages/admin/AdminLogs"; // Importing the logs management page
 import AdminInternshipPostingsPage from "../../pages/admin/AdminInternshipPostingsPage"; // Importing the internship postings page
@@ -159,7 +157,7 @@ const AdminRoutes = {
           path: "deans", // Route for managing deans
           element: <AdminManageDeansPage />,
         },
-        {
+        /*  {
           path: "students", // Base path for student management
           element: <AdminManageStudent />, // Render student management page
           children: [
@@ -168,7 +166,7 @@ const AdminRoutes = {
               element: <AdminStudent />, // Render add student component
             },
           ],
-        },
+        }, */
 
         {
           path: "companies", // Route for managing companies
