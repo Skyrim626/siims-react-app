@@ -6,6 +6,7 @@ import SupervisorManageJobsPage from "../../pages/supervisor/SupervisorManageJob
 import SupervisorAddJobPage from "../../pages/supervisor/SupervisorAddJobPage";
 import axiosClient from "../../api/axiosClient";
 import SupervisorEditJobPage from "../../pages/supervisor/SupervisorEditJobPage";
+import SupervisorManageApplicantsPage from "../../pages/supervisor/SupervisorManageApplicantsPage";
 
 // Routes for Supervisor
 const SupervisorRoutes = {
@@ -23,6 +24,23 @@ const SupervisorRoutes = {
     {
       index: true,
       element: <SupervisorDashboardPage />,
+    },
+    {
+      path: "applicants",
+      element: <SupervisorManageApplicantsPage />,
+      loader: async () => {
+        try {
+          const response = await axiosClient.get(
+            "/api/v1/supervisor/applicants"
+          );
+
+          const applicants = response.data;
+
+          return applicants;
+        } catch (error) {
+          console.log(error);
+        }
+      },
     },
     {
       path: "work-posts",

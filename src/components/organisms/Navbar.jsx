@@ -3,6 +3,13 @@ import { useLocation, NavLink } from "react-router-dom";
 import { Search, Bell } from "lucide-react";
 import logo from "../../assets/images/logo.svg";
 
+/**
+ * Components
+ */
+// Headless UI Components
+import { Button } from "@headlessui/react";
+import { useAuth } from "../../hooks/useAuth";
+
 const Navbar = ({ links }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const location = useLocation();
@@ -11,7 +18,8 @@ const Navbar = ({ links }) => {
     setDropdownOpen(!dropdownOpen);
   };
 
-  
+  // Auth logout
+  const { logout } = useAuth();
 
   return (
     <nav className="bg-white shadow-md p-4 flex justify-between items-center sticky top-0 z-50">
@@ -67,16 +75,19 @@ const Navbar = ({ links }) => {
             <div className="absolute top-8 right-0 mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg z-10">
               <ul className="py-1">
                 <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                <NavLink to="auth/my/profile" className="block w-full">
+                  <NavLink to="auth/my/profile" className="block w-full">
                     Profile
                   </NavLink>
                 </li>
                 <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
                   Settings & Privacy
                 </li>
-                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                <Button
+                  onClick={logout}
+                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                >
                   Sign Out
-                </li>
+                </Button>
               </ul>
             </div>
           )}

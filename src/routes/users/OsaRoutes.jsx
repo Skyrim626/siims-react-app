@@ -4,6 +4,7 @@ import ProtectedRoute from "../handlers/ProtectedRoute";
 import OsaDashboardPage from "../../pages/osa/OsaDashboardPage";
 import OsaManageDocumentTypesPage from "../../pages/osa/OsaManageDocumentTypesPage";
 import axiosClient from "../../api/axiosClient";
+import OsaManageApplicantsPage from "../../pages/osa/OsaManageApplicantsPage";
 
 // Routes for Dean
 const OsaRoutes = {
@@ -22,6 +23,22 @@ const OsaRoutes = {
     {
       index: true,
       element: <OsaDashboardPage />,
+    },
+    {
+      path: "applicants",
+      element: <OsaManageApplicantsPage />,
+      loader: async () => {
+        try {
+          const response = await axiosClient.get("/api/v1/osa/applicants");
+
+          const applicants = response.data;
+
+          return applicants;
+        } catch (error) {
+          console.error("Error fetching document types: ", error);
+          throw error; // Let the router handle errors
+        }
+      },
     },
     {
       path: "document-types",

@@ -211,6 +211,14 @@ const supervisorSidebarItemsConfig = [
     path: "/auth/supervisor",
   },
   {
+    icon: <Users size={20} />,
+    text: "Applicants",
+    alert: true,
+    ariaLabel: "Applicants",
+    exact: true, // Add an `exact` property for exact path matching
+    path: "/auth/supervisor/applicants",
+  },
+  {
     icon: <Briefcase size={20} />,
     text: "Manage Jobs",
     alert: true,
@@ -290,6 +298,14 @@ const osaSidebarItemsConfig = [
     ariaLabel: "Dashboard",
     exact: true, // Add an `exact` property for exact path matching
     path: "/auth/osa",
+  },
+  {
+    icon: <Users size={20} />,
+    text: "Applicants",
+    alert: true,
+    ariaLabel: "Applicants",
+    exact: true, // Add an `exact` property for exact path matching
+    path: "/auth/osa/applicants",
   },
   {
     icon: <File />,
