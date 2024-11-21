@@ -14,7 +14,9 @@ import StudentFileUploader from "../../components/users/student/StudentFileUploa
 
 const StudentJobApplicationPage = () => {
   // Fetch loader data
-  const stepOneDocuments = useLoaderData();
+  const { initial_application, stepOneDocuments } = useLoaderData();
+
+  // console.log(initial_application);
 
   // Open navigate and location
   const navigate = useNavigate();
@@ -60,10 +62,10 @@ const StudentJobApplicationPage = () => {
       formData.append("type", file);
 
       try {
-        console.log("Uploading file to the backend...");
+        // console.log("Uploading file to the backend...");
 
         const response = await postFormDataRequest({
-          url: `/api/v1/student/applications/10/upload-document/${fileType}`, // ID of that document
+          url: `/api/v1/student/applications/${initial_application.id}/upload-document/${fileType}`, // ID of that document
           data: formData,
         });
 

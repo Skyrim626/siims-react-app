@@ -91,6 +91,11 @@ const StudentRoutes = {
         try {
           const { application_id, job_id } = params;
 
+          // Fetch application
+          const applicationResponse = await axiosClient.get(
+            `/api/v1/student/applications/${application_id}`
+          );
+
           // Fetch Step-1 Documents
           const stepOneResponse = await axiosClient.get(
             `/api/v1/student/applications/${application_id}/document-submissions/step-1/get`
@@ -98,9 +103,10 @@ const StudentRoutes = {
 
           // console.log(stepOneResponse.data);
           // Storing Variables
-          const step1Documents = stepOneResponse.data;
+          const initial_application = applicationResponse.data;
+          const stepOneDocuments = stepOneResponse.data;
 
-          return step1Documents;
+          return { initial_application, stepOneDocuments };
         } catch (error) {
           console.error("Error fetching programs and chairpersons: ", error);
           throw error; // Let the router handle errors

@@ -50,9 +50,9 @@ export default function LoginPage() {
     };
 
     // Attempt login and handle validation errors
-    const validationErrors = await login(payload);
+    const validationErrors = login(payload);
 
-    console.log(validationErrors);
+    // console.log(validationErrors);
 
     if (validationErrors) {
       setErrors(validationErrors); // Set errors in state

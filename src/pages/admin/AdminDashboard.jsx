@@ -56,13 +56,13 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-4 gap-6">
           <div className="col-span-3">
             <div className="grid grid-cols-2 gap-6">
-              {data.map((item, index) => (
+              {/* {data.map((item, index) => (
                 <TextBox
                   key={index}
                   borderColor={`border-${item.color}-400`} // Dynamic border color based on item color
                   className="bg-white shadow-lg rounded-lg p-6"
                 >
-                  {/* Dynamic Icon Rendering Based on Index */}
+              
                   {index === 0 && (
                     <Building2Icon size={30} className="text-yellow-400" />
                   )}
@@ -74,7 +74,7 @@ export default function AdminDashboard() {
                     <Building size={30} className="text-red-500" />
                   )}
 
-                  {/* Display the label and total */}
+                  
                   <Text className="text-lg font-semibold text-gray-800">
                     {item.label}
                   </Text>
@@ -82,7 +82,7 @@ export default function AdminDashboard() {
                     {item.total}
                   </Text>
                 </TextBox>
-              ))}
+              ))} */}
             </div>
           </div>
 
@@ -94,16 +94,24 @@ export default function AdminDashboard() {
               className="font-semibold text-gray-800 mb-4"
             />
             <div className="bg-white p-4 rounded-lg shadow-md">
-              <div className="flex flex-col">
-                <Text className="font-bold text-xl">System Users</Text>
+              <div className="flex items-center justify-between">
+                <Text className="font-bold text-xl">Total Users</Text>
                 <Text className="font-bold text-xl text-gray-900 mb-2">
-                  1000 {/* Total users in the system */}
+                  {data.total_users}
                 </Text>
               </div>
               <hr className="mb-4 border-gray-300" />
               <div className="space-y-4">
-                {/* Display a list of user roles with associated counts */}
-                {["Deans", "Companies", "Chairpersons", "Students"].map(
+                <div
+                  className={`flex items-center justify-between p-4 rounded-lg shadow-md`}
+                >
+                  <div className="flex items-center gap-2">
+                    <Building2Icon size={30} />
+                    <Text className="font-semibold text-gray-800">Sample</Text>
+                  </div>
+                  <Text className="text-2xl font-bold text-gray-900">100</Text>
+                </div>
+                {/* {["Deans", "Companies", "Chairpersons", "Students"].map(
                   (role, index) => (
                     <div
                       key={index}
@@ -119,15 +127,15 @@ export default function AdminDashboard() {
                           }-400`}
                         />
                         <Text className="font-semibold text-gray-800">
-                          {role} {/* Display the role */}
+                          {role} 
                         </Text>
                       </div>
                       <Text className="text-2xl font-bold text-gray-900">
-                        100 {/* Static count for demonstration purposes */}
+                        100 
                       </Text>
                     </div>
                   )
-                )}
+                )} */}
               </div>
             </div>
           </div>

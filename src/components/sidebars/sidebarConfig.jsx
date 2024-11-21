@@ -96,14 +96,7 @@ const adminSidebarItemsConfig = [
     exact: false,
     path: "/auth/admin/offices",
   }, */
-  {
-    icon: <MessageCircle size={20} />,
-    text: "Messages",
-    alert: true,
-    ariaLabel: "Messages",
-    exact: false,
-    path: "/auth/admin/messages",
-  },
+
   {
     icon: <BookCopy size={20} />,
     text: "Internship Postings",
