@@ -1,105 +1,40 @@
-import React, { useState } from "react";
-import { jsPDF } from "jspdf";
-import { postFormDataRequest } from "../../api/apiHelpers";
+import React from "react";
+import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
+import Page from "../../components/common/Page";
+import Section from "../../components/common/Section";
+import Heading from "../../components/common/Heading";
+import Text from "../../components/common/Text";
+import Table from "../../components/tables/Table";
 
 const ChairpersonEndorsementRequestsPage = () => {
-  const [content, setContent] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  // Fetch endorsement letter requests
+  const endorsementLetterRequests = useLoaderData();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleInputChange = (e) => {
-    setContent(e.target.value);
-  };
+  // console.log(endorsementLetterRequests);
 
-  const generatePDF = () => {
-    const doc = new jsPDF();
-    doc.text(content, 10, 10); // Adds the text content to the PDF
-    doc.save("endorsement-request.pdf"); // Triggers the download
-  };
+  // Navigate to letter request
+  const handleView = (id) => {
+    // console.log(id);
+    // console.log(location.pathname);
 
-  const viewPDF = () => {
-    const doc = new jsPDF();
-    doc.text(content, 10, 10);
-    window.open(doc.output("bloburl"), "_blank"); // Opens the PDF in a new tab
-  };
-
-  const generatePDFBlob = () => {
-    const doc = new jsPDF();
-    doc.text(content, 10, 10); // Adds the text content to the PDF
-    const pdfBlob = doc.output("blob"); // Returns the PDF as a Blob object
-    return pdfBlob;
-  };
-
-  const handleSubmitPDF = async () => {
-    const pdfBlob = generatePDFBlob();
-
-    // Convert Blob to File object
-    const file = new File([pdfBlob], "endorsement-request.pdf", {
-      type: "application/pdf",
-    });
-
-    // Log the file to ensure it's correct
-    console.log(file);
-
-    const formData = new FormData();
-    formData.append("file", file); // Append the File object to the FormData
-
-    // Log the FormData to see if the file is appended correctly
-    for (let pair of formData.entries()) {
-      console.log(pair[0] + ": " + pair[1]); // Expect 'file: File' here
-    }
-
-    try {
-      setIsSubmitting(true);
-      const response = await postFormDataRequest({
-        url: "/api/v1/chairperson/upload-pdf",
-        data: formData,
-      });
-      if (response) {
-        alert("PDF submitted successfully!");
-      }
-    } catch (error) {
-      console.error("Error submitting the PDF:", error);
-      alert("Failed to submit the PDF. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
+    navigate(`${location.pathname}/${id}`);
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Generate Endorsement Request</h1>
-      <textarea
-        className="w-full h-40 border rounded p-2 mb-4"
-        value={content}
-        onChange={handleInputChange}
-        placeholder="Type your endorsement request here..."
-      />
-      <div className="flex space-x-4">
-        <button
-          onClick={generatePDF}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        >
-          Download as PDF
-        </button>
-        <button
-          onClick={viewPDF}
-          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-        >
-          View as PDF
-        </button>
-        <button
-          onClick={handleSubmitPDF}
-          className={`bg-purple-500 text-white px-4 py-2 rounded ${
-            isSubmitting
-              ? "opacity-50 cursor-not-allowed"
-              : "hover:bg-purple-600"
-          }`}
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? "Submitting..." : "Submit PDF"}
-        </button>
-      </div>
-    </div>
+    <Page>
+      <Section>
+        <Heading level={3} text={"Endorsement Letter Requests"} />
+        <Text className="text-sm text-blue-950">
+          This is where you manage the endorsement letter requests.
+        </Text>
+        <hr className="my-3" />
+      </Section>
+
+      {/* Table */}
+      <Table data={endorsementLetterRequests} handleView={handleView} />
+    </Page>
   );
 };
 

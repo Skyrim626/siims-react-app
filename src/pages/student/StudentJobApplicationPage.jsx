@@ -18,6 +18,7 @@ import StudentFileUploader from "../../components/users/student/StudentFileUploa
 import FormModal from "../../components/modals/FormModal";
 import EndorsementRequestForm from "../../components/forms/EndorsementRequestForm";
 import { getStatusColor } from "../../utils/statusColor";
+import toFilePath from "../../utils/baseURL";
 
 const StudentJobApplicationPage = () => {
   // Fetch loader data
@@ -44,9 +45,6 @@ const StudentJobApplicationPage = () => {
   const [isRequestSubmitted, setIsRequestSubmitted] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitted, setIsSubmitted] = useState(false);
-
-  // BASE URL
-  const baseURL = import.meta.env.VITE_API_BASE_URL;
 
   const [uploadedFiles, setUploadedFiles] = useState({
     coverLetter: null,
@@ -307,7 +305,7 @@ const StudentJobApplicationPage = () => {
                       {doc.file_path ? (
                         <>
                           <a
-                            href={`${baseURL}/${doc.file_path}`}
+                            href={toFilePath(doc.file_path)}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600"
@@ -358,7 +356,9 @@ const StudentJobApplicationPage = () => {
                   <Text>
                     <a>
                       {initial_application.endorsement.endorsement_file
-                        ? initial_application.endorsement.endorsement_file
+                        ? `${toFilePath(
+                            initial_application.endorsement.endorsement_file
+                          )}`
                         : "No endorsement yet"}
                     </a>
                   </Text>

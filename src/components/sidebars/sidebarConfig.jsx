@@ -176,6 +176,7 @@ const chairpersonSidebarItemsConfig = [
     active: true,
     path: "/auth/chairperson/students",
   },
+
   {
     icon: <Building size={20} />,
     text: "Companies",

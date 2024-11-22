@@ -58,6 +58,14 @@ const TableBody = ({
                     {/* Join the names with a comma */}
                   </td>
                 );
+              } else if (column === "status") {
+                return (
+                  <td key={column} className="py-2 px-4 border-b font-bold">
+                    <Button className="bg-green-500 p-2 rounded-full text-white">
+                      {data[column]}
+                    </Button>
+                  </td>
+                );
               } else {
                 return (
                   <td
