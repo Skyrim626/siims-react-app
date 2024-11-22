@@ -128,6 +128,15 @@ const coordinatorSidebarItemsConfig = [
     path: "/auth/coordinator",
   },
   {
+    icon: <Users size={20} />,
+    text: "Students",
+    alert: true,
+    ariaLabel: "Students",
+    exact: true,
+    active: true,
+    path: "/auth/coordinator/students",
+  },
+  {
     icon: <UserPen size={20} />,
     text: "My Profile",
     alert: true,

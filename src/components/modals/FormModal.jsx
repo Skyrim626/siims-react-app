@@ -10,7 +10,8 @@ const FormModal = ({
   modalTitle = "Add Something",
   children,
   onSubmit,
-  maxWidth = "",
+  minWidth = "",
+  maxWidth = "", // Default to a larger max-width
 }) => {
   return (
     <AnimatePresence>
@@ -34,7 +35,7 @@ const FormModal = ({
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="max-w-5xl space-y-4 bg-gray-100"
+                className={`max-w-5xl space-y-4 bg-gray-100 ${minWidth}`}
               >
                 <div className="px-8 py-5 bg-blue-800 flex items-center justify-between">
                   <DialogTitle className="text-md text-white font-bold">

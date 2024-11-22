@@ -12,8 +12,16 @@ import Page from "../../components/common/Page";
 import Text from "../../components/common/Text";
 
 // Icons from Lucide
-import { BookCopy, Building, Building2Icon, Users } from "lucide-react";
-import TextBox from "../../components/dashboards/TextBox";
+import {
+  BookCopy,
+  Building,
+  Building2Icon,
+  Users,
+  Building2,
+  SquareUserRound,
+  UserPen,
+  UserRoundCheck,
+} from "lucide-react";
 
 /**
  * AdminDashboard Component
@@ -23,6 +31,8 @@ import TextBox from "../../components/dashboards/TextBox";
 export default function AdminDashboard() {
   // Load data for the dashboard (e.g., system statistics, user counts)
   const data = useLoaderData();
+
+  console.log(data);
 
   return (
     <Page>
@@ -56,33 +66,49 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-4 gap-6">
           <div className="col-span-3">
             <div className="grid grid-cols-2 gap-6">
-              {/* {data.map((item, index) => (
-                <TextBox
-                  key={index}
-                  borderColor={`border-${item.color}-400`} // Dynamic border color based on item color
-                  className="bg-white shadow-lg rounded-lg p-6"
-                >
-              
-                  {index === 0 && (
-                    <Building2Icon size={30} className="text-yellow-400" />
-                  )}
-                  {index === 1 && (
-                    <BookCopy size={30} className="text-green-400" />
-                  )}
-                  {index === 2 && <Users size={30} className="text-blue-500" />}
-                  {index === 3 && (
-                    <Building size={30} className="text-red-500" />
-                  )}
+              <div
+                className={`flex flex-col justify-center items-center gap-2 bg-white rounded-lg border-t-4 px-5 py-8 border-t-blue-700`}
+              >
+                <Text className="text-lg font-semibold text-gray-800">
+                  Total Colleges
+                </Text>
+                <Text className="text-3xl font-bold text-gray-900">
+                  {data.total_colleges}
+                </Text>
+              </div>
 
-                  
-                  <Text className="text-lg font-semibold text-gray-800">
-                    {item.label}
-                  </Text>
-                  <Text className="text-3xl font-bold text-gray-900">
-                    {item.total}
-                  </Text>
-                </TextBox>
-              ))} */}
+              <div
+                className={`flex flex-col justify-center items-center gap-2 bg-white rounded-lg border-t-4 px-5 py-8 border-t-red-700`}
+              >
+                <Text className="text-lg font-semibold text-gray-800">
+                  Total Offices
+                </Text>
+                <Text className="text-3xl font-bold text-gray-900">
+                  {data.total_offices}
+                </Text>
+              </div>
+
+              <div
+                className={`flex flex-col justify-center items-center gap-2 bg-white rounded-lg border-t-4 px-5 py-8 border-t-yellow-700`}
+              >
+                <Text className="text-lg font-semibold text-gray-800">
+                  Total Jobs
+                </Text>
+                <Text className="text-3xl font-bold text-gray-900">
+                  {data.total_work_posts}
+                </Text>
+              </div>
+
+              <div
+                className={`flex flex-col justify-center items-center gap-2 bg-white rounded-lg border-t-4 px-5 py-8 border-t-green-700`}
+              >
+                <Text className="text-lg font-semibold text-gray-800">
+                  Total Programs
+                </Text>
+                <Text className="text-3xl font-bold text-gray-900">
+                  {data.total_programs}
+                </Text>
+              </div>
             </div>
           </div>
 
@@ -106,10 +132,70 @@ export default function AdminDashboard() {
                   className={`flex items-center justify-between p-4 rounded-lg shadow-md`}
                 >
                   <div className="flex items-center gap-2">
-                    <Building2Icon size={30} />
-                    <Text className="font-semibold text-gray-800">Sample</Text>
+                    <Users size={30} />
+                    <Text className="font-semibold text-gray-800">
+                      Total Students
+                    </Text>
                   </div>
-                  <Text className="text-2xl font-bold text-gray-900">100</Text>
+                  <Text className="text-2xl font-bold text-gray-900">
+                    {data.total_students}
+                  </Text>
+                </div>
+
+                <div
+                  className={`flex items-center justify-between p-4 rounded-lg shadow-md`}
+                >
+                  <div className="flex items-center gap-2">
+                    <Building2 size={20} />
+                    <Text className="font-semibold text-gray-800">
+                      Total Companies
+                    </Text>
+                  </div>
+                  <Text className="text-2xl font-bold text-gray-900">
+                    {data.total_companies}
+                  </Text>
+                </div>
+
+                <div
+                  className={`flex items-center justify-between p-4 rounded-lg shadow-md`}
+                >
+                  <div className="flex items-center gap-2">
+                    <SquareUserRound size={30} />
+                    <Text className="font-semibold text-gray-800">
+                      Total Deans
+                    </Text>
+                  </div>
+                  <Text className="text-2xl font-bold text-gray-900">
+                    {data.total_deans}
+                  </Text>
+                </div>
+
+                <div
+                  className={`flex items-center justify-between p-4 rounded-lg shadow-md`}
+                >
+                  <div className="flex items-center gap-2">
+                    <UserPen size={30} />
+                    <Text className="font-semibold text-gray-800">
+                      Total Supervisors
+                    </Text>
+                  </div>
+                  <Text className="text-2xl font-bold text-gray-900">
+                    {data.total_supervisors}
+                  </Text>
+                </div>
+
+                <div
+                  className={`flex items-center justify-between p-4 rounded-lg shadow-md`}
+                >
+                  <div className="flex items-center gap-2">
+                    <UserRoundCheck size={30} />
+                    <Text className="font-semibold text-gray-800">
+                      Total Coordinators
+                    </Text>
+                  </div>
+                  <Text className="text-2xl font-bold text-gray-900">
+                    {data.total_coordinators}
+                  </Text>
                 </div>
                 {/* {["Deans", "Companies", "Chairpersons", "Students"].map(
                   (role, index) => (

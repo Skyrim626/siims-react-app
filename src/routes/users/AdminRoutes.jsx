@@ -146,10 +146,32 @@ const AdminRoutes = {
     {
       path: "users", // Base path for user management
       element: <AdminManageUserSelection />, // Render user selection component
+
       children: [
         {
           index: true, // Default route for user management
           element: <AdminManageUsersPage />, // Render the users management page
+          loader: async () => {
+            try {
+              const response = await axiosClient.get("/api/v1/admin/users");
+              const programsResponse = await axiosClient.get(
+                "/api/v1/programs"
+              );
+              const collegesResponse = await axiosClient.get(
+                "/api/v1/colleges"
+              );
+
+              // console.log(response.data);
+
+              const users = response.data;
+              const programs = programsResponse.data;
+              const colleges = collegesResponse.data;
+
+              return { users, programs, colleges };
+            } catch (error) {
+              console.log(error);
+            }
+          },
         },
         {
           path: "chairpersons", // Route for managing chairpersons
