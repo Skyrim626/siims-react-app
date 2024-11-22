@@ -13,6 +13,9 @@ import axiosClient from "../../api/axiosClient";
 import CompanyManageWorkPostsPage from "../../pages/company/CompanyManageWorkPostsPage";
 import CompanyAddWorkPostPage from "../../pages/company/CompanyAddWorkPostPage";
 import CompanyEditWorkPostPage from "../../pages/company/CompanyEditWorkPostPage";
+import CompanyManageApplicantsPage from "../../pages/company/CompanyManageApplicantsPage";
+import CompanyAcceptanceLetterPage from "../../pages/company/CompanyAcceptanceLetterPage";
+
 
 // Routes for Company
 const CompanyRoutes = {
@@ -195,6 +198,14 @@ const CompanyRoutes = {
     {
       path: "supervisors",
       element: <CompanyManageSupervisorsPage />,
+    },
+    {
+      path: "applicants",
+      element: <CompanyManageApplicantsPage />,
+    },
+    {
+      path: "applicants/generate-acceptance",
+      element: <CompanyAcceptanceLetterPage />,
     },
   ],
 };

@@ -227,7 +227,7 @@ const StudentProfilePage = () => {
             Export to PDF
           </button>
           <button
-            onClick={() => navigate("/auth/student/edit-profile")}
+            onClick={() => navigate("/auth/my/edit-profile")}
             className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600"
           >
             Edit Profile

@@ -11,6 +11,7 @@ import {
   Briefcase,
   FileText,
   Users,
+  UserSearch,
   UserRoundCheck,
   UserPen,
 } from "lucide-react";
@@ -289,6 +290,14 @@ const companySidebarItemsConfig = [
     ariaLabel: "Supervisors",
     exact: true,
     path: "/auth/company/supervisors",
+  },
+  {
+    icon: <UserSearch size={20} />,
+    text: "Applicants",
+    alert: true,
+    ariaLabel: "Applicants",
+    exact: true,
+    path: "/auth/company/applicants",
   },
 ];
 

@@ -10,14 +10,15 @@ import StudentLayout from "../../components/layouts/StudentLayout";
 import StudentHomePage from "../../pages/student/StudentHomePage";
 import ProtectedRoute from "../handlers/ProtectedRoute";
 import StudentProfilePage from "../../pages/student/StudentProfilePage";
-import StudentApplyJobPage from "../../pages/student/StudentJobApplicationPage";
 import StudentRequestEndorsementPage from "../../pages/student/StudentRequestEndorsementPage";
-import StudentProgramPage from "../../pages/student/StudentReportsPage";
 import StudentManageDtrPage from "../../pages/student/StudentManageDtrPage";
 import StudentViewEvaluationPage from "../../pages/student/StudentViewEvaluationPage";
 import axiosClient from "../../api/axiosClient";
 import StudentReportsPage from "../../pages/student/StudentReportsPage";
 import StudentJobApplicationPage from "../../pages/student/StudentJobApplicationPage";
+import StudentEditProfilePage from "../../pages/student/StudentEditProfilePage";
+import StudentMessagingPage from "../../pages/student/StudentMessagingPage";
+
 
 // Routes for Student
 const StudentRoutes = {
@@ -83,6 +84,14 @@ const StudentRoutes = {
     {
       path: "profile",
       element: <StudentProfilePage />,
+    },
+    {
+      path: "message",
+      element: <StudentMessagingPage />,
+    },
+    {
+      path: "edit-profile",
+      element: <StudentEditProfilePage />,
     },
     {
       path: "applications/:application_id",
