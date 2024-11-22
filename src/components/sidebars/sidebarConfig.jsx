@@ -97,14 +97,7 @@ const adminSidebarItemsConfig = [
     exact: false,
     path: "/auth/admin/offices",
   }, */
-  {
-    icon: <MessageCircle size={20} />,
-    text: "Messages",
-    alert: true,
-    ariaLabel: "Messages",
-    exact: false,
-    path: "/auth/admin/messages",
-  },
+
   {
     icon: <BookCopy size={20} />,
     text: "Internship Postings",
@@ -134,6 +127,15 @@ const coordinatorSidebarItemsConfig = [
     exact: true,
     active: true,
     path: "/auth/coordinator",
+  },
+  {
+    icon: <Users size={20} />,
+    text: "Students",
+    alert: true,
+    ariaLabel: "Students",
+    exact: true,
+    active: true,
+    path: "/auth/coordinator/students",
   },
   {
     icon: <UserPen size={20} />,
@@ -210,6 +212,14 @@ const supervisorSidebarItemsConfig = [
     ariaLabel: "Dashboard",
     exact: true, // Add an `exact` property for exact path matching
     path: "/auth/supervisor",
+  },
+  {
+    icon: <Users size={20} />,
+    text: "Applicants",
+    alert: true,
+    ariaLabel: "Applicants",
+    exact: true, // Add an `exact` property for exact path matching
+    path: "/auth/supervisor/applicants",
   },
   {
     icon: <Briefcase size={20} />,
@@ -299,6 +309,14 @@ const osaSidebarItemsConfig = [
     ariaLabel: "Dashboard",
     exact: true, // Add an `exact` property for exact path matching
     path: "/auth/osa",
+  },
+  {
+    icon: <Users size={20} />,
+    text: "Applicants",
+    alert: true,
+    ariaLabel: "Applicants",
+    exact: true, // Add an `exact` property for exact path matching
+    path: "/auth/osa/applicants",
   },
   {
     icon: <File />,

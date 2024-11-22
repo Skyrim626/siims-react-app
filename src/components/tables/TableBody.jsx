@@ -1,3 +1,4 @@
+import { Button } from "@headlessui/react";
 import React from "react";
 import { FaArchive, FaEdit, FaEye } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
@@ -12,7 +13,9 @@ const TableBody = ({
   handleDelete,
   handleArchive,
 }) => {
-  const location = useLocation();
+  // const location = useLocation();
+
+  // console.log(paginatedData);
 
   return (
     <>
@@ -29,17 +32,43 @@ const TableBody = ({
               />
             </td>
             <td className="py-2 px-4 border-b text-blue-600 font-bold">
-              {/* <Link to={`${location.pathname}/${data.id}`}>{data.id}</Link> */}
-              {data.id}
+              {handleView ? (
+                <Button
+                  className="hover:underline"
+                  onClick={() => handleView(data.id)}
+                >
+                  {data.id}
+                </Button>
+              ) : (
+                data.id
+              )}
             </td>
-            {visibleColumns.map((column) => (
-              <td
-                key={column}
-                className="py-2 px-4 border-b text-blue-700 font-bold"
-              >
-                {data[column]}
-              </td>
-            ))}
+            {visibleColumns.map((column) => {
+              // console.log(column);
+
+              if (column === "roles") {
+                return (
+                  <td
+                    key={column}
+                    className="py-2 px-4 border-b text-blue-700 font-bold"
+                  >
+                    {data[column]
+                      .map((role) => role.name) // Extract the "name" of each role
+                      .join(", ")}{" "}
+                    {/* Join the names with a comma */}
+                  </td>
+                );
+              } else {
+                return (
+                  <td
+                    key={column}
+                    className="py-2 px-4 border-b text-blue-700 font-bold"
+                  >
+                    {data[column]}
+                  </td>
+                );
+              }
+            })}
 
             {(handleEdit || handleDelete || handleView) && (
               <td className="py-2 px-4 border-b">

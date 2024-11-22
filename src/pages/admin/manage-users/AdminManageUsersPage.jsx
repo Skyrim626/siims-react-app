@@ -3,29 +3,31 @@ import Section from "../../../components/common/Section"; // Importing Section c
 import { deleteRequest, getRequest } from "../../../api/apiHelpers"; // Importing API helper functions for making HTTP requests
 import Table from "../../../components/tables/Table"; // Importing Table component for displaying user data
 import useSearch from "../../../hooks/useSearch"; // Importing custom hook for handling search functionality
+import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
+import ManageHeader from "../../../components/common/ManageHeader";
+import FormModal from "../../../components/modals/FormModal";
+import UserFormAdd from "../../../components/forms/UserFormAdd";
+import ConfirmationModal from "../../../components/common/ConfirmationModal";
 
 // AdminManageUsersPage component handles the management of users in the admin dashboard.
 const AdminManageUsersPage = () => {
-  // State to store the list of users
-  const [users, setUsers] = useState([]); // Initializing state to hold user data
+  const { users, programs, colleges } = useLoaderData();
+  // console.log(colleges);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Modal State
+  const [isOpen, setIsOpen] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
 
   // Custom Hook for Search Table
   const { term, filteredData, handleSearchChange } = useSearch(users, ""); // Using the custom hook to manage search term and filtered data
 
-  // useEffect hook to fetch users from the API when the component mounts
-  useEffect(() => {
-    const fetchUsers = async () => {
-      // Perform GET request to retrieve users
-      const response = await getRequest({
-        url: "/api/v1/admin/users", // API endpoint for fetching users
-      });
-
-      // Update the state with the fetched user data
-      setUsers(response); // Setting the fetched user data in state
-    };
-
-    fetchUsers(); // Call the fetch function
-  }, []); // Empty dependency array ensures this runs only once on component mount
+  // Add new user
+  const addUser = async (id) => {
+    console.log(testing);
+  };
 
   // Function to handle the archiving of a single user by their ID
   const handleArchive = async (id) => {
@@ -51,24 +53,70 @@ const AdminManageUsersPage = () => {
       method: "post", // Specify the request method
     });
 
-    // Update the users state with the response data
-    setUsers(response.data); // Updating the state with the response data after archiving multiple users
+    if (response) {
+      // Navigate the same
+      navigate(location.pathname);
+    }
+  };
+
+  // Open confirmation modal for archive
+  const confirmArchive = (id) => {
+    setSelectedUserId(id);
+    setIsConfirmOpen(true);
+  };
+
+  // Handle confirmation modal actions
+  const handleConfirm = () => {
+    if (selectedUserId) {
+      handleArchive(selectedUserId);
+      setIsConfirmOpen(false);
+      setSelectedUserId(null);
+    }
+  };
+
+  const handleCancel = () => {
+    setIsConfirmOpen(false);
+    setSelectedUserId(null);
   };
 
   return (
     <Section>
-      {/* Render the Table component if there are users to display */}
-      {users.length !== 0 && (
-        <Table
-          data={users} // Pass the list of users to the Table component
-          IDsIsLink={false} // Indicates whether user IDs should be displayed as links
-          handleArchiveBySelectedIds={handleArchiveBySelectedIds} // Pass function to handle archiving of selected users
-          handleArchive={handleArchive} // Pass function to handle archiving of a single user
-          term={term} // Pass the search term for filtering
-          filteredData={filteredData} // Pass the filtered user data
-          handleSearchChange={handleSearchChange} // Pass function to handle search input changes
-        />
-      )}
+      <ManageHeader
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        addPlaceholder="Add New User"
+        showExportButton={false}
+        showImportButton={false}
+      />
+      <Table
+        data={users}
+        IDsIsLink={false}
+        handleArchiveBySelectedIds={handleArchiveBySelectedIds}
+        handleArchive={confirmArchive} // Open confirmation modal instead of directly archiving
+        term={term}
+        filteredData={filteredData}
+        handleSearchChange={handleSearchChange}
+      />
+
+      {/* Form Modal for Adding User */}
+      <FormModal
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        modalTitle="Add User"
+        onSubmit={addUser}
+      >
+        <UserFormAdd programs={programs} colleges={colleges} />
+      </FormModal>
+
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={isConfirmOpen}
+        setIsOpen={setIsConfirmOpen}
+        title="Archive User"
+        message="Are you sure you want to remove this user? This action cannot be undone."
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+      />
     </Section>
   );
 };

@@ -9,7 +9,6 @@ import {
 import { Button, Dialog } from "@headlessui/react";
 import { getRequest, postRequest } from "../../api/apiHelpers";
 import Text from "../../components/common/Text";
-
 /**
  *
  * Status_id of Student Display Features:
@@ -137,28 +136,50 @@ const StudentHomePage = () => {
               {currentWorkPost.map((workPost) => (
                 <div
                   key={workPost.id}
-                  className="bg-white rounded-lg shadow-md p-4 transition-transform transform hover:scale-105"
+                  className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-shadow duration-300"
                 >
-                  <h3 className="text-xl font-bold mb-2">{workPost.title}</h3>
-                  <Text className="text-gray-600 mb-2">
-                    {workPost.company_name}
-                  </Text>
-                  <Text className="text-gray-500 mb-4 line-clamp-2">
-                    {workPost.responsibilities}
-                  </Text>
-                  <Text className="text-sm text-gray-500">
-                    Start Date:{" "}
-                    {new Date(workPost.start_date).toLocaleDateString()}
-                  </Text>
-                  <Text className="text-sm text-gray-500 mb-4">
-                    End Date: {new Date(workPost.end_date).toLocaleDateString()}
-                  </Text>
-                  <button
-                    onClick={() => handleApplyClick(workPost.id)}
-                    className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
-                  >
-                    Apply Now
-                  </button>
+                  {/* Job Details */}
+                  <div className="p-5">
+                    <h3 className="text-xl font-bold text-gray-800 mb-2">
+                      {workPost.title}
+                    </h3>
+                    <p className="text-gray-600 text-sm font-medium mb-2">
+                      {workPost.company_name}
+                    </p>
+                    <p className="text-gray-500 text-sm line-clamp-3 mb-4">
+                      {workPost.responsibilities}
+                    </p>
+                    <div className="text-sm text-gray-500 space-y-1">
+                      <p>
+                        <span className="font-semibold">Start Date:</span>{" "}
+                        {workPost.start_date}
+                      </p>
+                      <p>
+                        <span className="font-semibold">End Date:</span>{" "}
+                        {workPost.end_date}
+                      </p>
+                    </div>
+                  </div>
+                  {/* Buttons */}
+                  <div className="bg-gray-100 px-5 py-4 flex justify-between items-center">
+                    <button
+                      onClick={() => handleApplyClick(workPost.id)}
+                      className={`px-4 py-2 rounded-md font-medium text-white transition ${
+                        workPost.is_closed
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : "bg-blue-600 hover:bg-blue-700"
+                      }`}
+                      disabled={workPost.is_closed}
+                    >
+                      Apply Now
+                    </button>
+                    <button
+                      onClick={() => navigate(`/job-details/${workPost.id}`)}
+                      className="px-4 py-2 rounded-md font-medium bg-gray-200 hover:bg-gray-300 text-gray-700"
+                    >
+                      View Job
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -196,49 +217,52 @@ const StudentHomePage = () => {
           </div>
         )}
 
-        {/* If the student already applied then display this */}
+        {/* If the student already applied, display this */}
+        {/* If the student already applied, display this */}
         {currently_applied_work_post && (
-          <div className="container mx-auto">
-            <h2 className="text-2xl font-semibold mb-4">
+          <div className="container mx-auto mb-8">
+            <h2 className="text-2xl font-semibold mb-6 text-gray-800">
               Currently Applied Job
             </h2>
             <div
               key={currently_applied_work_post.id}
-              className="bg-white rounded-lg shadow-md p-4 transition-transform transform"
+              className="bg-white shadow-md rounded-lg p-6 transition-all transform hover:scale-105 duration-300"
             >
-              <h3 className="text-xl font-bold mb-2">
+              <h3 className="text-2xl font-bold text-gray-800 mb-3">
                 {currently_applied_work_post.title}
               </h3>
-              <Text className="text-gray-600 mb-2">
-                {currently_applied_work_post.company_name}
-              </Text>
-              <Text className="text-gray-500 mb-4 line-clamp-2">
+              <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+                <span className="font-semibold">Responsibilities:</span>{" "}
                 {currently_applied_work_post.responsibilities}
-              </Text>
-              <Text className="text-sm text-gray-500">
-                Start Date:{" "}
-                {new Date(
-                  currently_applied_work_post.start_date
-                ).toLocaleDateString()}
-              </Text>
-              <Text className="text-sm text-gray-500 mb-4">
-                End Date:{" "}
-                {new Date(
-                  currently_applied_work_post.end_date
-                ).toLocaleDateString()}
-              </Text>
-              <div className="mt-2 space-x-3">
+              </p>
+              <div className="flex flex-col space-y-2 mb-4">
+                <p className="text-sm text-gray-500">
+                  <span className="font-semibold">Start Date:</span>{" "}
+                  {new Date(
+                    currently_applied_work_post.start_date
+                  ).toLocaleDateString()}
+                </p>
+                <p className="text-sm text-gray-500">
+                  <span className="font-semibold">End Date:</span>{" "}
+                  {new Date(
+                    currently_applied_work_post.end_date
+                  ).toLocaleDateString()}
+                </p>
+              </div>
+
+              {/* Actions */}
+              <div className="flex space-x-4 mt-4">
                 <Button
                   onClick={() =>
                     handleApplyClick(currently_applied_work_post.id)
                   }
-                  className="p-3 bg-gray-600 text-white py-2 rounded-lg hover:bg-gray-700 transition"
+                  className="w-full sm:w-auto py-2 px-6 rounded-md bg-red-600 text-white font-medium hover:bg-red-700 transition-all"
                 >
                   Withdraw
                 </Button>
                 <Button
                   onClick={navigateToApplication}
-                  className="p-3 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+                  className="w-full sm:w-auto py-2 px-6 rounded-md bg-blue-600 text-white font-medium hover:bg-blue-700 transition-all"
                 >
                   View Application
                 </Button>

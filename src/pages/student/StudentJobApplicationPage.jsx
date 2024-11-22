@@ -6,23 +6,35 @@ import {
   useParams,
 } from "react-router-dom";
 import Page from "../../components/common/Page";
-import { Button } from "@headlessui/react";
-import { getRequest, postFormDataRequest } from "../../api/apiHelpers";
+import { Button, Input } from "@headlessui/react";
+import {
+  getRequest,
+  postFormDataRequest,
+  postRequest,
+} from "../../api/apiHelpers";
 import Text from "../../components/common/Text";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import StudentFileUploader from "../../components/users/student/StudentFileUploader";
+import FormModal from "../../components/modals/FormModal";
+import EndorsementRequestForm from "../../components/forms/EndorsementRequestForm";
+import { getStatusColor } from "../../utils/statusColor";
 
 const StudentJobApplicationPage = () => {
   // Fetch loader data
-  const stepOneDocuments = useLoaderData();
+  const { initial_application, stepOneDocuments, job } = useLoaderData();
+  // console.log(stepOneDocuments);
+  // console.log(initial_application);
+
+  // Modal State
+  const [isOpen, setIsOpen] = useState(false);
 
   // Open navigate and location
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { job_id } = useParams();
+  // Error State
+  const [errors, setErrors] = useState({});
 
-  const [job, setJob] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [studentName, setStudentName] = useState("");
   const [studentId, setStudentId] = useState("");
@@ -33,16 +45,88 @@ const StudentJobApplicationPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
+  // BASE URL
+  const baseURL = import.meta.env.VITE_API_BASE_URL;
+
   const [uploadedFiles, setUploadedFiles] = useState({
     coverLetter: null,
     resume: null,
   });
 
-  const handleSubmitRequest = (e) => {
-    e.preventDefault();
-    console.log("Submitting endorsement request...");
-    setIsRequestSubmitted(true);
+  /**
+   * Endorsement Request Form
+   *
+   */
+  const [description, setDescription] = useState("");
+  const [studentIds, setStudentIds] = useState("");
+
+  // Open Modal Endorsement Form
+  const openEndorsementForm = () => {
+    setIsOpen(true);
   };
+
+  // Submit Endorsement Form
+  const handleSubmitRequest = async (e) => {
+    e.preventDefault();
+
+    try {
+      // Convert student IDs into the desired format [{ "student_id": "12345" }]
+      const studentIdsArray = studentIds.split(",").map((id) => ({
+        student_id: id.trim(),
+      }));
+
+      // Prepare the payload with multiple student IDs
+      const payload = {
+        work_post_id: initial_application.work_post_id, // Dynamic data
+        requested_by_id: initial_application.student_id, // Dynamic user ID
+        description: description,
+        student_ids: studentIdsArray, // Process comma-separated student IDs
+      };
+
+      // console.log("Payload to submit:", payload);
+
+      // Make POST request
+      const response = await postRequest({
+        url: `/api/v1/student/applications/${initial_application.id}/request-endorsement-letter`,
+        data: payload,
+      });
+
+      // console.log("Response:", response);
+
+      // Optionally, close modal and provide feedback
+      setIsOpen(false);
+      // Navigate to another page or show success message
+      navigate(location.pathname);
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.errors) {
+        console.log(error.response.data.errors);
+        setErrors(error.response.data.errors); // Assuming validation errors are in `errors`
+      } else {
+        console.error("An unexpected error occurred:", error);
+        setErrors({
+          general: "An unexpected error occurred. Please try again.",
+        });
+      }
+    }
+  };
+
+  // Handle description change
+  const handleDescriptionChange = (e) => {
+    setDescription(e.target.value);
+  };
+
+  // Handle student ID input change
+  const handleStudentIdsChange = (e) => {
+    setStudentIds(e.target.value);
+  };
+
+  /**
+   *
+   *
+   *
+   *
+   *
+   */
 
   const handleFileUpload = async (e, fileType) => {
     const file = e.target.files[0];
@@ -60,10 +144,10 @@ const StudentJobApplicationPage = () => {
       formData.append("type", file);
 
       try {
-        console.log("Uploading file to the backend...");
+        // console.log("Uploading file to the backend...");
 
         const response = await postFormDataRequest({
-          url: `/api/v1/student/applications/10/upload-document/${fileType}`, // ID of that document
+          url: `/api/v1/student/applications/${initial_application.id}/upload-document/${fileType}`, // ID of that document
           data: formData,
         });
 
@@ -75,10 +159,6 @@ const StudentJobApplicationPage = () => {
         console.log(error);
       }
     }
-  };
-
-  const requestEndorsement = () => {
-    console.log("Requesting...");
   };
 
   const handleSubmitApplication = () => {
@@ -99,35 +179,6 @@ const StudentJobApplicationPage = () => {
     setCurrentStep((prevStep) => Math.max(prevStep - 1, 1));
   };
 
-  useEffect(() => {
-    const fetchJobDetails = async () => {
-      setIsLoading(true);
-      const response = await getRequest({
-        url: `/api/v1/student/jobs/${job_id}`,
-      });
-      setJob(response);
-      setIsLoading(false);
-    };
-
-    fetchJobDetails();
-  }, [job_id]);
-
-  if (isLoading) {
-    return (
-      <Page>
-        <Text>Loading job details...</Text>
-      </Page>
-    );
-  }
-
-  if (!job) {
-    return (
-      <Page>
-        <Text>Job not found.</Text>
-      </Page>
-    );
-  }
-
   // Progress Indicator Data (now 4 steps)
   const steps = [
     "Application Requirements",
@@ -139,6 +190,25 @@ const StudentJobApplicationPage = () => {
 
   return (
     <Page>
+      {/* Open - Endorsement Form Component */}
+      <FormModal
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        modalTitle="Request Endorsement"
+        onSubmit={handleSubmitRequest}
+        minWidth="min-w-[500px]"
+      >
+        <EndorsementRequestForm
+          description={description}
+          setDescription={setDescription}
+          studentIds={studentIds}
+          setStudentIds={setStudentIds}
+          handleDescriptionChange={handleDescriptionChange}
+          handleStudentIdsChange={handleStudentIdsChange}
+          errors={errors}
+        />
+      </FormModal>
+      {/* Close - Endorsement Form Component */}
       <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-md">
         <h1 className="text-3xl font-bold mb-6 text-gray-800">
           Apply for {job.title}
@@ -226,13 +296,8 @@ const StudentJobApplicationPage = () => {
                       <h3 className="text-lg font-medium text-gray-800">
                         {doc.name}
                       </h3>
-                      <p
-                        className={`text-sm ${
-                          doc.status === "Complete"
-                            ? "text-green-600"
-                            : "text-red-600"
-                        }`}
-                      >
+                      {/* Dynamically render status color */}
+                      <p className={`text-sm ${getStatusColor(doc.status)}`}>
                         Status: {doc.status}
                       </p>
                     </div>
@@ -242,7 +307,7 @@ const StudentJobApplicationPage = () => {
                       {doc.file_path ? (
                         <>
                           <a
-                            href={doc.file_path}
+                            href={`${baseURL}/${doc.file_path}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600"
@@ -250,7 +315,7 @@ const StudentJobApplicationPage = () => {
                             View File
                           </a>
                           <label className="flex items-center space-x-2">
-                            <input
+                            <Input
                               type="file"
                               accept=".pdf,.doc,.docx"
                               onChange={(e) => handleFileUpload(e, doc.id)}
@@ -277,12 +342,29 @@ const StudentJobApplicationPage = () => {
               {/* Request Endorsement Button */}
               <div className="flex justify-start mt-4">
                 <Button
-                  onClick={requestEndorsement}
-                  className="px-6 py-2 rounded-lg bg-indigo-500 text-white font-medium hover:bg-indigo-600"
+                  onClick={openEndorsementForm}
+                  className={`px-6 py-2 rounded-lg text-white font-medium ${
+                    initial_application.endorsement
+                      ? "bg-gray-500"
+                      : "bg-indigo-500 hover:bg-indigo-600"
+                  }`}
+                  disabled={initial_application.endorsement}
                 >
                   Request Endorsement
                 </Button>
               </div>
+              {initial_application.endorsement && (
+                <div className="flex flex-col">
+                  <Text>
+                    <a>
+                      {initial_application.endorsement.endorsement_file
+                        ? initial_application.endorsement.endorsement_file
+                        : "No endorsement yet"}
+                    </a>
+                  </Text>
+                  <Text>Already requested an endorsement</Text>
+                </div>
+              )}
 
               {/* Next Step Button */}
               <div className="flex justify-end mt-6">

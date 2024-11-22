@@ -12,7 +12,6 @@ import AdminLayout from "../../components/layouts/AdminLayout"; // Importing the
 
 // Admin Pages
 import AdminDashboard from "../../pages/admin/AdminDashboard"; // Importing the Admin Dashboard page
-import AdminMessages from "../../pages/admin/AdminMessages"; // Importing the messages management page
 import AdminLogs from "../../pages/admin/AdminLogs"; // Importing the logs management page
 import AdminInternshipPostingsPage from "../../pages/admin/AdminInternshipPostingsPage"; // Importing the internship postings page
 import AdminManageUserSelection from "../../pages/admin/AdminManageUserSelection"; // Importing the user selection management page
@@ -26,7 +25,6 @@ import AdminManageOfficesPage from "../../pages/admin/AdminManageOfficesPage";
 import AdminManageProgramsPage from "../../pages/admin/AdminManageProgramsPage";
 import AdminManageDocumentTypesPage from "../../pages/admin/AdminManageDocumentTypesPage";
 import AdminManageCompanyOfficesPage from "../../pages/admin/manage-users/AdminManageCompanyOfficesPage";
-import TestViewPage from "../../pages/TestViewPage";
 
 // Define routes for the Admin section
 const AdminRoutes = {
@@ -47,7 +45,11 @@ const AdminRoutes = {
       element: <AdminDashboard />, // Render the Admin Dashboard component
       loader: async () => {
         const response = await axiosClient.get("/api/v1/admin/dashboard"); // Fetch dashboard data from API
-        return response.data; // Return fetched data for the loader
+
+        // console.log(response.data);
+        const data = response.data;
+
+        return data; // Return fetched data for the loader
       },
     },
     {
@@ -144,10 +146,32 @@ const AdminRoutes = {
     {
       path: "users", // Base path for user management
       element: <AdminManageUserSelection />, // Render user selection component
+
       children: [
         {
           index: true, // Default route for user management
           element: <AdminManageUsersPage />, // Render the users management page
+          loader: async () => {
+            try {
+              const response = await axiosClient.get("/api/v1/admin/users");
+              const programsResponse = await axiosClient.get(
+                "/api/v1/programs"
+              );
+              const collegesResponse = await axiosClient.get(
+                "/api/v1/colleges"
+              );
+
+              // console.log(response.data);
+
+              const users = response.data;
+              const programs = programsResponse.data;
+              const colleges = collegesResponse.data;
+
+              return { users, programs, colleges };
+            } catch (error) {
+              console.log(error);
+            }
+          },
         },
         {
           path: "chairpersons", // Route for managing chairpersons
@@ -209,10 +233,7 @@ const AdminRoutes = {
       path: "offices", // Route for managing offices
       element: <AdminManageOfficesPage />,
     },
-    {
-      path: "messages", // Route for managing messages
-      element: <AdminMessages />,
-    },
+
     {
       path: "internship-postings", // Route for managing internship postings
       element: <AdminInternshipPostingsPage />,

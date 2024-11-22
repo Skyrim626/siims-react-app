@@ -9,15 +9,16 @@ import { NavLink } from "react-router-dom";
 import { Button, Field, Input, Label } from "@headlessui/react";
 
 // Forgot Password Form Component
-const ForgotPasswordForm = () => {
-  // Use States
-  const [email, setEmail] = useState("");
-
+const ForgotPasswordForm = ({
+  email = "",
+  setEmail = () => {},
+  onSubmit = () => {},
+}) => {
   return (
     <>
       {/* Forgot Password Form */}
       {/* form action TODO */}
-      <form action="" method="post" className="mt-3 space-y-5">
+      <form method="post" className="mt-3 space-y-5" onSubmit={onSubmit}>
         {/* ID Input */}
         <Field className={"text-sm flex flex-col gap-2"}>
           <Label htmlFor="email" className={"text-white font-bold"}>

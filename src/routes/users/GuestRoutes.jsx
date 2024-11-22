@@ -7,6 +7,7 @@ import GuestLayout from "../../components/layouts/GuestLayout";
 // Guest Pages
 import LoginPage from "../../pages/guest/LoginPage";
 import ForgotPasswordPage from "../../pages/guest/ForgotPasswordPage";
+import PasswordResetPage from "../../pages/guest/PasswordResetPage";
 
 // Guest Routes
 const GuestRoutes = {
@@ -24,6 +25,10 @@ const GuestRoutes = {
     {
       path: "/forgot-password",
       element: <ForgotPasswordPage />,
+    },
+    {
+      path: "/password-reset/:token",
+      element: <PasswordResetPage />,
     },
   ],
 };
