@@ -19,7 +19,6 @@ import StudentJobApplicationPage from "../../pages/student/StudentJobApplication
 import StudentEditProfilePage from "../../pages/student/StudentEditProfilePage";
 import StudentMessagingPage from "../../pages/student/StudentMessagingPage";
 
-
 // Routes for Student
 const StudentRoutes = {
   path: "my",
@@ -116,6 +115,11 @@ const StudentRoutes = {
             `/api/v1/student/applications/${application_id}/document-submissions/step-1/get`
           );
 
+          // Fetch Step-2 Documents
+          const stepTwoResponse = await axiosClient.get(
+            `api/v1/student/applications/${application_id}/document-submissions/step-2/get`
+          );
+
           /**
            * Variable Containers
            */
@@ -123,9 +127,17 @@ const StudentRoutes = {
           const initial_application = applicationResponse.data;
           // console.log(initial_application);
           const stepOneDocuments = stepOneResponse.data;
+          const stepTwoDocuments = stepTwoResponse.data;
           const job = jobResponse.data;
 
-          return { initial_application, stepOneDocuments, job };
+          // console.log(stepTwoDocuments);
+
+          return {
+            initial_application,
+            stepOneDocuments,
+            stepTwoDocuments,
+            job,
+          };
         } catch (error) {
           console.error("Error fetching programs and chairpersons: ", error);
           throw error; // Let the router handle errors

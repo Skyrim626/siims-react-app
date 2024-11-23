@@ -65,7 +65,7 @@ const TableBody = ({
                 return (
                   <td
                     key={column}
-                    className="py-2 px-4 border-b text-blue-700 font-bold"
+                    className="py-2 px-4 border-b text-blue-700 font-bold flex flex-col gap-3"
                   >
                     {data[column]
                       ? data[column].map((document, index) => {
