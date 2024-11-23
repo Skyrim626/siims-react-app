@@ -4,11 +4,12 @@ import ProtectedRoute from "../handlers/ProtectedRoute";
 import ChairpersonDashboardPage from "../../pages/chairperson/ChairpersonDashboardPage";
 import ChairpersonManageCompaniesPage from "../../pages/chairperson/ChairpersonManageCompaniesPage";
 import ChairpersonCompanyPage from "../../pages/chairperson/ChairpersonCompanyPage";
-import ChairpersonEndorsementRequests from "../../pages/chairperson/ChairpersonEndorsementRequests";
+
 import ChairpersonViewCoordinatorPage from "../../pages/chairperson/ChairpersonViewCoordinatorPage";
 import axiosClient from "../../api/axiosClient";
-import ChairpersonEndorsementRequestPage from "../../pages/chairperson/ChairpersonEndorsementRequestPage";
 import ChairpersonGenerateEndorsemenLetterPage from "../../pages/chairperson/ChairpersonGenerateEndorsemenLetterPage";
+import ChairpersonEndorsementRequestsPage from "../../pages/chairperson/ChairpersonEndorsementRequestsPage";
+import ChairpersonEndorsementRequestPage from "../../pages/chairperson/ChairpersonEndorsementRequestPage";
 
 // Routes for Chairperson
 const ChairpersonRoutes = {

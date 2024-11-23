@@ -15,7 +15,7 @@ import CompanyAddWorkPostPage from "../../pages/company/CompanyAddWorkPostPage";
 import CompanyEditWorkPostPage from "../../pages/company/CompanyEditWorkPostPage";
 import CompanyManageApplicantsPage from "../../pages/company/CompanyManageApplicantsPage";
 import CompanyAcceptanceLetterPage from "../../pages/company/CompanyAcceptanceLetterPage";
-
+import CompanyManageApplicantPage from "../../pages/company/CompanyManageApplicantPage";
 
 // Routes for Company
 const CompanyRoutes = {
@@ -201,11 +201,90 @@ const CompanyRoutes = {
     },
     {
       path: "applicants",
-      element: <CompanyManageApplicantsPage />,
-    },
-    {
-      path: "applicants/generate-acceptance",
-      element: <CompanyAcceptanceLetterPage />,
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: <CompanyManageApplicantsPage />,
+          loader: async () => {
+            try {
+              /**
+               * Response
+               */
+              const response = await axiosClient.get(
+                "/api/v1/company/applicants"
+              );
+
+              /**
+               * Variable
+               * Check if response and data exist
+               */
+              const applicants = response.data;
+
+              // Optionally, log if the response is empty
+              if (applicants.length === 0) {
+                console.warn("No applicants found.");
+              }
+
+              // console.log(applicants);
+
+              return applicants;
+            } catch (error) {
+              // Log the error in the console without breaking the client-side rendering
+              console.error(
+                "Error fetching applicants: ",
+                error.response || error.message
+              );
+
+              // Return an empty array to ensure the application continues functioning smoothly
+              return [];
+            }
+          },
+        },
+        {
+          path: ":id",
+          element: <Outlet />,
+          children: [
+            {
+              index: true,
+              element: <CompanyManageApplicantPage />,
+              loader: async ({ params }) => {
+                try {
+                  /**
+                   * Params
+                   */
+                  const { id } = params;
+
+                  /**
+                   * Response
+                   */
+                  const response = await axiosClient.get(
+                    `/api/v1/company/applicants/${id}`
+                  );
+
+                  /**
+                   * Variables
+                   */
+                  const { application, statuses } = response.data;
+                  // console.log(application);
+                  // console.log(statuses);
+
+                  // console.log(applicant);
+
+                  return { application, statuses };
+                } catch (error) {
+                  console.log(error);
+                  throw error;
+                }
+              },
+            },
+            {
+              path: "generate-acceptance",
+              element: <CompanyAcceptanceLetterPage />,
+            },
+          ],
+        },
+      ],
     },
   ],
 };

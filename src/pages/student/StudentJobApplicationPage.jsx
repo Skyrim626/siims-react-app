@@ -17,7 +17,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import StudentFileUploader from "../../components/users/student/StudentFileUploader";
 import FormModal from "../../components/modals/FormModal";
 import EndorsementRequestForm from "../../components/forms/EndorsementRequestForm";
-import { getStatusColor } from "../../utils/statusColor";
+import { getStatusColor, getStatusBgColor } from "../../utils/statusColor";
 import toFilePath from "../../utils/baseURL";
 
 const StudentJobApplicationPage = () => {
@@ -295,9 +295,20 @@ const StudentJobApplicationPage = () => {
                         {doc.name}
                       </h3>
                       {/* Dynamically render status color */}
-                      <p className={`text-sm ${getStatusColor(doc.status)}`}>
-                        Status: {doc.status}
-                      </p>
+                      <div
+                        className={`text-sm flex gap-1 items-center ${getStatusColor(
+                          doc.status
+                        )}`}
+                      >
+                        <Text>Status:</Text>
+                        <Text
+                          className={`${getStatusBgColor(
+                            doc.status
+                          )} p-1 rounded-full`}
+                        >
+                          {doc.status}
+                        </Text>
+                      </div>
                     </div>
 
                     {/* Upload or View */}
@@ -374,7 +385,7 @@ const StudentJobApplicationPage = () => {
                     !stepOneDocuments.every((doc) => doc.status === "Approved")
                   }
                   className={`flex items-center justify-center px-6 py-3 rounded-lg font-semibold ${
-                    !stepOneDocuments.every((doc) => doc.status === "Complete")
+                    !stepOneDocuments.every((doc) => doc.status === "Approved")
                       ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                       : "bg-blue-500 text-white hover:bg-blue-600"
                   }`}

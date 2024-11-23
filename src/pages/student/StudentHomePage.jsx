@@ -107,8 +107,8 @@ const StudentHomePage = () => {
           </div>
         </header>
         {/* Reports Section */}
-        {/* Applied - 10 */}
-        {studentStatus === 10 && (
+        {/* Deployed - 12 */}
+        {studentStatus === 12 && (
           <div className="bg-white shadow-md rounded-lg p-6 mb-6">
             <h2 className="text-xl font-semibold mb-4">Reports</h2>
             <div className="flex flex-wrap gap-2">

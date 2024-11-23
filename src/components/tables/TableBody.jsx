@@ -2,6 +2,8 @@ import { Button } from "@headlessui/react";
 import React from "react";
 import { FaArchive, FaEdit, FaEye } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
+import toFilePath from "../../utils/baseURL";
+import Text from "../common/Text";
 
 const TableBody = ({
   paginatedData,
@@ -45,6 +47,7 @@ const TableBody = ({
             </td>
             {visibleColumns.map((column) => {
               // console.log(column);
+              // console.log(data[column]);
 
               if (column === "roles") {
                 return (
@@ -56,6 +59,34 @@ const TableBody = ({
                       .map((role) => role.name) // Extract the "name" of each role
                       .join(", ")}{" "}
                     {/* Join the names with a comma */}
+                  </td>
+                );
+              } else if (column === "documents" && data[column]) {
+                return (
+                  <td
+                    key={column}
+                    className="py-2 px-4 border-b text-blue-700 font-bold"
+                  >
+                    {data[column]
+                      ? data[column].map((document, index) => {
+                          // console.log(document);
+
+                          if (document["file_path"]) {
+                            return (
+                              <Text key={index}>
+                                <a
+                                  href={`${toFilePath(document["file_path"])}`}
+                                  className="underline text-"
+                                  target="_blank"
+                                >
+                                  {document.file_type}
+                                </a>
+                                <br />
+                              </Text>
+                            );
+                          }
+                        })
+                      : ""}
                   </td>
                 );
               } else if (column === "status") {
