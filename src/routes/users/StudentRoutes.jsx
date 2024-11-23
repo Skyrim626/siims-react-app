@@ -1,5 +1,5 @@
 // Libraries
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 
 // Route Handlers
 
@@ -29,14 +29,25 @@ const StudentRoutes = {
   ),
   loader: async () => {
     try {
+      /**
+       * Response
+       */
       const response = await axiosClient.get("/api/v1/student/auth");
-      // console.log(response);
+      const userResponse = await axiosClient.get("/api/v1/user-roles");
 
+      /**
+       * Variables
+       */
       const auth = response.data;
+      const userRoles = userResponse.data;
 
-      // console.log(auth);
-
-      return auth;
+      /**
+       * Return
+       */
+      return {
+        auth,
+        userRoles,
+      };
     } catch (error) {
       console.error("Error fetching programs and chairpersons: ", error);
       throw error; // Let the router handle errors
@@ -90,16 +101,54 @@ const StudentRoutes = {
     },
     {
       path: "profile",
-      element: <StudentProfilePage />,
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: <StudentProfilePage />,
+          loader: async () => {
+            try {
+              /**
+               * Responses
+               */
+
+              const profileResponse = await axiosClient.get("/api/v1/profile");
+
+              // console.log("Testing");
+              // console.log(response);
+
+              /**
+               * Variables
+               */
+              const profile = profileResponse.data;
+
+              // console.log(profile);
+
+              /**
+               * Return Data
+               */
+              return { profile };
+            } catch (error) {
+              console.log(error);
+              throw error;
+            }
+          },
+        },
+        {
+          path: "edit",
+          element: <StudentEditProfilePage />,
+        },
+      ],
     },
+
     {
       path: "message",
       element: <StudentMessagingPage />,
     },
-    {
+    /* {
       path: "edit-profile",
       element: <StudentEditProfilePage />,
-    },
+    }, */
     {
       path: "applications/:application_id",
       element: <StudentJobApplicationPage />,

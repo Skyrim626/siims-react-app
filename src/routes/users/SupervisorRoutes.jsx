@@ -17,6 +17,28 @@ const SupervisorRoutes = {
       <SupervisorLayout />
     </ProtectedRoute>
   ),
+  loader: async () => {
+    try {
+      /**
+       * Response
+       */
+      const response = await axiosClient.get("/api/v1/user-roles");
+
+      /**
+       * Variables
+       */
+      const userRoles = response.data;
+
+      // console.log(userRoles);
+
+      /**
+       * Return Data
+       */
+      return { userRoles };
+    } catch (error) {
+      console.log(error);
+    }
+  },
   children: [
     {
       path: "dashboard",

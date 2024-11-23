@@ -1,78 +1,30 @@
 import React, { useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLoaderData, useNavigate, useLocation } from "react-router-dom";
 import jsPDF from "jspdf";
+import { formatDateOnly } from "../../utils/formatDate";
+import { getFullAddress } from "../../utils/formatAddress";
 
 const StudentProfilePage = () => {
+  // Fetch Data
+  const { profile } = useLoaderData();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const profileRef = useRef();
+  // Variables Container
+  const {
+    user,
+    educations,
+    work_experiences,
+    program: program,
+    program: { college },
+    ...student
+  } = profile;
 
-  // Sample student data
-  const student = {
-    name: "Jane Smith",
-    role: "IT Intern",
-    profilePic: "/src/assets/images/company/company-profile-photo.jpg", // Placeholder for profile picture
-    education: {
-      department: "College of Information Technology and Computing",
-      course: "Bachelor of Science in Computer Science",
-    },
-    contact: {
-      email: "jane.doe@example.com",
-      phone: "+63 123 4567",
-      address: "123 Main Street, Central Business District, Metro Manila, 1234",
-    },
-    languages: ["English", "Filipino", "Spanish"],
-    aboutMe:
-      "I am a dedicated and enthusiastic software development intern currently pursuing a Bachelor of Science in Computer Science at the University of Science and Technology of Southern Philippines (USTP). With a passion for technology and a keen interest in software development, I am eager to apply my academic knowledge and skills in a real-world setting.",
-    skills: [
-      "JavaScript",
-      "React.js",
-      "HTML & CSS",
-      "Node.js",
-      "Version Control (Git)",
-      "Problem-Solving",
-      "Team Collaboration",
-    ],
-    workExperience: [
-      {
-        title: "Software Development Intern",
-        company: "Web Innovations Ltd.",
-        address: "456 Innovation Street, Cagayan de Oro, Philippines",
-        startDate: "1 August 2024",
-        endDate: "31 December 2024",
-      },
-      {
-        title: "Junior Web Developer (Part-Time)",
-        company: "Tech Support Services",
-        address: "789 Support Lane, Cagayan de Oro, Philippines",
-        startDate: "1 June 2023",
-        endDate: "31 July 2024",
-      },
-    ],
-    educationBackground: [
-      {
-        school:
-          "University of Science and Technology of Southern Philippines (USTP)",
-        details: "BS in Computer Science (Expected Graduation 2025)",
-        address: "Cagayan de Oro, Philippines",
-        startDate: "1 June 2021",
-        endDate: "31 May 2025",
-      },
-      {
-        school: "Cagayan de Oro Science High School",
-        details: "High School Diploma",
-        address: "789 Science Road, Cagayan de Oro, Philippines",
-        startDate: "1 June 2019",
-        endDate: "31 May 2021",
-      },
-    ],
-  };
+  // console.log(profile);
 
   const SectionCard = ({ title, children }) => (
-    <div className="p-4 border rounded-md shadow-md bg-gray-50 relative">
-      <div className="flex justify-between items-center mb-2">
-        <h2 className="text-xl font-semibold text-gray-800">{title}</h2>
-      </div>
+    <div className="p-6 border rounded-lg shadow-lg bg-gray-50 space-y-4">
+      <h2 className="text-xl font-semibold text-gray-800">{title}</h2>
       <div>{children}</div>
     </div>
   );
@@ -85,21 +37,20 @@ const StudentProfilePage = () => {
     doc.text("Student Profile", 105, 20, { align: "center" });
 
     // Start position for content
-    let yPosition = 30; // Set starting Y-position after title
+    let yPosition = 30;
 
     // Helper function to add a page break if content exceeds the page height
     const checkPageHeight = () => {
       if (yPosition > 270) {
-        // Check if content exceeds 270 (a little above the bottom margin)
-        doc.addPage(); // Add a new page
-        yPosition = 20; // Reset Y-position after new page
+        doc.addPage();
+        yPosition = 20;
       }
     };
 
     // Add Profile Picture
     if (student.profilePicture) {
-      doc.addImage(student.profilePicture, "JPEG", 15, yPosition, 30, 30); // Adjust size and position
-      yPosition += 35; // Add space after profile picture
+      doc.addImage(student.profilePicture, "JPEG", 15, yPosition, 30, 30);
+      yPosition += 35;
     }
 
     // Add Basic Information
@@ -110,13 +61,13 @@ const StudentProfilePage = () => {
 
     doc.text("Role:", 50, yPosition);
     doc.text(student.role, 80, yPosition);
-    yPosition += 20; // Spacing between sections
+    yPosition += 20;
 
-    checkPageHeight(); // Check if content fits on the page
+    checkPageHeight();
 
     // Current Education
     doc.text("Current Education", 15, yPosition);
-    doc.line(15, yPosition + 2, 200, yPosition + 2); // Line separator
+    doc.line(15, yPosition + 2, 200, yPosition + 2);
     yPosition += 10;
 
     doc.text("Department:", 20, yPosition);
@@ -125,13 +76,13 @@ const StudentProfilePage = () => {
 
     doc.text("Course:", 20, yPosition);
     doc.text(student.education.course, 80, yPosition);
-    yPosition += 20; // Increase spacing between sections
+    yPosition += 20;
 
-    checkPageHeight(); // Check for page overflow
+    checkPageHeight();
 
     // Contact Information
     doc.text("Contact", 15, yPosition);
-    doc.line(15, yPosition + 2, 200, yPosition + 2); // Line separator
+    doc.line(15, yPosition + 2, 200, yPosition + 2);
     yPosition += 10;
 
     doc.text("Email:", 20, yPosition);
@@ -144,19 +95,19 @@ const StudentProfilePage = () => {
 
     doc.text("Address:", 20, yPosition);
     doc.text(student.contact.address, 80, yPosition);
-    yPosition += 20; // Spacing between sections
+    yPosition += 20;
 
-    checkPageHeight(); // Check if content exceeds page height
+    checkPageHeight();
 
     // Skills
     doc.text("Skills", 15, yPosition);
-    doc.line(15, yPosition + 2, 200, yPosition + 2); // Line separator
+    doc.line(15, yPosition + 2, 200, yPosition + 2);
     yPosition += 10;
 
     student.skills.forEach((skill, index) => {
       doc.text(`${index + 1}. ${skill}`, 20, yPosition);
       yPosition += 10;
-      checkPageHeight(); // Check if content fits
+      checkPageHeight();
     });
 
     // Work Experience
@@ -174,7 +125,7 @@ const StudentProfilePage = () => {
       doc.text(job.address, 30, yPosition);
       yPosition += 16;
 
-      checkPageHeight(); // Check if content fits
+      checkPageHeight();
     });
 
     // Education Background
@@ -194,9 +145,9 @@ const StudentProfilePage = () => {
       yPosition += 16;
 
       doc.text(`${edu.startDate} - ${edu.endDate}`, 30, yPosition);
-      yPosition += 16; // Add space after education details
+      yPosition += 16;
 
-      checkPageHeight(); // Check if content fits
+      checkPageHeight();
     });
 
     // Save PDF
@@ -204,92 +155,88 @@ const StudentProfilePage = () => {
   };
 
   return (
-    <div
-      ref={profileRef}
-      className="container mx-auto p-6 bg-white rounded-lg shadow-lg space-y-6"
-    >
+    <div className="container mx-auto p-6 bg-white rounded-lg shadow-xl space-y-6">
       {/* Header Section */}
-      <div className="flex items-center space-x-6 border-b pb-4 mb-6">
+      <div className="flex items-center space-x-6 border-b pb-6 mb-6">
         <img
-          src={student.profilePic}
+          src={user.profile_url || student.profilePic}
           alt="Profile"
-          className="w-24 h-24 rounded-full border-2 border-gray-300"
+          className="w-24 h-24 rounded-full border-4 border-gray-300 shadow-md"
         />
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">{student.name}</h1>
-          <p className="text-lg text-gray-600">{student.role}</p>
+          <h1 className="text-3xl font-semibold text-gray-800">
+            {user.first_name} {user.middle_name} {user.last_name}
+          </h1>
         </div>
-        <div className="space-x-4">
+        <div className="flex space-x-4">
           <button
             onClick={exportToPDF}
-            className="bg-orange-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-orange-600"
+            className="bg-orange-500 text-white px-6 py-3 rounded-md shadow-lg hover:bg-orange-600 transition"
           >
             Export to PDF
           </button>
+
           <button
-            onClick={() => navigate("/auth/my/edit-profile")}
-            className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600"
+            onClick={() => navigate("edit", { state: { profile } })}
+            className="bg-blue-500 text-white px-6 py-3 rounded-md shadow-lg hover:bg-blue-600 transition"
           >
             Edit Profile
           </button>
         </div>
       </div>
 
-      {/* Sections */}
-      <SectionCard title="Education">
-        <p>{student.education.department}</p>
-        <p>{student.education.course}</p>
-      </SectionCard>
-
-      <SectionCard title="Contact">
-        <p>{student.contact.email}</p>
-        <p>{student.contact.phone}</p>
-        <p>{student.contact.address}</p>
-      </SectionCard>
-
-      <SectionCard title="Languages">
-        <ul>
-          {student.languages.map((language, index) => (
-            <li key={index}>{language}</li>
-          ))}
-        </ul>
+      <SectionCard title="Contact Information">
+        <p>
+          <strong>Email:</strong> {user.email}
+        </p>
+        <p>
+          <strong>Phone:</strong> {user.phone_number}
+        </p>
+        <p>
+          <strong>Address:</strong>{" "}
+          {getFullAddress({
+            street: user.street,
+            barangay: user.barangay,
+            province: user.province,
+            city: user.city_municipality,
+            postalCode: user.postal_code,
+          })}
+        </p>
       </SectionCard>
 
       <SectionCard title="About Me">
-        <p>{student.aboutMe}</p>
-      </SectionCard>
-
-      <SectionCard title="Skills">
-        <ul>
-          {student.skills.map((skill, index) => (
-            <li key={index}>{skill}</li>
-          ))}
-        </ul>
+        <p>{student.aboutMe || "No information provided."}</p>
       </SectionCard>
 
       <SectionCard title="Work Experience">
-        {student.workExperience.map((job, index) => (
-          <div className="mt-3" key={index}>
+        {work_experiences.map((job, index) => (
+          <div className="space-y-2 mt-3" key={index}>
             <p>
-              {job.title} at {job.company}
+              <strong>{job.job_position}</strong> at {job.company_name}
             </p>
             <p>
-              {job.startDate} - {job.endDate}
+              <strong>Duration:</strong> {formatDateOnly(job.start_date)} -{" "}
+              {formatDateOnly(job.end_date)}
             </p>
-            <p>{job.address}</p>
+            <p>
+              <strong>Location:</strong> {job.full_address}
+            </p>
           </div>
         ))}
       </SectionCard>
 
       <SectionCard title="Education Background">
-        {student.educationBackground.map((edu, index) => (
-          <div className="mt-3" key={index}>
+        {educations.map((edu, index) => (
+          <div className="space-y-2 mt-3" key={index}>
             <p>
-              {edu.school} ({edu.details})
+              <strong>{edu.school_name}</strong>
             </p>
-            <p>{edu.address}</p>
             <p>
-              {edu.startDate} - {edu.endDate}
+              <strong>Location:</strong> {edu.full_address}
+            </p>
+            <p>
+              <strong>Duration:</strong> {formatDateOnly(edu.start_date)} -{" "}
+              {formatDateOnly(edu.end_date)}
             </p>
           </div>
         ))}

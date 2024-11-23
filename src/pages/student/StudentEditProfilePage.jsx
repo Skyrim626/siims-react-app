@@ -1,245 +1,416 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { stripLocation } from "../../utils/strip";
+import { Button, Field, Input, Label, Select } from "@headlessui/react";
+import { postRequest } from "../../api/apiHelpers";
+import { formatDate } from "../../utils/formatDate";
 
 const StudentEditProfilePage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const [student, setStudent] = useState({
-    firstName: "Jane",
-    middleName: "Marie",
-    lastName: "Smith",
-    role: "IT Intern",
-    profilePic: "/src/assets/images/company/company-profile-photo.jpg",
-    education: [
-      {
-        department: "College of Information Technology and Computing",
-        course: "Bachelor of Science in Computer Science",
-      },
-    ],
-    contact: {
-      email: "jane.doe@example.com",
-      phone: "+63 123 4567",
-      address: "123 Main Street, Central Business District, Metro Manila, 1234",
-    },
-    languages: ["English", "Filipino", "Spanish"],
-    aboutMe:
-      "I am a dedicated and enthusiastic software development intern currently pursuing a Bachelor of Science in Computer Science.",
-    skills: [
-      "JavaScript",
-      "React.js",
-      "HTML & CSS",
-      "Node.js",
-      "Version Control (Git)",
-      "Problem-Solving",
-      "Team Collaboration",
-    ],
-    workExperience: [
-      {
-        job_position: "Software Development Intern",
-        company_name: "Tech Solutions Inc.",
-        full_address: "456 Elm Street, Business District, Metro Manila",
-        start_date: "2023-06-01",
-        end_date: "2023-08-31",
-      },
-    ],
+  // Access profile data from state
+  const { profile } = location.state || {};
+
+  // Redirect if profile is missing
+  useEffect(() => {
+    if (!profile) {
+      navigate(stripLocation(location.pathname, "/edit"), { replace: true });
+    }
+  }, [profile, navigate]);
+
+  // If profile is missing, render nothing to avoid further rendering
+  if (!profile) {
+    return null;
+  }
+
+  // Use States
+  const [user, setUser] = useState({
+    first_name: profile.user.first_name,
+    middle_name: profile.user.middle_name,
+    last_name: profile.user.last_name,
+    email: profile.user.email,
+    phone_number: profile.user.phone_number,
+    gender: profile.user.gender,
+    street: profile.user.street,
+    barangay: profile.user.barangay,
+    city_municipality: profile.user.city_municipality,
+    province: profile.user.province,
+    postal_code: profile.user.postal_code,
+    date_of_birth: profile.date_of_birth,
   });
 
-  // Handle saving changes
+  const [workExperiences, setWorkExperiences] = useState(
+    profile.work_experiences
+  );
+  const [educations, setEducations] = useState(profile.educations);
+
+  console.log(workExperiences);
+
   const editProfile = () => {
-    console.log("Updated Student Data:", student);
-    navigate("/auth/my/profile");
-  };
-
-  // Handle work experience changes
-  const handleWorkExperienceChange = (index, key, value) => {
-    const updatedExperience = [...student.workExperience];
-    updatedExperience[index][key] = value;
-    setStudent((prev) => ({
-      ...prev,
-      workExperience: updatedExperience,
-    }));
-  };
-
-  const addWorkExperience = () => {
-    setStudent((prev) => ({
-      ...prev,
-      workExperience: [
-        ...prev.workExperience,
-        {
-          job_position: "",
-          company_name: "",
-          full_address: "",
-          start_date: "",
-          end_date: "",
-        },
-      ],
-    }));
-  };
-
-  const removeWorkExperience = (index) => {
-    const updatedExperience = student.workExperience.filter(
-      (_, i) => i !== index
-    );
-    setStudent((prev) => ({
-      ...prev,
-      workExperience: updatedExperience,
-    }));
-  };
-
-  // Handle education changes
-  const handleEducationChange = (index, key, value) => {
-    const updatedEducation = [...student.education];
-    updatedEducation[index][key] = value;
-    setStudent((prev) => ({
-      ...prev,
-      education: updatedEducation,
-    }));
-  };
-
-  const addEducation = () => {
-    setStudent((prev) => ({
-      ...prev,
-      education: [
-        ...prev.education,
-        { department: "", course: "" }, // Default values
-      ],
-    }));
-  };
-
-  const removeEducation = (index) => {
-    const updatedEducation = student.education.filter((_, i) => i !== index);
-    setStudent((prev) => ({
-      ...prev,
-      education: updatedEducation,
-    }));
+    console.log("Updated User Data:", user);
+    console.log("Updated Work Experience:", workExperiences);
+    console.log("Updated Education:", educations);
+    // handle saving logic
   };
 
   return (
-    <div className="container mx-auto p-6 bg-white rounded-lg shadow-lg space-y-6">
-      <h1 className="text-3xl font-bold text-gray-800 mb-4">Edit Profile</h1>
+    <div className="container mx-auto p-6 bg-white rounded-lg shadow-lg space-y-8">
+      <h1 className="text-4xl font-extrabold text-gray-800 mb-6">
+        Edit Profile
+      </h1>
 
-      {/* Basic Information */}
-      {["firstName", "middleName", "lastName", "role"].map((field) => (
-        <div key={field} className="mb-4">
-          <label className="block text-lg font-semibold text-gray-700">
-            {field.split(/(?=[A-Z])/).join(" ")}
-          </label>
-          <input
-            type="text"
-            name={field}
-            value={student[field]}
-            onChange={(e) =>
-              setStudent({ ...student, [field]: e.target.value })
-            }
-            className="w-full mt-2 p-2 border rounded-md"
-          />
-        </div>
-      ))}
-
-      {/* Education */}
-      <div className="mb-6">
-        <h2 className="text-2xl font-semibold text-gray-700 mb-4">Education</h2>
-        {student.education.map((edu, index) => (
-          <div
-            key={index}
-            className="mb-4 border p-4 rounded-md shadow-md bg-gray-50"
-          >
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold text-gray-800">
-                Education {index + 1}
-              </h3>
-              <button
-                onClick={() => removeEducation(index)}
-                className="text-red-600 hover:underline"
-              >
-                Remove
-              </button>
-            </div>
-            {Object.entries(edu).map(([key, value]) => (
-              <div key={key} className="mb-4">
-                <label className="block text-lg font-semibold text-gray-700">
-                  {key.charAt(0).toUpperCase() + key.slice(1)}
-                </label>
-                <input
-                  type="text"
-                  value={value}
-                  onChange={(e) =>
-                    handleEducationChange(index, key, e.target.value)
-                  }
-                  className="w-full mt-2 p-2 border rounded-md"
-                />
-              </div>
-            ))}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Left Column: Basic Information */}
+        <div className="space-y-6">
+          <div className="text-lg font-medium text-gray-700">
+            Basic Information
           </div>
-        ))}
-        <button
-          onClick={addEducation}
-          className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-        >
-          Add Education
-        </button>
+
+          <Field className="mb-4">
+            <Label className="text-sm font-semibold text-gray-600">
+              First name
+            </Label>
+            <Input
+              type="text"
+              name="first_name"
+              value={user.first_name}
+              onChange={(e) =>
+                setUser({ ...user, ["first_name"]: e.target.value })
+              }
+              className="w-full mt-2 p-3 border rounded-md focus:ring-2 focus:ring-indigo-500"
+            />
+          </Field>
+
+          <Field className="mb-4">
+            <Label className="text-sm font-semibold text-gray-600">
+              Middle name
+            </Label>
+            <Input
+              type="text"
+              name="middle_name"
+              value={user.middle_name}
+              onChange={(e) =>
+                setUser({ ...user, ["middle_name"]: e.target.value })
+              }
+              className="w-full mt-2 p-3 border rounded-md focus:ring-2 focus:ring-indigo-500"
+            />
+          </Field>
+
+          <Field className="mb-4">
+            <Label className="text-sm font-semibold text-gray-600">
+              Last name
+            </Label>
+            <Input
+              type="text"
+              name="last_name"
+              value={user.last_name}
+              onChange={(e) =>
+                setUser({ ...user, ["last_name"]: e.target.value })
+              }
+              className="w-full mt-2 p-3 border rounded-md focus:ring-2 focus:ring-indigo-500"
+            />
+          </Field>
+
+          <Field className="mb-4">
+            <Label className="text-sm font-semibold text-gray-600">Email</Label>
+            <Input
+              type="email"
+              name="email"
+              value={user.email}
+              onChange={(e) => setUser({ ...user, ["email"]: e.target.value })}
+              className="w-full mt-2 p-3 border rounded-md focus:ring-2 focus:ring-indigo-500"
+            />
+          </Field>
+
+          <Field className="mb-4">
+            <Label className="text-sm font-semibold text-gray-600">
+              Phone number
+            </Label>
+            <Input
+              type="text"
+              name="phone_number"
+              value={user.phone_number}
+              onChange={(e) =>
+                setUser({ ...user, ["phone_number"]: e.target.value })
+              }
+              className="w-full mt-2 p-3 border rounded-md focus:ring-2 focus:ring-indigo-500"
+            />
+          </Field>
+        </div>
+
+        {/* Right Column: Address & Gender */}
+        <div className="space-y-6">
+          <div className="text-lg font-medium text-gray-700">
+            Contact & Gender
+          </div>
+
+          <Field className="mb-4">
+            <Label className="text-sm font-semibold text-gray-600">
+              Street
+            </Label>
+            <Input
+              type="text"
+              name="street"
+              value={user.street}
+              onChange={(e) => setUser({ ...user, ["street"]: e.target.value })}
+              className="w-full mt-2 p-3 border rounded-md focus:ring-2 focus:ring-indigo-500"
+            />
+          </Field>
+
+          <Field className="mb-4">
+            <Label className="text-sm font-semibold text-gray-600">
+              Barangay
+            </Label>
+            <Input
+              type="text"
+              name="barangay"
+              value={user.barangay}
+              onChange={(e) =>
+                setUser({ ...user, ["barangay"]: e.target.value })
+              }
+              className="w-full mt-2 p-3 border rounded-md focus:ring-2 focus:ring-indigo-500"
+            />
+          </Field>
+
+          <Field className="mb-4">
+            <Label className="text-sm font-semibold text-gray-600">City</Label>
+            <Input
+              type="text"
+              name="city_municipality"
+              value={user.city_municipality}
+              onChange={(e) =>
+                setUser({ ...user, ["city_municipality"]: e.target.value })
+              }
+              className="w-full mt-2 p-3 border rounded-md focus:ring-2 focus:ring-indigo-500"
+            />
+          </Field>
+
+          <Field className="mb-4">
+            <Label className="text-sm font-semibold text-gray-600">
+              Province
+            </Label>
+            <Input
+              type="text"
+              name="province"
+              value={user.province}
+              onChange={(e) =>
+                setUser({ ...user, ["province"]: e.target.value })
+              }
+              className="w-full mt-2 p-3 border rounded-md focus:ring-2 focus:ring-indigo-500"
+            />
+          </Field>
+
+          <Field className="mb-4">
+            <Label className="text-sm font-semibold text-gray-600">
+              Postal Code
+            </Label>
+            <Input
+              type="text"
+              name="postal_code"
+              value={user.postal_code}
+              onChange={(e) =>
+                setUser({ ...user, ["postal_code"]: e.target.value })
+              }
+              className="w-full mt-2 p-3 border rounded-md focus:ring-2 focus:ring-indigo-500"
+            />
+          </Field>
+
+          <Field className="mb-4">
+            <Label className="text-sm font-semibold text-gray-600">
+              Gender
+            </Label>
+            <Select
+              name="gender"
+              value={user.gender}
+              onChange={(e) => setUser({ ...user, ["gender"]: e.target.value })}
+              className="w-full mt-2 p-3 border rounded-md focus:ring-2 focus:ring-indigo-500"
+            >
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </Select>
+          </Field>
+        </div>
       </div>
 
-      {/* Work Experience */}
-      <div className="mb-6">
-        <h2 className="text-2xl font-semibold text-gray-700 mb-4">
-          Work Experience
-        </h2>
-        {student.workExperience.map((experience, index) => (
-          <div
-            key={index}
-            className="mb-4 border p-4 rounded-md shadow-md bg-gray-50"
-          >
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold text-gray-800">
-                Experience {index + 1}
-              </h3>
-              <button
-                onClick={() => removeWorkExperience(index)}
-                className="text-red-600 hover:underline"
-              >
-                Remove
-              </button>
-            </div>
-            {Object.entries(experience).map(([key, value]) => (
-              <div key={key} className="mb-4">
-                <label className="block text-lg font-semibold text-gray-700">
-                  {key.split("_").join(" ")}
-                </label>
-                <input
-                  type={key.includes("date") ? "date" : "text"}
-                  value={value}
-                  onChange={(e) =>
-                    handleWorkExperienceChange(index, key, e.target.value)
-                  }
-                  className="w-full mt-2 p-2 border rounded-md"
+      {/* Work Experience Section */}
+      <div className="space-y-6">
+        <div className="text-lg font-medium text-gray-700">Work Experience</div>
+        {workExperiences.map((work, index) => (
+          <div key={work.id} className="space-y-4">
+            <Field>
+              <Label className="text-sm font-semibold text-gray-600">
+                Job Title
+              </Label>
+              <Input
+                type="text"
+                name={`job_position_${index}`}
+                value={work.job_position}
+                onChange={(e) => {
+                  const updatedWorkExperiences = [...workExperiences];
+                  updatedWorkExperiences[index].job_position = e.target.value;
+                  setWorkExperiences(updatedWorkExperiences);
+                }}
+                className="w-full mt-2 p-3 border rounded-md focus:ring-2 focus:ring-indigo-500"
+              />
+            </Field>
+
+            <Field>
+              <Label className="text-sm font-semibold text-gray-600">
+                Company
+              </Label>
+              <Input
+                type="text"
+                name={`company_${index}`}
+                value={work.company_name}
+                onChange={(e) => {
+                  const updatedWorkExperiences = [...workExperiences];
+                  updatedWorkExperiences[index].company_name = e.target.value;
+                  setWorkExperiences(updatedWorkExperiences);
+                }}
+                className="w-full mt-2 p-3 border rounded-md focus:ring-2 focus:ring-indigo-500"
+              />
+            </Field>
+
+            <div className="flex space-x-5">
+              <Field>
+                <Label className="text-sm font-semibold text-gray-600">
+                  Start Date
+                </Label>
+                <Input
+                  type="date"
+                  name={`start_date_${index}`}
+                  value={formatDate(work.start_date)}
+                  onChange={(e) => {
+                    const updatedWorkExperiences = [...workExperiences];
+                    updatedWorkExperiences[index].start_date = e.target.value;
+                    setWorkExperiences(updatedWorkExperiences);
+                  }}
+                  className="w-full mt-2 p-3 border rounded-md focus:ring-2 focus:ring-indigo-500"
                 />
-              </div>
-            ))}
+              </Field>
+
+              <Field>
+                <Label className="text-sm font-semibold text-gray-600">
+                  End Date
+                </Label>
+
+                <Input
+                  type="date"
+                  name={`end_date${index}`}
+                  value={formatDate(work.end_date)}
+                  onChange={(e) => {
+                    const updatedWorkExperiences = [...workExperiences];
+                    updatedWorkExperiences[index].end_date = e.target.value;
+                    setWorkExperiences(updatedWorkExperiences);
+                  }}
+                  className="w-full mt-2 p-3 border rounded-md focus:ring-2 focus:ring-indigo-500"
+                />
+              </Field>
+            </div>
+
+            <Button
+              type="button"
+              className="text-sm text-red-500"
+              onClick={() => {
+                const updatedWorkExperiences = workExperiences.filter(
+                  (_, i) => i !== index
+                );
+                setWorkExperiences(updatedWorkExperiences);
+              }}
+            >
+              Remove Work Experience
+            </Button>
           </div>
         ))}
-        <button
-          onClick={addWorkExperience}
-          className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+        <Button
+          type="button"
+          className="mt-4 w-full p-3 bg-indigo-600 text-white rounded-md"
+          onClick={() =>
+            setWorkExperiences([
+              ...workExperiences,
+              { job_title: "", company: "" },
+            ])
+          }
         >
           Add Work Experience
-        </button>
+        </Button>
       </div>
 
-      {/* Buttons */}
-      <div className="flex space-x-4">
-        <button
+      {/* Education Section */}
+      <div className="space-y-6">
+        <div className="text-lg font-medium text-gray-700">Education</div>
+        {educations.map((education, index) => (
+          <div key={index} className="space-y-4">
+            <Field>
+              <Label className="text-sm font-semibold text-gray-600">
+                Degree
+              </Label>
+              <Input
+                type="text"
+                name={`degree_${index}`}
+                value={education.degree}
+                onChange={(e) => {
+                  const updatedEducations = [...educations];
+                  updatedEducations[index].degree = e.target.value;
+                  setEducations(updatedEducations);
+                }}
+                className="w-full mt-2 p-3 border rounded-md focus:ring-2 focus:ring-indigo-500"
+              />
+            </Field>
+
+            <Field>
+              <Label className="text-sm font-semibold text-gray-600">
+                School
+              </Label>
+              <Input
+                type="text"
+                name={`school_${index}`}
+                value={education.school}
+                onChange={(e) => {
+                  const updatedEducations = [...educations];
+                  updatedEducations[index].school = e.target.value;
+                  setEducations(updatedEducations);
+                }}
+                className="w-full mt-2 p-3 border rounded-md focus:ring-2 focus:ring-indigo-500"
+              />
+            </Field>
+
+            <Button
+              type="button"
+              className="text-sm text-red-500"
+              onClick={() => {
+                const updatedEducations = educations.filter(
+                  (_, i) => i !== index
+                );
+                setEducations(updatedEducations);
+              }}
+            >
+              Remove Education
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          className="mt-4 w-full p-3 bg-indigo-600 text-white rounded-md"
+          onClick={() =>
+            setEducations([...educations, { degree: "", school: "" }])
+          }
+        >
+          Add Education
+        </Button>
+      </div>
+
+      {/* Save Button */}
+      <div className="mt-8 text-center">
+        <Button
+          type="button"
           onClick={editProfile}
-          className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+          className="w-full p-3 bg-green-600 text-white rounded-md"
         >
-          Save Changes
-        </button>
-        <button
-          onClick={() => navigate("/auth/my/profile")}
-          className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
-        >
-          Cancel
-        </button>
+          Save Profile
+        </Button>
       </div>
     </div>
   );

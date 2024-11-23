@@ -26,7 +26,7 @@ import SidebarLayout from "./SidebarLayout";
 // Layout for Student Pages
 export default function StudentLayout() {
   // Fetch auth student
-  const auth = useLoaderData();
+  const { auth } = useLoaderData();
 
   // console.log(auth);
 

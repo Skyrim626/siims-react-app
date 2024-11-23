@@ -1,6 +1,6 @@
 // Libraries
 import React from "react";
-import { Navigate, Outlet, useNavigate } from "react-router-dom";
+import { Navigate, Outlet, useLoaderData, useNavigate } from "react-router-dom";
 
 // Custom Hooks
 import { useAuth } from "../../hooks/useAuth";
@@ -12,11 +12,11 @@ import RoleSelectionPage from "./RoleSelectionPage";
  * Purpose: Checks if the user has token or not. If the user has not token it will redirect back to login.
  */
 const Auth = () => {
-  // Open useAuth
-  const { user, token, roles } = useAuth();
+  // Fetch Data
+  const userRoles = useLoaderData();
 
-  // Open Navigation
-  const navigate = useNavigate();
+  // Open useAuth
+  const { user, token } = useAuth();
 
   // Check if and token exist
   if (!token) {
@@ -24,11 +24,13 @@ const Auth = () => {
     return <Navigate to={"/login"} replace={true} />;
   }
 
-  if (roles.length > 1) {
-    return <RoleSelectionPage roles={roles} />; // Show selection for multiple roles
+  if (userRoles.length > 1) {
+    return <RoleSelectionPage roles={userRoles} />; // Show selection for multiple roles
   }
 
-  const role = roles[0]; // Single role
+  const role = userRoles[0]; // Single role
+
+  // console.log(userRoles);
 
   // Check Roles
   switch (role) {

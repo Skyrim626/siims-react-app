@@ -1,6 +1,6 @@
 // Libraries
 import React, { createContext, useContext, useMemo } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 // Custom Hooks
 import useLocalStorage from "./useLocalStorage";
@@ -78,6 +78,10 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem("ACCESS_TOKEN");
         localStorage.removeItem("user");
         localStorage.removeItem("roles");
+
+        // Redirect user after successful login
+        // return <Navigate to={"/login"} replace={true} />;
+
         window.location.href = "/login";
       })
       .catch((error) => {
