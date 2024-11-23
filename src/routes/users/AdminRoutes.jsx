@@ -66,12 +66,24 @@ const AdminRoutes = {
       index: true, // Default route for the admin section
       element: <AdminDashboard />, // Render the Admin Dashboard component
       loader: async () => {
-        const response = await axiosClient.get("/api/v1/admin/dashboard"); // Fetch dashboard data from API
+        try {
+          /**
+           * Response
+           */
+          const response = await axiosClient.get("/api/v1/dashboard"); // Fetch dashboard data from API
 
-        // console.log(response.data);
-        const data = response.data;
+          /**
+           * Variables
+           */
+          const data = response.data;
 
-        return data; // Return fetched data for the loader
+          /**
+           * Return
+           */
+          return data; // Return fetched data for the loader
+        } catch (error) {
+          console.log(error);
+        }
       },
     },
     {
@@ -79,11 +91,19 @@ const AdminRoutes = {
       element: <AdminManageDocumentTypesPage />,
       loader: async () => {
         try {
-          const response = await axiosClient.get(
-            "/api/v1/admin/document-types"
-          );
+          /**
+           * Responses
+           */
+          const response = await axiosClient.get("/api/v1/document-types");
+
+          /**
+           * Variables
+           */
           const initial_document_types = response.data;
-          // console.log(initial_document_types);
+
+          /**
+           * Return
+           */
           return initial_document_types;
         } catch (error) {
           console.error("Error fetching document types: ", error);

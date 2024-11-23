@@ -20,6 +20,7 @@ const Table = ({
   searchPlaceholder = "Search something...",
   handleArchiveBySelectedIds,
   handleDeployBySelectedIds,
+  includeCheckboxes = true,
   handleArchive,
   handleEdit,
   handleDelete,
@@ -130,6 +131,7 @@ const Table = ({
             handleEdit={handleEdit}
             handleDelete={handleDelete}
             handleView={handleView}
+            includeCheckboxes={includeCheckboxes}
           />
           <TableBody
             paginatedData={paginatedData}
@@ -140,6 +142,7 @@ const Table = ({
             handleEdit={handleEdit}
             handleDelete={handleDelete}
             handleView={handleView}
+            includeCheckboxes={includeCheckboxes}
           />
         </table>
       </div>

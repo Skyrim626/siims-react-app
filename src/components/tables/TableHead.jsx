@@ -12,19 +12,23 @@ const TableHead = ({
   handleDelete,
   handleView,
   handleArchive,
+  includeCheckboxes,
 }) => {
   return (
     <thead>
       <tr>
         <th className="py-2 px-4 border-b bg-gray-800 text-white">#</th>
-        <th className="py-2 px-4 border-b bg-gray-800 text-white">
-          <Input
-            type="checkbox"
-            checked={selectedIds.size === paginatedData.length}
-            onChange={handleSelectAllChange}
-            className="form-checkbox"
-          />
-        </th>
+        {includeCheckboxes && (
+          <th className="py-2 px-4 border-b bg-gray-800 text-white">
+            <Input
+              type="checkbox"
+              checked={selectedIds.size === paginatedData.length}
+              onChange={handleSelectAllChange}
+              className="form-checkbox"
+            />
+          </th>
+        )}
+
         <th className="py-2 px-4 border-b bg-gray-800 text-white">ID</th>
         {visibleColumns.map((column) => (
           <th

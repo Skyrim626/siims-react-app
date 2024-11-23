@@ -9,6 +9,8 @@ import AdminDocumentTypesTable from "../../components/users/admin/table/AdminDoc
 import FormModal from "../../components/modals/FormModal";
 import AdminDocumentTypeForm from "./forms/AdminDocumentTypeForm";
 import { postRequest, putRequest, deleteRequest } from "../../api/apiHelpers";
+import DocumentTypeForm from "../../components/forms/DocumentTypeForm";
+import Table from "../../components/tables/Table";
 
 const AdminManageDocumentTypesPage = () => {
   // Retrieve the document_types data from the loader
@@ -28,25 +30,30 @@ const AdminManageDocumentTypesPage = () => {
   // Select State
   const [selectedDocumentType, setSelectedDocumentType] = useState(null);
 
-  // Archive a document type
+  // Delete a Document Type
   const deleteDocumentType = async (id) => {
     try {
       // console.log(id);
 
-      // Make the DELETE request
+      // DELETE METHOD
       const response = await deleteRequest({
-        url: `/api/v1/admin/document-types/${id}`,
+        url: `/api/v1/document-types/${id}`,
       });
 
+      // Update the Document Type in the state
       setDocumentTypes((prevDocumentTypes) =>
-        prevDocumentTypes.filter((documentType) => documentType.id !== id)
+        prevDocumentTypes.map((documentType) =>
+          documentType.id === id
+            ? { ...documentType, ...response.data }
+            : documentType
+        )
       );
     } catch (error) {
       console.log(`Cannot delete a document type: `, error);
     }
   };
 
-  // Update a document type
+  // Update a Document Type
   const updateDocumentType = async () => {
     try {
       // Ready payload
@@ -57,11 +64,11 @@ const AdminManageDocumentTypesPage = () => {
       // console.log(payload);
       // Send update request to the backend
       const response = await putRequest({
-        url: `/api/v1/admin/document-types/${selectedDocumentType["id"]}`,
+        url: `/api/v1/document-types/${selectedDocumentType["id"]}`,
         data: payload,
       });
 
-      // Update the document type in the state
+      // Update the Document Type in the state
       setDocumentTypes((prevDocumentTypes) =>
         prevDocumentTypes.map((documentType) =>
           documentType.id === selectedDocumentType["id"]
@@ -108,7 +115,7 @@ const AdminManageDocumentTypesPage = () => {
 
       // Make the POST request
       const response = await postRequest({
-        url: "/api/v1/admin/document-types",
+        url: "/api/v1/document-types",
         data: payload,
       });
 
@@ -124,10 +131,10 @@ const AdminManageDocumentTypesPage = () => {
     } catch (error) {
       // Handle and set errors
       if (error.response && error.response.data && error.response.data.errors) {
-        console.log(error.response.data.errors);
+        // console.log(error.response.data.errors);
         setErrors(error.response.data.errors); // Assuming validation errors are in `errors`
       } else {
-        console.error("An unexpected error occurred:", error);
+        // console.error("An unexpected error occurred:", error);
         setErrors({
           general: "An unexpected error occurred. Please try again.",
         });
@@ -155,10 +162,11 @@ const AdminManageDocumentTypesPage = () => {
         />
 
         {/* Table */}
-        <AdminDocumentTypesTable
+        <Table
           data={documentTypes}
           handleEdit={handleEdit}
           handleArchive={deleteDocumentType}
+          includeCheckboxes={false}
         />
 
         {/* Modals */}
@@ -168,7 +176,7 @@ const AdminManageDocumentTypesPage = () => {
           modalTitle="Add Document Type"
           onSubmit={addDocumentType}
         >
-          <AdminDocumentTypeForm
+          <DocumentTypeForm
             documentTypeName={documentTypeName}
             setDocumentTypeName={setDocumentTypeName}
             errors={errors}
@@ -179,10 +187,10 @@ const AdminManageDocumentTypesPage = () => {
           <FormModal
             isOpen={editIsOpen}
             setIsOpen={setEditIsOpen}
-            modalTitle="Edit College"
+            modalTitle="Edit Document Type"
             onSubmit={updateDocumentType}
           >
-            <AdminDocumentTypeForm
+            <DocumentTypeForm
               documentTypeName={documentTypeName}
               setDocumentTypeName={setDocumentTypeName}
               errors={errors}

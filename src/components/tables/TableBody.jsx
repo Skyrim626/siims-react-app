@@ -11,6 +11,7 @@ const TableBody = ({
   selectedIds,
   handleCheckboxChange,
   visibleColumns,
+  includeCheckboxes,
   handleView,
   handleEdit,
   handleDelete,
@@ -26,14 +27,17 @@ const TableBody = ({
         {paginatedData.map((data, index) => (
           <tr key={data.id} className={index % 2 === 0 ? "bg-gray-100" : ""}>
             <td className="py-2 px-4 border-b">{index + 1}</td>
-            <td className="py-2 px-4 border-b">
-              <input
-                type="checkbox"
-                checked={selectedIds.has(data.id)}
-                onChange={() => handleCheckboxChange(data.id)}
-                className="form-checkbox"
-              />
-            </td>
+            {includeCheckboxes && (
+              <td className="py-2 px-4 border-b">
+                <input
+                  type="checkbox"
+                  checked={selectedIds.has(data.id)}
+                  onChange={() => handleCheckboxChange(data.id)}
+                  className="form-checkbox"
+                />
+              </td>
+            )}
+
             <td className="py-2 px-4 border-b text-blue-600 font-bold">
               {handleView ? (
                 <Button
