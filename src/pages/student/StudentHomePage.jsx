@@ -22,7 +22,7 @@ const StudentHomePage = () => {
   const { workPosts, student, currently_applied_work_post, application_id } =
     useLoaderData();
   // console.log(workPosts);
-  // console.log(student);
+  console.log(student);
 
   // Location and Navigate
   const location = useLocation();
@@ -256,7 +256,12 @@ const StudentHomePage = () => {
                   onClick={() =>
                     handleApplyClick(currently_applied_work_post.id)
                   }
-                  className="w-full sm:w-auto py-2 px-6 rounded-md bg-red-600 text-white font-medium hover:bg-red-700 transition-all"
+                  disabled={student.status_id === 12}
+                  className={`w-full sm:w-auto py-2 px-6 rounded-md text-white font-medium ${
+                    student.status_id === 12
+                      ? "bg-gray-600"
+                      : "bg-red-600 hover:bg-red-700"
+                  } transition-all`}
                 >
                   Withdraw
                 </Button>

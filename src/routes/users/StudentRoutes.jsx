@@ -52,16 +52,24 @@ const StudentRoutes = {
       element: <StudentHomePage />,
       loader: async () => {
         try {
-          const response = await axiosClient.get("/api/v1/student/jobs");
-
-          const { initial_job_posts, student } = response.data;
-          const workPosts = initial_job_posts;
+          /**
+           * Response
+           */
 
           const currentAppliedWorkResponse = await axiosClient.get(
             "/api/v1/student/jobs/currently-applied"
           );
+
           const { currently_applied_work_post, application_id } =
             currentAppliedWorkResponse.data;
+
+          const response = await axiosClient.get("/api/v1/student/jobs");
+
+          /**
+           * Variables
+           */
+          const { initial_job_posts, student } = response.data;
+          const workPosts = initial_job_posts;
 
           // console.log(initial_job_posts);
           // console.log(student);

@@ -13,11 +13,13 @@ import Section from "../common/Section";
 import TableBody from "./TableBody";
 import useCheckboxSelection from "../../hooks/useCheckboxSelection";
 import ArchiveButton from "./ArchiveButton";
+import DeployStudentButton from "./DeployStudentButton";
 
 const Table = ({
   data,
   searchPlaceholder = "Search something...",
   handleArchiveBySelectedIds,
+  handleDeployBySelectedIds,
   handleArchive,
   handleEdit,
   handleDelete,
@@ -77,6 +79,13 @@ const Table = ({
       {handleArchiveBySelectedIds && (
         <ArchiveButton
           onClick={() => handleArchiveBySelectedIds(selectedIds)}
+          disabled={selectedIds.size === 0}
+        />
+      )}
+      {handleDeployBySelectedIds && (
+        <DeployStudentButton
+          onClick={() => handleDeployBySelectedIds(selectedIds)}
+          disabled={selectedIds.size === 0}
         />
       )}
       <div className="flex justify-between items-center mb-4 mt-2">

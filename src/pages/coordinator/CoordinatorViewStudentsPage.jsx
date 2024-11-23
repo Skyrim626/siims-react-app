@@ -10,6 +10,7 @@ import Section from "../../components/common/Section";
 import Heading from "../../components/common/Heading";
 import Text from "../../components/common/Text";
 import Table from "../../components/tables/Table";
+import { putRequest } from "../../api/apiHelpers";
 
 const CoordinatorViewStudentsPage = () => {
   // Fetch students
@@ -24,6 +25,39 @@ const CoordinatorViewStudentsPage = () => {
     navigate(`${location.pathname}/${id}/applications`);
   };
 
+  // Update Student Status to Deployed
+  const handleDeployBySelectedIds = async (selectedIds) => {
+    //console.log(selectedIds); // Example output: Set { 2024301502 }
+
+    try {
+      // Prepare payload
+      const payload = {
+        ids: Array.from(selectedIds), // Convert Set to array
+      };
+
+      // console.log(payload);
+
+      // Call putRequest
+      const response = await putRequest({
+        url: "/api/v1/coordinator/students/deploy-students",
+        data: payload,
+      });
+
+      //   successful response
+      // console.log("Deployment successful:", response);
+
+      if (response) {
+        navigate(location.pathname);
+      }
+    } catch (error) {
+      // Handle error response
+      console.error(
+        "Error during deployment:",
+        error.response?.data || error.message
+      );
+    }
+  };
+
   return (
     <Page>
       <Section>
@@ -35,7 +69,11 @@ const CoordinatorViewStudentsPage = () => {
       </Section>
 
       {/* Table */}
-      <Table data={students} handleView={handleView} />
+      <Table
+        data={students}
+        handleView={handleView}
+        handleDeployBySelectedIds={handleDeployBySelectedIds}
+      />
     </Page>
   );
 };

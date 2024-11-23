@@ -175,6 +175,7 @@ const AdminManageCompaniesPage = () => {
 
   // Handle Archive Selected Id's
   const handleArchiveBySelectedIds = async (selectedIds) => {
+    // console.log(selectedIds);
     // Ready Payload
     const payload = { ids: Array.from(selectedIds) };
 

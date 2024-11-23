@@ -12,7 +12,7 @@ const OsaManageApplicantsPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // view application
+  // View application
   const viewApplication = (id) => {
     // console.log(id);
     // console.log(location.pathname);

@@ -4,6 +4,7 @@ import { FaArchive, FaEdit, FaEye } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import toFilePath from "../../utils/baseURL";
 import Text from "../common/Text";
+import { getStatusBgColor, getStatusColor } from "../../utils/statusColor";
 
 const TableBody = ({
   paginatedData,
@@ -92,7 +93,11 @@ const TableBody = ({
               } else if (column === "status") {
                 return (
                   <td key={column} className="py-2 px-4 border-b font-bold">
-                    <Button className="bg-green-500 p-2 rounded-full text-white">
+                    <Button
+                      className={`${getStatusBgColor(
+                        data[column]
+                      )} p-2 rounded-full ${getStatusColor(data[column])}`}
+                    >
                       {data[column]}
                     </Button>
                   </td>
