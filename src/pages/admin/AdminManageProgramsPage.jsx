@@ -1,27 +1,21 @@
-import React, { useEffect, useState } from "react";
-import {
-  deleteRequest,
-  getRequest,
-  postRequest,
-  putRequest,
-} from "../../api/apiHelpers";
+import React, { useState } from "react";
+import { deleteRequest, postRequest, putRequest } from "../../api/apiHelpers";
 import Page from "../../components/common/Page";
 import Heading from "../../components/common/Heading";
 import Section from "../../components/common/Section";
 import Text from "../../components/common/Text";
 import ManageHeader from "../../components/common/ManageHeader";
-import AdminProgramsTable from "../../components/users/admin/table/AdminProgramsTable";
 import FormModal from "../../components/modals/FormModal";
-import useForm from "../../hooks/useForm";
-import AdminProgramFormEdit from "./forms/AdminProgramFormEdit";
-import AdminProgramFormAdd from "./forms/AdminProgramFormAdd";
-import useHandleSubmit from "../../hooks/useHandleSubmit";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
+import Table from "../../components/tables/Table";
+import ProgramForm from "../../components/forms/ProgramForm";
 
 const AdminManageProgramsPage = () => {
   // Retrieve the programs, list_of_chairperson, and list_of_colleges data from the loader
   const { initial_programs, list_of_chairpersons, list_of_colleges } =
     useLoaderData();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   // State for programs and form modal
   const [programs, setPrograms] = useState(initial_programs);
@@ -29,7 +23,7 @@ const AdminManageProgramsPage = () => {
   const [editIsOpen, setEditIsOpen] = useState(false);
 
   // Form input and errors
-  const [collegeId, setCollegeId] = useState(null);
+  const [collegeId, setCollegeId] = useState(0);
   const [chairpersonId, setChairpersonId] = useState(null);
   const [programName, setProgramName] = useState("");
   const [errors, setErrors] = useState({});
@@ -55,7 +49,7 @@ const AdminManageProgramsPage = () => {
     }
   };
 
-  // Submit new program data
+  // Submit new Program data
   const submitProgram = async () => {
     try {
       const payload = {
@@ -63,9 +57,11 @@ const AdminManageProgramsPage = () => {
         name: programName,
       };
 
+      // console.log(payload);
+
       // Make the POST request
       const response = await postRequest({
-        url: "/api/v1/admin/programs",
+        url: "/api/v1/programs",
         data: payload,
       });
 
@@ -95,15 +91,17 @@ const AdminManageProgramsPage = () => {
     try {
       // Ready Payload
       const payload = {
-        college_id: collegeId,
         chairperson_id: chairpersonId,
         name: programName,
       };
 
       // console.log(payload);
+      // console.log(selectedProgram["id"]);
+
+      // console.log(payload);
       // Send update request to the backend
       const response = await putRequest({
-        url: `/api/v1/admin/programs/${selectedProgram["id"]}`,
+        url: `/api/v1/programs/${selectedProgram["id"]}`,
         data: payload,
       });
 
@@ -121,6 +119,14 @@ const AdminManageProgramsPage = () => {
       setCollegeId(null);
       setChairpersonId(null);
       setEditIsOpen(false);
+
+      // Refresh
+      if (response) {
+        navigate(location.pathname, {
+          replace: true,
+        });
+        // windows.reload
+      }
     } catch (error) {
       // Handle and set errors
       if (error.response && error.response.data && error.response.data.errors) {
@@ -137,12 +143,14 @@ const AdminManageProgramsPage = () => {
 
   // Handle Edit Select Program
   const handleEdit = (program) => {
+    console.log(program);
+
     // Set Program State
     // console.log(program);
     setSelectedProgram(program);
 
     // Pre-fill the college_id, chairperson_id, name with in each fields
-    setCollegeId(program["id"]);
+    setCollegeId(program["college_id"]);
     setChairpersonId(program["chairperson_id"]);
     setProgramName(program["name"]);
 
@@ -169,10 +177,11 @@ const AdminManageProgramsPage = () => {
       />
 
       {/* Table */}
-      <AdminProgramsTable
+      <Table
         data={programs}
         handleEdit={handleEdit}
         handleArchive={deleteProgram}
+        includeCheckboxes={false}
       />
 
       {/* Modals */}
@@ -182,7 +191,7 @@ const AdminManageProgramsPage = () => {
         modalTitle="Add Program"
         onSubmit={submitProgram}
       >
-        <AdminProgramFormAdd
+        <ProgramForm
           colleges={list_of_colleges}
           collegeId={collegeId}
           programName={programName}
@@ -199,7 +208,8 @@ const AdminManageProgramsPage = () => {
           modalTitle="Edit College"
           onSubmit={handleEditSubmit}
         >
-          <AdminProgramFormEdit
+          <ProgramForm
+            method="put"
             collegeId={collegeId}
             chairpersonId={chairpersonId}
             programName={programName}

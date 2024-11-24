@@ -183,11 +183,25 @@ const AdminRoutes = {
       element: <AdminManageProgramsPage />,
       loader: async () => {
         try {
-          const response = await axiosClient.get("/api/v1/admin/programs");
+          /**
+           * Responses
+           */
+          const programResponse = await axiosClient.get("/api/v1/programs");
+          const collegeResponse = await axiosClient.get("/api/v1/colleges");
+          const chairpersonResponse = await axiosClient.get(
+            "/api/v1/users/chairpersons/including-programs"
+          );
 
-          // Fetch the list of programs and chairpersons
-          const { initial_programs, list_of_chairpersons, list_of_colleges } =
-            response.data;
+          /**
+           * Variables
+           */
+          const initial_programs = programResponse.data;
+          const list_of_colleges = collegeResponse.data;
+          const list_of_chairpersons = chairpersonResponse.data;
+
+          /**
+           * Return
+           */
 
           return { initial_programs, list_of_chairpersons, list_of_colleges };
         } catch (error) {
