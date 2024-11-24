@@ -46,6 +46,29 @@ const DeanRoutes = {
     {
       index: true,
       element: <DeanDashboardPage />,
+      loader: async () => {
+        try {
+          /**
+           * Responses
+           */
+          const response = await axiosClient.get("/api/v1/dashboard");
+
+          /**
+           * Variables
+           */
+          const dashboard = response.data;
+
+          /**
+           * Return
+           */
+
+          return {
+            dashboard,
+          };
+        } catch (error) {
+          console.log(error);
+        }
+      },
     },
     {
       path: "profile",
@@ -56,7 +79,7 @@ const DeanRoutes = {
       element: <DeanProgramsPage />,
       loader: async () => {
         try {
-          const response = await axiosClient.get("/api/v1/dean/programs");
+          const response = await axiosClient.get("/api/v1/programs");
 
           // Fetch the list of programs and chairpersons
           const initial_programs = response.data;

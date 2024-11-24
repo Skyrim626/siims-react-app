@@ -14,6 +14,10 @@ const ProgramForm = ({
     collegeId: true,
     programName: true,
   },
+  displayFields = {
+    collegeId: true,
+    programName: true,
+  },
   errors = {},
   chairpersons = [],
   colleges = [],
@@ -33,38 +37,41 @@ const ProgramForm = ({
 
         <div className="flex flex-col">
           <div className="grid grid-cols-3 gap-2 mt-4">
-            <FormField
-              label={"College"}
-              name={"collegeId"}
-              labelClassName="text-sm text-black font-semibold"
-              required={requiredFields["collegeId"]}
-            >
-              <Select
-                typeof="text"
-                className={`outline-none text-black rounded-sm p-2 text-sm ${
-                  method !== "post" && "bg-gray-400"
-                }`}
-                name="collegeId"
-                onChange={(e) => {
-                  setCollegeId(e.target.value);
-                }}
-                disabled={method === "put"}
-                value={collegeId}
+            {displayFields.collegeId && (
+              <FormField
+                label={"College"}
+                name={"collegeId"}
+                labelClassName="text-sm text-black font-semibold"
                 required={requiredFields["collegeId"]}
               >
-                <option value="null">-Select a College-</option>
-                {colleges.map((college) => {
-                  return (
-                    <option key={college.id} value={college.id}>
-                      {college.name}
-                    </option>
-                  );
-                })}
-              </Select>
-              {errors.college_id && (
-                <Text className="text-red-500">{errors.college_id[0]}</Text>
-              )}
-            </FormField>
+                <Select
+                  typeof="text"
+                  className={`outline-none text-black rounded-sm p-2 text-sm ${
+                    method !== "post" && "bg-gray-400"
+                  }`}
+                  name="collegeId"
+                  onChange={(e) => {
+                    setCollegeId(e.target.value);
+                  }}
+                  disabled={method === "put"}
+                  value={collegeId}
+                  required={requiredFields["collegeId"]}
+                >
+                  <option value="null">-Select a College-</option>
+                  {colleges.map((college) => {
+                    return (
+                      <option key={college.id} value={college.id}>
+                        {college.name}
+                      </option>
+                    );
+                  })}
+                </Select>
+                {errors.college_id && (
+                  <Text className="text-red-500">{errors.college_id[0]}</Text>
+                )}
+              </FormField>
+            )}
+
             <FormField
               label={"Program Name"}
               name={"programName"}

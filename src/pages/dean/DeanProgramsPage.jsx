@@ -10,6 +10,7 @@ import FormModal from "../../components/modals/FormModal";
 import DeanProgramFormAdd from "./forms/DeanProgramFormAdd";
 import { postRequest, putRequest } from "../../api/apiHelpers";
 import DeanProgramFormEdit from "./forms/DeanProgramFormEdit";
+import ProgramForm from "../../components/forms/ProgramForm";
 
 const DeanProgramsPage = () => {
   // Retrieve the programs data from the loader
@@ -39,7 +40,7 @@ const DeanProgramsPage = () => {
       // console.log(payload);
       // Send update request to the backend
       const response = await putRequest({
-        url: `/api/v1/dean/programs/${selectedProgram["id"]}`,
+        url: `/api/v1/programs/${selectedProgram["id"]}`,
         data: payload,
       });
 
@@ -80,7 +81,7 @@ const DeanProgramsPage = () => {
     setEditIsOpen(true);
   };
 
-  // Add Program
+  // Add new Program
   const addProgram = async () => {
     try {
       // Ready for payload
@@ -90,7 +91,7 @@ const DeanProgramsPage = () => {
 
       // Make the POST request
       const response = await postRequest({
-        url: "/api/v1/dean/programs",
+        url: "/api/v1/programs",
         data: payload,
       });
 
@@ -112,8 +113,6 @@ const DeanProgramsPage = () => {
         });
       }
     }
-
-    // console.log(programName);
   };
 
   return (
@@ -144,10 +143,14 @@ const DeanProgramsPage = () => {
         modalTitle="Add Program"
         onSubmit={addProgram}
       >
-        <DeanProgramFormAdd
+        <ProgramForm
           programName={programName}
           setProgramName={setProgramName}
           errors={errors}
+          displayFields={{
+            collegeId: false,
+            programName: true,
+          }}
         />
       </FormModal>
 
