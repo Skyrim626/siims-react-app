@@ -7,6 +7,7 @@ import SupervisorAddJobPage from "../../pages/supervisor/SupervisorAddJobPage";
 import axiosClient from "../../api/axiosClient";
 import SupervisorEditJobPage from "../../pages/supervisor/SupervisorEditJobPage";
 import SupervisorManageApplicantsPage from "../../pages/supervisor/SupervisorManageApplicantsPage";
+import SupervisorManageApplicantPage from "../../pages/supervisor/SupervisorManageApplicantPage";
 
 // Routes for Supervisor
 const SupervisorRoutes = {
@@ -16,6 +17,28 @@ const SupervisorRoutes = {
       <SupervisorLayout />
     </ProtectedRoute>
   ),
+  loader: async () => {
+    try {
+      /**
+       * Response
+       */
+      const response = await axiosClient.get("/api/v1/user-roles");
+
+      /**
+       * Variables
+       */
+      const userRoles = response.data;
+
+      // console.log(userRoles);
+
+      /**
+       * Return Data
+       */
+      return { userRoles };
+    } catch (error) {
+      console.log(error);
+    }
+  },
   children: [
     {
       path: "dashboard",
@@ -27,21 +50,58 @@ const SupervisorRoutes = {
     },
     {
       path: "applicants",
-      element: <SupervisorManageApplicantsPage />,
-      loader: async () => {
-        try {
-          const response = await axiosClient.get(
-            "/api/v1/supervisor/applicants"
-          );
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: <SupervisorManageApplicantsPage />,
+          loader: async () => {
+            try {
+              const response = await axiosClient.get(
+                "/api/v1/supervisor/applicants"
+              );
 
-          const applicants = response.data;
+              // console.log(response.data);
 
-          return applicants;
-        } catch (error) {
-          console.log(error);
-        }
-      },
+              return response.data;
+            } catch (error) {
+              console.error("Error fetching work posts: ", error);
+              throw error; // Let the router handle errors
+            }
+          },
+        },
+        {
+          path: ":applicantId",
+          element: <SupervisorManageApplicantPage />,
+          loader: async ({ params }) => {
+            try {
+              /**
+               * Params ID
+               */
+              const { applicantId } = params;
+
+              /**
+               * Responses
+               */
+              const response = await axiosClient.get(
+                `/api/v1/supervisor/applicants/${applicantId}`
+              );
+
+              /**
+               * Variables
+               */
+              const applicant = response.data;
+
+              return applicant;
+            } catch (error) {
+              console.error("Error fetching work posts: ", error);
+              throw error; // Let the router handle errors
+            }
+          },
+        },
+      ],
     },
+
     {
       path: "work-posts",
       element: <Outlet />,

@@ -4,9 +4,12 @@ import ProtectedRoute from "../handlers/ProtectedRoute";
 import ChairpersonDashboardPage from "../../pages/chairperson/ChairpersonDashboardPage";
 import ChairpersonManageCompaniesPage from "../../pages/chairperson/ChairpersonManageCompaniesPage";
 import ChairpersonCompanyPage from "../../pages/chairperson/ChairpersonCompanyPage";
-import ChairpersonEndorsementRequests from "../../pages/chairperson/ChairpersonEndorsementRequests";
+
 import ChairpersonViewCoordinatorPage from "../../pages/chairperson/ChairpersonViewCoordinatorPage";
 import axiosClient from "../../api/axiosClient";
+import ChairpersonGenerateEndorsemenLetterPage from "../../pages/chairperson/ChairpersonGenerateEndorsemenLetterPage";
+import ChairpersonEndorsementRequestsPage from "../../pages/chairperson/ChairpersonEndorsementRequestsPage";
+import ChairpersonEndorsementRequestPage from "../../pages/chairperson/ChairpersonEndorsementRequestPage";
 
 // Routes for Chairperson
 const ChairpersonRoutes = {
@@ -16,6 +19,28 @@ const ChairpersonRoutes = {
       <ChairpersonLayout />
     </ProtectedRoute>
   ),
+  loader: async () => {
+    try {
+      /**
+       * Response
+       */
+      const response = await axiosClient.get("/api/v1/user-roles");
+
+      /**
+       * Variables
+       */
+      const userRoles = response.data;
+
+      // console.log(userRoles);
+
+      /**
+       * Return Data
+       */
+      return { userRoles };
+    } catch (error) {
+      console.log(error);
+    }
+  },
   children: [
     {
       path: "dashboard",
@@ -59,7 +84,66 @@ const ChairpersonRoutes = {
     },
     {
       path: "endorsement-requests",
-      element: <ChairpersonEndorsementRequests />,
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: <ChairpersonEndorsementRequestsPage />,
+          loader: async () => {
+            try {
+              // Fetch response
+              const response = await axiosClient.get(
+                "/api/v1/chairperson/endorsement-letter-requests"
+              );
+
+              /**
+               * Variable Storage
+               */
+              const endorsementRequests = response.data;
+
+              return endorsementRequests;
+            } catch (error) {
+              console.log(error);
+            }
+          },
+        },
+        {
+          path: ":endorsementLetterRequestId",
+          element: <Outlet />,
+          children: [
+            {
+              index: true,
+              element: <ChairpersonEndorsementRequestPage />,
+              loader: async ({ params }) => {
+                try {
+                  // Fetch ID
+                  const { endorsementLetterRequestId } = params;
+
+                  // Fetch Response
+                  const response = await axiosClient.get(
+                    `/api/v1/chairperson/endorsement-letter-requests/${endorsementLetterRequestId}`
+                  );
+
+                  /**
+                   * Variable Storage
+                   */
+                  const endorsementLetterRequest = response.data;
+
+                  // console.log(endorsementLetterRequest);
+
+                  return endorsementLetterRequest;
+                } catch (error) {
+                  console.log(error);
+                }
+              },
+            },
+            {
+              path: "generate-endorsement-letter",
+              element: <ChairpersonGenerateEndorsemenLetterPage />,
+            },
+          ],
+        },
+      ],
     },
   ],
 };

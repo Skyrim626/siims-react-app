@@ -106,6 +106,14 @@ const adminSidebarItemsConfig = [
     exact: false,
     path: "/auth/admin/internship-postings",
   },
+  {
+    icon: <MessageCircle size={20} />,
+    text: "Messaging",
+    alert: true,
+    ariaLabel: "Messaging",
+    exact: false,
+    path: "/auth/admin/messaging",
+  },
   { isDivider: true, role: "all" },
   {
     icon: <Logs size={20} />,
@@ -177,6 +185,7 @@ const chairpersonSidebarItemsConfig = [
     active: true,
     path: "/auth/chairperson/students",
   },
+
   {
     icon: <Building size={20} />,
     text: "Companies",

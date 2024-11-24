@@ -25,16 +25,39 @@ import AdminManageOfficesPage from "../../pages/admin/AdminManageOfficesPage";
 import AdminManageProgramsPage from "../../pages/admin/AdminManageProgramsPage";
 import AdminManageDocumentTypesPage from "../../pages/admin/AdminManageDocumentTypesPage";
 import AdminManageCompanyOfficesPage from "../../pages/admin/manage-users/AdminManageCompanyOfficesPage";
+import AdminMessagingPage from "../../pages/admin/AdminMessagingPage";
 
 // Define routes for the Admin section
 const AdminRoutes = {
   path: "admin", // Base path for admin routes
   element: (
     <ProtectedRoute roleAllowed={"admin"}>
-      {/* Protect routes to allow access only to admin role */}
-      <AdminLayout /> {/* Render AdminLayout for the admin section */}
+      <AdminLayout />
     </ProtectedRoute>
   ),
+  loader: async () => {
+    try {
+      /**
+       * Response
+       */
+      const response = await axiosClient.get("/api/v1/user-roles");
+
+      /**
+       * Variables
+       */
+      const userRoles = response.data;
+
+      // console.log(userRoles);
+
+      /**
+       * Return Data
+       */
+      return { userRoles };
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   children: [
     {
       path: "dashboard", // Dashboard route that redirects to /admin
@@ -44,12 +67,24 @@ const AdminRoutes = {
       index: true, // Default route for the admin section
       element: <AdminDashboard />, // Render the Admin Dashboard component
       loader: async () => {
-        const response = await axiosClient.get("/api/v1/admin/dashboard"); // Fetch dashboard data from API
+        try {
+          /**
+           * Response
+           */
+          const response = await axiosClient.get("/api/v1/dashboard"); // Fetch dashboard data from API
 
-        // console.log(response.data);
-        const data = response.data;
+          /**
+           * Variables
+           */
+          const data = response.data;
 
-        return data; // Return fetched data for the loader
+          /**
+           * Return
+           */
+          return data; // Return fetched data for the loader
+        } catch (error) {
+          console.log(error);
+        }
       },
     },
     {
@@ -57,11 +92,19 @@ const AdminRoutes = {
       element: <AdminManageDocumentTypesPage />,
       loader: async () => {
         try {
-          const response = await axiosClient.get(
-            "/api/v1/admin/document-types"
-          );
+          /**
+           * Responses
+           */
+          const response = await axiosClient.get("/api/v1/document-types");
+
+          /**
+           * Variables
+           */
           const initial_document_types = response.data;
-          // console.log(initial_document_types);
+
+          /**
+           * Return
+           */
           return initial_document_types;
         } catch (error) {
           console.error("Error fetching document types: ", error);
@@ -69,16 +112,36 @@ const AdminRoutes = {
         }
       },
     },
+    {
+      path: "messaging",
+      element: <AdminMessagingPage />,
+    },
 
     {
       path: "roles", // Route for managing user roles
       element: <AdminManageRolesPage />,
       loader: async () => {
         try {
-          const response = await axiosClient.get("/api/v1/admin/roles");
+          /**
+           * Responses
+           */
+          const roleResponse = await axiosClient.get("/api/v1/roles");
+          const userRoleResponse = await axiosClient.get(
+            "/api/v1/roles/user-roles"
+          );
 
-          // Fetch the list of roles and user roles
-          const { initialRoles, userRoles } = response.data;
+          /**
+           * Variables
+           */
+          const initialRoles = roleResponse.data;
+          const userRoles = userRoleResponse.data;
+
+          // console.log(initialRoles);
+          // console.log(userRoles);
+
+          /**
+           * Return
+           */
           return { initialRoles, userRoles }; // Return both as an object
         } catch (error) {
           console.error("Error fetching user roles: ", error);
@@ -91,10 +154,23 @@ const AdminRoutes = {
       element: <AdminManageCollegesPage />,
       loader: async () => {
         try {
-          const response = await axiosClient.get("/api/v1/admin/colleges");
-          // Fetch the list of colleges
-          const { initial_colleges, list_of_deans } = response.data;
+          /**
+           * Responses
+           */
+          const collegeResponse = await axiosClient.get("/api/v1/colleges");
+          const deanResponse = await axiosClient.get(
+            "/api/v1/users/deans/including-colleges"
+          );
 
+          /**
+           * Variables
+           */
+          const initial_colleges = collegeResponse.data;
+          const list_of_deans = deanResponse.data;
+
+          /**
+           * Return
+           */
           return { initial_colleges, list_of_deans };
         } catch (error) {
           console.error("Error fetching colleges: ", error);
@@ -107,11 +183,25 @@ const AdminRoutes = {
       element: <AdminManageProgramsPage />,
       loader: async () => {
         try {
-          const response = await axiosClient.get("/api/v1/admin/programs");
+          /**
+           * Responses
+           */
+          const programResponse = await axiosClient.get("/api/v1/programs");
+          const collegeResponse = await axiosClient.get("/api/v1/colleges");
+          const chairpersonResponse = await axiosClient.get(
+            "/api/v1/users/chairpersons/including-programs"
+          );
 
-          // Fetch the list of programs and chairpersons
-          const { initial_programs, list_of_chairpersons, list_of_colleges } =
-            response.data;
+          /**
+           * Variables
+           */
+          const initial_programs = programResponse.data;
+          const list_of_colleges = collegeResponse.data;
+          const list_of_chairpersons = chairpersonResponse.data;
+
+          /**
+           * Return
+           */
 
           return { initial_programs, list_of_chairpersons, list_of_colleges };
         } catch (error) {

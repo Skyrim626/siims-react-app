@@ -17,11 +17,13 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import StudentFileUploader from "../../components/users/student/StudentFileUploader";
 import FormModal from "../../components/modals/FormModal";
 import EndorsementRequestForm from "../../components/forms/EndorsementRequestForm";
-import { getStatusColor } from "../../utils/statusColor";
+import { getStatusColor, getStatusBgColor } from "../../utils/statusColor";
+import toFilePath from "../../utils/baseURL";
 
 const StudentJobApplicationPage = () => {
   // Fetch loader data
-  const { initial_application, stepOneDocuments, job } = useLoaderData();
+  const { initial_application, stepOneDocuments, stepTwoDocuments, job } =
+    useLoaderData();
   // console.log(stepOneDocuments);
   // console.log(initial_application);
 
@@ -44,9 +46,6 @@ const StudentJobApplicationPage = () => {
   const [isRequestSubmitted, setIsRequestSubmitted] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitted, setIsSubmitted] = useState(false);
-
-  // BASE URL
-  const baseURL = import.meta.env.VITE_API_BASE_URL;
 
   const [uploadedFiles, setUploadedFiles] = useState({
     coverLetter: null,
@@ -182,10 +181,10 @@ const StudentJobApplicationPage = () => {
   // Progress Indicator Data (now 4 steps)
   const steps = [
     "Application Requirements",
-    "Request Endorsement",
-    "Requirements",
-    "Summary",
-    "Approval",
+    "Complete Requirements",
+    // "Requirements",
+    // "Summary",
+    "Approved",
   ];
 
   return (
@@ -286,57 +285,76 @@ const StudentJobApplicationPage = () => {
 
               {/* Document List */}
               <div className="space-y-4">
-                {stepOneDocuments.map((doc) => (
-                  <div
-                    key={doc.id}
-                    className="flex items-center justify-between p-4 border rounded-lg bg-white shadow-sm"
-                  >
-                    {/* Document Name */}
-                    <div>
-                      <h3 className="text-lg font-medium text-gray-800">
-                        {doc.name}
-                      </h3>
-                      {/* Dynamically render status color */}
-                      <p className={`text-sm ${getStatusColor(doc.status)}`}>
-                        Status: {doc.status}
-                      </p>
-                    </div>
-
-                    {/* Upload or View */}
-                    <div className="flex items-center space-x-4">
-                      {doc.file_path ? (
-                        <>
-                          <a
-                            href={`${baseURL}/${doc.file_path}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+                {stepOneDocuments.map((doc) => {
+                  if (doc) {
+                    return (
+                      <div
+                        key={doc.id}
+                        className="flex items-center justify-between p-4 border rounded-lg bg-white shadow-sm"
+                      >
+                        {/* Document Name */}
+                        <div>
+                          <h3 className="text-lg font-medium text-gray-800">
+                            {doc.name}
+                          </h3>
+                          {/* Dynamically render status color */}
+                          <div
+                            className={`text-sm flex gap-1 items-center ${getStatusColor(
+                              doc.status
+                            )}`}
                           >
-                            View File
-                          </a>
-                          <label className="flex items-center space-x-2">
-                            <Input
+                            <Text>Status:</Text>
+                            <Text
+                              className={`${getStatusBgColor(
+                                doc.status
+                              )} p-1 rounded-full`}
+                            >
+                              {doc.status}
+                            </Text>
+                          </div>
+                        </div>
+
+                        {/* Upload or View */}
+                        <div className="flex items-center space-x-4">
+                          {doc.file_path ? (
+                            <>
+                              <a
+                                href={toFilePath(doc.file_path)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+                              >
+                                View File
+                              </a>
+                              {doc.can_change && (
+                                <label className="flex items-center space-x-2">
+                                  <Input
+                                    type="file"
+                                    accept=".pdf,.doc,.docx"
+                                    onChange={(e) =>
+                                      handleFileUpload(e, doc.id)
+                                    }
+                                    className="hidden"
+                                  />
+                                  <span className="px-4 py-2 text-sm font-medium text-gray-800 bg-gray-200 rounded-lg cursor-pointer hover:bg-gray-300">
+                                    Change File
+                                  </span>
+                                </label>
+                              )}
+                            </>
+                          ) : (
+                            <input
                               type="file"
                               accept=".pdf,.doc,.docx"
                               onChange={(e) => handleFileUpload(e, doc.id)}
-                              className="hidden"
+                              className="file:mr-2 file:py-2 file:px-4 file:border-0 file:rounded-lg file:bg-blue-500 file:text-white file:cursor-pointer"
                             />
-                            <span className="px-4 py-2 text-sm font-medium text-gray-800 bg-gray-200 rounded-lg cursor-pointer hover:bg-gray-300">
-                              Change File
-                            </span>
-                          </label>
-                        </>
-                      ) : (
-                        <input
-                          type="file"
-                          accept=".pdf,.doc,.docx"
-                          onChange={(e) => handleFileUpload(e, doc.id)}
-                          className="file:mr-2 file:py-2 file:px-4 file:border-0 file:rounded-lg file:bg-blue-500 file:text-white file:cursor-pointer"
-                        />
-                      )}
-                    </div>
-                  </div>
-                ))}
+                          )}
+                        </div>
+                      </div>
+                    );
+                  }
+                })}
               </div>
 
               {/* Request Endorsement Button */}
@@ -358,7 +376,9 @@ const StudentJobApplicationPage = () => {
                   <Text>
                     <a>
                       {initial_application.endorsement.endorsement_file
-                        ? initial_application.endorsement.endorsement_file
+                        ? `${toFilePath(
+                            initial_application.endorsement.endorsement_file
+                          )}`
                         : "No endorsement yet"}
                     </a>
                   </Text>
@@ -374,7 +394,7 @@ const StudentJobApplicationPage = () => {
                     !stepOneDocuments.every((doc) => doc.status === "Approved")
                   }
                   className={`flex items-center justify-center px-6 py-3 rounded-lg font-semibold ${
-                    !stepOneDocuments.every((doc) => doc.status === "Complete")
+                    !stepOneDocuments.every((doc) => doc.status === "Approved")
                       ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                       : "bg-blue-500 text-white hover:bg-blue-600"
                   }`}
@@ -388,70 +408,78 @@ const StudentJobApplicationPage = () => {
 
           {currentStep === 2 && (
             <>
-              <h2 className="text-xl font-semibold">Requirements</h2>
-              <p>
-                Please ensure your endorsement letter is uploaded before
-                proceeding. You can also upload your cover letter and resume.
-              </p>
+              {/* Document List */}
+              <div className="space-y-4">
+                {stepTwoDocuments.map((doc) => {
+                  if (doc) {
+                    return (
+                      <div
+                        key={doc.id}
+                        className="flex items-center justify-between p-4 border rounded-lg bg-white shadow-sm"
+                      >
+                        {/* Document Name */}
+                        <div>
+                          <h3 className="text-lg font-medium text-gray-800">
+                            {doc.name}
+                          </h3>
+                          {/* Dynamically render status color */}
+                          <div
+                            className={`text-sm flex gap-1 items-center ${getStatusColor(
+                              doc.status
+                            )}`}
+                          >
+                            <Text>Status:</Text>
+                            <Text
+                              className={`${getStatusBgColor(
+                                doc.status
+                              )} p-1 rounded-full`}
+                            >
+                              {doc.status}
+                            </Text>
+                          </div>
+                        </div>
 
-              {/* Endorsement Letter Section */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700">
-                  Endorsement Letter
-                </label>
-                {job?.endorsementLetter ? (
-                  <div className="flex items-center space-x-4 mt-2">
-                    <a
-                      href={job.endorsementLetter}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 underline hover:text-blue-800"
-                    >
-                      View Endorsement Letter
-                    </a>
-                    <span className="text-green-600 font-medium">Uploaded</span>
-                  </div>
-                ) : (
-                  <p className="text-red-600 font-medium">
-                    Not yet uploaded by the coordinator.
-                  </p>
-                )}
-              </div>
-
-              {/* Cover Letter Upload */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700">
-                  Upload Cover Letter
-                </label>
-                <input
-                  type="file"
-                  accept=".pdf,.doc,.docx"
-                  onChange={(e) => handleFileUpload(e, "coverLetter")}
-                  className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                {uploadedFiles.coverLetter && (
-                  <p className="text-green-600 font-medium mt-2">
-                    Cover letter uploaded: {uploadedFiles.coverLetter.name}
-                  </p>
-                )}
-              </div>
-
-              {/* Resume Upload */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700">
-                  Upload Resume
-                </label>
-                <input
-                  type="file"
-                  accept=".pdf,.doc,.docx"
-                  onChange={(e) => handleFileUpload(e, "resume")}
-                  className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                {uploadedFiles.resume && (
-                  <p className="text-green-600 font-medium mt-2">
-                    Resume uploaded: {uploadedFiles.resume.name}
-                  </p>
-                )}
+                        {/* Upload or View */}
+                        <div className="flex items-center space-x-4">
+                          {doc.file_path ? (
+                            <>
+                              <a
+                                href={toFilePath(doc.file_path)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+                              >
+                                View File
+                              </a>
+                              {doc.can_change && (
+                                <label className="flex items-center space-x-2">
+                                  <Input
+                                    type="file"
+                                    accept=".pdf,.doc,.docx"
+                                    onChange={(e) =>
+                                      handleFileUpload(e, doc.id)
+                                    }
+                                    className="hidden"
+                                  />
+                                  <span className="px-4 py-2 text-sm font-medium text-gray-800 bg-gray-200 rounded-lg cursor-pointer hover:bg-gray-300">
+                                    Change File
+                                  </span>
+                                </label>
+                              )}
+                            </>
+                          ) : (
+                            <input
+                              type="file"
+                              accept=".pdf,.doc,.docx"
+                              onChange={(e) => handleFileUpload(e, doc.id)}
+                              className="file:mr-2 file:py-2 file:px-4 file:border-0 file:rounded-lg file:bg-blue-500 file:text-white file:cursor-pointer"
+                            />
+                          )}
+                        </div>
+                      </div>
+                    );
+                  }
+                })}
               </div>
 
               {/* Buttons */}
@@ -467,9 +495,11 @@ const StudentJobApplicationPage = () => {
                 {/* Next Button */}
                 <Button
                   onClick={handleNextStep}
-                  disabled={!uploadedFiles.coverLetter || !uploadedFiles.resume}
-                  className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold ${
-                    !uploadedFiles.coverLetter || !uploadedFiles.resume
+                  disabled={
+                    !stepTwoDocuments.every((doc) => doc.status === "Approved")
+                  }
+                  className={`flex items-center justify-center px-6 py-3 rounded-lg font-semibold ${
+                    !stepTwoDocuments.every((doc) => doc.status === "Approved")
                       ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                       : "bg-blue-500 text-white hover:bg-blue-600"
                   }`}

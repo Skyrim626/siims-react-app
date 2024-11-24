@@ -1,5 +1,5 @@
 import React from "react";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
 import Page from "../../components/common/Page";
 import Section from "../../components/common/Section";
 import Heading from "../../components/common/Heading";
@@ -9,6 +9,16 @@ import Table from "../../components/tables/Table";
 const OsaManageApplicantsPage = () => {
   // Fetch applicants
   const applicants = useLoaderData();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // View application
+  const viewApplication = (id) => {
+    // console.log(id);
+    // console.log(location.pathname);
+
+    navigate(`${location.pathname}/applications/${id}`);
+  };
 
   return (
     <>
@@ -22,7 +32,7 @@ const OsaManageApplicantsPage = () => {
         </Section>
 
         {/* Table */}
-        <Table data={applicants} />
+        <Table data={applicants} handleView={viewApplication} />
       </Page>
     </>
   );

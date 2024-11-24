@@ -32,20 +32,19 @@ const AdminUserRolesTableBody = ({
               {/* <Link to={`${location.pathname}/${data.id}`}>{data.id}</Link> */}
               {data.id}
             </td>
-            {visibleColumns.map((column) => (
-              <td key={column} className="py-2 px-4 border-b text-blue-700">
-                {column === "roles"
-                  ? data[column]["name"].map((role) => {
-                      return (
-                        <p key={role}>
-                          {" "}
-                          {role.charAt(0).toUpperCase() + role.slice(1)}
-                        </p>
-                      );
-                    })
-                  : data[column]}
-              </td>
-            ))}
+            {visibleColumns.map((column) => {
+              console.log(data[column]);
+
+              return (
+                <td key={column} className="py-2 px-4 border-b text-blue-700">
+                  {column === "roles"
+                    ? data[column].map((role, index) => {
+                        return <p key={index}>{role.name}</p>;
+                      })
+                    : data[column]}
+                </td>
+              );
+            })}
 
             {(handleEdit || handleDelete || handleView) && (
               <td className="py-2 px-4 border-b">

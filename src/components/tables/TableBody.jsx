@@ -2,12 +2,16 @@ import { Button } from "@headlessui/react";
 import React from "react";
 import { FaArchive, FaEdit, FaEye } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
+import toFilePath from "../../utils/baseURL";
+import Text from "../common/Text";
+import { getStatusBgColor, getStatusColor } from "../../utils/statusColor";
 
 const TableBody = ({
   paginatedData,
   selectedIds,
   handleCheckboxChange,
   visibleColumns,
+  includeCheckboxes,
   handleView,
   handleEdit,
   handleDelete,
@@ -17,20 +21,25 @@ const TableBody = ({
 
   // console.log(paginatedData);
 
+  // console.log(paginatedData);
+
   return (
     <>
       <tbody>
         {paginatedData.map((data, index) => (
           <tr key={data.id} className={index % 2 === 0 ? "bg-gray-100" : ""}>
             <td className="py-2 px-4 border-b">{index + 1}</td>
-            <td className="py-2 px-4 border-b">
-              <input
-                type="checkbox"
-                checked={selectedIds.has(data.id)}
-                onChange={() => handleCheckboxChange(data.id)}
-                className="form-checkbox"
-              />
-            </td>
+            {includeCheckboxes && (
+              <td className="py-2 px-4 border-b">
+                <input
+                  type="checkbox"
+                  checked={selectedIds.has(data.id)}
+                  onChange={() => handleCheckboxChange(data.id)}
+                  className="form-checkbox"
+                />
+              </td>
+            )}
+
             <td className="py-2 px-4 border-b text-blue-600 font-bold">
               {handleView ? (
                 <Button
@@ -45,17 +54,63 @@ const TableBody = ({
             </td>
             {visibleColumns.map((column) => {
               // console.log(column);
-
+              // console.log(data[column]);
+              // console.log(column);
               if (column === "roles") {
+                // console.log(column);
+                // console.log(data[column]);
+
                 return (
                   <td
                     key={column}
                     className="py-2 px-4 border-b text-blue-700 font-bold"
                   >
-                    {data[column]
-                      .map((role) => role.name) // Extract the "name" of each role
-                      .join(", ")}{" "}
+                    {data[column].map((role, index) => {
+                      // console.log(role.name);
+
+                      return <p key={index}>{role.name}</p>;
+                    })}
                     {/* Join the names with a comma */}
+                  </td>
+                );
+              } else if (column === "documents" && data[column]) {
+                return (
+                  <td
+                    key={column}
+                    className="py-2 px-4 border-b text-blue-700 font-bold flex flex-col gap-3"
+                  >
+                    {data[column]
+                      ? data[column].map((document, index) => {
+                          // console.log(document);
+
+                          if (document["file_path"]) {
+                            return (
+                              <Text key={index}>
+                                <a
+                                  href={`${toFilePath(document["file_path"])}`}
+                                  className="underline text-"
+                                  target="_blank"
+                                >
+                                  {document.file_type}
+                                </a>
+                                <br />
+                              </Text>
+                            );
+                          }
+                        })
+                      : ""}
+                  </td>
+                );
+              } else if (column === "status") {
+                return (
+                  <td key={column} className="py-2 px-4 border-b font-bold">
+                    <Button
+                      className={`${getStatusBgColor(
+                        data[column]
+                      )} p-2 rounded-full ${getStatusColor(data[column])}`}
+                    >
+                      {data[column]}
+                    </Button>
                   </td>
                 );
               } else {

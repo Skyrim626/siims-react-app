@@ -26,7 +26,7 @@ import SidebarLayout from "./SidebarLayout";
 // Layout for Student Pages
 export default function StudentLayout() {
   // Fetch auth student
-  const auth = useLoaderData();
+  const { auth } = useLoaderData();
 
   // console.log(auth);
 
@@ -75,7 +75,11 @@ export default function StudentLayout() {
       exact: false,
       hidden: () => {
         // Hides this briefcase if the student is now at status_id 9 or status_id 10
-        return auth["status_id"] === 9 || auth["status_id"] === 10;
+        return (
+          auth["status_id"] === 9 ||
+          auth["status_id"] === 12 ||
+          auth["status_id"] === 10
+        );
       },
     },
     {
@@ -86,7 +90,6 @@ export default function StudentLayout() {
       ariaLabel: "Message",
       alert: true,
       exact: false,
-      
     },
     {
       icon: <FileText size={20} />,
@@ -98,7 +101,7 @@ export default function StudentLayout() {
       exact: false,
       hidden: () => {
         // Shows the My Reports if the student is now at status_id 10
-        return auth["status_id"] !== 10;
+        return auth["status_id"] !== 12;
       },
     },
   ];

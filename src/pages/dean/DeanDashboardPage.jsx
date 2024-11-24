@@ -4,25 +4,11 @@ import Section from "../../components/common/Section";
 import Heading from "../../components/common/Heading";
 import Text from "../../components/common/Text";
 import { getRequest } from "../../api/apiHelpers";
+import { useLoaderData } from "react-router-dom";
 
 const DeanDashboardPage = () => {
-  const [dashboard, setDashboard] = useState([]);
-
-  // Get Dashboard Info
-  useEffect(() => {
-    const fetchDashboard = async () => {
-      const response = await getRequest({
-        url: "/api/v1/dean/dashboard",
-      });
-
-      console.log(response);
-      // Set
-      setDashboard(response);
-    };
-
-    // Call
-    fetchDashboard();
-  }, []);
+  // Fetch Data
+  const { dashboard } = useLoaderData();
 
   return (
     <>

@@ -1,5 +1,5 @@
 import React from "react";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
 import Page from "../../components/common/Page";
 import Section from "../../components/common/Section";
 import Heading from "../../components/common/Heading";
@@ -9,8 +9,20 @@ import Table from "../../components/tables/Table";
 const SupervisorManageApplicants = () => {
   // Fetch applicants
   const applicants = useLoaderData();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   // console.log(applicants);
+
+  // console.log(applicants);
+
+  // View Applicant
+  const viewApplicant = (id) => {
+    console.log(id);
+
+    // Navigate
+    navigate(`${location.pathname}/${id}`);
+  };
 
   return (
     <>
@@ -24,7 +36,7 @@ const SupervisorManageApplicants = () => {
         </Section>
 
         {/* Table */}
-        <Table data={applicants} />
+        <Table data={applicants} handleView={viewApplicant} />
       </Page>
     </>
   );

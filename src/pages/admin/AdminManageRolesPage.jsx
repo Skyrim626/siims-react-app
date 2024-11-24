@@ -11,10 +11,13 @@ import FormModal from "../../components/modals/FormModal";
 import AdminRoleFormAdd from "./forms/AdminRoleFormAdd";
 import ManageHeader from "../../components/common/ManageHeader";
 import { useLoaderData } from "react-router-dom";
+import Table from "../../components/tables/Table";
 
 const AdminManageRolesPage = () => {
   // Retrieve the user_roles data from the loader
   const { initialRoles, userRoles } = useLoaderData();
+
+  // console.log(userRoles);
 
   // State for roles and form modal
   const [roles, setRoles] = useState(initialRoles);
@@ -97,11 +100,18 @@ const AdminManageRolesPage = () => {
         addPlaceholder="Add New Role"
         showAllButtons={selectedTab === 1}
       />
+
       {selectedTab === 0 ? (
         <AdminUserRolesTable searchPlaceholder="Search User" data={userRoles} />
       ) : (
-        <AdminRolesTable searchPlaceholder="Search Role" data={roles} />
+        <Table data={roles} includeCheckboxes={false} />
       )}
+
+      {/* {selectedTab === 0 ? (
+        <AdminUserRolesTable searchPlaceholder="Search User" data={userRoles} />
+      ) : (
+        <AdminRolesTable searchPlaceholder="Search Role" data={roles} />
+      )} */}
       <FormModal
         isOpen={isOpen}
         setIsOpen={setIsOpen}

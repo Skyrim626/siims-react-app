@@ -17,6 +17,7 @@ import CompanyRoutes from "./users/CompanyRoutes";
 import SupervisorRoutes from "./users/SupervisorRoutes";
 import OsaRoutes from "./users/OsaRoutes";
 import CoordinatorRoutes from "./users/CoordinatorRoutes";
+import axiosClient from "../api/axiosClient";
 
 // Router
 const router = createBrowserRouter([
@@ -28,6 +29,28 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Auth />,
+        loader: async () => {
+          try {
+            /**
+             * Response
+             */
+            const response = await axiosClient.get("/api/v1/user-roles");
+
+            /**
+             * Variables
+             */
+            const userRoles = response.data;
+
+            // console.log(userRoles);
+
+            /**
+             * Return Data
+             */
+            return userRoles;
+          } catch (error) {
+            console.log(error);
+          }
+        },
       },
       // path: admin
       AdminRoutes,

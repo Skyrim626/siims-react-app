@@ -13,11 +13,14 @@ import Section from "../common/Section";
 import TableBody from "./TableBody";
 import useCheckboxSelection from "../../hooks/useCheckboxSelection";
 import ArchiveButton from "./ArchiveButton";
+import DeployStudentButton from "./DeployStudentButton";
 
 const Table = ({
   data,
   searchPlaceholder = "Search something...",
   handleArchiveBySelectedIds,
+  handleDeployBySelectedIds,
+  includeCheckboxes = true,
   handleArchive,
   handleEdit,
   handleDelete,
@@ -31,6 +34,7 @@ const Table = ({
     { value: 500 },
   ],
 }) => {
+  // console.log(data);
   // Search hook
   const { term, filteredData, handleSearchChange } = useSearch(data, "");
 
@@ -77,6 +81,13 @@ const Table = ({
       {handleArchiveBySelectedIds && (
         <ArchiveButton
           onClick={() => handleArchiveBySelectedIds(selectedIds)}
+          disabled={selectedIds.size === 0}
+        />
+      )}
+      {handleDeployBySelectedIds && (
+        <DeployStudentButton
+          onClick={() => handleDeployBySelectedIds(selectedIds)}
+          disabled={selectedIds.size === 0}
         />
       )}
       <div className="flex justify-between items-center mb-4 mt-2">
@@ -121,6 +132,7 @@ const Table = ({
             handleEdit={handleEdit}
             handleDelete={handleDelete}
             handleView={handleView}
+            includeCheckboxes={includeCheckboxes}
           />
           <TableBody
             paginatedData={paginatedData}
@@ -131,6 +143,7 @@ const Table = ({
             handleEdit={handleEdit}
             handleDelete={handleDelete}
             handleView={handleView}
+            includeCheckboxes={includeCheckboxes}
           />
         </table>
       </div>
