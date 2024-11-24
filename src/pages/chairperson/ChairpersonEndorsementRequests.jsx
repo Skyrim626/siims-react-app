@@ -1,11 +1,9 @@
-import React from "react";
 
 // Import Components
-import Section from "../../components/atoms/Section";
-import Heading from "../../components/atoms/Heading";
-import Table from "../../components/organisms/Table";
+import Section from "../../components/common/Section";
+import Heading from "../../components/common/Heading";
 import DynamicTable from "../../components/organisms/DynamicTable";
-import Page from "../../components/atoms/Page";
+import Page from "../../components/common/Page";
 
 export default function ChairpersonEndorsementRequests() {
   return (
