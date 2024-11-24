@@ -34,6 +34,7 @@ const Table = ({
     { value: 500 },
   ],
 }) => {
+  // console.log(data);
   // Search hook
   const { term, filteredData, handleSearchChange } = useSearch(data, "");
 

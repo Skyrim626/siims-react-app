@@ -21,6 +21,8 @@ const TableBody = ({
 
   // console.log(paginatedData);
 
+  // console.log(paginatedData);
+
   return (
     <>
       <tbody>
@@ -53,16 +55,21 @@ const TableBody = ({
             {visibleColumns.map((column) => {
               // console.log(column);
               // console.log(data[column]);
-
+              // console.log(column);
               if (column === "roles") {
+                // console.log(column);
+                // console.log(data[column]);
+
                 return (
                   <td
                     key={column}
                     className="py-2 px-4 border-b text-blue-700 font-bold"
                   >
-                    {data[column]
-                      .map((role) => role.name) // Extract the "name" of each role
-                      .join(", ")}{" "}
+                    {data[column].map((role, index) => {
+                      // console.log(role.name);
+
+                      return <p key={index}>{role.name}</p>;
+                    })}
                     {/* Join the names with a comma */}
                   </td>
                 );

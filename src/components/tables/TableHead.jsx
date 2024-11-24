@@ -30,19 +30,21 @@ const TableHead = ({
         )}
 
         <th className="py-2 px-4 border-b bg-gray-800 text-white">ID</th>
-        {visibleColumns.map((column) => (
-          <th
-            key={column}
-            className="py-2 px-4 border-b bg-gray-800 text-white whitespace-nowrap cursor-pointer"
-            onClick={() => sortData(column)}
-          >
-            {column
-              .replace(/_/g, " ") // Replace underscores with spaces
-              .charAt(0)
-              .toUpperCase() + column.slice(1).replace(/_/g, " ")}{" "}
-            {renderSortIcon(column)}
-          </th>
-        ))}
+        {visibleColumns.map((column) => {
+          return (
+            <th
+              key={column}
+              className="py-2 px-4 border-b bg-gray-800 text-white whitespace-nowrap cursor-pointer"
+              onClick={() => sortData(column)}
+            >
+              {column
+                .replace(/_/g, " ") // Replace underscores with spaces
+                .charAt(0)
+                .toUpperCase() + column.slice(1).replace(/_/g, " ")}{" "}
+              {renderSortIcon(column)}
+            </th>
+          );
+        })}
         {(handleEdit || handleDelete || handleView || handleArchive) && (
           <th className="py-2 px-4 border-b bg-gray-800 text-white">Actions</th>
         )}

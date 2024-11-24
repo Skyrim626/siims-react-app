@@ -32,7 +32,7 @@ export default function AdminDashboard() {
   // Load data for the dashboard (e.g., system statistics, user counts)
   const data = useLoaderData();
 
-  console.log(data);
+  // console.log(data);
 
   return (
     <Page>
