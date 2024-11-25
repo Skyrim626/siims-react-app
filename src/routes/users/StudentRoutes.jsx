@@ -18,6 +18,7 @@ import StudentReportsPage from "../../pages/student/StudentReportsPage";
 import StudentJobApplicationPage from "../../pages/student/StudentJobApplicationPage";
 import StudentEditProfilePage from "../../pages/student/StudentEditProfilePage";
 import StudentMessagingPage from "../../pages/student/StudentMessagingPage";
+import StudentWeeklyAccomplishmentPage from "../../pages/student/StudentWeeklyAccomplishmentPage";
 
 // Routes for Student
 const StudentRoutes = {
@@ -216,6 +217,10 @@ const StudentRoutes = {
     {
       path: "view-evaluations",
       element: <StudentViewEvaluationPage />,
+    },
+    {
+      path: "my-weekly",
+      element: <StudentWeeklyAccomplishmentPage />,
     },
   ],
 };
