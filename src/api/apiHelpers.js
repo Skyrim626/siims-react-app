@@ -41,10 +41,9 @@ export const loginRequest = async ({url, params = {}}) => {
 }
 
 // For Get Request
-export const getRequest = async ({ url, params = {} }) => {
+export const getRequest = async ({ url, data, params = {} }) => {
   try {
-    const res = await axiosClient.get(url, { params });
-
+    const res = await axiosClient.get(url, {params: {...params, ...data}});
     return res.data;
     
   } catch (err) {

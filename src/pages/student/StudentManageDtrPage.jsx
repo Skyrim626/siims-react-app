@@ -2,8 +2,29 @@ import React, { useState } from "react";
 import { jsPDF } from "jspdf";
 import Text from "../../components/common/Text";
 import "jspdf-autotable"; // Make sure this is imported for autoTable support
+import {
+  useLoaderData,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
+import { deleteRequest, postRequest, putRequest } from "../../api/apiHelpers";
 
 const StudentManageDtrPage = () => {
+  // Fetch Data
+  const { applicationId } = useParams();
+  // console.log(applicationId);
+  const { status, dtrEntries } = useLoaderData();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Check if the student is applicable to access this page
+  if (![4, 12].includes(status)) {
+    navigate("/auth/my", {
+      replace: true,
+    });
+  }
+
   // Daily Time Record State
   const [editRecord, setEditRecord] = useState({
     id: null,
@@ -24,7 +45,7 @@ const StudentManageDtrPage = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   // Sample state for daily time records
-  const [dailyRecords, setDailyRecords] = useState([
+  /* const [dailyRecords, setDailyRecords] = useState([
     {
       id: 1,
       date: "2024-11-20",
@@ -41,7 +62,8 @@ const StudentManageDtrPage = () => {
       hours_received: 8,
       status: "Pending", // Example status
     },
-  ]);
+  ]); */
+  const [dailyRecords, setDailyRecords] = useState(dtrEntries);
 
   // Function to map status to color
   const getStatusColor = (status) => {
@@ -73,7 +95,7 @@ const StudentManageDtrPage = () => {
       "Time In",
       "Time Out",
       "Hours Received",
-      "Status",
+      // "Status",
     ];
     doc.autoTable({
       startY: 30,
@@ -85,7 +107,7 @@ const StudentManageDtrPage = () => {
         record.time_out,
         record.hours_received,
         // Adding the Status with background color
-        {
+        /* {
           content: record.status,
           styles: {
             cellWidth: "auto", // Allow width to be dynamic based on content
@@ -100,12 +122,31 @@ const StudentManageDtrPage = () => {
             // Creating rounded corners for the status background
             borderRadius: 15,
           },
-        },
+        }, */
       ]),
     });
 
     // Save the PDF
     doc.save("daily_time_record.pdf");
+  };
+
+  // Open the delete modal and set the selected record for deleting
+  const handleDeleteRecord = async (record) => {
+    // console.log(record);
+
+    try {
+      // DELTE
+      const response = await deleteRequest({
+        url: `/api/v1/daily-time-records/${applicationId}/${record.id}`,
+      });
+
+      // Check response
+      if (response) {
+        setDailyRecords(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   // Open the edit modal and set the selected record for editing
@@ -115,12 +156,26 @@ const StudentManageDtrPage = () => {
   };
 
   // Update the record in the state
-  const handleUpdateRecord = () => {
-    setDailyRecords((prevRecords) =>
-      prevRecords.map((record) =>
-        record.id === editRecord.id ? editRecord : record
-      )
-    );
+  const handleUpdateRecord = async () => {
+    // console.log(editRecord);
+
+    try {
+      // Ready payload
+      const payload = editRecord;
+
+      // PUT
+      const response = await putRequest({
+        url: `/api/v1/daily-time-records/${applicationId}/${editRecord.id}`,
+        data: payload,
+      });
+
+      // Check response
+      if (response) {
+        setDailyRecords(response.data);
+      }
+    } catch (errors) {
+      console.log(errors);
+    }
     setIsEditModalOpen(false);
   };
 
@@ -137,9 +192,35 @@ const StudentManageDtrPage = () => {
   };
 
   // Submit new record
-  const handleAddNewRecord = (e) => {
+  const handleAddNewRecord = async (e) => {
     e.preventDefault();
-    const newId = dailyRecords.length + 1;
+    try {
+      // Ready Payload
+      const payload = newRecord;
+
+      // POST
+      const response = await postRequest({
+        url: `/api/v1/daily-time-records/${applicationId}`,
+        data: payload,
+      });
+
+      // Check if response
+      if (response) {
+        setDailyRecords(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    // console.log(newRecord);
+    setNewRecord({
+      date: "",
+      time_in: "",
+      time_out: "",
+      hours_received: "",
+    });
+
+    /* const newId = dailyRecords.length + 1;
     setDailyRecords([
       ...dailyRecords,
       {
@@ -147,13 +228,17 @@ const StudentManageDtrPage = () => {
         id: newId,
         hours_received: parseInt(newRecord.hours_received),
       },
-    ]);
-    setNewRecord({
-      date: "",
-      time_in: "",
-      time_out: "",
-      hours_received: "",
-    });
+    ]); */
+  };
+
+  // Submit PDF to Backend
+  const submitPDF = async () => {
+    const pdf = generatePDF();
+    const pdfBlob = pdf.output("blob"); // Create a Blob from the PDF
+
+    // Prepare the form data
+    const formData = new FormData();
+    formData.append("file", pdfBlob, "daily_time_record.pdf");
   };
 
   return (
@@ -232,7 +317,7 @@ const StudentManageDtrPage = () => {
             <th className="px-4 py-2 text-left">Time In</th>
             <th className="px-4 py-2 text-left">Time Out</th>
             <th className="px-4 py-2 text-left">Hours Received</th>
-            <th className="px-4 py-2 text-left">Status</th>{" "}
+            {/*  <th className="px-4 py-2 text-left">Status</th>{" "} */}
             {/* New Status column */}
             <th className="px-4 py-2 text-left">Actions</th>
           </tr>
@@ -244,18 +329,24 @@ const StudentManageDtrPage = () => {
               <td className="px-4 py-2">{record.time_in}</td>
               <td className="px-4 py-2">{record.time_out}</td>
               <td className="px-4 py-2">{record.hours_received}</td>
-              <td className="px-4 py-2 text-center">
+              {/* <td className="px-4 py-2 text-center">
                 <Text className="bg-green-500 p-2 rounded-full">
                   {record.status}
                 </Text>
-              </td>
+              </td> */}
 
-              <td className="px-4 py-2">
+              <td className="px-4 py-2 space-x-2">
                 <button
                   onClick={() => handleEditRecord(record)}
                   className="px-3 py-1 bg-blue-500 text-white rounded"
                 >
                   Edit
+                </button>
+                <button
+                  onClick={() => handleDeleteRecord(record)}
+                  className="px-3 py-1 bg-red-500 text-white rounded"
+                >
+                  Delete
                 </button>
               </td>
             </tr>

@@ -115,9 +115,13 @@ const AdminRoutes = {
         }
       },
     },
-    {
+    /* {
       path: "messaging",
       element: <AdminMessagingPage />,
+    }, */
+    {
+      path: "messaging",
+      element: <ChatLayout />,
     },
 
     {

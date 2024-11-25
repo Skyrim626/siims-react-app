@@ -1,3 +1,4 @@
+import { Button, Input } from "@headlessui/react";
 import { useState } from "react";
 import {
   FaPlus,
@@ -6,12 +7,17 @@ import {
   FaPaperclip,
   FaSmile,
   FaArrowRight,
+  FaUser,
 } from "react-icons/fa";
+import { getRequest } from "../../api/apiHelpers";
+import SearchUser from "../../components/messaging/SearchUser";
+import UserListItem from "../../components/messaging/UserListItem";
 
 const AdminMessagingPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [groupName, setGroupName] = useState("");
   const [selectedPeople, setSelectedPeople] = useState([]); // Array to hold selected people
+  const [searchInput, setSearchInput] = useState("");
   const [groups, setGroups] = useState([
     {
       name: "CP Department",
@@ -126,6 +132,33 @@ const AdminMessagingPage = () => {
     }
   };
 
+  const [searchedUsers, setSearchedUsers] = useState({ users: [], groups: [] });
+
+  const searchUser = async () => {
+    // console.log(searchInput); // This will print the current value of searchInput
+
+    // Ready payload
+    const payload = {
+      search: searchInput,
+    };
+
+    try {
+      // console.log(payload);
+
+      const response = await getRequest({
+        url: "/api/v1/messaging/search",
+        data: payload,
+      });
+
+      if (response) {
+        // console.log(response);
+        setSearchedUsers(response);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="flex h-screen font-sans">
       {/* Sidebar */}
@@ -133,22 +166,16 @@ const AdminMessagingPage = () => {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-bold">Messages</h2>
         </div>
-        <div className="relative w-full flex items-center mb-4">
-          <FaSearch className="absolute left-2 text-gray-500" />
-          <input
-            type="text"
-            placeholder="Search"
-            className="w-full pl-8 py-2 border border-black rounded-lg focus:outline-none"
-          />
-        </div>
+        {/* Search User */}
+        <SearchUser searchUser={searchUser} setSearchInput={setSearchInput} />
 
         {/* Add Groups Button */}
-        <button
+        <Button
           onClick={() => setIsModalOpen(true)}
           className="w-full bg-blue-500 text-white py-2 rounded-lg flex items-center justify-center mt-4"
         >
           <FaPlus className="mr-2" /> Add Groups
-        </button>
+        </Button>
 
         {/* Add Group Modal */}
         {isModalOpen && (
@@ -157,7 +184,7 @@ const AdminMessagingPage = () => {
               <h2 className="text-xl font-bold mb-4">New Group</h2>
 
               {/* Group Name Input */}
-              <input
+              <Input
                 type="text"
                 value={groupName}
                 onChange={(e) => setGroupName(e.target.value)}
@@ -232,6 +259,20 @@ const AdminMessagingPage = () => {
 
         {/* Groups List */}
         <div className="mt-4 space-y-2 max-h-80 overflow-y-auto">
+          {/* Display Users */}
+          {searchedUsers.users && searchedUsers.users.length > 0 && (
+            <div>
+              {searchedUsers.users.map((user) => (
+                <UserListItem
+                  key={user.id}
+                  id={user.id}
+                  fullName={user.full_name}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Groups here */}
           {groups.map((group, index) => (
             <div
               key={index}

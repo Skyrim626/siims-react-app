@@ -268,6 +268,40 @@ const StudentRoutes = {
     {
       path: ":applicationId/daily-time-records",
       element: <StudentManageDtrPage />,
+      loader: async ({ params }) => {
+        try {
+          /**
+           * Params
+           */
+          const { applicationId } = params;
+
+          /**
+           * Responses
+           */
+
+          const statusResponse = await axiosClient.get(
+            "/api/v1/users/students/get-student-status-id"
+          );
+          const dtrResponse = await axiosClient.get(
+            `/api/v1/daily-time-records/${applicationId}`
+          );
+
+          /**
+           * Variables
+           */
+          const status = statusResponse.data;
+          const dtrEntries = dtrResponse.data;
+
+          // console.log(dtrEntries);
+
+          return {
+            status,
+            dtrEntries,
+          };
+        } catch (error) {
+          console.log(error);
+        }
+      },
     },
     {
       path: "view-evaluations",
