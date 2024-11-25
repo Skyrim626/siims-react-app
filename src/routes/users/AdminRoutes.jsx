@@ -26,6 +26,9 @@ import AdminManageProgramsPage from "../../pages/admin/AdminManageProgramsPage";
 import AdminManageDocumentTypesPage from "../../pages/admin/AdminManageDocumentTypesPage";
 import AdminManageCompanyOfficesPage from "../../pages/admin/manage-users/AdminManageCompanyOfficesPage";
 import AdminMessagingPage from "../../pages/admin/AdminMessagingPage";
+import ChatLayout from "../../components/layouts/ChatLayout";
+import AdminManageStudentsPage from "../../pages/admin/AdminManageStudentsPage";
+import AdminManageCoordinatorsPage from "../../pages/admin/AdminManageCoordinatorsPage";
 
 // Define routes for the Admin section
 const AdminRoutes = {
@@ -112,9 +115,13 @@ const AdminRoutes = {
         }
       },
     },
-    {
+    /* {
       path: "messaging",
       element: <AdminMessagingPage />,
+    }, */
+    {
+      path: "messaging",
+      element: <ChatLayout />,
     },
 
     {
@@ -243,7 +250,7 @@ const AdminRoutes = {
           element: <AdminManageUsersPage />, // Render the users management page
           loader: async () => {
             try {
-              const response = await axiosClient.get("/api/v1/admin/users");
+              const response = await axiosClient.get("/api/v1/users");
               const programsResponse = await axiosClient.get(
                 "/api/v1/programs"
               );
@@ -264,12 +271,134 @@ const AdminRoutes = {
           },
         },
         {
+          path: "coordinators",
+          element: <AdminManageCoordinatorsPage />,
+          loader: async () => {
+            try {
+              /**
+               * Responses
+               */
+              const coordinatorResponse = await axiosClient.get(
+                "/api/v1/users/coordinators"
+              );
+              const programResponse = await axiosClient.get("/api/v1/programs");
+
+              /**
+               * Variables
+               */
+              const initial_coordinators = coordinatorResponse.data;
+              const programs = programResponse.data;
+
+              /**
+               * Return
+               */
+              return {
+                initial_coordinators,
+                programs,
+              };
+            } catch (error) {
+              console.log(error);
+            }
+          },
+        },
+        {
           path: "chairpersons", // Route for managing chairpersons
           element: <AdminManageChairpersonsPage />,
+          loader: async () => {
+            try {
+              /**
+               * Responses
+               */
+              const chairpersonResponse = await axiosClient.get(
+                "/api/v1/users/chairpersons"
+              );
+              const programResponse = await axiosClient.get("/api/v1/programs");
+
+              /**
+               * Variables
+               */
+              const chairpersons = chairpersonResponse.data;
+              const programs = programResponse.data;
+
+              /**
+               * Return
+               */
+              return {
+                chairpersons,
+                programs,
+              };
+            } catch (error) {
+              console.log(error);
+              throw error;
+            }
+          },
         },
         {
           path: "deans", // Route for managing deans
           element: <AdminManageDeansPage />,
+          loader: async () => {
+            try {
+              /**
+               * Responses
+               */
+              const deanResponse = await axiosClient.get(
+                "/api/v1/users/deans/including-colleges"
+              );
+              const collegeResponse = await axiosClient.get("/api/v1/colleges");
+
+              /**
+               * Variables
+               */
+              const initial_deans = deanResponse.data;
+              const colleges = collegeResponse.data;
+
+              /**
+               * Return
+               */
+              return {
+                initial_deans,
+                colleges,
+              };
+            } catch (error) {
+              console.log(error);
+            }
+          },
+        },
+        {
+          path: "students",
+          element: <AdminManageStudentsPage />,
+          loader: async () => {
+            try {
+              /**
+               * Responses
+               */
+              const studentResponse = await axiosClient.get(
+                "api/v1/users/students/get-all-students"
+              );
+              const collegeResponse = await axiosClient.get("/api/v1/colleges");
+              const programResponse = await axiosClient.get("/api/v1/programs");
+
+              /**
+               * Variables
+               */
+              const initial_students = studentResponse.data;
+              const colleges = collegeResponse.data;
+              const programs = programResponse.data;
+
+              // console.log(initial_students);
+              /**
+               * Return
+               */
+              return {
+                initial_students,
+                colleges,
+                programs,
+              };
+            } catch (error) {
+              console.log(error);
+              throw error;
+            }
+          },
         },
         /*  {
           path: "students", // Base path for student management

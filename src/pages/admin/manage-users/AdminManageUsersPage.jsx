@@ -12,7 +12,6 @@ import ConfirmationModal from "../../../components/common/ConfirmationModal";
 // AdminManageUsersPage component handles the management of users in the admin dashboard.
 const AdminManageUsersPage = () => {
   const { users, programs, colleges } = useLoaderData();
-  // console.log(colleges);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -29,16 +28,19 @@ const AdminManageUsersPage = () => {
     console.log(testing);
   };
 
-  // Function to handle the archiving of a single user by their ID
-  const handleArchive = async (id) => {
-    // Perform DELETE request to archive the user
+  // Soft Deletes a User
+  const softDeleteUser = async (id) => {
     const response = await deleteRequest({
-      url: `/api/v1/admin/users/archive/${id}`, // API endpoint for archiving a user
-      method: "delete", // Specify the request method
+      url: `/api/v1/users/${id}/soft-delete`,
+      method: "delete",
     });
 
-    // Update the users state with the response data
-    setUsers(response.data); // Updating the state with the response data after archiving
+    setUsers(response.data);
+
+    // Check response
+    if (response) {
+      navigate(location.pathname, { replace: true });
+    }
   };
 
   // Function to handle the archiving of multiple users based on selected IDs
@@ -59,12 +61,6 @@ const AdminManageUsersPage = () => {
     }
   };
 
-  // Open confirmation modal for archive
-  const confirmArchive = (id) => {
-    setSelectedUserId(id);
-    setIsConfirmOpen(true);
-  };
-
   // Handle confirmation modal actions
   const handleConfirm = () => {
     if (selectedUserId) {
@@ -81,18 +77,18 @@ const AdminManageUsersPage = () => {
 
   return (
     <Section>
-      <ManageHeader
+      {/* <ManageHeader
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         addPlaceholder="Add New User"
         showExportButton={false}
         showImportButton={false}
-      />
+      /> */}
       <Table
         data={users}
-        IDsIsLink={false}
+        // IDsIsLink={false}
         handleArchiveBySelectedIds={handleArchiveBySelectedIds}
-        handleArchive={confirmArchive} // Open confirmation modal instead of directly archiving
+        handleArchive={softDeleteUser}
         term={term}
         filteredData={filteredData}
         handleSearchChange={handleSearchChange}

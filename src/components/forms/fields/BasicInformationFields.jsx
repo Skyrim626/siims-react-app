@@ -21,10 +21,10 @@ const BasicInformationFields = ({
 
   // Required Fields
   requiredFields = {
-    firstName: true,
+    firstName: false,
     middleName: false,
     lastName: false,
-    email: true,
+    email: false,
     phoneNumber: false,
   },
 

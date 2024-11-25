@@ -11,6 +11,8 @@ const ManageHeader = ({
   showImportButton = true,
   showAddButton = true,
   showAllButtons = true,
+  isImportOpen = false,
+  setIsImportOpen = () => {},
 }) => {
   return (
     <div className="flex justify-end items-center">
@@ -24,7 +26,12 @@ const ManageHeader = ({
               </Button>
             )}
             {showImportButton && (
-              <Button className="transition text-sm px-3 py-1 font-bold flex items-center justify-center gap-2 border-2 rounded-lg border-blue-950 hover:bg-blue-950 hover:text-white">
+              <Button
+                onClick={() => {
+                  setIsImportOpen(!isImportOpen);
+                }}
+                className="transition text-sm px-3 py-1 font-bold flex items-center justify-center gap-2 border-2 rounded-lg border-blue-950 hover:bg-blue-950 hover:text-white"
+              >
                 <FileDown size={15} />
                 <Text>Import</Text>
               </Button>

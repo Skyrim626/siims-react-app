@@ -1,5 +1,7 @@
+import React, { useState } from "react";
+import UserListItem from "../messaging/UserListItem";
 import { Button, Input } from "@headlessui/react";
-import { useState } from "react";
+import SearchUser from "../messaging/SearchUser";
 import {
   FaPlus,
   FaSearch,
@@ -9,15 +11,29 @@ import {
   FaArrowRight,
   FaUser,
 } from "react-icons/fa";
-import { getRequest } from "../../api/apiHelpers";
-import SearchUser from "../../components/messaging/SearchUser";
-import UserListItem from "../../components/messaging/UserListItem";
+import { getRequest, postRequest } from "../../api/apiHelpers";
+import MemberList from "../messaging/MemberList";
 
-const AdminMessagingPage = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+const ChatLayout = ({ children }) => {
+  // Input State for Group
   const [groupName, setGroupName] = useState("");
-  const [selectedPeople, setSelectedPeople] = useState([]); // Array to hold selected people
+
+  /**
+   * Search State
+   */
+  // This search state is for the sidebar
   const [searchInput, setSearchInput] = useState("");
+  // This search is for allowing member in the group
+  const [searchMembers, setSearchMembers] = useState("");
+  // This search is for allowing users in the group
+  const [searchedUsers, setSearchedUsers] = useState({ users: [], groups: [] });
+
+  // Containers for search query
+  const [members, setMembers] = useState([]);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPeople, setSelectedPeople] = useState([]); // Array to hold selected people
+
   const [groups, setGroups] = useState([
     {
       name: "CP Department",
@@ -111,19 +127,34 @@ const AdminMessagingPage = () => {
     });
   };
 
-  const handleAddGroup = () => {
+  /**
+   * Adds New Group
+   */
+  const addNewGroup = async () => {
     if (groupName.trim() && selectedPeople.length) {
-      const newGroup = {
-        name: groupName,
-        lastMessage: "New group created",
-        time: new Date().toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-        members: selectedPeople,
-      };
+      console.log(selectedPeople);
+      console.log(groupName);
 
-      setGroups([...groups, newGroup]);
+      try {
+        // Payload
+        const payload = {
+          members: selectedPeople,
+          name: groupName,
+        };
+
+        // POST
+        const response = await postRequest({
+          url: "/api/v1/messaging/groups",
+          data: payload,
+        });
+
+        if (response) {
+          console.log(response);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+      // POST
 
       // Reset modal fields and close modal
       setIsModalOpen(false);
@@ -132,11 +163,8 @@ const AdminMessagingPage = () => {
     }
   };
 
-  const [searchedUsers, setSearchedUsers] = useState({ users: [], groups: [] });
-
+  // Search User Or Group
   const searchUser = async () => {
-    // console.log(searchInput); // This will print the current value of searchInput
-
     // Ready payload
     const payload = {
       search: searchInput,
@@ -146,7 +174,7 @@ const AdminMessagingPage = () => {
       // console.log(payload);
 
       const response = await getRequest({
-        url: "/api/v1/messaging/search",
+        url: "/api/v1/messaging/search-users-and-groups",
         data: payload,
       });
 
@@ -159,6 +187,35 @@ const AdminMessagingPage = () => {
     }
   };
 
+  // Search Member
+  const handleSearchMember = async () => {
+    // console.log(searchMembers);
+
+    // Ready payload
+    const payload = {
+      search: searchMembers,
+    };
+
+    try {
+      const response = await getRequest({
+        url: "/api/v1/messaging/search-users",
+        data: payload,
+      });
+
+      if (response) {
+        // console.log(response);
+        setMembers(response);
+      }
+    } catch (errors) {
+      console.log(errors);
+    }
+  };
+
+  // Handle Search User in the Sidebar
+  const handleSearch = (e) => {
+    setSearchInput(e.target.value);
+  };
+
   return (
     <div className="flex h-screen font-sans">
       {/* Sidebar */}
@@ -167,7 +224,7 @@ const AdminMessagingPage = () => {
           <h2 className="text-2xl font-bold">Messages</h2>
         </div>
         {/* Search User */}
-        <SearchUser searchUser={searchUser} setSearchInput={setSearchInput} />
+        <SearchUser searchUser={searchUser} handleSearch={handleSearch} />
 
         {/* Add Groups Button */}
         <Button
@@ -180,42 +237,58 @@ const AdminMessagingPage = () => {
         {/* Add Group Modal */}
         {isModalOpen && (
           <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-            <div className="bg-white rounded-lg p-6 w-96 shadow-lg">
-              <h2 className="text-xl font-bold mb-4">New Group</h2>
+            <div className="bg-white rounded-lg p-6 w-[500px] shadow-lg">
+              <div className="space-y-5">
+                <div>
+                  <h2 className="text-xl font-bold mb-4">New Group</h2>
 
-              {/* Group Name Input */}
-              <Input
-                type="text"
-                value={groupName}
-                onChange={(e) => setGroupName(e.target.value)}
-                placeholder="Group Name"
-                className="w-full p-2 mb-4 border rounded"
-              />
+                  {/* Group Name Input */}
+                  <Input
+                    type="text"
+                    value={groupName}
+                    onChange={(e) => setGroupName(e.target.value)}
+                    placeholder="Group Name"
+                    className="w-full p-2 mb-4 border rounded"
+                  />
+                </div>
 
-              {/* People List */}
-              <h3 className="text-md font-semibold mb-2">Add people</h3>
-              <div className="space-y-2">
-                {people.map((person) => (
-                  <div
-                    key={person.id}
-                    className="flex items-center cursor-pointer"
-                    onClick={() => togglePerson(person)}
-                  >
-                    <img
-                      src={person.avatar}
-                      alt={person.name}
-                      className="w-8 h-8 rounded-full mr-3"
+                <div>
+                  <div className="mb-3">
+                    <h2 className="text-md font-bold mb-4">Search Member</h2>
+                    <Input
+                      type="text"
+                      value={searchMembers}
+                      onChange={(e) => setSearchMembers(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && searchMembers !== "") {
+                          handleSearchMember(); // Cal the search function
+                        }
+                      }}
+                      placeholder="Search Member"
+                      className="w-full p-2 mb-4 border rounded"
                     />
-                    <span className="flex-1">{person.name}</span>
-                    {selectedPeople.includes(person) && (
-                      <span className="text-blue-500 font-bold">✓</span>
-                    )}
                   </div>
-                ))}
+                  {members && members.length > 0 && (
+                    <div>
+                      <h3 className="text-md font-semibold mb-2">Add people</h3>
+                      <div className="space-y-3">
+                        {members &&
+                          members.length > 0 &&
+                          members.map((member) => (
+                            <MemberList
+                              key={member.id}
+                              member={member}
+                              togglePerson={togglePerson}
+                            />
+                          ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Show selected profiles */}
-              {selectedPeople.length > 0 && (
+              {/* {selectedPeople.length > 0 && (
                 <div className="mt-4 border-t pt-4">
                   <h4 className="text-lg font-semibold mb-2">
                     Selected People
@@ -236,22 +309,26 @@ const AdminMessagingPage = () => {
                     </div>
                   ))}
                 </div>
-              )}
+              )} */}
 
               {/* Modal Buttons */}
               <div className="flex justify-end mt-6">
-                <button
-                  onClick={() => setIsModalOpen(false)}
+                <Button
+                  onClick={() => {
+                    setIsModalOpen(false);
+                    setSearchMembers("");
+                    setMembers([]);
+                  }}
                   className="px-4 py-2 bg-gray-300 rounded mr-2"
                 >
                   Cancel
-                </button>
-                <button
-                  onClick={handleAddGroup}
+                </Button>
+                <Button
+                  onClick={addNewGroup}
                   className="px-4 py-2 bg-blue-500 text-white rounded"
                 >
                   Create
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -273,7 +350,7 @@ const AdminMessagingPage = () => {
           )}
 
           {/* Groups here */}
-          {groups.map((group, index) => (
+          {/* {groups.map((group, index) => (
             <div
               key={index}
               className="p-4 bg-white shadow-sm rounded-lg cursor-pointer hover:bg-gray-800 hover:text-white flex flex-col"
@@ -293,64 +370,12 @@ const AdminMessagingPage = () => {
                 Members: {group.members.map((m) => m.name).join(", ")}
               </div>
             </div>
-          ))}
+          ))} */}
         </div>
       </div>
-
-      {/* Chat Window */}
-      <div className="flex-1 h-auto flex flex-col ">
-        {/* Chat Header */}
-        <div className="p-5 border-b bg-gray-100">
-          <h3 className="text-lg font-bold">{currentChat}</h3>
-        </div>
-
-        {/* Chat Messages */}
-        <div className="flex-1 p-5 h-full overflow-y-auto space-y-4">
-          <div className="text-center text-sm text-gray-500 border-b pb-2 mb-4">
-            Thursday, June 13
-          </div>
-
-          {messages.map((msg, index) => (
-            <div
-              key={index}
-              className={`flex ${
-                msg.isOwnMessage ? "justify-end" : "justify-start"
-              } mb-4`}
-            >
-              <div
-                className={`flex items-center space-x-3 max-w-xs p-3 rounded-lg ${
-                  msg.isOwnMessage ? "bg-blue-500 text-white" : "bg-gray-200"
-                }`}
-              >
-                <span className="text-sm">{msg.text}</span>
-                <span className="text-xs text-gray-400">{msg.time}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Chat Input */}
-        <div className="p-5 border-t flex items-center">
-          <FaPaperclip className="mr-3 text-gray-500" />
-          <FaSmile className="mr-3 text-gray-500" />
-          <input
-            type="text"
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
-            placeholder="Type a message..."
-            className="flex-1 py-2 px-4 border border-black rounded-lg focus:outline-none"
-          />
-          <button
-            onClick={handleSendMessage}
-            className="ml-3 bg-blue-500 text-white py-2 px-4 rounded-lg"
-          >
-            <FaArrowRight />
-          </button>
-        </div>
-      </div>
+      <div>{children}</div>
     </div>
   );
 };
 
-export default AdminMessagingPage;
+export default ChatLayout;

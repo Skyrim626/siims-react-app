@@ -4,6 +4,7 @@ import Page from "../../components/common/Page";
 import { getStatusBgColor, getStatusColor } from "../../utils/statusColor";
 import toFilePath from "../../utils/baseURL";
 import { putRequest } from "../../api/apiHelpers";
+import { Button } from "@headlessui/react";
 
 const OsaManageApplicantApplication = () => {
   // Fetch Data
@@ -13,6 +14,26 @@ const OsaManageApplicantApplication = () => {
 
   // State to manage documents
   const [documents, setDocuments] = useState(application.documents);
+
+  // Handle Approve Change
+  const handleApprove = async () => {
+    // console.log("Approve");
+
+    try {
+      // PUT METHOD
+      const response = await putRequest({
+        url: `/api/v1/applications/${application.id}/mark-all-step-2-documents-as-approve`,
+      });
+
+      // Check response
+      if (response) {
+        navigate(location.pathname);
+      }
+    } catch (errors) {
+      console.log(errors);
+      throw error;
+    }
+  };
 
   // Handle Status Change
   const handleStatusChange = async (docId, newStatusId) => {
@@ -76,6 +97,12 @@ const OsaManageApplicantApplication = () => {
             Manage applicant information and document status with ease.
           </p>
         </div>
+        <Button
+          onClick={() => handleApprove(application.id)}
+          className={`mb-6 bg-gradient-to-r from-green-600 to-green-400 text-white py-2 px-6 rounded-full text-lg font-bold hover:scale-105 transform transition-all`}
+        >
+          Approve All Documents
+        </Button>
         <div className="grid md:grid-cols-2 gap-8 mb-8">
           {/* Applicant Info Section */}
           <div className="bg-white rounded-lg shadow-lg p-6 space-y-4">

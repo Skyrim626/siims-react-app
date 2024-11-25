@@ -31,7 +31,7 @@ const AdminManageDocumentTypesPage = () => {
   const [selectedDocumentType, setSelectedDocumentType] = useState(null);
 
   // Delete a Document Type
-  const deleteDocumentType = async (id) => {
+  /* const deleteDocumentType = async (id) => {
     try {
       // console.log(id);
 
@@ -51,7 +51,7 @@ const AdminManageDocumentTypesPage = () => {
     } catch (error) {
       console.log(`Cannot delete a document type: `, error);
     }
-  };
+  }; */
 
   // Update a Document Type
   const updateDocumentType = async () => {
@@ -165,7 +165,7 @@ const AdminManageDocumentTypesPage = () => {
         <Table
           data={documentTypes}
           handleEdit={handleEdit}
-          handleArchive={deleteDocumentType}
+          // handleArchive={deleteDocumentType}
           includeCheckboxes={false}
         />
 

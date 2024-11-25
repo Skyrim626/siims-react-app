@@ -107,7 +107,7 @@ const TableBody = ({
                     <Button
                       className={`${getStatusBgColor(
                         data[column]
-                      )} p-2 rounded-full ${getStatusColor(data[column])}`}
+                      )} p-2 rounded-full ${getStatusColor(data[column])} w-40`}
                     >
                       {data[column]}
                     </Button>
