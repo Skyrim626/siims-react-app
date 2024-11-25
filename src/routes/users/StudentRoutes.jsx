@@ -18,11 +18,8 @@ import StudentReportsPage from "../../pages/student/StudentReportsPage";
 import StudentJobApplicationPage from "../../pages/student/StudentJobApplicationPage";
 import StudentEditProfilePage from "../../pages/student/StudentEditProfilePage";
 import StudentMessagingPage from "../../pages/student/StudentMessagingPage";
-<<<<<<< HEAD
 import StudentWeeklyAccomplishmentPage from "../../pages/student/StudentWeeklyAccomplishmentPage";
-=======
 import StudentViewWorkPost from "../../pages/student/StudentViewWorkPost";
->>>>>>> 74254991ccfe049636ead3207115d7b588c12d12
 
 // Routes for Student
 const StudentRoutes = {
