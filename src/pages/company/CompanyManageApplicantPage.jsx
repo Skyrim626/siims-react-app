@@ -5,7 +5,7 @@ import {
   useLocation,
   Link,
 } from "react-router-dom";
-import { Dialog, Input } from "@headlessui/react";
+import { Button, Dialog, Input } from "@headlessui/react";
 import Page from "../../components/common/Page";
 import { getStatusBgColor, getStatusColor } from "../../utils/statusColor";
 import { putRequest } from "../../api/apiHelpers";
@@ -14,6 +14,7 @@ import toFilePath from "../../utils/baseURL";
 const CompanyManageApplicantPage = () => {
   // Fetch data
   const { application, statuses } = useLoaderData();
+  // console.log(status);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -62,7 +63,7 @@ const CompanyManageApplicantPage = () => {
 
       // Find the updated document and log its remarks (optional)
       const updatedDoc = updatedDocuments.find((doc) => doc.id === docId);
-      console.log(updatedDoc);
+      // console.log(updatedDoc);
 
       try {
         // Ready for payload
@@ -81,7 +82,7 @@ const CompanyManageApplicantPage = () => {
           data: payload,
         });
 
-        console.log(response);
+        // console.log(response);
 
         if (response) {
           navigate(location.pathname);
@@ -89,6 +90,24 @@ const CompanyManageApplicantPage = () => {
       } catch (error) {
         console.log(error);
       }
+    }
+  };
+
+  // Handle Approve
+  const handleApprove = async (application_id) => {
+    // Approve Instantly
+    try {
+      // READY PUT METHOD
+      const response = await putRequest({
+        url: `api/v1/applications/${application_id}/mark-as-approve`,
+      });
+
+      if (response) {
+        // console.log(response);
+        navigate(location.pathname, { replace: true });
+      }
+    } catch (error) {
+      // console.log(error);
     }
   };
 
@@ -250,25 +269,37 @@ const CompanyManageApplicantPage = () => {
 
         {/* Action Section */}
         <div className="flex justify-center mt-8 space-x-4">
-          <button className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-2 px-6 rounded-full text-lg font-bold hover:scale-105 transform transition-all">
+          {/* <Button className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-2 px-6 rounded-full text-lg font-bold hover:scale-105 transform transition-all">
             Manage Documents
-          </button>
+          </Button> */}
 
           {/* Generate Acceptance Letter Button */}
-          <Link
+          {/* <Link
             to={`${location.pathname}/generate-acceptance`}
             className="bg-gradient-to-r from-green-500 to-teal-500 text-white py-2 px-6 rounded-full text-lg font-bold hover:scale-105 transform transition-all"
           >
             Generate Acceptance Letter
-          </Link>
+          </Link> */}
 
           {/* Upload Button */}
-          <button
+          <Button
             onClick={openModal}
             className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-2 px-6 rounded-full text-lg font-bold hover:scale-105 transform transition-all"
           >
             Upload Document
-          </button>
+          </Button>
+          {/* Approve Button */}
+          <Button
+            onClick={() => handleApprove(application.id)}
+            className={`bg-gradient-to-r ${
+              application.status === "Applying"
+                ? "from-green-600 to-green-400"
+                : "from-gray-600 to-gray-400 cursor-not-allowed"
+            } text-white py-2 px-6 rounded-full text-lg font-bold hover:scale-105 transform transition-all`}
+            disabled={application.status !== "Applying"}
+          >
+            Approve
+          </Button>
         </div>
       </div>
 
@@ -284,15 +315,15 @@ const CompanyManageApplicantPage = () => {
               </p>
             )}
             <div className="mt-6 flex justify-between">
-              <button
+              <Button
                 onClick={closeModal}
                 className="text-gray-600 hover:text-gray-900"
               >
                 Cancel
-              </button>
-              <button className="bg-blue-500 text-white px-6 py-2 rounded-full">
+              </Button>
+              <Button className="bg-blue-500 text-white px-6 py-2 rounded-full">
                 Upload
-              </button>
+              </Button>
             </div>
           </div>
         </div>

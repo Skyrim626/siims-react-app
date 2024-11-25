@@ -22,10 +22,15 @@ import toFilePath from "../../utils/baseURL";
 
 const StudentJobApplicationPage = () => {
   // Fetch loader data
-  const { initial_application, stepOneDocuments, stepTwoDocuments, job } =
-    useLoaderData();
+  const {
+    initial_application,
+    stepOneDocuments,
+    stepTwoDocuments,
+    job,
+    status,
+  } = useLoaderData();
   // console.log(stepOneDocuments);
-  // console.log(initial_application);
+  // console.log(status);
 
   // Modal State
   const [isOpen, setIsOpen] = useState(false);
@@ -160,14 +165,13 @@ const StudentJobApplicationPage = () => {
     }
   };
 
-  const handleSubmitApplication = () => {
+  const handleReturn = () => {
     // Simulate the application submission process
-    setIsSubmitted(true); // Set the submission state to true
-
+    // setIsSubmitted(true); // Set the submission state to true
     // Optionally, log success or show confirmation message in the console
-    console.log(
+    /* console.log(
       "Application submitted successfully. Please wait for approval."
-    );
+    ); */
   };
 
   const handleNextStep = () => {
@@ -362,11 +366,15 @@ const StudentJobApplicationPage = () => {
                 <Button
                   onClick={openEndorsementForm}
                   className={`px-6 py-2 rounded-lg text-white font-medium ${
-                    initial_application.endorsement
-                      ? "bg-gray-500"
+                    initial_application.endorsement ||
+                    [10, 11, 12].includes(status)
+                      ? "bg-gray-500 cursor-not-allowed"
                       : "bg-indigo-500 hover:bg-indigo-600"
                   }`}
-                  disabled={initial_application.endorsement}
+                  disabled={
+                    initial_application.endorsement ||
+                    [10, 11, 12].includes(status)
+                  }
                 >
                   Request Endorsement
                 </Button>
@@ -586,12 +594,12 @@ const StudentJobApplicationPage = () => {
                       <span>Previous</span>
                     </button>
 
-                    {/* Submit Button */}
+                    {/* Return Button */}
                     <button
-                      onClick={handleSubmitApplication}
+                      onClick={handleReturn}
                       className="px-6 py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700"
                     >
-                      Submit
+                      Return
                     </button>
                   </div>
                 </>

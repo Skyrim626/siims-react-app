@@ -18,6 +18,7 @@ import StudentReportsPage from "../../pages/student/StudentReportsPage";
 import StudentJobApplicationPage from "../../pages/student/StudentJobApplicationPage";
 import StudentEditProfilePage from "../../pages/student/StudentEditProfilePage";
 import StudentMessagingPage from "../../pages/student/StudentMessagingPage";
+import StudentViewWorkPost from "../../pages/student/StudentViewWorkPost";
 
 // Routes for Student
 const StudentRoutes = {
@@ -70,11 +71,17 @@ const StudentRoutes = {
           const currentAppliedWorkResponse = await axiosClient.get(
             "/api/v1/student/jobs/currently-applied"
           );
+          const statusResponse = await axiosClient.get(
+            "/api/v1/users/students/get-student-status-id"
+          );
 
+          /**
+           * Variables
+           */
+          const response = await axiosClient.get("/api/v1/student/jobs");
           const { currently_applied_work_post, application_id } =
             currentAppliedWorkResponse.data;
-
-          const response = await axiosClient.get("/api/v1/student/jobs");
+          const status = statusResponse.data;
 
           /**
            * Variables
@@ -92,10 +99,50 @@ const StudentRoutes = {
             student,
             currently_applied_work_post,
             application_id,
+            status,
           };
         } catch (error) {
           console.error("Error fetching programs and chairpersons: ", error);
           throw error; // Let the router handle errors
+        }
+      },
+    },
+    {
+      path: ":workPostId",
+      element: <StudentViewWorkPost />,
+      loader: async ({ params }) => {
+        try {
+          /**
+           * Params
+           */
+          const { workPostId } = params;
+
+          /**
+           * Responses
+           */
+          const workPostResponse = await axiosClient.get(
+            `/api/v1/work-posts/${workPostId}/details`
+          );
+          const statusResponse = await axiosClient.get(
+            "/api/v1/users/students/get-student-status-id"
+          );
+
+          /**
+           * Variables
+           */
+          const workPost = workPostResponse.data;
+          const status = statusResponse.data;
+
+          // console.log(status);
+          /**
+           * Return
+           */
+          return {
+            workPost,
+            status,
+          };
+        } catch (error) {
+          console.log(error);
         }
       },
     },
@@ -154,6 +201,10 @@ const StudentRoutes = {
       element: <StudentJobApplicationPage />,
       loader: async ({ params }) => {
         try {
+          /**
+           * Params
+           */
+
           const { application_id } = params;
 
           /**
@@ -161,6 +212,9 @@ const StudentRoutes = {
            */
           const applicationResponse = await axiosClient.get(
             `/api/v1/student/applications/${application_id}`
+          );
+          const statusResponse = await axiosClient.get(
+            "/api/v1/users/students/get-student-status-id"
           );
 
           const jobResponse = await axiosClient.get(
@@ -186,6 +240,7 @@ const StudentRoutes = {
           const stepOneDocuments = stepOneResponse.data;
           const stepTwoDocuments = stepTwoResponse.data;
           const job = jobResponse.data;
+          const status = statusResponse.data;
 
           // console.log(stepTwoDocuments);
 
@@ -194,6 +249,7 @@ const StudentRoutes = {
             stepOneDocuments,
             stepTwoDocuments,
             job,
+            status,
           };
         } catch (error) {
           console.error("Error fetching programs and chairpersons: ", error);
@@ -210,7 +266,7 @@ const StudentRoutes = {
       element: <StudentReportsPage />,
     },
     {
-      path: "daily-time-records",
+      path: ":applicationId/daily-time-records",
       element: <StudentManageDtrPage />,
     },
     {

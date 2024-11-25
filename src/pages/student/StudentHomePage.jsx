@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Page from "../../components/common/Page";
 import {
+  Link,
   NavLink,
   useLoaderData,
   useLocation,
@@ -19,10 +20,16 @@ import Text from "../../components/common/Text";
 
 const StudentHomePage = () => {
   // Fetch initial_workPost_posts
-  const { workPosts, student, currently_applied_work_post, application_id } =
-    useLoaderData();
-  // console.log(workPosts);
-  console.log(student);
+  const {
+    workPosts,
+    student,
+    currently_applied_work_post,
+    application_id,
+    status,
+  } = useLoaderData();
+  console.log(currently_applied_work_post);
+  // console.log(student);
+  // console.log(status);
 
   // Location and Navigate
   const location = useLocation();
@@ -55,6 +62,21 @@ const StudentHomePage = () => {
     setIsModalOpen(true);
   };
 
+  // Navigate to Job Details
+  const navigateToJobDetails = () => {
+    const to = `${location.pathname}/${currently_applied_work_post.id}`;
+
+    navigate(to);
+  };
+
+  // Navigate to Daily Time Record
+  const navigateToDtr = () => {
+    const to = `${location.pathname}/${application_id}/daily-time-records`;
+
+    navigate(to);
+  };
+
+  // Navigate to Application Page
   const navigateToApplication = () => {
     // console.log(`${location.pathname}/application/${application_id}`);
     const to = `${location.pathname}/applications/${application_id}`;
@@ -112,9 +134,12 @@ const StudentHomePage = () => {
           <div className="bg-white shadow-md rounded-lg p-6 mb-6">
             <h2 className="text-xl font-semibold mb-4">Reports</h2>
             <div className="flex flex-wrap gap-2">
-              <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+              <Button
+                onClick={navigateToDtr}
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+              >
                 Manage DTR
-              </button>
+              </Button>
               <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
                 Submit Weekly Report
               </button>
@@ -133,55 +158,60 @@ const StudentHomePage = () => {
               Available Internships
             </h2>
             <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-              {currentWorkPost.map((workPost) => (
-                <div
-                  key={workPost.id}
-                  className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-shadow duration-300"
-                >
-                  {/* Job Details */}
-                  <div className="p-5">
-                    <h3 className="text-xl font-bold text-gray-800 mb-2">
-                      {workPost.title}
-                    </h3>
-                    <p className="text-gray-600 text-sm font-medium mb-2">
-                      {workPost.company_name}
-                    </p>
-                    <p className="text-gray-500 text-sm line-clamp-3 mb-4">
-                      {workPost.responsibilities}
-                    </p>
-                    <div className="text-sm text-gray-500 space-y-1">
-                      <p>
-                        <span className="font-semibold">Start Date:</span>{" "}
-                        {workPost.start_date}
+              {currentWorkPost.map((workPost) => {
+                // console.log(workPost);
+
+                return (
+                  <div
+                    key={workPost.id}
+                    className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-shadow duration-300"
+                  >
+                    {/* Job Details */}
+                    <div className="p-5">
+                      <h3 className="text-xl font-bold text-gray-800 mb-2">
+                        {workPost.title}
+                      </h3>
+                      <p className="text-gray-600 text-sm font-medium mb-2">
+                        {workPost.company_name}
                       </p>
-                      <p>
-                        <span className="font-semibold">End Date:</span>{" "}
-                        {workPost.end_date}
+                      <p className="text-gray-500 text-sm line-clamp-3 mb-4">
+                        {workPost.responsibilities}
                       </p>
+                      <div className="text-sm text-gray-500 space-y-1">
+                        <p>
+                          <span className="font-semibold">Start Date:</span>{" "}
+                          {workPost.start_date}
+                        </p>
+                        <p>
+                          <span className="font-semibold">End Date:</span>{" "}
+                          {workPost.end_date}
+                        </p>
+                      </div>
+                    </div>
+                    {/* Buttons */}
+                    <div className="bg-gray-100 px-5 py-4 flex justify-between items-center">
+                      <button
+                        onClick={() => handleApplyClick(workPost.id)}
+                        className={`px-4 py-2 rounded-md font-medium text-white transition ${
+                          workPost.is_closed
+                            ? "bg-gray-400 cursor-not-allowed"
+                            : "bg-blue-600 hover:bg-blue-700"
+                        }`}
+                        disabled={workPost.is_closed}
+                      >
+                        Apply Now
+                      </button>
+                      <Link
+                        to={`${location.pathname}/${workPost.id}`}
+                        // onClick={() => navigate(`${location}/${workPost.id}`)}
+                        className="px-4 py-2 rounded-md font-medium bg-gray-200 hover:bg-gray-300 text-gray-700"
+                      >
+                        View Job
+                      </Link>
                     </div>
                   </div>
-                  {/* Buttons */}
-                  <div className="bg-gray-100 px-5 py-4 flex justify-between items-center">
-                    <button
-                      onClick={() => handleApplyClick(workPost.id)}
-                      className={`px-4 py-2 rounded-md font-medium text-white transition ${
-                        workPost.is_closed
-                          ? "bg-gray-400 cursor-not-allowed"
-                          : "bg-blue-600 hover:bg-blue-700"
-                      }`}
-                      disabled={workPost.is_closed}
-                    >
-                      Apply Now
-                    </button>
-                    <button
-                      onClick={() => navigate(`/job-details/${workPost.id}`)}
-                      className="px-4 py-2 rounded-md font-medium bg-gray-200 hover:bg-gray-300 text-gray-700"
-                    >
-                      View Job
-                    </button>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* Pagination */}
@@ -256,9 +286,9 @@ const StudentHomePage = () => {
                   onClick={() =>
                     handleApplyClick(currently_applied_work_post.id)
                   }
-                  disabled={student.status_id === 12}
+                  disabled={[10, 11, 12].includes(status)}
                   className={`w-full sm:w-auto py-2 px-6 rounded-md text-white font-medium ${
-                    student.status_id === 12
+                    [10, 11, 12].includes(status)
                       ? "bg-gray-600"
                       : "bg-red-600 hover:bg-red-700"
                   } transition-all`}
@@ -270,6 +300,12 @@ const StudentHomePage = () => {
                   className="w-full sm:w-auto py-2 px-6 rounded-md bg-blue-600 text-white font-medium hover:bg-blue-700 transition-all"
                 >
                   View Application
+                </Button>
+                <Button
+                  onClick={navigateToJobDetails}
+                  className="w-full sm:w-auto py-2 px-6 rounded-md bg-blue-600 text-white font-medium hover:bg-blue-700 transition-all"
+                >
+                  View Job Details
                 </Button>
               </div>
             </div>
