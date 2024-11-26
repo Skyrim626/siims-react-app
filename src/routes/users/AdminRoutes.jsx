@@ -31,6 +31,7 @@ import AdminManageStudentsPage from "../../pages/admin/AdminManageStudentsPage";
 import AdminManageCoordinatorsPage from "../../pages/admin/AdminManageCoordinatorsPage";
 import ChatWindow from "../../components/messaging/ChatWindow";
 import TestChatWindow from "../../components/messaging/TestChatWindow";
+import TestingPage from "../../pages/TestingPage";
 
 // Define routes for the Admin section
 const AdminRoutes = {
@@ -513,7 +514,10 @@ const AdminRoutes = {
         },
       ],
     },
-
+    {
+      path: "testing",
+      element: <TestingPage />,
+    },
     {
       path: "offices", // Route for managing offices
       element: <AdminManageOfficesPage />,

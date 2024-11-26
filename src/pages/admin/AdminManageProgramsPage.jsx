@@ -9,6 +9,7 @@ import FormModal from "../../components/modals/FormModal";
 import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
 import Table from "../../components/tables/Table";
 import ProgramForm from "../../components/forms/ProgramForm";
+import Loader from "../../components/common/Loader";
 
 const AdminManageProgramsPage = () => {
   // Retrieve the programs, list_of_chairperson, and list_of_colleges data from the loader
@@ -16,6 +17,9 @@ const AdminManageProgramsPage = () => {
     useLoaderData();
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Loader State
+  const [loading, setLoading] = useState(false);
 
   // State for programs and form modal
   const [programs, setPrograms] = useState(initial_programs);
@@ -33,6 +37,9 @@ const AdminManageProgramsPage = () => {
 
   // Delete a program
   const deleteProgram = async (id) => {
+    // Set Loading
+    setLoading(true);
+
     try {
       // console.log(id);
 
@@ -41,16 +48,23 @@ const AdminManageProgramsPage = () => {
         url: `/api/v1/admin/programs/${id}`,
       });
 
+      // Make the DELETE Request
+
       setPrograms((prevPrograms) =>
         prevPrograms.filter((program) => program.id !== id)
       );
     } catch (error) {
       console.log(`Cannot delete a program: `, error);
+    } finally {
+      setLoading(true);
     }
   };
 
   // Submit new Program data
   const submitProgram = async () => {
+    // Set Loading
+    setLoading(true);
+
     try {
       const payload = {
         college_id: collegeId,
@@ -75,19 +89,24 @@ const AdminManageProgramsPage = () => {
     } catch (error) {
       // Handle and set errors
       if (error.response && error.response.data && error.response.data.errors) {
-        console.log(error.response.data.errors);
+        // console.log(error.response.data.errors);
         setErrors(error.response.data.errors); // Assuming validation errors are in `errors`
       } else {
-        console.error("An unexpected error occurred:", error);
+        // console.error("An unexpected error occurred:", error);
         setErrors({
           general: "An unexpected error occurred. Please try again.",
         });
       }
+    } finally {
+      setLoading(false);
     }
   };
 
   // Handle Edit Submit
   const handleEditSubmit = async () => {
+    // Set Loader State
+    setLoading(true);
+
     try {
       // Ready Payload
       const payload = {
@@ -138,6 +157,8 @@ const AdminManageProgramsPage = () => {
           general: "An unexpected error occurred. Please try again.",
         });
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -160,6 +181,8 @@ const AdminManageProgramsPage = () => {
 
   return (
     <Page>
+      <Loader loading={loading} />
+
       <Section>
         <Heading level={3} text={"Programs"} />
         <Text className="text-sm text-blue-950">
@@ -218,6 +241,7 @@ const AdminManageProgramsPage = () => {
             setChairpersonId={setChairpersonId}
             chairpersons={list_of_chairpersons} // Pass chairperson list to the form
             colleges={list_of_colleges}
+            errors={errors}
           />
         </FormModal>
       )}

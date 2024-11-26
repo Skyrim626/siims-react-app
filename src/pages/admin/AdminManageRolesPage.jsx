@@ -12,12 +12,16 @@ import AdminRoleFormAdd from "./forms/AdminRoleFormAdd";
 import ManageHeader from "../../components/common/ManageHeader";
 import { useLoaderData } from "react-router-dom";
 import Table from "../../components/tables/Table";
+import Loader from "../../components/common/Loader";
 
 const AdminManageRolesPage = () => {
   // Retrieve the user_roles data from the loader
   const { initialRoles, userRoles } = useLoaderData();
 
   // console.log(userRoles);
+
+  // Loader State
+  const [loading, setLoading] = useState(false);
 
   // State for roles and form modal
   const [roles, setRoles] = useState(initialRoles);
@@ -30,6 +34,9 @@ const AdminManageRolesPage = () => {
 
   // Submit new role data
   const submitRole = async () => {
+    // Set Loading
+    setLoading(true);
+
     try {
       // Prepare the payload
       const payload = {
@@ -60,11 +67,15 @@ const AdminManageRolesPage = () => {
           general: "An unexpected error occurred. Please try again.",
         });
       }
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <Page>
+      <Loader loading={loading} />
+
       <Section>
         <Heading level={3} text="Roles" />
         <Text className="text-md text-blue-950">
@@ -99,6 +110,8 @@ const AdminManageRolesPage = () => {
         setIsOpen={setIsOpen}
         addPlaceholder="Add New Role"
         showAllButtons={selectedTab === 1}
+        showImportButton={false}
+        showExportButton={false}
       />
 
       {selectedTab === 0 ? (
