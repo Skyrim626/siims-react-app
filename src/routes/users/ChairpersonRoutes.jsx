@@ -10,6 +10,7 @@ import axiosClient from "../../api/axiosClient";
 import ChairpersonGenerateEndorsemenLetterPage from "../../pages/chairperson/ChairpersonGenerateEndorsemenLetterPage";
 import ChairpersonEndorsementRequestsPage from "../../pages/chairperson/ChairpersonEndorsementRequestsPage";
 import ChairpersonEndorsementRequestPage from "../../pages/chairperson/ChairpersonEndorsementRequestPage";
+import ChairpersonManageStudentsPage from "../../pages/chairperson/ChairpersonManageStudentsPage";
 
 // Routes for Chairperson
 const ChairpersonRoutes = {
@@ -81,6 +82,41 @@ const ChairpersonRoutes = {
           element: <ChairpersonCompanyPage />,
         },
       ],
+    },
+    {
+      path: "students",
+      element: <ChairpersonManageStudentsPage />,
+      loader: async () => {
+        try {
+          /**
+           * Responses
+           */
+          const studentResponse = await axiosClient.get(
+            "/api/v1/users/students/get-all-students"
+          );
+          const currentProgramIdResponse = await axiosClient.get(
+            "/api/v1/users/chairpersons/current-program"
+          );
+
+          /**
+           * Variables
+           */
+          const initial_students = studentResponse.data;
+          const current_program_id = currentProgramIdResponse.data;
+
+          // console.log(initial_students);
+          /**
+           * Return
+           */
+          return {
+            initial_students,
+            current_program_id,
+          };
+        } catch (error) {
+          console.log(error);
+          throw error;
+        }
+      },
     },
     {
       path: "endorsement-requests",

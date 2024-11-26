@@ -14,6 +14,7 @@ const ImportStudentForm = ({
   requiredFields = {
     programId: true,
   },
+  withSelection = false,
 }) => {
   return (
     <div className="p-6 w-96 bg-white rounded-lg shadow-md">
@@ -21,27 +22,29 @@ const ImportStudentForm = ({
         Import Students
       </h2>
 
-      <div className="mb-4">
-        <Select
-          name="programId"
-          className="border data-[focus]:bg-blue-100 h-full outline-none p-2 w-full"
-          aria-label="Select Program"
-          onChange={(e) => {
-            setProgramId(e.target.value);
-          }}
-          required={requiredFields.programId}
-          value={programId}
-        >
-          <option value="">-Select a Program-</option>
-          {programs.map((program) => {
-            return (
-              <option key={program.id} value={program.id}>
-                {program.name}
-              </option>
-            );
-          })}
-        </Select>
-      </div>
+      {withSelection && (
+        <div className="mb-4">
+          <Select
+            name="programId"
+            className="border data-[focus]:bg-blue-100 h-full outline-none p-2 w-full"
+            aria-label="Select Program"
+            onChange={(e) => {
+              setProgramId(e.target.value);
+            }}
+            required={requiredFields.programId}
+            value={programId}
+          >
+            <option value="">-Select a Program-</option>
+            {programs.map((program) => {
+              return (
+                <option key={program.id} value={program.id}>
+                  {program.name}
+                </option>
+              );
+            })}
+          </Select>
+        </div>
+      )}
 
       <div className="mb-4">
         <label
