@@ -8,6 +8,8 @@ import Table from "../../components/tables/Table";
 import ManageHeader from "../../components/common/ManageHeader";
 import FormModal from "../../components/modals/FormModal";
 import ImportStudentForm from "./forms/ImportStudentForm";
+import Loader from "../../components/common/Loader";
+import { postFormDataRequest } from "../../api/apiHelpers";
 
 const AdminManageStudentsPage = () => {
   // Fetch students
@@ -18,6 +20,12 @@ const AdminManageStudentsPage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [editIsOpen, setEditIsOpen] = useState(false);
   const [isOpenImport, setIsOpenImport] = useState(false);
+
+  // Loading State
+  const [loading, setLoading] = useState(false);
+
+  // Select State
+  const [programId, setProgramId] = useState();
 
   /**
    * File State
@@ -32,18 +40,37 @@ const AdminManageStudentsPage = () => {
   };
 
   // Submit File
-  const submitFile = (event) => {
+  const submitFile = async (event) => {
     event.preventDefault();
     if (!file) {
       setStatus("error");
       return;
     }
 
-    console.log(file);
-    // Simulate file upload
-    setTimeout(() => {
+    // Create a FormData object
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      // Set Loading
+      setLoading(true);
+
+      // Assuming your backend has an endpoint for file upload
+      const response = await postFormDataRequest({
+        url: `/api/v1/users/students/${programId}/upload-students`,
+        data: formData,
+      });
+
+      setIsOpenImport(false);
       setStatus("success");
-    }, 1500);
+
+      windows.reload();
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      setStatus("error");
+    } finally {
+      setLoading(false);
+    }
   };
   /**
    *
@@ -51,6 +78,7 @@ const AdminManageStudentsPage = () => {
 
   return (
     <Page>
+      <Loader loading={loading} />
       <Section>
         <Heading level={3} text={"Students"} />
         <Text className="text-sm text-blue-950">
@@ -84,6 +112,9 @@ const AdminManageStudentsPage = () => {
           status={status}
           setStatus={setStatus}
           handleFileChange={handleFileChange}
+          programs={programs}
+          programId={programId}
+          setProgramId={setProgramId}
         />
       </FormModal>
     </Page>

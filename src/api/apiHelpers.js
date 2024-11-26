@@ -115,16 +115,33 @@ export const deleteRequest = async ({ url, data = {}, params = {}, method = 'del
 };
 
 // For Post FormDat request
-export const postFormDataRequest = async ({ url, data }) => {
+export const postFormDataRequest = async ({ url, data, timeout = 120000  }) => {
   try {
     const response = await axiosClient.post(url, data, {
       headers: {
         "Content-Type": "multipart/form-data", // Ensures the request is sent as form-data
       },
+      timeout: timeout, // Set the timeout for this request (default: 60 seconds)
     });
     return response.data;
   } catch (error) {
-    throw error;
+    if (error.code === 'ECONNABORTED') {
+      // Timeout error
+      console.error("Request timed out:", error);
+      throw new Error("Request timed out");
+    } else if (error.response) {
+      // Response errors (e.g., 400 or 500 status codes)
+      console.error("Error response:", error.response);
+      throw new Error(error.response?.data?.message || "Error uploading file");
+    } else if (error.request) {
+      // Request was made but no response was received
+      console.error("No response received:", error.request);
+      throw new Error("No response from server");
+    } else {
+      // General errors (e.g., setup errors)
+      console.error("Error setting up request:", error.message);
+      throw new Error("An error occurred while sending the request");
+    }
   }
 };
 

@@ -6,6 +6,7 @@ import ForgotPasswordForm from "../../components/forms/ForgotPasswordForm";
 import AuthPrompt from "../../components/auth/AuthPrompt";
 import Text from "../../components/common/Text";
 import { postRequest } from "../../api/apiHelpers";
+import Loader from "../../components/common/Loader";
 
 // Forgot Password Page Component
 export default function ForgotPasswordPage() {
@@ -14,10 +15,16 @@ export default function ForgotPasswordPage() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState(null);
 
+  // Loading State
+  const [loading, setLoading] = useState(false);
+
   // Send Email
   const submitEmail = async (e) => {
     // Prevent Default
     e.preventDefault();
+
+    // Set Loading
+    setLoading(true);
 
     // Payload
     const payload = { email };
@@ -35,6 +42,8 @@ export default function ForgotPasswordPage() {
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong.");
       setMessage(null);
+    } finally {
+      setLoading(false);
     }
 
     // console.log(payload);
@@ -42,6 +51,9 @@ export default function ForgotPasswordPage() {
 
   return (
     <>
+      {/* Loading */}
+      <Loader loading={loading} />
+
       {/* Logo and Welcome */}
       <AuthPrompt
         heading={"Forgot Password"}

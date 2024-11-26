@@ -28,7 +28,9 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useLocalStorage("ACCESS_TOKEN", null);
 
   // Function to authenticate the user
-  const login = async (payload = {}) => {
+  const login = async (payload = {}, setLoading) => {
+    setLoading(true);
+
     try {
       // Fetch CSRF token
       await axiosClient.get("/sanctum/csrf-cookie", { withCredentials: true });
@@ -48,6 +50,9 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("user", JSON.stringify(response.data.user));
       localStorage.setItem("roles", JSON.stringify(response.data.roles));
 
+      // Set Loading
+      setLoading(false);
+
       // Redirect user after successful login
       return <Navigate to={"/auth"} />;
     } catch (error) {
@@ -64,6 +69,8 @@ export const AuthProvider = ({ children }) => {
         error.message || "An unexpected error occurred."
       );
       throw error; */
+    } finally {
+      setLoading(false);
     }
   };
 
