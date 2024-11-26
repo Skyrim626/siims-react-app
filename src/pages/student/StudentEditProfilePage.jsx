@@ -4,6 +4,8 @@ import { stripLocation } from "../../utils/strip";
 import { Button, Field, Input, Label, Select } from "@headlessui/react";
 import { postRequest } from "../../api/apiHelpers";
 import { formatDate } from "../../utils/formatDate";
+import { ArrowLeft } from 'lucide-react'; // Import ArrowLeft icon
+
 
 const StudentEditProfilePage = () => {
   const navigate = useNavigate();
@@ -47,15 +49,59 @@ const StudentEditProfilePage = () => {
 
   console.log(workExperiences);
 
-  const editProfile = () => {
-    console.log("Updated User Data:", user);
-    console.log("Updated Work Experience:", workExperiences);
-    console.log("Updated Education:", educations);
-    // handle saving logic
+  const editProfile = async () => {
+    // Validate the data
+    if (!user.firstName || !user.email) {
+      console.error("Validation Error: Missing required fields.");
+      alert("Please fill in all required fields.");
+      return;
+    }
+  
+    const updatedProfileData = {
+      user,
+      workExperiences,
+      educations,
+    };
+  
+    try {
+      console.log("Sending updated profile data to the server...");
+      const response = await fetch("/api/update-profile", {
+        method: "PUT", // Use POST for creation or PUT for updates
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedProfileData),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to save profile. Please try again.");
+      }
+  
+      const result = await response.json();
+      console.log("Profile updated successfully:", result);
+      alert("Profile updated successfully!");
+  
+      // Optionally, navigate back to the profile view page
+      navigate("/profile");
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      alert("Error saving profile. Please try again.");
+    }
   };
+  
 
   return (
     <div className="container mx-auto p-6 bg-white rounded-lg shadow-lg space-y-8">
+        {/* Back Button with Icon */}
+      <Button
+        type="button"
+        onClick={() => navigate("/auth/my/profile")} // Define your back navigation logic here
+        className="flex items-center space-x-2 text-indigo-600"
+      >
+        <ArrowLeft size={20} /> {/* Lucide back arrow icon */}
+        <span>Back</span>
+      </Button>
+
       <h1 className="text-4xl font-extrabold text-gray-800 mb-6">
         Edit Profile
       </h1>

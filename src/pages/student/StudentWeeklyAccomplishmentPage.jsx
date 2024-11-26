@@ -29,10 +29,6 @@ const StudentWeeklyAccomplishmentPage = () => {
     setCurrentWeek({ ...currentWeek, [name]: value });
   };
 
-  const handleWeekSelection = (e) => {
-    setSelectedWeek(e.target.value);
-  };
-
   const addReport = () => {
     if (
       currentWeek.startDate &&
@@ -88,129 +84,106 @@ const StudentWeeklyAccomplishmentPage = () => {
     });
   };
 
-  
+  const deleteReport = (index) => {
+    const updatedReports = [...weeklyReports];
+    const deletedReport = updatedReports.splice(index, 1); // Remove the report at the specified index
+    setWeeklyReports(updatedReports);
+    setTotalHours(
+      updatedReports.reduce((sum, report) => sum + parseInt(report.hours, 10), 0)
+    );
+    alert(`Report for Week ${deletedReport[0].weekNumber} deleted`);
+  };
+
+  const handleWeekSelection = (e) => {
+    const selectedWeek = e.target.value;
+    setSelectedWeek(selectedWeek);
+
+    // Fetch start and end dates for the selected week dynamically
+    if (groupedReports[selectedWeek] && groupedReports[selectedWeek].length > 0) {
+      const { startDate, endDate } = groupedReports[selectedWeek][0]; // Assume all reports in a week share the same start and end dates
+      setCurrentWeek((prev) => ({ ...prev, startDate, endDate }));
+    }
+  };
+
   const exportToPDF = () => {
-    const doc = new jsPDF({
-      format: 'a4', // Set the page size to A4
-    });
+    const doc = new jsPDF({ format: "a4" });
 
     const margin = 10;
     const pageWidth = doc.internal.pageSize.width;
-  
-    const reportsToExport = selectedWeek
-      ? groupedReports[selectedWeek]
-      : weeklyReports;
-  
-    if (reportsToExport.length === 0) {
-      alert("No reports to export.");
+
+    const reportsForWeek = groupedReports[selectedWeek];
+    if (!reportsForWeek || reportsForWeek.length === 0) {
+      alert("No reports available for the selected week.");
       return;
     }
 
-    // Example of accessing start and end dates from a selected report
-    const selectedReport = reportsToExport[selectedWeek];  // Get selected report
-    const startDate = selectedReport.startDate;  // Start date of the report
-    const endDate = selectedReport.endDate;      // End date of the report
+    // Report Period Text
+    const periodText = `For the Period: ${reportsForWeek[0]?.startDate || "N/A"} to ${
+      reportsForWeek[reportsForWeek.length - 1]?.endDate || "N/A"
+    }`;
 
-    const periodText = `For the period: ${startDate} to ${endDate}`;
+    // Add logos and header
+    const leftLogo = "/src/assets/images/logo/USTP-Logo-against-Light.png";
+    const rightLogo = "/src/assets/images/logo/CITC_LOGO.png";
+    doc.addImage(leftLogo, "JPEG", margin, margin, 25, 25);
+    doc.addImage(rightLogo, "JPEG", pageWidth - margin - 35, margin, 35, 25);
 
-  
-    // Left logo properties
-    const leftLogo = '/src/assets/images/logo/USTP-Logo-against-Light.png'; // Replace with actual path to left logo
-    const leftLogoWidth = 25;
-    const leftLogoHeight = 25;
-
-    // Right logo properties
-    const rightLogo = '/src/assets/images/logo/CITC_LOGO.png'; // Replace with actual path to right logo
-    const rightLogoWidth = 35;
-    const rightLogoHeight = 25;
-    
-    doc.addImage(leftLogo, 'JPEG', margin, margin, leftLogoWidth, leftLogoHeight); // Left logo
-    doc.addImage(rightLogo, 'JPEG', pageWidth - margin - rightLogoWidth, margin, rightLogoWidth, rightLogoHeight); // Right logo
-  
-    // Add the centered text
     const centerText = `
       UNIVERSITY OF SCIENCE AND TECHNOLOGY
       OF SOUTHERN PHILIPPINES
       Alubijid | Cagayan de Oro | Claveria | Jasaan | Oroquieta | Panaon
     `;
-  
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(10); // Smaller font size for A4
-  
-      // Center the text between the logos
-    const centerX = pageWidth / 2;
-    const centerY = 5 + (leftLogoHeight / 2) ; // Adjust Y position for alignment with logos
-    doc.text(centerText, centerX, centerY, { align: "center" });
-  
-    // Set title and metadata for the PDF
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(12); // Smaller font for the A4 title
-    doc.text("Weekly Accomplishment Report", margin, margin + leftLogoHeight + 10); // Adjust Y position
-    doc.setFontSize(10); // Smaller font size for period
-    doc.text(periodText, margin, margin + leftLogoHeight + 15); // Period text below the title
-
-    
     doc.setFontSize(10);
-    doc.text("Name: Jane Smith", margin, margin + leftLogoHeight + 20);
-    doc.text("Company: Mindanao Tech Solutions", margin, margin + leftLogoHeight + 25);
-    doc.text("Unit/Office/Department: IT Department", margin, margin + leftLogoHeight + 30);
-  
-    // Define the header
+    doc.text(centerText, pageWidth / 2, margin + 15, { align: "center" });
+
+    // Metadata and Title
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(12);
+    doc.text("Weekly Accomplishment Report", margin, margin + 40);
+    doc.setFontSize(10);
+    doc.text(periodText, margin, margin + 45);
+
+    doc.text("Name: Jane Smith", margin, margin + 50);
+    doc.text("Company: Mindanao Tech Solutions", margin, margin + 55);
+    doc.text("Unit/Office/Department: IT Department", margin, margin + 60);
+
+    // Define header and table data
     const header = ["Week", "Start Date", "End Date", "Tasks", "Learnings", "Hours"];
-  
-    // Define the table data
-    const tableData = reportsToExport.map(report => [
+    const tableData = reportsForWeek.map((report) => [
       report.weekNumber,
       report.startDate,
       report.endDate,
       report.tasks,
       report.learnings,
-      report.hours
+      report.hours,
     ]);
-  
-    // Table layout using autoTable
-    const tableWidth = pageWidth - 2 * margin; // Max width for the table (page width minus margins)
-  
+
+    // Generate table
     doc.autoTable({
-      startY: margin + leftLogoHeight + 40, // Start the table below the metadata
       head: [header],
       body: tableData,
-      margin: { top: margin + leftLogoHeight + 40 },
+      startY: margin + 70,
+      margin: { top: margin },
       styles: {
-        cellWidth: "auto",
-        fontSize: 8, // Smaller font for table on A4
+        fontSize: 8,
         valign: "middle",
         halign: "center",
-        overflow: "linebreak", // This enables text wrapping
+        overflow: "linebreak",
       },
       columnStyles: {
-        0: { cellWidth: 15 }, // Adjust the width of columns if necessary
+        0: { cellWidth: 15 },
         1: { cellWidth: 30 },
         2: { cellWidth: 30 },
         3: { cellWidth: 45 },
         4: { cellWidth: 45 },
         5: { cellWidth: 15 },
       },
-      tableWidth: tableWidth, // Limit the width of the table
-      didDrawPage: function (data) {
-        // Ensure the table fits on the page without overflowing
-        const pageHeight = doc.internal.pageSize.height;
-        if (data.cursor.y > pageHeight - 30) {
-          doc.addPage();
-        }
-      },
     });
-  
-    // Save the generated PDF
+
+    // Save PDF
     doc.save("weekly_accomplishment_report.pdf");
   };
-  
-  
-  
-  
-  
-
-  
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -260,7 +233,7 @@ const StudentWeeklyAccomplishmentPage = () => {
               value={currentWeek.weekNumber}
               onChange={handleChange}
               placeholder="e.g., 1"
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
             />
           </div>
           <div>
@@ -270,7 +243,7 @@ const StudentWeeklyAccomplishmentPage = () => {
               name="startDate"
               value={currentWeek.startDate}
               onChange={handleChange}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
             />
           </div>
           <div>
@@ -280,7 +253,7 @@ const StudentWeeklyAccomplishmentPage = () => {
               name="endDate"
               value={currentWeek.endDate}
               onChange={handleChange}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
             />
           </div>
           <div>
@@ -290,80 +263,88 @@ const StudentWeeklyAccomplishmentPage = () => {
               name="hours"
               value={currentWeek.hours}
               onChange={handleChange}
-              placeholder=""
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"
+              placeholder="e.g., 40"
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
             />
           </div>
-          <div className="col-span-2">
-            <label className="block text-sm font-medium text-gray-700">Activities/Tasks</label>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Tasks</label>
             <textarea
               name="tasks"
               value={currentWeek.tasks}
               onChange={handleChange}
-              rows={4}
-              placeholder="Describe the activities/tasks for the week"
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"
+              placeholder="Tasks completed during the week"
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
             />
           </div>
-          <div className="col-span-2">
+          <div>
             <label className="block text-sm font-medium text-gray-700">Learnings</label>
             <textarea
               name="learnings"
               value={currentWeek.learnings}
               onChange={handleChange}
-              rows={4}
-              placeholder="Summarize your learnings for the week"
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"
+              placeholder="What you learned this week"
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
             />
           </div>
         </div>
-        <button
-          onClick={editingReport !== null ? saveEditedReport : addReport}
-          className="mt-4 bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600"
-        >
-          {editingReport !== null ? "Save Changes" : "Add Report"}
-        </button>
+        <div className="mt-4">
+          <button
+            onClick={editingReport !== null ? saveEditedReport : addReport}
+            className="bg-orange-500 text-white px-4 py-2 rounded shadow hover:bg-orange-600"
+          >
+            {editingReport !== null ? "Save Changes" : "Add Report"}
+          </button>
+        </div>
       </div>
 
       {/* Weekly Reports Table */}
-      <div className="bg-white shadow-md rounded-lg p-6">
-        {Object.keys(groupedReports).length > 0 ? (
-          <table className="min-w-full border-collapse">
-            <thead className="bg-blue-900 text-white">
+      <div className="bg-white shadow-md rounded-lg p-6 mb-6">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">All Reports</h2>
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white border border-gray-300">
+            <thead>
               <tr>
-                <th className="border-b px-4 py-2">Week</th>
-                <th className="border-b px-4 py-2">Start Date</th>
-                <th className="border-b px-4 py-2">End Date</th>
-                <th className="border-b px-4 py-2">Tasks</th>
-                <th className="border-b px-4 py-2">Learnings</th>
-                <th className="border-b px-4 py-2">Hours</th>
-                <th className="border-b px-4 py-2">Actions</th>
+                <th className="px-4 py-2 text-left border-b">Week</th>
+                <th className="px-4 py-2 text-left border-b">Start Date</th>
+                <th className="px-4 py-2 text-left border-b">End Date</th>
+                <th className="px-4 py-2 text-left border-b">Tasks</th>
+                <th className="px-4 py-2 text-left border-b">Learnings</th>
+                <th className="px-4 py-2 text-left border-b">Hours</th>
+                <th className="px-4 py-2 text-left border-b">Actions</th>
               </tr>
             </thead>
             <tbody>
               {weeklyReports.map((report, index) => (
                 <tr key={index}>
-                  <td className="border-b px-4 py-2">Week {report.weekNumber}</td>
-                  <td className="border-b px-4 py-2">{report.startDate}</td>
-                  <td className="border-b px-4 py-2">{report.endDate}</td>
-                  <td className="border-b px-4 py-2">{report.tasks}</td>
-                  <td className="border-b px-4 py-2">{report.learnings}</td>
-                  <td className="border-b px-4 py-2">{report.hours}</td>
-                  <td className="border-b px-4 py-2">
+                  <td className="px-4 py-2">{report.weekNumber}</td>
+                  <td className="px-4 py-2">{report.startDate}</td>
+                  <td className="px-4 py-2">{report.endDate}</td>
+                  <td className="px-4 py-2">{report.tasks}</td>
+                  <td className="px-4 py-2">{report.learnings}</td>
+                  <td className="px-4 py-2">{report.hours}</td>
+                  <td className="px-4 py-2">
                     <button
                       onClick={() => editReport(index)}
-                      className="bg-yellow-500 text-white px-4 py-2 rounded shadow hover:bg-yellow-600"
+                      className="bg-blue-500 text-white px-3 py-1 rounded shadow hover:bg-blue-600"
                     >
                       Edit
+                    </button>
+                    <button
+                      onClick={() => deleteReport(index)}
+                      className="bg-red-500 text-white px-3 py-1 rounded shadow hover:bg-red-600 ml-2"
+                    >
+                      Delete
                     </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        ) : (
-          <p>No reports added yet.</p>
-        )}
+        </div>
+        <div className="mt-4">
+          <p>Total Hours: {totalHours}</p>
+        </div>
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 const StudentReportsPage = () => {
   return (
     <div className="min-h-screen bg-gray-100">
-      <header className="bg-blue-900 text-white py-4 shadow-md">
+      {/* Header Section */}
       <header className="bg-blue-900 text-white py-4 shadow-md">
         <div className="container mx-auto px-4">
           <h1 className="text-2xl font-bold">Program Dashboard</h1>
@@ -11,7 +11,9 @@ const StudentReportsPage = () => {
         </div>
       </header>
 
+      {/* Main Content */}
       <main className="container mx-auto px-4 py-6">
+        {/* Program Details Section */}
         <section className="bg-white shadow-md rounded-lg p-6 mb-6">
           <h2 className="text-xl font-semibold mb-4">Program Details</h2>
           <div className="grid grid-cols-2 gap-4">
@@ -36,24 +38,23 @@ const StudentReportsPage = () => {
           </div>
         </section>
 
+        {/* Reports Section */}
         <section className="bg-white shadow-md rounded-lg p-6 mb-6">
           <h2 className="text-xl font-semibold mb-4">Reports</h2>
           <div className="flex flex-wrap gap-2">
             <button className="bg-blue-900 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-            <button className="bg-blue-900 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
               Manage DTR
             </button>
             <button className="bg-orange-400 text-white px-4 py-2 rounded-lg hover:bg-orange-600">
-            <button className="bg-orange-400 text-white px-4 py-2 rounded-lg hover:bg-orange-600">
               Submit Weekly Report
             </button>
-            <button className="bg-sky-800 text-white px-4 py-2 rounded-lg hover:bg-sky-600">
             <button className="bg-sky-800 text-white px-4 py-2 rounded-lg hover:bg-sky-600">
               Personal Insights
             </button>
           </div>
         </section>
 
+        {/* Program Progress Section */}
         <section className="bg-white shadow-md rounded-lg p-6 mb-6">
           <h2 className="text-xl font-semibold mb-4">Program Progress</h2>
           <div>
@@ -65,11 +66,11 @@ const StudentReportsPage = () => {
                 className="bg-blue-500 h-4 rounded-full"
                 style={{ width: "60%" }}
               ></div>
-              <div className="bg-blue-800 h-4 rounded-full" style={{ width: "60%" }}></div>
             </div>
           </div>
         </section>
 
+        {/* Notifications Section */}
         <section className="bg-white shadow-md rounded-lg p-6 mb-6">
           <h2 className="text-xl font-semibold mb-4">Notifications</h2>
           <ul className="list-disc list-inside">
@@ -78,6 +79,7 @@ const StudentReportsPage = () => {
           </ul>
         </section>
 
+        {/* Submitted Documents Section */}
         <section className="bg-white shadow-md rounded-lg p-6">
           <h2 className="text-xl font-semibold mb-4">Submitted Documents</h2>
           <ul className="space-y-2">
