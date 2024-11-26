@@ -327,11 +327,11 @@ const AdminRoutes = {
 
               // console.log(response.data);
 
-              const users = response.data;
+              const initial_users = response.data;
               const programs = programsResponse.data;
               const colleges = collegesResponse.data;
 
-              return { users, programs, colleges };
+              return { initial_users, programs, colleges };
             } catch (error) {
               console.log(error);
             }

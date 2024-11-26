@@ -11,6 +11,7 @@ import { AnimatePresence } from "framer-motion";
 import Modal from "../../../../components/common/Modal";
 import DeanModalFormFields from "../../../../components/forms/modal-forms/DeanModalFormFields";
 import ManageHeader from "../../../../components/common/ManageHeader";
+import Loader from "../../../../components/common/Loader";
 
 // AdminManageDeansPage component handles the management of deans in the admin dashboard.
 const AdminManageDeansPage = () => {
@@ -18,6 +19,9 @@ const AdminManageDeansPage = () => {
   const [deans, setDeans] = useState([]); // Initializing state to hold dean data
   // State to store the list of colleges
   const [colleges, setColleges] = useState([]); // Initializing state to hold college data
+
+  // Loading State
+  const [loading, setLoading] = useState();
 
   // Custom Hook for Search Table
   const { term, filteredData, handleSearchChange } = useSearch(deans, ""); // Using the custom hook to manage search term and filtered data
@@ -73,44 +77,36 @@ const AdminManageDeansPage = () => {
 
   // Handle Add Submit
   const handleAddSubmit = async () => {
-    // Payload
-    const payload = deanInfo;
+    // Loading State
+    setLoading(true);
 
-    // Send Request
-    const response = await postRequest({
-      url: "/api/v1/admin/users/deans",
-      data: payload,
-    });
+    try {
+      // Payload
+      const payload = deanInfo;
 
-    // Reset Input
-    handleDeanInfoChange({ target: { name: "name", value: "" } });
+      // Send Request
+      const response = await postRequest({
+        url: "/api/v1/admin/users/deans",
+        data: payload,
+      });
 
-    // Set Deans Again
-    setDeans(response.data);
-    // Close Modal
-    setIsOpen(false);
+      // Reset Input
+      handleDeanInfoChange({ target: { name: "name", value: "" } });
+
+      // Set Deans Again
+      setDeans(response.data);
+      // Close Modal
+      setIsOpen(false);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Archive
   const handleArchive = async (data) => {
     console.log(data);
-  };
-
-  // Archive All
-  const handleArchiveBySelectedIds = async (selectedIds) => {
-    // Request
-    const request = {
-      url: "/api/v1/admin/users/deans/archive",
-      data: { ids: Array.from(selectedIds) },
-    };
-
-    // Archive Dean
-    const response = await deleteRequest(request);
-
-    // Check status
-    if (response.status === 200) {
-      window.location.reload();
-    }
   };
 
   // Handle Edit
@@ -122,10 +118,14 @@ const AdminManageDeansPage = () => {
 
   return (
     <Section>
+      <Loader loading={loading} />
+
       <ManageHeader
         addPlaceholder="Add Dean"
         isOpen={isOpen}
         setIsOpen={setIsOpen}
+        showExportButton={false}
+        showImportButton={false}
       />
 
       {deans.length > 0 ? (
@@ -133,10 +133,10 @@ const AdminManageDeansPage = () => {
           data={deans}
           searchPlaceholder="Search Dean..."
           term={term}
+          includeCheckboxes={false}
           filteredData={filteredData}
           handleSearchChange={handleSearchChange}
           handleArchive={handleArchive}
-          handleArchiveBySelectedIds={handleArchiveBySelectedIds}
           handleEdit={handleEdit}
         />
       ) : (

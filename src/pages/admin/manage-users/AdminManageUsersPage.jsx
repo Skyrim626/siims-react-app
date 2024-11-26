@@ -8,12 +8,19 @@ import ManageHeader from "../../../components/common/ManageHeader";
 import FormModal from "../../../components/modals/FormModal";
 import UserFormAdd from "../../../components/forms/UserFormAdd";
 import ConfirmationModal from "../../../components/common/ConfirmationModal";
+import Loader from "../../../components/common/Loader";
 
 // AdminManageUsersPage component handles the management of users in the admin dashboard.
 const AdminManageUsersPage = () => {
-  const { users, programs, colleges } = useLoaderData();
+  const { initial_users, programs, colleges } = useLoaderData();
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Container state
+  const [users, setUsers] = useState(initial_users);
+
+  // Loading State
+  const [loading, setLoading] = useState(false);
 
   // Modal State
   const [isOpen, setIsOpen] = useState(false);
@@ -22,97 +29,51 @@ const AdminManageUsersPage = () => {
 
   // Custom Hook for Search Table
   const { term, filteredData, handleSearchChange } = useSearch(users, ""); // Using the custom hook to manage search term and filtered data
-
-  // Add new user
-  const addUser = async (id) => {
-    console.log(testing);
-  };
-
-  // Soft Deletes a User
-  const softDeleteUser = async (id) => {
-    const response = await deleteRequest({
-      url: `/api/v1/users/${id}/soft-delete`,
-      method: "delete",
-    });
-
-    setUsers(response.data);
-
-    // Check response
-    if (response) {
-      navigate(location.pathname, { replace: true });
-    }
-  };
-
   // Function to handle the archiving of multiple users based on selected IDs
   const handleArchiveBySelectedIds = async (selectedIds) => {
-    // Prepare payload containing the selected user IDs
-    const payload = { ids: Array.from(selectedIds) }; // Converting selected IDs to an array for the payload
+    // Set loading state
+    setLoading(true);
 
-    // Perform POST request to archive the selected users
-    const response = await deleteRequest({
-      url: "/api/v1/admin/users/archive/selected", // API endpoint for archiving selected users
-      data: payload, // Include the payload with selected IDs
-      method: "post", // Specify the request method
-    });
+    try {
+      // Prepare payload containing the selected user IDs
+      const payload = { ids: Array.from(selectedIds) };
+      // console.log(payload);
+      // Perform POST request to archive the selected users
+      const response = await deleteRequest({
+        url: "/api/v1/users/archive/selected",
+        data: payload,
+        method: "post",
+      });
 
-    if (response) {
-      // Navigate the same
-      navigate(location.pathname);
+      // console.log(response);
+      // Check Response
+      if (response) {
+        setUsers(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
-  };
-
-  // Handle confirmation modal actions
-  const handleConfirm = () => {
-    if (selectedUserId) {
-      handleArchive(selectedUserId);
-      setIsConfirmOpen(false);
-      setSelectedUserId(null);
-    }
-  };
-
-  const handleCancel = () => {
-    setIsConfirmOpen(false);
-    setSelectedUserId(null);
   };
 
   return (
     <Section>
-      {/* <ManageHeader
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        addPlaceholder="Add New User"
-        showExportButton={false}
-        showImportButton={false}
-      /> */}
+      <Loader loading={loading} />
+
       <Table
         data={users}
         // IDsIsLink={false}
         handleArchiveBySelectedIds={handleArchiveBySelectedIds}
-        handleArchive={softDeleteUser}
         term={term}
         filteredData={filteredData}
         handleSearchChange={handleSearchChange}
       />
 
       {/* Form Modal for Adding User */}
-      <FormModal
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        modalTitle="Add User"
-        onSubmit={addUser}
-      >
+      <FormModal isOpen={isOpen} setIsOpen={setIsOpen} modalTitle="Add User">
         <UserFormAdd programs={programs} colleges={colleges} />
       </FormModal>
-
-      {/* Confirmation Modal */}
-      <ConfirmationModal
-        isOpen={isConfirmOpen}
-        setIsOpen={setIsConfirmOpen}
-        title="Archive User"
-        message="Are you sure you want to remove this user? This action cannot be undone."
-        onConfirm={handleConfirm}
-        onCancel={handleCancel}
-      />
     </Section>
   );
 };

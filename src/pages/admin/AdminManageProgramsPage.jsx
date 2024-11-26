@@ -10,6 +10,7 @@ import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
 import Table from "../../components/tables/Table";
 import ProgramForm from "../../components/forms/ProgramForm";
 import Loader from "../../components/common/Loader";
+import { checkResponseStatus } from "../../utils/checkResponse";
 
 const AdminManageProgramsPage = () => {
   // Retrieve the programs, list_of_chairperson, and list_of_colleges data from the loader
@@ -43,20 +44,18 @@ const AdminManageProgramsPage = () => {
     try {
       // console.log(id);
 
-      // Make the DELETE request
-      const response = await deleteRequest({
-        url: `/api/v1/admin/programs/${id}`,
-      });
-
       // Make the DELETE Request
+      const response = await deleteRequest({
+        url: `/api/v1/programs/${id}`,
+      });
 
       setPrograms((prevPrograms) =>
         prevPrograms.filter((program) => program.id !== id)
       );
     } catch (error) {
-      console.log(`Cannot delete a program: `, error);
+      // console.log(`Cannot delete a program: `, error);
     } finally {
-      setLoading(true);
+      setLoading(false);
     }
   };
 
