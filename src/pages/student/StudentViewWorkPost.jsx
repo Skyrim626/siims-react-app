@@ -10,11 +10,15 @@ import {
 } from "lucide-react";
 import { postRequest } from "../../api/apiHelpers";
 import { stripLocation } from "../../utils/strip";
+import Loader from "../../components/common/Loader";
 
 const StudentViewWorkPost = () => {
   const { workPost, status } = useLoaderData();
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Loading State
+  const [loading, setLoading] = useState(false);
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,6 +30,9 @@ const StudentViewWorkPost = () => {
 
   // Handle Application Logic
   const handleApply = async () => {
+    // Set Loading State
+    setLoading(true);
+
     // Method POST
     // Create a new application record
     try {
@@ -57,19 +64,23 @@ const StudentViewWorkPost = () => {
           general: "An unexpected error occurred. Please try again.",
         });
       }
+    } finally {
+      setLoading(false);
+      toggleModal();
     }
 
-    toggleModal();
     // console.log("Application submitted for", workPost.id);
     // Add further logic for applying, such as sending API request
   };
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
+      <Loader loading={loading} />
+
       {/* Go Back Button */}
       <div className="max-w-4xl mx-auto px-6 mb-4">
         <button
-          onClick={() => navigate(-1)} // Navigate to the previous page
+          onClick={() => navigate("/auth/my")} // Navigate to the previous page
           className="flex items-center gap-2 text-blue-500 hover:text-blue-600 font-medium"
         >
           <ArrowLeft className="w-5 h-5" />

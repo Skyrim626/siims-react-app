@@ -4,12 +4,16 @@ import useForm from "../../hooks/useForm";
 import { useAuth } from "../../hooks/useAuth";
 import { showFailedAlert } from "../../utils/toastify";
 import AuthPrompt from "../../components/auth/AuthPrompt";
+import Loader from "../../components/common/Loader";
 
 export default function LoginPage() {
   // Initialize form state for login credentials (id and password)
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
+
+  // Loading State
+  const [loading, setLoading] = useState(false);
 
   // Destructure login function from the useAuth hook for handling login requests
   const { login } = useAuth();
@@ -50,7 +54,7 @@ export default function LoginPage() {
     };
 
     // Attempt login and handle validation errors
-    const validationErrors = login(payload);
+    const validationErrors = login(payload, setLoading);
 
     // console.log(validationErrors);
 
@@ -61,6 +65,9 @@ export default function LoginPage() {
 
   return (
     <>
+      {/* Loading */}
+      <Loader loading={loading} />
+
       {/* Logo and welcome message */}
       <AuthPrompt
         heading={"Welcome back"}

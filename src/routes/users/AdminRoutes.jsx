@@ -31,6 +31,7 @@ import AdminManageStudentsPage from "../../pages/admin/AdminManageStudentsPage";
 import AdminManageCoordinatorsPage from "../../pages/admin/AdminManageCoordinatorsPage";
 import ChatWindow from "../../components/messaging/ChatWindow";
 import TestChatWindow from "../../components/messaging/TestChatWindow";
+import TestingPage from "../../pages/TestingPage";
 
 // Define routes for the Admin section
 const AdminRoutes = {
@@ -326,11 +327,11 @@ const AdminRoutes = {
 
               // console.log(response.data);
 
-              const users = response.data;
+              const initial_users = response.data;
               const programs = programsResponse.data;
               const colleges = collegesResponse.data;
 
-              return { users, programs, colleges };
+              return { initial_users, programs, colleges };
             } catch (error) {
               console.log(error);
             }
@@ -439,7 +440,7 @@ const AdminRoutes = {
                * Responses
                */
               const studentResponse = await axiosClient.get(
-                "api/v1/users/students/get-all-students"
+                "/api/v1/users/students/get-all-students"
               );
               const collegeResponse = await axiosClient.get("/api/v1/colleges");
               const programResponse = await axiosClient.get("/api/v1/programs");
@@ -513,7 +514,10 @@ const AdminRoutes = {
         },
       ],
     },
-
+    {
+      path: "testing",
+      element: <TestingPage />,
+    },
     {
       path: "offices", // Route for managing offices
       element: <AdminManageOfficesPage />,

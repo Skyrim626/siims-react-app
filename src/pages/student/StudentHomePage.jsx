@@ -10,6 +10,9 @@ import {
 import { Button, Dialog } from "@headlessui/react";
 import { getRequest, postRequest } from "../../api/apiHelpers";
 import Text from "../../components/common/Text";
+import Loader from "../../components/common/Loader";
+import ApplyModal from "../../components/workPosts/ApplyModal";
+import WithdrawModal from "../../components/workPosts/WithdrawModal";
 /**
  *
  * Status_id of Student Display Features:
@@ -27,9 +30,12 @@ const StudentHomePage = () => {
     application_id,
     status,
   } = useLoaderData();
-  console.log(currently_applied_work_post);
+  // console.log(currently_applied_work_post);
   // console.log(student);
   // console.log(status);
+
+  // Loading State
+  const [loading, setLoading] = useState(false);
 
   // Location and Navigate
   const location = useLocation();
@@ -43,6 +49,7 @@ const StudentHomePage = () => {
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isWithdrawModalOpen, setIsWithdrawalModalOpen] = useState(false);
   const [selectedWorkPostId, setSelectedWorkPostId] = useState(null);
 
   // Calculate the total number of pages
@@ -57,14 +64,21 @@ const StudentHomePage = () => {
   );
 
   // Modal Logic
+  // Modal Apply Logic
   const handleApplyClick = (workPostId) => {
     setSelectedWorkPostId(workPostId);
     setIsModalOpen(true);
   };
 
+  // Modal Withdraw Logic
+  const handleWithdrawClick = (workPostId) => {
+    setSelectedWorkPostId(workPostId);
+    setIsWithdrawalModalOpen(true);
+  };
+
   // Navigate to Job Details
   const navigateToJobDetails = () => {
-    const to = `${location.pathname}/${currently_applied_work_post.id}`;
+    const to = `${location.pathname}/jobs/${currently_applied_work_post.id}`;
 
     navigate(to);
   };
@@ -85,7 +99,11 @@ const StudentHomePage = () => {
     navigate(to);
   };
 
+  // Applies into a Job
   const handleConfirmApply = async () => {
+    // Set Loading
+    setLoading(true);
+
     // Method POST
     // Create a new application record
     try {
@@ -113,12 +131,22 @@ const StudentHomePage = () => {
           general: "An unexpected error occurred. Please try again.",
         });
       }
+    } finally {
+      setLoading(false);
     }
+  };
+
+  // Withdraws in a Job applied
+  const handleConfirmWithdraw = async () => {
+    console.log("Confirmed Withdrawal");
   };
 
   return (
     <>
       <Page className="p-4 overflow-y-auto mx-auto">
+        {/* Loading */}
+        <Loader loading={loading} />
+
         {/* New Post Box */}
         <header className="bg-blue-600 text-white py-4 shadow-md mb-3">
           <div className="container mx-auto px-4">
@@ -202,7 +230,7 @@ const StudentHomePage = () => {
                         Apply Now
                       </button>
                       <Link
-                        to={`${location.pathname}/${workPost.id}`}
+                        to={`${location.pathname}/jobs/${workPost.id}`}
                         // onClick={() => navigate(`${location}/${workPost.id}`)}
                         className="px-4 py-2 rounded-md font-medium bg-gray-200 hover:bg-gray-300 text-gray-700"
                       >
@@ -284,7 +312,7 @@ const StudentHomePage = () => {
               <div className="flex space-x-4 mt-4">
                 <Button
                   onClick={() =>
-                    handleApplyClick(currently_applied_work_post.id)
+                    handleWithdrawClick(currently_applied_work_post.id)
                   }
                   disabled={[10, 11, 12].includes(status)}
                   className={`w-full sm:w-auto py-2 px-6 rounded-md text-white font-medium ${
@@ -313,34 +341,19 @@ const StudentHomePage = () => {
         )}
 
         {/* Modal */}
-        <Dialog
-          open={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
-        >
-          <Dialog.Panel className="bg-white rounded-lg p-6 shadow-lg w-96">
-            <Dialog.Title className="text-lg font-bold mb-4">
-              Confirm Application
-            </Dialog.Title>
-            <Dialog.Description className="mb-4 text-gray-600">
-              Are you sure you want to apply for this workPost?
-            </Dialog.Description>
-            <div className="flex justify-between">
-              <button
-                onClick={handleConfirmApply}
-                className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
-              >
-                Yes
-              </button>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
-              >
-                No
-              </button>
-            </div>
-          </Dialog.Panel>
-        </Dialog>
+        {/* Apply Modal  */}
+        <ApplyModal
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+          handleConfirmApply={handleConfirmApply}
+        />
+
+        {/* Withdraw Modal  */}
+        <WithdrawModal
+          isWithdrawModalOpen={isWithdrawModalOpen}
+          setIsWithdrawalModalOpen={setIsWithdrawalModalOpen}
+          handleConfirmWithdraw={handleConfirmWithdraw}
+        />
       </Page>
     </>
   );

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Upload, FileText, CheckCircle, AlertCircle } from "lucide-react";
-import { Input } from "@headlessui/react";
+import { Input, Select } from "@headlessui/react";
 
 const ImportStudentForm = ({
   file,
@@ -8,12 +8,40 @@ const ImportStudentForm = ({
   status,
   setStatus,
   handleFileChange,
+  programs,
+  programId,
+  setProgramId,
+  requiredFields = {
+    programId: true,
+  },
 }) => {
   return (
     <div className="p-6 w-96 bg-white rounded-lg shadow-md">
       <h2 className="text-lg font-semibold mb-4 text-gray-700">
         Import Students
       </h2>
+
+      <div className="mb-4">
+        <Select
+          name="programId"
+          className="border data-[focus]:bg-blue-100 h-full outline-none p-2 w-full"
+          aria-label="Select Program"
+          onChange={(e) => {
+            setProgramId(e.target.value);
+          }}
+          required={requiredFields.programId}
+          value={programId}
+        >
+          <option value="">-Select a Program-</option>
+          {programs.map((program) => {
+            return (
+              <option key={program.id} value={program.id}>
+                {program.name}
+              </option>
+            );
+          })}
+        </Select>
+      </div>
 
       <div className="mb-4">
         <label

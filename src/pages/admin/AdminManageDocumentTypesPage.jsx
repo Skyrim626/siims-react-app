@@ -11,12 +11,16 @@ import AdminDocumentTypeForm from "./forms/AdminDocumentTypeForm";
 import { postRequest, putRequest, deleteRequest } from "../../api/apiHelpers";
 import DocumentTypeForm from "../../components/forms/DocumentTypeForm";
 import Table from "../../components/tables/Table";
+import Loader from "../../components/common/Loader";
 
 const AdminManageDocumentTypesPage = () => {
   // Retrieve the document_types data from the loader
   const initial_document_types = useLoaderData();
 
   // console.log(initial_document_types);
+
+  // Loader state
+  const [loading, setLoading] = useState(false);
 
   // State for documentTypes and form modal
   const [documentTypes, setDocumentTypes] = useState(initial_document_types);
@@ -55,6 +59,9 @@ const AdminManageDocumentTypesPage = () => {
 
   // Update a Document Type
   const updateDocumentType = async () => {
+    // Set Loading
+    setLoading(true);
+
     try {
       // Ready payload
       const payload = {
@@ -91,6 +98,8 @@ const AdminManageDocumentTypesPage = () => {
           general: "An unexpected error occurred. Please try again.",
         });
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -107,6 +116,9 @@ const AdminManageDocumentTypesPage = () => {
 
   // Add a new program
   const addDocumentType = async () => {
+    // Set loading to true when the request starts
+    setLoading(true);
+
     try {
       // Ready for payload
       const payload = {
@@ -119,11 +131,16 @@ const AdminManageDocumentTypesPage = () => {
         data: payload,
       });
 
-      // Add the new document type to the local state
-      setDocumentTypes((prevDocumentTypes) => [
-        ...prevDocumentTypes,
-        response.data,
-      ]);
+      if (response) {
+        setLoading(!loading);
+
+        // Add the new document type to the local state
+        setDocumentTypes((prevDocumentTypes) => [
+          ...prevDocumentTypes,
+          response.data,
+        ]);
+      }
+
       // Reset form and close modal on success
       setDocumentTypeName("");
       setErrors({});
@@ -139,12 +156,17 @@ const AdminManageDocumentTypesPage = () => {
           general: "An unexpected error occurred. Please try again.",
         });
       }
+    } finally {
+      // Ensure loading is set to false regardless of success or error
+      setLoading(false);
     }
   };
 
   return (
     <>
       <Page>
+        {/* Loader component */}
+        <Loader loading={loading} />
         <Section>
           <Heading level={3} text={"Document Types"} />
           <Text className="text-sm text-blue-950">

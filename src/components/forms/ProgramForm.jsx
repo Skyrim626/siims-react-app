@@ -2,6 +2,7 @@ import React from "react";
 import { Input, Select } from "@headlessui/react";
 import Heading from "../common/Heading";
 import FormField from "../common/FormField";
+import Text from "../common/Text";
 const ProgramForm = ({
   method = "post",
   collegeId = 0,

@@ -19,12 +19,16 @@ import ManageHeader from "../../components/common/ManageHeader";
 import { useLoaderData, useNavigate, useLocation } from "react-router-dom";
 import Table from "../../components/tables/Table";
 import CollegeForm from "../../components/forms/CollegeForm";
+import Loader from "../../components/common/Loader";
 
 const AdminManageCollegesPage = () => {
   // Retrieve the user_roles data from the loader
   const { initial_colleges, list_of_deans } = useLoaderData();
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Loader state
+  const [loading, setLoading] = useState(false);
 
   // console.log(list_of_deans);
 
@@ -43,6 +47,9 @@ const AdminManageCollegesPage = () => {
 
   // Add new College
   const addNewCollege = async () => {
+    // Set loading
+    setLoading(true);
+
     try {
       // Payload
       const payload = {
@@ -72,11 +79,16 @@ const AdminManageCollegesPage = () => {
           general: "An unexpected error occurred. Please try again.",
         });
       }
+    } finally {
+      setLoading(false);
     }
   };
 
   // Update College
   const updateCollege = async () => {
+    // Set Loading State
+    setLoading(true);
+
     try {
       // Ready Payload
       const payload = {
@@ -120,6 +132,8 @@ const AdminManageCollegesPage = () => {
         });
       }
       console.error("Error updating role:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -140,6 +154,8 @@ const AdminManageCollegesPage = () => {
   return (
     <>
       <Page>
+        <Loader loading={loading} />
+
         <Section>
           <Heading level={3} text={"Colleges"} />
           <Text className="text-sm text-blue-950">

@@ -109,7 +109,7 @@ const StudentRoutes = {
       },
     },
     {
-      path: ":workPostId",
+      path: "jobs/:workPostId",
       element: <StudentViewWorkPost />,
       loader: async ({ params }) => {
         try {
@@ -159,7 +159,6 @@ const StudentRoutes = {
               /**
                * Responses
                */
-
               const profileResponse = await axiosClient.get("/api/v1/profile");
 
               // console.log("Testing");

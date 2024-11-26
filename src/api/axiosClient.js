@@ -75,6 +75,11 @@ axiosClient.interceptors.response.use(
       console.log(response.data.message);
     }
 
+    // Status 409
+    if(response && response.status === 409) {
+      showFailedAlert(response.data.message);
+    }
+
     return Promise.reject(error);
   }
 );
