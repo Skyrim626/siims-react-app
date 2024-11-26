@@ -2,6 +2,7 @@ const StudentReportsPage = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       <header className="bg-blue-900 text-white py-4 shadow-md">
+      <header className="bg-blue-900 text-white py-4 shadow-md">
         <div className="container mx-auto px-4">
           <h1 className="text-2xl font-bold">Program Dashboard</h1>
           <p className="text-sm mt-1">
@@ -39,11 +40,14 @@ const StudentReportsPage = () => {
           <h2 className="text-xl font-semibold mb-4">Reports</h2>
           <div className="flex flex-wrap gap-2">
             <button className="bg-blue-900 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+            <button className="bg-blue-900 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
               Manage DTR
             </button>
             <button className="bg-orange-400 text-white px-4 py-2 rounded-lg hover:bg-orange-600">
+            <button className="bg-orange-400 text-white px-4 py-2 rounded-lg hover:bg-orange-600">
               Submit Weekly Report
             </button>
+            <button className="bg-sky-800 text-white px-4 py-2 rounded-lg hover:bg-sky-600">
             <button className="bg-sky-800 text-white px-4 py-2 rounded-lg hover:bg-sky-600">
               Personal Insights
             </button>
