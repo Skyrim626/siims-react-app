@@ -440,7 +440,7 @@ const AdminRoutes = {
                * Responses
                */
               const studentResponse = await axiosClient.get(
-                "api/v1/users/students/get-all-students"
+                "/api/v1/users/students/get-all-students"
               );
               const collegeResponse = await axiosClient.get("/api/v1/colleges");
               const programResponse = await axiosClient.get("/api/v1/programs");
