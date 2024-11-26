@@ -116,6 +116,8 @@ const ChairpersonRoutes = {
               element: <ChairpersonEndorsementRequestPage />,
               loader: async ({ params }) => {
                 try {
+                  console.log(params);
+
                   // Fetch ID
                   const { endorsementLetterRequestId } = params;
 
@@ -123,6 +125,8 @@ const ChairpersonRoutes = {
                   const response = await axiosClient.get(
                     `/api/v1/chairperson/endorsement-letter-requests/${endorsementLetterRequestId}`
                   );
+
+                  console.log(response);
 
                   /**
                    * Variable Storage
