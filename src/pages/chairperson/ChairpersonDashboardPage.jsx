@@ -1,10 +1,8 @@
 import React, { useEffect } from "react";
 import { useLoaderData } from "react-router-dom"; // Hook to load route data
+import { FaUserGraduate, FaBuilding, FaUsers, FaBook } from "react-icons/fa"; // Import icons
 
 // Import Components
-import { Building, PersonStanding, UserPen } from "lucide-react";
-import Page from "../../components/common/Page";
-import Section from "../../components/common/Section";
 import Heading from "../../components/common/Heading";
 import Text from "../../components/common/Text";
 import Table from "../../components/tables/Table"; // Import Table component
@@ -13,7 +11,7 @@ export default function ChairpersonDashboardPage() {
   // Fetch Data
   const data = useLoaderData(); // Get the data from loader
   const coordinators = useLoaderData();
-  
+
   // Log the data for debugging
   useEffect(() => {
     console.log("Fetched Coordinators Data:", coordinators);
@@ -24,10 +22,30 @@ export default function ChairpersonDashboardPage() {
   const totalCompanies = data?.dashboard?.totalCompanies || 0;
 
   const stats = [
-    { label: "Total Interns", value: 193, color: "blue" },
-    { label: "Total Company", value: 28, color: "orange" },
-    { label: "Total Coordinators", value: 28, color: "red" },
-    { label: "Total Programs", value: 28, color: "green" },
+    {
+      label: "Total Interns",
+      value: totalStudents,
+      color: "blue",
+      icon: <FaUserGraduate className="text-blue-500" size={32} />,
+    },
+    {
+      label: "Total Companies",
+      value: totalCompanies,
+      color: "violet",
+      icon: <FaBuilding className="text-orange-500" size={32} />,
+    },
+    {
+      label: "Total Coordinators",
+      value: 28,
+      color: "red",
+      icon: <FaUsers className="text-red-500" size={32} />,
+    },
+    {
+      label: "Total Programs",
+      value: 28,
+      color: "teal",
+      icon: <FaBook className="" size={32} />,
+    },
   ];
 
   return (
@@ -52,8 +70,10 @@ export default function ChairpersonDashboardPage() {
             {stats.map((stat, index) => (
               <div
                 key={index}
-                className={`flex flex-col items-center justify-center bg-white shadow-md rounded-lg border-t-4 border-t-${stat.color}-500 p-4`}
+                className={`flex flex-col items-center justify-center bg-white shadow-md rounded-lg border-t-4 border-${stat.color}-500 p-4`}
               >
+                {/* Icon */}
+                <div className="mb-2">{stat.icon}</div>
                 {/* Label */}
                 <span className="text-gray-600 text-sm font-medium">
                   {stat.label}
@@ -73,7 +93,7 @@ export default function ChairpersonDashboardPage() {
               This section shows the list of coordinators.
             </Text>
             <hr className="my-3" />
-            
+
             {/* Table for Coordinators */}
             {coordinators && coordinators.length > 0 ? (
               <Table data={coordinators} />
