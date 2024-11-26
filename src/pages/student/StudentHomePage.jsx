@@ -8,11 +8,16 @@ import {
   useNavigate,
 } from "react-router-dom";
 import { Button, Dialog } from "@headlessui/react";
-import { getRequest, postRequest } from "../../api/apiHelpers";
+import { getRequest, postRequest, putRequest } from "../../api/apiHelpers";
 import Text from "../../components/common/Text";
 import Loader from "../../components/common/Loader";
 import ApplyModal from "../../components/workPosts/ApplyModal";
 import WithdrawModal from "../../components/workPosts/WithdrawModal";
+import PostBox from "../../components/workPosts/PostBox";
+import ReportsSection from "../../components/workPosts/ReportsSection";
+import WorkPost from "../../components/workPosts/WorkPost";
+import Pagination from "../../components/workPosts/Pagination";
+import CurrentlyJobApplied from "../../components/workPosts/CurrentlyJobApplied";
 /**
  *
  * Status_id of Student Display Features:
@@ -29,10 +34,15 @@ const StudentHomePage = () => {
     currently_applied_work_post,
     application_id,
     status,
+    application_status,
   } = useLoaderData();
   // console.log(currently_applied_work_post);
   // console.log(student);
   // console.log(status);
+
+  // Apply Status
+  const [canApply, setCanApply] = useState(null); // will hold the application status
+  const [errors, setErrors] = useState("");
 
   // Loading State
   const [loading, setLoading] = useState(false);
@@ -62,6 +72,31 @@ const StudentHomePage = () => {
     indexOfFirstWorkPost,
     indexOfLastWorkPost
   );
+
+  useEffect(() => {
+    // Call the backend API to check if the student can apply
+    const checkStudentStatus = async () => {
+      try {
+        // const response = await axios.get(`/api/students/${studentId}/check-apply-status`);
+        const response = await getRequest({
+          url: `/api/v1/users/students/${student.id}/check-apply-status`,
+        });
+
+        if (response.can_apply) {
+          setCanApply(true);
+        } else {
+          setCanApply(false);
+          setErrors(response.data.message); // Display the blocking message
+        }
+      } catch (error) {
+        console.error("Error checking student status:", error);
+        setCanApply(false);
+        setErrors("An error occurred while checking application status.");
+      }
+    };
+
+    checkStudentStatus();
+  }, [student.id]);
 
   // Modal Logic
   // Modal Apply Logic
@@ -138,7 +173,21 @@ const StudentHomePage = () => {
 
   // Withdraws in a Job applied
   const handleConfirmWithdraw = async () => {
-    console.log("Confirmed Withdrawal");
+    setLoading(true);
+
+    try {
+      const response = await putRequest({
+        url: `/api/v1/applications/${application_id}/withdraw`,
+      });
+
+      if (response) {
+        setIsWithdrawalModalOpen(false);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -146,38 +195,13 @@ const StudentHomePage = () => {
       <Page className="p-4 overflow-y-auto mx-auto">
         {/* Loading */}
         <Loader loading={loading} />
-
         {/* New Post Box */}
-        <header className="bg-blue-600 text-white py-4 shadow-md mb-3">
-          <div className="container mx-auto px-4">
-            <h1 className="text-2xl font-bold">Home Page</h1>
-            <p className="text-sm mt-1">
-              Browse Job Lists for Internship and Immersion
-            </p>
-          </div>
-        </header>
+        <PostBox />
         {/* Reports Section */}
         {/* Deployed - 12 */}
         {studentStatus === 12 && (
-          <div className="bg-white shadow-md rounded-lg p-6 mb-6">
-            <h2 className="text-xl font-semibold mb-4">Reports</h2>
-            <div className="flex flex-wrap gap-2">
-              <Button
-                onClick={navigateToDtr}
-                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-              >
-                Manage DTR
-              </Button>
-              <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
-                Submit Weekly Report
-              </button>
-              <button className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600">
-                Personal Insights
-              </button>
-            </div>
-          </div>
+          <ReportsSection navigateToDtr={navigateToDtr} />
         )}
-
         {/* WorkPost List Section */}
         {/* Not yet applied - 10 */}
         {studentStatus === 8 && (
@@ -186,160 +210,40 @@ const StudentHomePage = () => {
               Available Internships
             </h2>
             <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+              {/* Can Apply or Not Apply */}
               {currentWorkPost.map((workPost) => {
                 // console.log(workPost);
-
                 return (
-                  <div
+                  <WorkPost
                     key={workPost.id}
-                    className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-shadow duration-300"
-                  >
-                    {/* Job Details */}
-                    <div className="p-5">
-                      <h3 className="text-xl font-bold text-gray-800 mb-2">
-                        {workPost.title}
-                      </h3>
-                      <p className="text-gray-600 text-sm font-medium mb-2">
-                        {workPost.company_name}
-                      </p>
-                      <p className="text-gray-500 text-sm line-clamp-3 mb-4">
-                        {workPost.responsibilities}
-                      </p>
-                      <div className="text-sm text-gray-500 space-y-1">
-                        <p>
-                          <span className="font-semibold">Start Date:</span>{" "}
-                          {workPost.start_date}
-                        </p>
-                        <p>
-                          <span className="font-semibold">End Date:</span>{" "}
-                          {workPost.end_date}
-                        </p>
-                      </div>
-                    </div>
-                    {/* Buttons */}
-                    <div className="bg-gray-100 px-5 py-4 flex justify-between items-center">
-                      <button
-                        onClick={() => handleApplyClick(workPost.id)}
-                        className={`px-4 py-2 rounded-md font-medium text-white transition ${
-                          workPost.is_closed
-                            ? "bg-gray-400 cursor-not-allowed"
-                            : "bg-blue-600 hover:bg-blue-700"
-                        }`}
-                        disabled={workPost.is_closed}
-                      >
-                        Apply Now
-                      </button>
-                      <Link
-                        to={`${location.pathname}/jobs/${workPost.id}`}
-                        // onClick={() => navigate(`${location}/${workPost.id}`)}
-                        className="px-4 py-2 rounded-md font-medium bg-gray-200 hover:bg-gray-300 text-gray-700"
-                      >
-                        View Job
-                      </Link>
-                    </div>
-                  </div>
+                    workPost={workPost}
+                    handleApplyClick={handleApplyClick}
+                    location={location}
+                    canApply={canApply}
+                  />
                 );
               })}
             </div>
 
             {/* Pagination */}
-            <div className="mt-8 flex justify-between items-center">
-              <button
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-                className={`px-4 py-2 rounded-md ${
-                  currentPage === 1
-                    ? "bg-gray-300 cursor-not-allowed"
-                    : "bg-blue-600 text-white hover:bg-blue-700"
-                }`}
-              >
-                Previous
-              </button>
-              <span className="text-gray-700">
-                Page {currentPage} of {totalPages}
-              </span>
-              <button
-                onClick={() =>
-                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                }
-                disabled={currentPage === totalPages}
-                className={`px-4 py-2 rounded-md ${
-                  currentPage === totalPages
-                    ? "bg-gray-300 cursor-not-allowed"
-                    : "bg-blue-600 text-white hover:bg-blue-700"
-                }`}
-              >
-                Next
-              </button>
-            </div>
+            <Pagination
+              setCurrentPage={setCurrentPage}
+              totalPages={totalPages}
+              currentPage={currentPage}
+            />
           </div>
         )}
 
         {/* If the student already applied, display this */}
-        {/* If the student already applied, display this */}
-        {currently_applied_work_post && (
-          <div className="container mx-auto mb-8">
-            <h2 className="text-2xl font-semibold mb-6 text-gray-800">
-              Currently Applied Job
-            </h2>
-            <div
-              key={currently_applied_work_post.id}
-              className="bg-white shadow-md rounded-lg p-6 transition-all transform hover:scale-105 duration-300"
-            >
-              <h3 className="text-2xl font-bold text-gray-800 mb-3">
-                {currently_applied_work_post.title}
-              </h3>
-              <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-                <span className="font-semibold">Responsibilities:</span>{" "}
-                {currently_applied_work_post.responsibilities}
-              </p>
-              <div className="flex flex-col space-y-2 mb-4">
-                <p className="text-sm text-gray-500">
-                  <span className="font-semibold">Start Date:</span>{" "}
-                  {new Date(
-                    currently_applied_work_post.start_date
-                  ).toLocaleDateString()}
-                </p>
-                <p className="text-sm text-gray-500">
-                  <span className="font-semibold">End Date:</span>{" "}
-                  {new Date(
-                    currently_applied_work_post.end_date
-                  ).toLocaleDateString()}
-                </p>
-              </div>
-
-              {/* Actions */}
-              <div className="flex space-x-4 mt-4">
-                <Button
-                  onClick={() =>
-                    handleWithdrawClick(currently_applied_work_post.id)
-                  }
-                  disabled={[10, 11, 12].includes(status)}
-                  className={`w-full sm:w-auto py-2 px-6 rounded-md text-white font-medium ${
-                    [10, 11, 12].includes(status)
-                      ? "bg-gray-600"
-                      : "bg-red-600 hover:bg-red-700"
-                  } transition-all`}
-                >
-                  Withdraw
-                </Button>
-                <Button
-                  onClick={navigateToApplication}
-                  className="w-full sm:w-auto py-2 px-6 rounded-md bg-blue-600 text-white font-medium hover:bg-blue-700 transition-all"
-                >
-                  View Application
-                </Button>
-                <Button
-                  onClick={navigateToJobDetails}
-                  className="w-full sm:w-auto py-2 px-6 rounded-md bg-blue-600 text-white font-medium hover:bg-blue-700 transition-all"
-                >
-                  View Job Details
-                </Button>
-              </div>
-            </div>
-          </div>
+        {currently_applied_work_post && application_status !== 6 && (
+          <CurrentlyJobApplied
+            currently_applied_work_post={currently_applied_work_post}
+            handleWithdrawClick={handleWithdrawClick}
+            navigateToApplication={navigateToApplication}
+            status={status}
+            navigateToJobDetails={navigateToJobDetails}
+          />
         )}
-
         {/* Modal */}
         {/* Apply Modal  */}
         <ApplyModal
@@ -347,7 +251,6 @@ const StudentHomePage = () => {
           setIsModalOpen={setIsModalOpen}
           handleConfirmApply={handleConfirmApply}
         />
-
         {/* Withdraw Modal  */}
         <WithdrawModal
           isWithdrawModalOpen={isWithdrawModalOpen}
