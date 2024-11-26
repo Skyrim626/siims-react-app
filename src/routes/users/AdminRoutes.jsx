@@ -29,6 +29,8 @@ import AdminMessagingPage from "../../pages/admin/AdminMessagingPage";
 import ChatLayout from "../../components/layouts/ChatLayout";
 import AdminManageStudentsPage from "../../pages/admin/AdminManageStudentsPage";
 import AdminManageCoordinatorsPage from "../../pages/admin/AdminManageCoordinatorsPage";
+import ChatWindow from "../../components/messaging/ChatWindow";
+import TestChatWindow from "../../components/messaging/TestChatWindow";
 
 // Define routes for the Admin section
 const AdminRoutes = {
@@ -122,6 +124,70 @@ const AdminRoutes = {
     {
       path: "messaging",
       element: <ChatLayout />,
+      loader: async () => {
+        try {
+          /**
+           * Responses
+           */
+          const myGroupsResponse = await axiosClient.get(
+            "/api/v1/messaging/my-groups"
+          );
+
+          /**
+           * Variables
+           */
+          const myGroups = myGroupsResponse.data;
+
+          /**
+           * Return
+           */
+          return {
+            myGroups,
+          };
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      children: [
+        {
+          index: true,
+          element: <ChatWindow />,
+        },
+        {
+          path: ":groupId",
+          element: <ChatWindow />,
+          loader: async ({ params }) => {
+            /**
+             * Params
+             */
+
+            const { groupId } = params;
+
+            /**
+             * Responses
+             */
+            const groupResponse = await axiosClient.get(
+              `/api/v1/messaging/groups/${groupId}`
+            );
+
+            const groupMessagesResponse = await axiosClient.get(
+              `/api/v1/messaging/groups/${groupId}/messages`
+            );
+
+            /**
+             * Return
+             */
+            const group = groupResponse.data;
+            const groupMessages = groupMessagesResponse.data;
+
+            return {
+              groupMessages,
+              group,
+              groupId,
+            };
+          },
+        },
+      ],
     },
 
     {

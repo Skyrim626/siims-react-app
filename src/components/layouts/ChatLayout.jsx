@@ -13,8 +13,27 @@ import {
 } from "react-icons/fa";
 import { getRequest, postRequest } from "../../api/apiHelpers";
 import MemberList from "../messaging/MemberList";
+import {
+  Outlet,
+  useLoaderData,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 
 const ChatLayout = ({ children }) => {
+  const navigate = useNavigate(); // Hook to change the URL
+  const location = useLocation();
+  // Fetching
+  const { myGroups } = useLoaderData();
+  console.log(myGroups);
+
+  // Handler to update URL when a group is clicked
+  const handleGroupClick = (groupId) => {
+    console.log(`${location.pathname}/${groupId}`);
+    // Navigate to the group-specific URL (e.g., /messaging/groupId)
+    navigate(`${location.pathname}/${groupId}`);
+  };
+
   // Input State for Group
   const [groupName, setGroupName] = useState("");
 
@@ -34,7 +53,7 @@ const ChatLayout = ({ children }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPeople, setSelectedPeople] = useState([]); // Array to hold selected people
 
-  const [groups, setGroups] = useState([
+  /* const [groups, setGroups] = useState([
     {
       name: "CP Department",
       lastMessage: "You have a message",
@@ -59,9 +78,9 @@ const ChatLayout = ({ children }) => {
       time: "5:43 PM",
       members: [],
     },
-  ]);
+  ]); */
 
-  const people = [
+  /*  const people = [
     {
       id: 1,
       name: "Hans Zin Sanchez",
@@ -76,10 +95,10 @@ const ChatLayout = ({ children }) => {
         "https://images.unsplash.com/photo-1667409235742-678f1d53b90e?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       email: "jessel@example.com", // Example field to show in profile
     },
-  ];
+  ]; */
 
   const [currentChat, setCurrentChat] = useState("IT Coordinators");
-  const [messages, setMessages] = useState([
+  /* const [messages, setMessages] = useState([
     {
       sender: "Hans Zin",
       text: "Good evening Sir!",
@@ -98,10 +117,10 @@ const ChatLayout = ({ children }) => {
       time: "5:45 PM",
       isOwnMessage: false,
     },
-  ]);
+  ]); */
   const [newMessage, setNewMessage] = useState("");
 
-  const handleSendMessage = () => {
+  /* const handleSendMessage = () => {
     if (newMessage.trim()) {
       const newMsg = {
         sender: "You",
@@ -115,7 +134,7 @@ const ChatLayout = ({ children }) => {
       setMessages([...messages, newMsg]);
       setNewMessage("");
     }
-  };
+  }; */
 
   const togglePerson = (person) => {
     setSelectedPeople((prevSelected) => {
@@ -349,6 +368,19 @@ const ChatLayout = ({ children }) => {
             </div>
           )}
 
+          {myGroups && myGroups.length > 0 && (
+            <div>
+              {myGroups.map((myGroup) => (
+                <UserListItem
+                  key={myGroup.id}
+                  id={myGroup.id}
+                  fullName={myGroup.name}
+                  handleGroupClick={handleGroupClick}
+                />
+              ))}
+            </div>
+          )}
+
           {/* Groups here */}
           {/* {groups.map((group, index) => (
             <div
@@ -373,7 +405,8 @@ const ChatLayout = ({ children }) => {
           ))} */}
         </div>
       </div>
-      <div>{children}</div>
+      {/* Main Content - Chat Window */}
+      <Outlet /> {/* This will render the specific chat window */}
     </div>
   );
 };
