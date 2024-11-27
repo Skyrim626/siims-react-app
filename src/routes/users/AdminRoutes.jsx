@@ -12,7 +12,6 @@ import AdminLayout from "../../components/layouts/AdminLayout"; // Importing the
 
 // Admin Pages
 import AdminDashboard from "../../pages/admin/AdminDashboard"; // Importing the Admin Dashboard page
-import AdminLogs from "../../pages/admin/AdminLogs"; // Importing the logs management page
 import AdminManageUserSelection from "../../pages/admin/AdminManageUserSelection"; // Importing the user selection management page
 import AdminManageDeansPage from "../../pages/admin/manage-users/deans/AdminManageDeansPage"; // Importing the page to manage deans
 import AdminManageUsersPage from "../../pages/admin/manage-users/AdminManageUsersPage"; // Importing the general user management page
@@ -31,6 +30,7 @@ import AdminManageCoordinatorsPage from "../../pages/admin/AdminManageCoordinato
 import ChatWindow from "../../components/messaging/ChatWindow";
 import TestChatWindow from "../../components/messaging/TestChatWindow";
 import TestingPage from "../../pages/TestingPage";
+import AdminViewLogsPage from "../../pages/admin/AdminViewLogsPage";
 
 // Define routes for the Admin section
 const AdminRoutes = {
@@ -524,7 +524,27 @@ const AdminRoutes = {
 
     {
       path: "logs", // Route for viewing logs
-      element: <AdminLogs />,
+      element: <AdminViewLogsPage />,
+      loader: async () => {
+        try {
+          /**
+           * Responses
+           */
+          const logResponse = await axiosClient.get("/api/v1/logs");
+
+          /**
+           * Variables
+           */
+          const logs = logResponse.data;
+
+          /**
+           * Return
+           */
+          return {
+            logs,
+          };
+        } catch (error) {}
+      },
     },
   ],
 };
