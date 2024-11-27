@@ -5,6 +5,7 @@ import { getStatusBgColor, getStatusColor } from "../../utils/statusColor";
 import toFilePath from "../../utils/baseURL";
 import { putRequest } from "../../api/apiHelpers";
 import { Button } from "@headlessui/react";
+import Loader from "../../components/common/Loader";
 
 const OsaManageApplicantApplication = () => {
   // Fetch Data
@@ -15,9 +16,15 @@ const OsaManageApplicantApplication = () => {
   // State to manage documents
   const [documents, setDocuments] = useState(application.documents);
 
+  // Loading State
+  const [loading, setLoading] = useState(false);
+
   // Handle Approve Change
   const handleApprove = async () => {
     // console.log("Approve");
+
+    // Loading State
+    setLoading(true);
 
     try {
       // PUT METHOD
@@ -32,6 +39,8 @@ const OsaManageApplicantApplication = () => {
     } catch (errors) {
       console.log(errors);
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -55,6 +64,9 @@ const OsaManageApplicantApplication = () => {
       // Find the updated document and log its remarks (optional)
       const updatedDoc = updatedDocuments.find((doc) => doc.id === docId);
       // console.log(updatedDoc);
+
+      // Set Loading State
+      setLoading(true);
 
       try {
         // Ready for payload
@@ -82,12 +94,16 @@ const OsaManageApplicantApplication = () => {
       } catch (error) {
         console.log(error);
         throw error;
+      } finally {
+        setLoading(false);
       }
     }
   };
 
   return (
     <Page>
+      <Loader loading={loading} />
+
       <div className="container mx-auto p-8">
         <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-8 rounded-xl shadow-xl mb-8">
           <h1 className="text-4xl font-bold text-center mb-4">

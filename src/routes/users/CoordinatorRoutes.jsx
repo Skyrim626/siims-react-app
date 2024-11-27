@@ -7,6 +7,8 @@ import axiosClient from "../../api/axiosClient";
 import CoordinatorViewStudentsPage from "../../pages/coordinator/CoordinatorViewStudentsPage";
 import CoordinatorViewStudentApplications from "../../pages/coordinator/CoordinatorViewStudentApplications";
 import CoordinatorViewStudentApplication from "../../pages/coordinator/CoordinatorViewStudentApplication";
+import CoordinatorMyStudentProgress from "../../pages/coordinator/CoordinatorMyStudentsReports";
+import CoordinatorMyStudentsReports from "../../pages/coordinator/CoordinatorMyStudentsReports";
 
 // Routes for Coordinator
 const CoordinatorRoutes = {
@@ -44,6 +46,10 @@ const CoordinatorRoutes = {
     {
       path: "dashboard", // Dashboard route that redirects to /osa
       element: <Navigate to={"/osa"} />,
+    },
+    {
+      path: "my-students-reports",
+      element: <CoordinatorMyStudentsReports />,
     },
     {
       index: true,

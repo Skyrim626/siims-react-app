@@ -14,6 +14,7 @@ import {
   UserSearch,
   UserRoundCheck,
   UserPen,
+  NotebookPen,
 } from "lucide-react";
 
 // Configuration for sidebar items for Admin
@@ -144,6 +145,15 @@ const coordinatorSidebarItemsConfig = [
     exact: true,
     active: true,
     path: "/auth/coordinator/students",
+  },
+  {
+    icon: <Users size={20} />,
+    text: "My Student's Reports",
+    alert: true,
+    ariaLabel: "My Student's Reports",
+    exact: true,
+    active: true,
+    path: "/auth/coordinator/my-students-reports",
   },
   {
     icon: <UserPen size={20} />,
