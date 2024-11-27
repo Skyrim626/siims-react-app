@@ -16,6 +16,7 @@ import CompanyEditWorkPostPage from "../../pages/company/CompanyEditWorkPostPage
 import CompanyManageApplicantsPage from "../../pages/company/CompanyManageApplicantsPage";
 import CompanyAcceptanceLetterPage from "../../pages/company/CompanyAcceptanceLetterPage";
 import CompanyManageApplicantPage from "../../pages/company/CompanyManageApplicantPage";
+import CompanyManageInternsPage from "../..//pages/company/CompanyManageInternsPage"
 
 // Routes for Company
 const CompanyRoutes = {
@@ -59,6 +60,10 @@ const CompanyRoutes = {
     {
       path: "profile",
       element: <CompanyProfilePage />,
+    },
+    {
+      path: "interns",
+      element: <CompanyManageInternsPage />,
     },
     {
       path: "work-posts",

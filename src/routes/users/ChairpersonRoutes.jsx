@@ -83,6 +83,10 @@ const ChairpersonRoutes = {
       ],
     },
     {
+      path: "generate-endorsement-letter",
+      element: <ChairpersonGenerateEndorsemenLetterPage />,
+    },
+    {
       path: "endorsement-requests",
       element: <Outlet />,
       children: [
@@ -141,12 +145,10 @@ const ChairpersonRoutes = {
                 }
               },
             },
-            {
-              path: "generate-endorsement-letter",
-              element: <ChairpersonGenerateEndorsemenLetterPage />,
-            },
+            
           ],
         },
+      
       ],
     },
   ],

@@ -14,6 +14,7 @@ import {
   UserSearch,
   UserRoundCheck,
   UserPen,
+  ContactRound,
 } from "lucide-react";
 
 // Configuration for sidebar items for Admin
@@ -278,6 +279,14 @@ const companySidebarItemsConfig = [
     path: "/auth/company/work-posts",
   },
   {
+    icon: <ContactRound size={20} />,
+    text: "Manage Interns",
+    alert: true,
+    ariaLabel: "Manage Interns",
+    exact: true,
+    path: "/auth/company/interns",
+  },
+  {
     icon: <Building size={20} />,
     text: "Offices",
     alert: true,
@@ -307,6 +316,7 @@ const companySidebarItemsConfig = [
     exact: true,
     path: "/auth/company/applicants",
   },
+  
 ];
 
 // Configuration for sidebar items for OSA
