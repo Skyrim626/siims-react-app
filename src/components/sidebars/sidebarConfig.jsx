@@ -100,14 +100,6 @@ const adminSidebarItemsConfig = [
   }, */
 
   {
-    icon: <BookCopy size={20} />,
-    text: "Internship Postings",
-    alert: true,
-    ariaLabel: "Internship Postings",
-    exact: false,
-    path: "/auth/admin/internship-postings",
-  },
-  {
     icon: <MessageCircle size={20} />,
     text: "Messaging",
     alert: true,
