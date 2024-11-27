@@ -19,6 +19,7 @@ import FormModal from "../../components/modals/FormModal";
 import EndorsementRequestForm from "../../components/forms/EndorsementRequestForm";
 import { getStatusColor, getStatusBgColor } from "../../utils/statusColor";
 import toFilePath from "../../utils/baseURL";
+import Loader from "../../components/common/Loader";
 
 const StudentJobApplicationPage = () => {
   // Fetch loader data
@@ -31,6 +32,12 @@ const StudentJobApplicationPage = () => {
   } = useLoaderData();
   // console.log(stepOneDocuments);
   // console.log(status);
+
+  // Loading State
+  const [loading, setLoading] = useState(false);
+
+  // Button State
+  const [isClickedButtonRequest, setIsClickedButtonRequest] = useState(false);
 
   // Modal State
   const [isOpen, setIsOpen] = useState(false);
@@ -73,6 +80,9 @@ const StudentJobApplicationPage = () => {
   const handleSubmitRequest = async (e) => {
     e.preventDefault();
 
+    // Loading State
+    setLoading(true);
+
     try {
       // Convert student IDs into the desired format [{ "student_id": "12345" }]
       const studentIdsArray = studentIds.split(",").map((id) => ({
@@ -89,6 +99,9 @@ const StudentJobApplicationPage = () => {
 
       // console.log("Payload to submit:", payload);
 
+      // console.log(initial_application.id);
+      // console.log(studentIdsArray);
+
       // Make POST request
       const response = await postRequest({
         url: `/api/v1/student/applications/${initial_application.id}/request-endorsement-letter`,
@@ -98,9 +111,13 @@ const StudentJobApplicationPage = () => {
       // console.log("Response:", response);
 
       // Optionally, close modal and provide feedback
-      setIsOpen(false);
+
       // Navigate to another page or show success message
+
+      setIsClickedButtonRequest(true);
+
       navigate(location.pathname);
+      setIsOpen(false);
     } catch (error) {
       if (error.response && error.response.data && error.response.data.errors) {
         console.log(error.response.data.errors);
@@ -111,6 +128,8 @@ const StudentJobApplicationPage = () => {
           general: "An unexpected error occurred. Please try again.",
         });
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -147,6 +166,9 @@ const StudentJobApplicationPage = () => {
       formData.append("file", file);
       formData.append("type", file);
 
+      // Loading State
+      setLoading(true);
+
       try {
         // console.log("Uploading file to the backend...");
 
@@ -158,9 +180,12 @@ const StudentJobApplicationPage = () => {
         // Navigate after submitting
         if (response) {
           navigate(location.pathname);
+          setLoading(false);
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -193,6 +218,8 @@ const StudentJobApplicationPage = () => {
 
   return (
     <Page>
+      <Loader loading={loading} />
+
       {/* Open - Endorsement Form Component */}
       <FormModal
         isOpen={isOpen}
@@ -367,13 +394,15 @@ const StudentJobApplicationPage = () => {
                   onClick={openEndorsementForm}
                   className={`px-6 py-2 rounded-lg text-white font-medium ${
                     initial_application.endorsement ||
-                    [10, 11, 12].includes(status)
+                    [10, 11, 12].includes(status) ||
+                    isClickedButtonRequest
                       ? "bg-gray-500 cursor-not-allowed"
                       : "bg-indigo-500 hover:bg-indigo-600"
                   }`}
                   disabled={
                     initial_application.endorsement ||
-                    [10, 11, 12].includes(status)
+                    [10, 11, 12].includes(status) ||
+                    isClickedButtonRequest
                   }
                 >
                   Request Endorsement

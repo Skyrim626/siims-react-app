@@ -8,14 +8,9 @@ import { putRequest } from "../../api/apiHelpers";
 const genders = ["male", "female", "other"];
 
 const CoordinatorProfilePage = () => {
-  // Fetch profile data
   const initial_profile = useLoaderData();
-
-  // Open Navigation and Location
   const location = useLocation();
   const navigate = useNavigate();
-
-  // console.log(initial_profile);
 
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
@@ -37,24 +32,22 @@ const CoordinatorProfilePage = () => {
 
   const handleSaveChanges = async () => {
     if (isEditing) {
-      // Ready payload
       const payload = {
-        first_name: profile["firstName"],
-        middle_name: profile["middleName"],
-        last_name: profile["lastName"],
-        email: profile["email"],
-        gender: profile["gender"],
+        first_name: profile.firstName,
+        middle_name: profile.middleName,
+        last_name: profile.lastName,
+        email: profile.email,
+        gender: profile.gender,
       };
 
       try {
-        // Use Method PUT
         const response = await putRequest({
           url: "/api/v1/coordinator/profile",
           data: payload,
         });
 
         if (response) {
-          navigate(location.pathname); // Back to Profile Page
+          navigate(location.pathname);
         }
       } catch (error) {
         console.log(error);
@@ -65,168 +58,163 @@ const CoordinatorProfilePage = () => {
 
   return (
     <Page>
-      <div className="max-w-4xl mx-auto mt-10">
-        <div className="bg-white shadow-lg rounded-lg p-8">
-          <div className="flex items-center justify-between mb-8">
-            <h1 className="text-3xl font-semibold text-gray-900">
-              Coordinator Profile
-            </h1>
+      {/* Header Section */}
+      <div className="relative bg-gradient-to-r from-blue-300 to-indigo-600 h-60">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-30"
+          style={{ backgroundImage: `url('/path-to-header-image.jpg')` }}
+        ></div>
+        <div className="relative z-10 flex items-center h-full px-8">
+          {/* Profile Photo */}
+          <div className="w-28 h-28 rounded-full bg-white overflow-hidden shadow-lg">
+            <img
+              src="https://images.unsplash.com/photo-1732530361158-09f4154b6b3b?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              alt="Profile"
+              className="w-full h-full object-cover"
+            />
+          </div>
+          {/* Name and Button */}
+          <div className="ml-6">
+            {/* Name */}
+            <h2 className="text-2xl font-semibold text-white">
+              {profile.firstName} {profile.lastName}
+            </h2>
+            {/* Edit Button */}
             <button
               onClick={handleSaveChanges}
-              className={`px-5 py-2 text-sm font-medium rounded-lg shadow-md ${
+              className={`mt-4 px-6 py-2 rounded-lg font-medium text-white ${
                 isEditing
-                  ? "bg-green-500 hover:bg-green-600 text-white"
-                  : "bg-indigo-500 hover:bg-indigo-600 text-white"
-              } focus:outline-none focus:ring-4 focus:ring-opacity-50 ${
-                isEditing ? "focus:ring-green-300" : "focus:ring-indigo-300"
-              }`}
+                  ? "bg-green-500 hover:bg-green-600 focus:ring-green-300"
+                  : "bg-blue-900 hover:bg-indigo-600 focus:ring-indigo-300"
+              } focus:outline-none focus:ring-4 transition`}
             >
               {isEditing ? "Save Changes" : "Edit Profile"}
             </button>
           </div>
-
-          <form className="space-y-6">
-            {/* First Name */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                First Name
-              </label>
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="firstName"
-                  value={profile.firstName}
-                  onChange={handleInputChange}
-                  className="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                />
-              ) : (
-                <p className="mt-2 text-gray-800">{profile.firstName}</p>
-              )}
-            </div>
-
-            {/* Middle Name */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Middle Name
-              </label>
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="middleName"
-                  value={profile.middleName}
-                  onChange={handleInputChange}
-                  className="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                />
-              ) : (
-                <p className="mt-2 text-gray-800">{profile.middleName}</p>
-              )}
-            </div>
-
-            {/* Last Name */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Last Name
-              </label>
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="lastName"
-                  value={profile.lastName}
-                  onChange={handleInputChange}
-                  className="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                />
-              ) : (
-                <p className="mt-2 text-gray-800">{profile.lastName}</p>
-              )}
-            </div>
-
-            {/* Email */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Email
-              </label>
-              {isEditing ? (
-                <input
-                  type="email"
-                  name="email"
-                  value={profile.email}
-                  onChange={handleInputChange}
-                  className="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                />
-              ) : (
-                <p className="mt-2 text-gray-800">{profile.email}</p>
-              )}
-            </div>
-
-            {/* Gender */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Gender
-              </label>
-              {isEditing ? (
-                <Listbox value={profile.gender} onChange={handleGenderChange}>
-                  {({ open }) => (
-                    <div className="relative mt-2">
-                      <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left bg-white border border-gray-300 rounded-md shadow-sm cursor-default sm:text-sm focus:ring-indigo-500 focus:border-indigo-500">
-                        <span className="block truncate">{profile.gender}</span>
-                        <span className="absolute inset-y-0 right-0 flex items-center pr-2">
-                          <ChevronDown
-                            className="w-5 h-5 text-gray-400"
-                            aria-hidden="true"
-                          />
-                        </span>
-                      </Listbox.Button>
-                      <Transition
-                        as={Fragment}
-                        leave="transition ease-in duration-100"
-                        leaveFrom="opacity-100"
-                        leaveTo="opacity-0"
-                      >
-                        <Listbox.Options className="absolute z-10 w-full mt-1 overflow-auto bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                          {genders.map((gender, index) => (
-                            <Listbox.Option
-                              key={index}
-                              className={({ active }) =>
-                                `cursor-default select-none relative py-2 pl-10 pr-4 ${
-                                  active
-                                    ? "text-white bg-indigo-600"
-                                    : "text-gray-900"
-                                }`
-                              }
-                              value={gender}
-                            >
-                              {({ selected }) => (
-                                <>
-                                  <span
-                                    className={`block truncate ${
-                                      selected ? "font-medium" : "font-normal"
-                                    }`}
-                                  >
-                                    {gender}
-                                  </span>
-                                  {selected ? (
-                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-indigo-600">
-                                      <Check
-                                        className="w-5 h-5"
-                                        aria-hidden="true"
-                                      />
-                                    </span>
-                                  ) : null}
-                                </>
-                              )}
-                            </Listbox.Option>
-                          ))}
-                        </Listbox.Options>
-                      </Transition>
-                    </div>
-                  )}
-                </Listbox>
-              ) : (
-                <p className="mt-2 text-gray-800">{profile.gender}</p>
-              )}
-            </div>
-          </form>
         </div>
+      </div>
+
+      {/* Profile Form Section */}
+      <div className="max-w-4xl mx-auto mt-10 bg-white shadow rounded-lg p-8">
+        <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* First Name */}
+          <div>
+            <label className="block text-sm font-medium text-gray-600">First Name</label>
+            {isEditing ? (
+              <input
+                type="text"
+                name="firstName"
+                value={profile.firstName}
+                onChange={handleInputChange}
+                className="mt-2 w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              />
+            ) : (
+              <p className="mt-2 text-gray-900">{profile.firstName}</p>
+            )}
+          </div>
+
+          {/* Middle Name */}
+          <div>
+            <label className="block text-sm font-medium text-gray-600">Middle Name</label>
+            {isEditing ? (
+              <input
+                type="text"
+                name="middleName"
+                value={profile.middleName}
+                onChange={handleInputChange}
+                className="mt-2 w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              />
+            ) : (
+              <p className="mt-2 text-gray-900">{profile.middleName}</p>
+            )}
+          </div>
+
+          {/* Last Name */}
+          <div>
+            <label className="block text-sm font-medium text-gray-600">Last Name</label>
+            {isEditing ? (
+              <input
+                type="text"
+                name="lastName"
+                value={profile.lastName}
+                onChange={handleInputChange}
+                className="mt-2 w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              />
+            ) : (
+              <p className="mt-2 text-gray-900">{profile.lastName}</p>
+            )}
+          </div>
+
+          {/* Email */}
+          <div>
+            <label className="block text-sm font-medium text-gray-600">Email</label>
+            {isEditing ? (
+              <input
+                type="email"
+                name="email"
+                value={profile.email}
+                onChange={handleInputChange}
+                className="mt-2 w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              />
+            ) : (
+              <p className="mt-2 text-gray-900">{profile.email}</p>
+            )}
+          </div>
+
+          {/* Gender */}
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium text-gray-600">Gender</label>
+            {isEditing ? (
+              <Listbox value={profile.gender} onChange={handleGenderChange}>
+                <div className="relative mt-2">
+                  <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left border rounded-lg bg-white focus:ring-blue-500 focus:border-blue-500">
+                    <span className="block truncate">{profile.gender}</span>
+                    <ChevronDown className="absolute inset-y-0 right-0 w-5 h-5 text-gray-400" />
+                  </Listbox.Button>
+                  <Transition
+                    as={Fragment}
+                    leave="transition ease-in duration-100"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                  >
+                    <Listbox.Options className="absolute mt-1 w-full bg-white shadow-lg max-h-60 rounded-lg py-1 ring-1 ring-black ring-opacity-5">
+                      {genders.map((gender, index) => (
+                        <Listbox.Option
+                          key={index}
+                          value={gender}
+                          className={({ active }) =>
+                            `cursor-pointer select-none relative py-2 pl-10 pr-4 ${
+                              active ? "bg-blue-100 text-blue-900" : "text-gray-900"
+                            }`
+                          }
+                        >
+                          {({ selected }) => (
+                            <>
+                              <span
+                                className={`block truncate ${
+                                  selected ? "font-semibold" : "font-normal"
+                                }`}
+                              >
+                                {gender}
+                              </span>
+                              {selected && (
+                                <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                  <Check className="w-5 h-5 text-blue-600" />
+                                </span>
+                              )}
+                            </>
+                          )}
+                        </Listbox.Option>
+                      ))}
+                    </Listbox.Options>
+                  </Transition>
+                </div>
+              </Listbox>
+            ) : (
+              <p className="mt-2 text-gray-900">{profile.gender}</p>
+            )}
+          </div>
+        </form>
       </div>
     </Page>
   );

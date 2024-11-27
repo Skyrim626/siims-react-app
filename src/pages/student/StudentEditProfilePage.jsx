@@ -6,102 +6,36 @@ import { postRequest } from "../../api/apiHelpers";
 import { formatDate } from "../../utils/formatDate";
 import { ArrowLeft } from 'lucide-react'; // Import ArrowLeft icon
 
+import ProfileForm from "../../components/student-profiles/ProfileForm";
+import WorkExperienceForm from "../../components/student-profiles/WorkExperienceForm";
+import EducationForm from "../../components/student-profiles/EducationForm";
 
 const StudentEditProfilePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Access profile data from state
   const { profile } = location.state || {};
-
-  // Redirect if profile is missing
   useEffect(() => {
-    if (!profile) {
-      navigate(stripLocation(location.pathname, "/edit"), { replace: true });
-    }
+    if (!profile) navigate("/dashboard", { replace: true });
   }, [profile, navigate]);
 
-  // If profile is missing, render nothing to avoid further rendering
-  if (!profile) {
-    return null;
-  }
+  if (!profile) return null;
 
-  // Use States
-  const [user, setUser] = useState({
-    first_name: profile.user.first_name,
-    middle_name: profile.user.middle_name,
-    last_name: profile.user.last_name,
-    email: profile.user.email,
-    phone_number: profile.user.phone_number,
-    gender: profile.user.gender,
-    street: profile.user.street,
-    barangay: profile.user.barangay,
-    city_municipality: profile.user.city_municipality,
-    province: profile.user.province,
-    postal_code: profile.user.postal_code,
-    date_of_birth: profile.date_of_birth,
-  });
-
+  const [user, setUser] = useState(profile.user);
   const [workExperiences, setWorkExperiences] = useState(
     profile.work_experiences
   );
   const [educations, setEducations] = useState(profile.educations);
 
-  console.log(workExperiences);
-
-  const editProfile = async () => {
-    // Validate the data
-    if (!user.firstName || !user.email) {
-      console.error("Validation Error: Missing required fields.");
-      alert("Please fill in all required fields.");
-      return;
-    }
-  
-    const updatedProfileData = {
-      user,
-      workExperiences,
-      educations,
-    };
-  
-    try {
-      console.log("Sending updated profile data to the server...");
-      const response = await fetch("/api/update-profile", {
-        method: "PUT", // Use POST for creation or PUT for updates
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedProfileData),
-      });
-  
-      if (!response.ok) {
-        throw new Error("Failed to save profile. Please try again.");
-      }
-  
-      const result = await response.json();
-      console.log("Profile updated successfully:", result);
-      alert("Profile updated successfully!");
-  
-      // Optionally, navigate back to the profile view page
-      navigate("/profile");
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      alert("Error saving profile. Please try again.");
-    }
+  const editProfile = () => {
+    console.log("Updated User Data:", user);
+    console.log("Updated Work Experience:", workExperiences);
+    console.log("Updated Education:", educations);
+    // handle saving logic
   };
-  
 
   return (
     <div className="container mx-auto p-6 bg-white rounded-lg shadow-lg space-y-8">
-        {/* Back Button with Icon */}
-      <Button
-        type="button"
-        onClick={() => navigate("/auth/my/profile")} // Define your back navigation logic here
-        className="flex items-center space-x-2 text-indigo-600"
-      >
-        <ArrowLeft size={20} /> {/* Lucide back arrow icon */}
-        <span>Back</span>
-      </Button>
-
       <h1 className="text-4xl font-extrabold text-gray-800 mb-6">
         Edit Profile
       </h1>

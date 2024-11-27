@@ -13,7 +13,6 @@ import AdminLayout from "../../components/layouts/AdminLayout"; // Importing the
 // Admin Pages
 import AdminDashboard from "../../pages/admin/AdminDashboard"; // Importing the Admin Dashboard page
 import AdminLogs from "../../pages/admin/AdminLogs"; // Importing the logs management page
-import AdminInternshipPostingsPage from "../../pages/admin/AdminInternshipPostingsPage"; // Importing the internship postings page
 import AdminManageUserSelection from "../../pages/admin/AdminManageUserSelection"; // Importing the user selection management page
 import AdminManageDeansPage from "../../pages/admin/manage-users/deans/AdminManageDeansPage"; // Importing the page to manage deans
 import AdminManageUsersPage from "../../pages/admin/manage-users/AdminManageUsersPage"; // Importing the general user management page
@@ -521,11 +520,6 @@ const AdminRoutes = {
     {
       path: "offices", // Route for managing offices
       element: <AdminManageOfficesPage />,
-    },
-
-    {
-      path: "internship-postings", // Route for managing internship postings
-      element: <AdminInternshipPostingsPage />,
     },
 
     {

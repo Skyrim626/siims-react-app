@@ -115,7 +115,7 @@ export const deleteRequest = async ({ url, data = {}, params = {}, method = 'del
 };
 
 // For Post FormDat request
-export const postFormDataRequest = async ({ url, data, timeout = 120000  }) => {
+export const postFormDataRequest = async ({ url, data, timeout = 220000  }) => {
   try {
     const response = await axiosClient.post(url, data, {
       headers: {

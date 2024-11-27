@@ -274,6 +274,40 @@ const StudentRoutes = {
       element: <StudentRequestEndorsementPage />,
     },
     {
+      path: ":applicationId/my-weekly-reports",
+      element: <StudentWeeklyAccomplishmentPage />,
+      loader: async ({ params }) => {
+        try {
+          /**
+           * Params
+           */
+          const { applicationId } = params;
+
+          /**
+           * Responses
+           */
+          const weeklyResponse = await axiosClient.get(
+            `/api/v1/weekly-accomplishment-reports/${applicationId}`
+          );
+
+          /**
+           * Variables
+           */
+          const initial_weekly_reports = weeklyResponse.data;
+
+          /**
+           * Return
+           */
+          return {
+            initial_weekly_reports,
+            applicationId
+          };
+        } catch (error) {
+          console.log(error);
+        }
+      },
+    },
+    {
       path: "my-reports",
       element: <StudentReportsPage />,
     },
@@ -318,10 +352,6 @@ const StudentRoutes = {
     {
       path: "view-evaluations",
       element: <StudentViewEvaluationPage />,
-    },
-    {
-      path: "my-weekly",
-      element: <StudentWeeklyAccomplishmentPage />,
     },
   ],
 };

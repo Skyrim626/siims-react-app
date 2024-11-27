@@ -14,12 +14,14 @@ import TableBody from "./TableBody";
 import useCheckboxSelection from "../../hooks/useCheckboxSelection";
 import ArchiveButton from "./ArchiveButton";
 import DeployStudentButton from "./DeployStudentButton";
+import AssignStudentButton from "./AssignStudentButton";
 
 const Table = ({
   data,
   searchPlaceholder = "Search something...",
   handleArchiveBySelectedIds,
   handleDeployBySelectedIds,
+  handleAssignToCoordinatorsBySelectedIds,
   includeCheckboxes = true,
   handleArchive,
   handleEdit,
@@ -87,6 +89,13 @@ const Table = ({
       {handleDeployBySelectedIds && (
         <DeployStudentButton
           onClick={() => handleDeployBySelectedIds(selectedIds)}
+          disabled={selectedIds.size === 0}
+        />
+      )}
+
+      {handleAssignToCoordinatorsBySelectedIds && (
+        <AssignStudentButton
+          onClick={() => handleAssignToCoordinatorsBySelectedIds(selectedIds)}
           disabled={selectedIds.size === 0}
         />
       )}

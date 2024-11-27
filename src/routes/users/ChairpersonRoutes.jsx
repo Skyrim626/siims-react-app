@@ -10,6 +10,7 @@ import axiosClient from "../../api/axiosClient";
 import ChairpersonGenerateEndorsemenLetterPage from "../../pages/chairperson/ChairpersonGenerateEndorsemenLetterPage";
 import ChairpersonEndorsementRequestsPage from "../../pages/chairperson/ChairpersonEndorsementRequestsPage";
 import ChairpersonEndorsementRequestPage from "../../pages/chairperson/ChairpersonEndorsementRequestPage";
+import ChairpersonManageStudentsPage from "../../pages/chairperson/ChairpersonManageStudentsPage";
 
 // Routes for Chairperson
 const ChairpersonRoutes = {

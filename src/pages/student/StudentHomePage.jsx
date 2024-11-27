@@ -125,6 +125,13 @@ const StudentHomePage = () => {
     navigate(to);
   };
 
+  // Navigate to Weekly Accomplishment Reports
+  const navigateToWeekly = () => {
+    const to = `${location.pathname}/${application_id}/my-weekly-reports`;
+
+    navigate(to);
+  };
+
   // Navigate to Application Page
   const navigateToApplication = () => {
     // console.log(`${location.pathname}/application/${application_id}`);
@@ -200,7 +207,10 @@ const StudentHomePage = () => {
         {/* Reports Section */}
         {/* Deployed - 12 */}
         {studentStatus === 12 && (
-          <ReportsSection navigateToDtr={navigateToDtr} />
+          <ReportsSection
+            navigateToDtr={navigateToDtr}
+            navigateToWeekly={navigateToWeekly}
+          />
         )}
         {/* WorkPost List Section */}
         {/* Not yet applied - 10 */}

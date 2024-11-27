@@ -1,26 +1,38 @@
 import { useState } from "react";
 import jsPDF from "jspdf";
+import { postRequest } from "../../api/apiHelpers";
+import { useLoaderData } from "react-router-dom";
+import Loader from "../../components/common/Loader";
 
 const StudentWeeklyAccomplishmentPage = () => {
-  const [weeklyReports, setWeeklyReports] = useState([]);
+  // Fetch Params
+  const { applicationId, initial_weekly_reports } = useLoaderData();
+
+  // console.log(applicationId);
+  // console.log(initial_weekly_reports);
+
+  const [weeklyReports, setWeeklyReports] = useState(initial_weekly_reports);
   const [currentWeek, setCurrentWeek] = useState({
-    weekNumber: "",
-    startDate: "",
-    endDate: "",
+    week_number: "",
+    start_date: "",
+    end_date: "",
     hours: "",
     tasks: "",
     learnings: "",
   });
-  const [totalHours, setTotalHours] = useState(0);
+  const [no_of_hours, setNo_of_hours] = useState(0);
   const [selectedWeek, setSelectedWeek] = useState(""); // For selecting week to export
   const [editingReport, setEditingReport] = useState(null); // Track which report is being edited
 
+  // Loading State
+  const [loading, setLoading] = useState(false);
+
   // Group reports by week number
   const groupedReports = weeklyReports.reduce((acc, report) => {
-    if (!acc[report.weekNumber]) {
-      acc[report.weekNumber] = [];
+    if (!acc[report.week_number]) {
+      acc[report.week_number] = [];
     }
-    acc[report.weekNumber].push(report);
+    acc[report.week_number].push(report);
     return acc;
   }, {});
 
@@ -43,20 +55,46 @@ const StudentWeeklyAccomplishmentPage = () => {
         return;
       }
 
-      setWeeklyReports([...weeklyReports, currentWeek]);
-      setTotalHours(totalHours + parsedHours);
+        setWeeklyReports([...weeklyReports, currentWeek]);
+        setNo_of_hours(no_of_hours + parsedHours);
 
-      // Reset form fields
-      setCurrentWeek({
-        weekNumber: "",
-        startDate: "",
-        endDate: "",
-        hours: "",
-        tasks: "",
-        learnings: "",
-      });
-    } else {
-      alert("Please complete all fields.");
+        // Ready Payload
+        const payload = {
+          week_number: Number(currentWeek.week_number),
+          start_date: currentWeek.start_date,
+          end_date: currentWeek.end_date,
+          tasks: currentWeek.tasks,
+          learnings: currentWeek.learnings,
+          no_of_hours: no_of_hours,
+        };
+
+        // POST
+        const response = await postRequest({
+          url: `/api/v1/weekly-accomplishment-reports/${applicationId}`,
+          data: payload,
+        });
+
+        // console.log(payload);
+
+        // Check Response
+        if (response) {
+          // Reset form fields
+          setCurrentWeek({
+            week_number: "",
+            start_date: "",
+            end_date: "",
+            hours: "",
+            tasks: "",
+            learnings: "",
+          });
+        }
+      } else {
+        alert("Please complete all fields.");
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -70,14 +108,17 @@ const StudentWeeklyAccomplishmentPage = () => {
     const updatedReports = [...weeklyReports];
     updatedReports[editingReport] = currentWeek;
     setWeeklyReports(updatedReports);
-    setTotalHours(
-      updatedReports.reduce((sum, report) => sum + parseInt(report.hours, 10), 0)
+    setNo_of_hours(
+      updatedReports.reduce(
+        (sum, report) => sum + parseInt(report.hours, 10),
+        0
+      )
     );
     setEditingReport(null);
     setCurrentWeek({
-      weekNumber: "",
-      startDate: "",
-      endDate: "",
+      week_number: "",
+      start_date: "",
+      end_date: "",
       hours: "",
       tasks: "",
       learnings: "",
@@ -157,6 +198,7 @@ const StudentWeeklyAccomplishmentPage = () => {
       report.tasks,
       report.learnings,
       report.hours,
+      report.hours,
     ]);
 
     // Generate table
@@ -186,38 +228,48 @@ const StudentWeeklyAccomplishmentPage = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      {/* Header */}
-      <div className="bg-white shadow-md rounded-lg p-6 mb-4">
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">Weekly Accomplishment Report</h1>
-        <div className="flex justify-between mt-4">
-          <div>
-            <p className="text-lg font-semibold text-gray-700">Name: Jane Smith</p>
-            <p className="text-lg font-semibold text-gray-700">Company: Mindanao Tech Solutions</p>
-            <p className="text-lg font-semibold text-gray-700">Unit/Office/Department: IT Department</p>
-          </div>
-          <div>
-            <select
-              value={selectedWeek}
-              onChange={handleWeekSelection}
-              className="border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 px-4 py-2"
-            >
-              <option value="">Select Week</option>
-              {Object.keys(groupedReports).map((week) => (
-                <option key={week} value={week}>
-                  Week {week}
-                </option>
-              ))}
-            </select>
-            <button
-              onClick={exportToPDF}
-              className="bg-orange-500 text-white px-4 py-2 rounded shadow hover:bg-orange-600 ml-4"
-            >
-              Export to PDF
-            </button>
+    <>
+      <Loader loading={loading} />
+      <div className="p-6 bg-gray-100 min-h-screen">
+        {/* Header */}
+        <div className="bg-white shadow-md rounded-lg p-6 mb-4">
+          <h1 className="text-2xl font-bold text-gray-800 mb-2">
+            Weekly Accomplishment Report
+          </h1>
+          <div className="flex justify-between mt-4">
+            <div>
+              <p className="text-lg font-semibold text-gray-700">
+                Name: Jane Smith
+              </p>
+              <p className="text-lg font-semibold text-gray-700">
+                Company: Mindanao Tech Solutions
+              </p>
+              <p className="text-lg font-semibold text-gray-700">
+                Unit/Office/Department: IT Department
+              </p>
+            </div>
+            <div>
+              <select
+                value={selectedWeek}
+                onChange={handleWeekSelection}
+                className="border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 px-4 py-2"
+              >
+                <option value="">Select Week</option>
+                {Object.keys(groupedReports).map((week) => (
+                  <option key={week} value={week}>
+                    Week {week}
+                  </option>
+                ))}
+              </select>
+              <button
+                onClick={exportToPDF}
+                className="bg-orange-500 text-white px-4 py-2 rounded shadow hover:bg-orange-600 ml-4"
+              >
+                Export to PDF
+              </button>
+            </div>
           </div>
         </div>
-      </div>
 
       {/* Form to Add/Edit Report */}
       <div className="bg-white shadow-md rounded-lg p-6 mb-6">
