@@ -166,6 +166,9 @@ const StudentJobApplicationPage = () => {
       formData.append("file", file);
       formData.append("type", file);
 
+      // Loading State
+      setLoading(true);
+
       try {
         // console.log("Uploading file to the backend...");
 
@@ -177,9 +180,12 @@ const StudentJobApplicationPage = () => {
         // Navigate after submitting
         if (response) {
           navigate(location.pathname);
+          setLoading(false);
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     }
   };

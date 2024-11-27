@@ -75,7 +75,10 @@ const StudentWeeklyAccomplishmentPage = () => {
     updatedReports[editingReport] = currentWeek;
     setWeeklyReports(updatedReports);
     setTotalHours(
-      updatedReports.reduce((sum, report) => sum + parseInt(report.hours, 10), 0)
+      updatedReports.reduce(
+        (sum, report) => sum + parseInt(report.hours, 10),
+        0
+      )
     );
     setEditingReport(null);
     setCurrentWeek({
@@ -88,89 +91,127 @@ const StudentWeeklyAccomplishmentPage = () => {
     });
   };
 
-  
   const exportToPDF = () => {
     const doc = new jsPDF({
-      format: 'a4', // Set the page size to A4
+      format: "a4", // Set the page size to A4
     });
 
     const margin = 10;
     const pageWidth = doc.internal.pageSize.width;
-  
+
     const reportsToExport = selectedWeek
       ? groupedReports[selectedWeek]
       : weeklyReports;
-  
+
     if (reportsToExport.length === 0) {
       alert("No reports to export.");
       return;
     }
 
     // Example of accessing start and end dates from a selected report
-    const selectedReport = reportsToExport[selectedWeek];  // Get selected report
-    const startDate = selectedReport.startDate;  // Start date of the report
-    const endDate = selectedReport.endDate;      // End date of the report
+    // const selectedReport = reportsToExport[selectedWeek]; // Get selected report
+
+    // Ensure that selectedReport exists and is valid
+    const selectedReport = reportsToExport[0]; // Use the first report for the selected week
+    if (!selectedReport) {
+      alert("Selected report is invalid.");
+      return;
+    }
+
+    const startDate = selectedReport.startDate; // Start date of the report
+    const endDate = selectedReport.endDate; // End date of the report
 
     const periodText = `For the period: ${startDate} to ${endDate}`;
 
-  
     // Left logo properties
-    const leftLogo = '/src/assets/images/logo/USTP-Logo-against-Light.png'; // Replace with actual path to left logo
+    const leftLogo = "/src/assets/images/logo/USTP-Logo-against-Light.png"; // Replace with actual path to left logo
     const leftLogoWidth = 25;
     const leftLogoHeight = 25;
 
     // Right logo properties
-    const rightLogo = '/src/assets/images/logo/CITC_LOGO.png'; // Replace with actual path to right logo
+    const rightLogo = "/src/assets/images/logo/CITC_LOGO.png"; // Replace with actual path to right logo
     const rightLogoWidth = 35;
     const rightLogoHeight = 25;
-    
-    doc.addImage(leftLogo, 'JPEG', margin, margin, leftLogoWidth, leftLogoHeight); // Left logo
-    doc.addImage(rightLogo, 'JPEG', pageWidth - margin - rightLogoWidth, margin, rightLogoWidth, rightLogoHeight); // Right logo
-  
+
+    doc.addImage(
+      leftLogo,
+      "JPEG",
+      margin,
+      margin,
+      leftLogoWidth,
+      leftLogoHeight
+    ); // Left logo
+    doc.addImage(
+      rightLogo,
+      "JPEG",
+      pageWidth - margin - rightLogoWidth,
+      margin,
+      rightLogoWidth,
+      rightLogoHeight
+    ); // Right logo
+
     // Add the centered text
     const centerText = `
       UNIVERSITY OF SCIENCE AND TECHNOLOGY
       OF SOUTHERN PHILIPPINES
       Alubijid | Cagayan de Oro | Claveria | Jasaan | Oroquieta | Panaon
     `;
-  
+
     doc.setFont("helvetica", "bold");
     doc.setFontSize(10); // Smaller font size for A4
-  
-      // Center the text between the logos
+
+    // Center the text between the logos
     const centerX = pageWidth / 2;
-    const centerY = 5 + (leftLogoHeight / 2) ; // Adjust Y position for alignment with logos
+    const centerY = 5 + leftLogoHeight / 2; // Adjust Y position for alignment with logos
     doc.text(centerText, centerX, centerY, { align: "center" });
-  
+
     // Set title and metadata for the PDF
     doc.setFont("helvetica", "normal");
     doc.setFontSize(12); // Smaller font for the A4 title
-    doc.text("Weekly Accomplishment Report", margin, margin + leftLogoHeight + 10); // Adjust Y position
+    doc.text(
+      "Weekly Accomplishment Report",
+      margin,
+      margin + leftLogoHeight + 10
+    ); // Adjust Y position
     doc.setFontSize(10); // Smaller font size for period
     doc.text(periodText, margin, margin + leftLogoHeight + 15); // Period text below the title
 
-    
     doc.setFontSize(10);
     doc.text("Name: Jane Smith", margin, margin + leftLogoHeight + 20);
-    doc.text("Company: Mindanao Tech Solutions", margin, margin + leftLogoHeight + 25);
-    doc.text("Unit/Office/Department: IT Department", margin, margin + leftLogoHeight + 30);
-  
+    doc.text(
+      "Company: Mindanao Tech Solutions",
+      margin,
+      margin + leftLogoHeight + 25
+    );
+    doc.text(
+      "Unit/Office/Department: IT Department",
+      margin,
+      margin + leftLogoHeight + 30
+    );
+
     // Define the header
-    const header = ["Week", "Start Date", "End Date", "Tasks", "Learnings", "Hours"];
-  
+    const header = [
+      "Week",
+      "Start Date",
+      "End Date",
+      "Tasks",
+      "Learnings",
+      "Hours",
+    ];
+
     // Define the table data
-    const tableData = reportsToExport.map(report => [
+    const tableData = reportsToExport.map((report) => [
       report.weekNumber,
       report.startDate,
       report.endDate,
       report.tasks,
       report.learnings,
-      report.hours
+      report.hours,
     ]);
-  
+
     // Table layout using autoTable
     const tableWidth = pageWidth - 2 * margin; // Max width for the table (page width minus margins)
-  
+
     doc.autoTable({
       startY: margin + leftLogoHeight + 40, // Start the table below the metadata
       head: [header],
@@ -200,28 +241,29 @@ const StudentWeeklyAccomplishmentPage = () => {
         }
       },
     });
-  
+
     // Save the generated PDF
     doc.save("weekly_accomplishment_report.pdf");
   };
-  
-  
-  
-  
-  
-
-  
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       {/* Header */}
       <div className="bg-white shadow-md rounded-lg p-6 mb-4">
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">Weekly Accomplishment Report</h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-2">
+          Weekly Accomplishment Report
+        </h1>
         <div className="flex justify-between mt-4">
           <div>
-            <p className="text-lg font-semibold text-gray-700">Name: Jane Smith</p>
-            <p className="text-lg font-semibold text-gray-700">Company: Mindanao Tech Solutions</p>
-            <p className="text-lg font-semibold text-gray-700">Unit/Office/Department: IT Department</p>
+            <p className="text-lg font-semibold text-gray-700">
+              Name: Jane Smith
+            </p>
+            <p className="text-lg font-semibold text-gray-700">
+              Company: Mindanao Tech Solutions
+            </p>
+            <p className="text-lg font-semibold text-gray-700">
+              Unit/Office/Department: IT Department
+            </p>
           </div>
           <div>
             <select
@@ -253,7 +295,9 @@ const StudentWeeklyAccomplishmentPage = () => {
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Week Number</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Week Number
+            </label>
             <input
               type="number"
               name="weekNumber"
@@ -264,7 +308,9 @@ const StudentWeeklyAccomplishmentPage = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Start Date</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Start Date
+            </label>
             <input
               type="date"
               name="startDate"
@@ -274,7 +320,9 @@ const StudentWeeklyAccomplishmentPage = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">End Date</label>
+            <label className="block text-sm font-medium text-gray-700">
+              End Date
+            </label>
             <input
               type="date"
               name="endDate"
@@ -284,7 +332,9 @@ const StudentWeeklyAccomplishmentPage = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Hours</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Hours
+            </label>
             <input
               type="number"
               name="hours"
@@ -295,7 +345,9 @@ const StudentWeeklyAccomplishmentPage = () => {
             />
           </div>
           <div className="col-span-2">
-            <label className="block text-sm font-medium text-gray-700">Activities/Tasks</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Activities/Tasks
+            </label>
             <textarea
               name="tasks"
               value={currentWeek.tasks}
@@ -306,7 +358,9 @@ const StudentWeeklyAccomplishmentPage = () => {
             />
           </div>
           <div className="col-span-2">
-            <label className="block text-sm font-medium text-gray-700">Learnings</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Learnings
+            </label>
             <textarea
               name="learnings"
               value={currentWeek.learnings}
@@ -343,7 +397,9 @@ const StudentWeeklyAccomplishmentPage = () => {
             <tbody>
               {weeklyReports.map((report, index) => (
                 <tr key={index}>
-                  <td className="border-b px-4 py-2">Week {report.weekNumber}</td>
+                  <td className="border-b px-4 py-2">
+                    Week {report.weekNumber}
+                  </td>
                   <td className="border-b px-4 py-2">{report.startDate}</td>
                   <td className="border-b px-4 py-2">{report.endDate}</td>
                   <td className="border-b px-4 py-2">{report.tasks}</td>

@@ -10,6 +10,7 @@ import Page from "../../components/common/Page";
 import { getStatusBgColor, getStatusColor } from "../../utils/statusColor";
 import { putRequest } from "../../api/apiHelpers";
 import toFilePath from "../../utils/baseURL";
+import Loader from "../../components/common/Loader";
 
 const CompanyManageApplicantPage = () => {
   // Fetch data
@@ -19,6 +20,9 @@ const CompanyManageApplicantPage = () => {
   const navigate = useNavigate();
 
   // console.log(application);
+
+  // Loader State
+  const [loading, setLoading] = useState(false);
 
   // State to manage documents
   const [documents, setDocuments] = useState(application.documents);
@@ -65,6 +69,9 @@ const CompanyManageApplicantPage = () => {
       const updatedDoc = updatedDocuments.find((doc) => doc.id === docId);
       // console.log(updatedDoc);
 
+      // Set Loading
+      setLoading(true);
+
       try {
         // Ready for payload
         const payload = {
@@ -89,12 +96,16 @@ const CompanyManageApplicantPage = () => {
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     }
   };
 
   // Handle Approve
   const handleApprove = async (application_id) => {
+    setLoading(true);
+
     // Approve Instantly
     try {
       // READY PUT METHOD
@@ -108,6 +119,8 @@ const CompanyManageApplicantPage = () => {
       }
     } catch (error) {
       // console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -122,6 +135,8 @@ const CompanyManageApplicantPage = () => {
 
   return (
     <Page>
+      <Loader loading={loading} />
+
       <div className="container mx-auto p-8">
         <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-8 rounded-xl shadow-xl mb-8">
           <h1 className="text-4xl font-bold text-center mb-4">
