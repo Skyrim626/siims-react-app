@@ -20,6 +20,7 @@ import { useLoaderData, useNavigate, useLocation } from "react-router-dom";
 import Table from "../../components/tables/Table";
 import CollegeForm from "../../components/forms/CollegeForm";
 import Loader from "../../components/common/Loader";
+import EmptyState from "../../components/common/EmptyState";
 
 const AdminManageCollegesPage = () => {
   // Retrieve the user_roles data from the loader
@@ -173,7 +174,28 @@ const AdminManageCollegesPage = () => {
         />
 
         {/* Table */}
-        <Table data={colleges} handleEdit={handleEdit} />
+        {colleges.length > 0 ? (
+          <Table data={colleges} handleEdit={handleEdit} />
+        ) : (
+          <EmptyState
+            title="No colleges available at the moment"
+            message="Once activities are recorded, colleges will appear here."
+            icon={
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-16 w-16 text-gray-400"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            }
+          />
+        )}
 
         {/* Form Modal */}
         {/* Add Form Modal */}

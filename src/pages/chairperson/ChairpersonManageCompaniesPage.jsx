@@ -74,38 +74,40 @@ const ChairpersonManageCompaniesPage = () => {
 
   return (
     <>
-      <Section>
-        <Heading level={3} text={"Companies"} />
-        <Text className="text-sm text-blue-950">
-          This is where you manage companies.
-        </Text>
-        <hr className="my-3" />
-      </Section>
-      <ChairpersonManageHeader
-        addPlaceholder="Add New Company"
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-      />
-      {companies.length !== 0 && (
-        <ChairpersonCompaniesTable
-          data={companies}
-          searchPlaceholder="Search Companies"
+      <Page>
+        <Section>
+          <Heading level={3} text={"Companies"} />
+          <Text className="text-sm text-blue-950">
+            This is where you manage companies.
+          </Text>
+          <hr className="my-3" />
+        </Section>
+        <ChairpersonManageHeader
+          addPlaceholder="Add New Company"
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
         />
-      )}
+        {companies.length !== 0 && (
+          <ChairpersonCompaniesTable
+            data={companies}
+            searchPlaceholder="Search Companies"
+          />
+        )}
 
-      {/* Form Modal */}
-      {/* Add Form Modal */}
-      <FormModal
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        modalTitle="Add Company"
-        onSubmit={handleAddSubmit}
-      >
-        <ChairpersonCompanyFormAdd
-          companyInfo={companyInfo}
-          handleCompanyInfoChange={handleCompanyInfoChange}
-        />
-      </FormModal>
+        {/* Form Modal */}
+        {/* Add Form Modal */}
+        <FormModal
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          modalTitle="Add Company"
+          onSubmit={handleAddSubmit}
+        >
+          <ChairpersonCompanyFormAdd
+            companyInfo={companyInfo}
+            handleCompanyInfoChange={handleCompanyInfoChange}
+          />
+        </FormModal>
+      </Page>
     </>
   );
 };

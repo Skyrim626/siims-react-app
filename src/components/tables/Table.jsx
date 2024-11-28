@@ -15,6 +15,7 @@ import useCheckboxSelection from "../../hooks/useCheckboxSelection";
 import ArchiveButton from "./ArchiveButton";
 import DeployStudentButton from "./DeployStudentButton";
 import AssignStudentButton from "./AssignStudentButton";
+import ApprovalForDean from "./ApprovalForDean";
 
 const Table = ({
   data,
@@ -27,6 +28,7 @@ const Table = ({
   handleEdit,
   handleDelete,
   handleView,
+  handleApprovalForDean,
 
   ITEMS_PER_PAGE_LISTS = [
     { value: 25 },
@@ -96,6 +98,12 @@ const Table = ({
       {handleAssignToCoordinatorsBySelectedIds && (
         <AssignStudentButton
           onClick={() => handleAssignToCoordinatorsBySelectedIds(selectedIds)}
+          disabled={selectedIds.size === 0}
+        />
+      )}
+      {handleApprovalForDean && (
+        <ApprovalForDean
+          onClick={() => handleApprovalForDean(selectedIds)}
           disabled={selectedIds.size === 0}
         />
       )}

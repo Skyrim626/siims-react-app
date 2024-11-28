@@ -63,7 +63,7 @@ const EndorsementRequestForm = ({
           onChange={handleDescriptionChange}
           className="w-full p-4 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
           rows="4"
-          placeholder="Enter description for the endorsement request"
+          placeholder="Why do you need an endorsement letter?"
         />
       </div>
 
@@ -80,7 +80,7 @@ const EndorsementRequestForm = ({
           value={studentIds}
           onChange={handleStudentIdsChange}
           className="w-full p-4 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-          placeholder="Enter student IDs, separated by commas"
+          placeholder="Enter student IDs, separated by commas. If you want to include other student"
         />
         <Text className="text-sm text-gray-500 mt-2">
           Example: 2024984645, 2024590290, 2024596462

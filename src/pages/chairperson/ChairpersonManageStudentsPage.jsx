@@ -10,6 +10,7 @@ import Table from "../../components/tables/Table";
 import FormModal from "../../components/modals/FormModal";
 import ImportStudentForm from "../admin/forms/ImportStudentForm";
 import { postFormDataRequest } from "../../api/apiHelpers";
+import EmptyState from "../../components/common/EmptyState";
 
 const ChairpersonManageStudentsPage = () => {
   // Fetch Data
@@ -126,12 +127,33 @@ const ChairpersonManageStudentsPage = () => {
       />
 
       {/* Table */}
-      <Table
-        data={students}
-        handleAssignToCoordinatorsBySelectedIds={
-          handleAssignToCoordinatorsBySelectedIds
-        }
-      />
+      {students.length > 0 ? (
+        <Table
+          data={students}
+          handleAssignToCoordinatorsBySelectedIds={
+            handleAssignToCoordinatorsBySelectedIds
+          }
+        />
+      ) : (
+        <EmptyState
+          title="No students available at the moment"
+          message="Once activities are recorded, students will appear here."
+          icon={
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-16 w-16 text-gray-400"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          }
+        />
+      )}
 
       <FormModal
         isOpen={isOpenImport}

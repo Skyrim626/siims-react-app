@@ -13,6 +13,7 @@ import ManageHeader from "../../components/common/ManageHeader";
 import { useLoaderData } from "react-router-dom";
 import Table from "../../components/tables/Table";
 import Loader from "../../components/common/Loader";
+import EmptyState from "../../components/common/EmptyState";
 
 const AdminManageRolesPage = () => {
   // Retrieve the user_roles data from the loader
@@ -116,8 +117,27 @@ const AdminManageRolesPage = () => {
 
       {selectedTab === 0 ? (
         <AdminUserRolesTable searchPlaceholder="Search User" data={userRoles} />
-      ) : (
+      ) : roles && roles.length > 0 ? (
         <Table data={roles} includeCheckboxes={false} />
+      ) : (
+        <EmptyState
+          title="No roles available at the moment"
+          message="Once activities are recorded, roles will appear here."
+          icon={
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-16 w-16 text-gray-400"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          }
+        />
       )}
 
       {/* {selectedTab === 0 ? (

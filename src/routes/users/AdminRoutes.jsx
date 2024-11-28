@@ -110,10 +110,13 @@ const AdminRoutes = {
           /**
            * Return
            */
-          return initial_document_types;
+          return { initial_document_types };
         } catch (error) {
-          console.error("Error fetching document types: ", error);
-          throw error; // Let the router handle errors
+          // Log the error for debugging (optional)
+          console.error("Failed to fetch document types:", error);
+
+          // Return an empty array as a fallback
+          return { initial_document_types: [] };
         }
       },
     },
@@ -218,7 +221,10 @@ const AdminRoutes = {
           return { initialRoles, userRoles }; // Return both as an object
         } catch (error) {
           console.error("Error fetching user roles: ", error);
-          throw error; // Let the router handle errors
+          return {
+            initialRoles: [],
+            userRoles: [],
+          };
         }
       },
     },
@@ -247,7 +253,11 @@ const AdminRoutes = {
           return { initial_colleges, list_of_deans };
         } catch (error) {
           console.error("Error fetching colleges: ", error);
-          throw error; // Let the router handle errors
+
+          return {
+            initial_colleges: [],
+            list_of_deans: [],
+          };
         }
       },
     },
@@ -279,7 +289,12 @@ const AdminRoutes = {
           return { initial_programs, list_of_chairpersons, list_of_colleges };
         } catch (error) {
           console.error("Error fetching programs and chairpersons: ", error);
-          throw error; // Let the router handle errors
+
+          return {
+            initial_programs: [],
+            list_of_chairpersons: [],
+            list_of_colleges: [],
+          };
         }
       },
     },
@@ -316,6 +331,10 @@ const AdminRoutes = {
           element: <AdminManageUsersPage />, // Render the users management page
           loader: async () => {
             try {
+              /**
+               * Responses
+               */
+
               const response = await axiosClient.get("/api/v1/users");
               const programsResponse = await axiosClient.get(
                 "/api/v1/programs"
@@ -324,15 +343,29 @@ const AdminRoutes = {
                 "/api/v1/colleges"
               );
 
+              /**
+               * Variables
+               */
               // console.log(response.data);
 
               const initial_users = response.data;
               const programs = programsResponse.data;
               const colleges = collegesResponse.data;
 
+              /**
+               * Return
+               */
               return { initial_users, programs, colleges };
             } catch (error) {
-              console.log(error);
+              console.error(
+                "Error fetching users, programs, and colleges: ",
+                error
+              );
+              return {
+                initial_users: [],
+                programs: [],
+                colleges: [],
+              };
             }
           },
         },
@@ -363,7 +396,14 @@ const AdminRoutes = {
                 programs,
               };
             } catch (error) {
-              console.log(error);
+              console.error(
+                "Error fetching coordinators and programs: ",
+                error
+              );
+              return {
+                initial_coordinators: [],
+                programs: [],
+              };
             }
           },
         },
@@ -543,7 +583,13 @@ const AdminRoutes = {
           return {
             logs,
           };
-        } catch (error) {}
+        } catch (error) {
+          // Log the error for debugging (optional)
+          console.error("Failed to fetch logs:", error);
+
+          // Return an empty array as a fallback
+          return { logs: [] };
+        }
       },
     },
   ],

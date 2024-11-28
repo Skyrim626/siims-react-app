@@ -19,8 +19,9 @@ import {
   Phone,
   Building,
   Users,
+  CheckCircle,
 } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 
 const WorkPostForm = ({
   requestMethod = "post",
@@ -33,6 +34,8 @@ const WorkPostForm = ({
   endDate = "",
   workDuration = "",
   maxApplicants = "",
+  skills = [],
+  setSkills = () => {},
   setOfficeId = () => {},
   setWorkTypeId = () => {},
   setTitle = () => {},
@@ -58,6 +61,9 @@ const WorkPostForm = ({
   handleSubmit = () => {
     console.log("Submit");
   },
+  handleSkillChange,
+  handleRemoveSkill,
+
   requiredFields = {
     officeId: true,
     workTypeId: true,
@@ -79,10 +85,9 @@ const WorkPostForm = ({
     endDate: true,
     workDuration: true,
     maxApplicants: true,
+    skills: true,
   },
 }) => {
-  // console.log(startDate);
-
   // Method Checker
   const buttonTitle = () => {
     switch (requestMethod) {
@@ -239,6 +244,52 @@ const WorkPostForm = ({
               rows={3}
             />
           </Field>
+
+          {/* Skills Required */}
+          {displayFields.skills && (
+            <Field className="mb-4">
+              <Label
+                htmlFor="skills"
+                className="text-gray-700 font-bold mb-2 flex items-center"
+              >
+                <CheckCircle size={20} className="mr-2 text-blue-600" />
+                Skills Required
+              </Label>
+              <Select
+                id="skills"
+                name="skills"
+                className="border rounded-lg w-full py-2 px-3 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
+                value=""
+                onChange={handleSkillChange}
+              >
+                <option value="">-Select Skills-</option>
+                {/* Example skills options */}
+                <option value="JavaScript">JavaScript</option>
+                <option value="Python">Python</option>
+                <option value="React">React</option>
+                <option value="Node.js">Node.js</option>
+                {/* Add other skills as necessary */}
+              </Select>
+              {/* Display selected skills */}
+              <div className="mt-2 flex flex-wrap gap-2">
+                {skills.map((skill, index) => (
+                  <div
+                    key={index}
+                    className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full flex items-center gap-1"
+                  >
+                    {skill}
+                    <button
+                      type="button"
+                      className="text-red-500"
+                      onClick={() => handleRemoveSkill(skill)}
+                    >
+                      &times;
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </Field>
+          )}
 
           {/* MaxApplicants */}
           <Field className="mb-4">

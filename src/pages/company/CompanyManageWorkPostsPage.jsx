@@ -9,6 +9,8 @@ import CompanyWorkPostsTable from "../../components/users/company/table/CompanyW
 import { UserRoundPlus } from "lucide-react";
 import { Button } from "@headlessui/react";
 import { deleteRequest } from "../../api/apiHelpers";
+import Table from "../../components/tables/Table";
+import EmptyState from "../../components/common/EmptyState";
 
 const CompanyManageWorkPostsPage = () => {
   // Fetch initial_work_posts and work_types
@@ -79,11 +81,38 @@ const CompanyManageWorkPostsPage = () => {
         </div>
 
         {/* Table */}
-        <CompanyWorkPostsTable
+        {workPosts.length > 0 ? (
+          <Table
+            data={workPosts}
+            handleEdit={navigateToEditWorkPostPage}
+            handleArchive={deleteWorkPost}
+          />
+        ) : (
+          <EmptyState
+            title="No work posts available at the moment"
+            message="Once activities are recorded, work posts will appear here."
+            icon={
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-16 w-16 text-gray-400"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            }
+          />
+        )}
+
+        {/* <CompanyWorkPostsTable
           data={workPosts}
           handleEdit={navigateToEditWorkPostPage}
           handleArchive={deleteWorkPost}
-        />
+        /> */}
       </Section>
     </Page>
   );

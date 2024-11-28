@@ -89,12 +89,18 @@ const StudentJobApplicationPage = () => {
         student_id: id.trim(),
       }));
 
+      // Filter out empty student_id values
+      const filteredStudentIds = studentIdsArray.filter(
+        (item) => item.student_id !== ""
+      );
+
       // Prepare the payload with multiple student IDs
       const payload = {
-        work_post_id: initial_application.work_post_id, // Dynamic data
+        application_id: initial_application.id,
+        // work_post_id: initial_application.work_post_id, // Dynamic data
         requested_by_id: initial_application.student_id, // Dynamic user ID
         description: description,
-        student_ids: studentIdsArray, // Process comma-separated student IDs
+        student_ids: filteredStudentIds, // Process comma-separated student IDs
       };
 
       // console.log("Payload to submit:", payload);
@@ -103,8 +109,14 @@ const StudentJobApplicationPage = () => {
       // console.log(studentIdsArray);
 
       // Make POST request
-      const response = await postRequest({
+      /* const response = await postRequest({
         url: `/api/v1/student/applications/${initial_application.id}/request-endorsement-letter`,
+        data: payload,
+      }); */
+
+      // Make POST request
+      const response = await postRequest({
+        url: `/api/v1/endorsement-letter-requests`,
         data: payload,
       });
 
@@ -114,10 +126,11 @@ const StudentJobApplicationPage = () => {
 
       // Navigate to another page or show success message
 
-      setIsClickedButtonRequest(true);
-
-      navigate(location.pathname);
-      setIsOpen(false);
+      if (response) {
+        setIsClickedButtonRequest(true);
+        navigate(location.pathname, { replace: true });
+        setIsOpen(false);
+      }
     } catch (error) {
       if (error.response && error.response.data && error.response.data.errors) {
         console.log(error.response.data.errors);

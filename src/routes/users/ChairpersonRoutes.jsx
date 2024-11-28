@@ -114,7 +114,10 @@ const ChairpersonRoutes = {
           };
         } catch (error) {
           console.log(error);
-          throw error;
+          return {
+            initial_students: [],
+            current_program_id: 0,
+          };
         }
       },
     },
@@ -129,17 +132,21 @@ const ChairpersonRoutes = {
             try {
               // Fetch response
               const response = await axiosClient.get(
-                "/api/v1/chairperson/endorsement-letter-requests"
+                "/api/v1/endorsement-letter-requests"
               );
 
               /**
                * Variable Storage
                */
-              const endorsementRequests = response.data;
+              // console.log(response.data);
+              const initial_endorsement_requests = response.data;
 
-              return endorsementRequests;
+              return { initial_endorsement_requests };
             } catch (error) {
               console.log(error);
+              return {
+                initial_endorsement_requests: [],
+              };
             }
           },
         },
@@ -152,17 +159,17 @@ const ChairpersonRoutes = {
               element: <ChairpersonEndorsementRequestPage />,
               loader: async ({ params }) => {
                 try {
-                  console.log(params);
+                  // console.log(params);
 
                   // Fetch ID
                   const { endorsementLetterRequestId } = params;
 
                   // Fetch Response
                   const response = await axiosClient.get(
-                    `/api/v1/chairperson/endorsement-letter-requests/${endorsementLetterRequestId}`
+                    `/api/v1/endorsement-letter-requests/${endorsementLetterRequestId}`
                   );
 
-                  console.log(response);
+                  // console.log(response);
 
                   /**
                    * Variable Storage
@@ -171,9 +178,15 @@ const ChairpersonRoutes = {
 
                   // console.log(endorsementLetterRequest);
 
-                  return endorsementLetterRequest;
+                  return {
+                    endorsementLetterRequest,
+                    endorsementLetterRequestId,
+                  };
                 } catch (error) {
                   console.log(error);
+                  return {
+                    endorsementLetterRequest: [],
+                  };
                 }
               },
             },

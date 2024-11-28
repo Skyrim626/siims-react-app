@@ -73,6 +73,21 @@ const TableBody = ({
                     {/* Join the names with a comma */}
                   </td>
                 );
+              } else if (column === "file_path") {
+                return (
+                  <td
+                    key={column}
+                    className="py-2 px-4 border-b text-blue-700 font-bold flex flex-col gap-3 text-wrap"
+                  >
+                    <a
+                      href={`${toFilePath(data[column])}`}
+                      className="hover-underline"
+                      target="_blank"
+                    >
+                      {data[column]}
+                    </a>
+                  </td>
+                );
               } else if (column === "documents" && data[column]) {
                 return (
                   <td
@@ -104,13 +119,15 @@ const TableBody = ({
               } else if (column === "status") {
                 return (
                   <td key={column} className="py-2 px-4 border-b font-bold">
-                    <Button
+                    <Text
                       className={`${getStatusBgColor(
                         data[column]
-                      )} p-2 rounded-full ${getStatusColor(data[column])} w-40`}
+                      )} rounded-full ${getStatusColor(
+                        data[column]
+                      )} py-3 px-6`}
                     >
                       {data[column]}
-                    </Button>
+                    </Text>
                   </td>
                 );
               } else {

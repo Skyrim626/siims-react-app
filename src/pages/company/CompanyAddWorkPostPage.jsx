@@ -36,7 +36,19 @@ const CompanyAddWorkPostPage = () => {
   const [maxApplicants, setMaxApplicants] = useState(1);
   const [endDate, setEndDate] = useState("");
   const [workDuration, setWorkDuration] = useState("");
+  const [skills, setSkills] = useState([]);
   const [errors, setErrors] = useState({});
+
+  const handleSkillChange = (e) => {
+    const value = e.target.value;
+    if (!skills.includes(value) && value) {
+      setSkills([...skills, value]);
+    }
+  };
+
+  const handleRemoveSkill = (skill) => {
+    setSkills(skills.filter((s) => s !== skill));
+  };
 
   // Add work post
   const addWorkPost = async (e) => {
@@ -53,15 +65,16 @@ const CompanyAddWorkPostPage = () => {
         end_date: endDate,
         work_duration: workDuration,
         max_applicants: maxApplicants,
+        skills: skills, // Include the selected skill
       };
 
       // console.log(payload);
 
       // Make POST Request
-      const response = await postRequest({
+      /* const response = await postRequest({
         url: "/api/v1/company/work-posts",
         data: payload,
-      });
+      }); */
 
       // Redirect after success
       if (response) {
@@ -113,6 +126,8 @@ const CompanyAddWorkPostPage = () => {
             endDate={endDate}
             maxApplicants={maxApplicants}
             workDuration={workDuration}
+            skills={skills}
+            setSkills={setSkills}
             setOfficeId={setOfficeId}
             setWorkTypeId={setWorkTypeId}
             setTitle={setTitle}
@@ -126,6 +141,8 @@ const CompanyAddWorkPostPage = () => {
             workTypes={work_types}
             offices={offices}
             handleSubmit={addWorkPost}
+            handleRemoveSkill={handleRemoveSkill}
+            handleSkillChange={handleSkillChange}
             displayFields={{
               officeId: true,
               workTypeId: true,
@@ -136,6 +153,7 @@ const CompanyAddWorkPostPage = () => {
               endDate: true,
               workDuration: true,
               maxApplicants: true,
+              skills: true,
             }}
           />
         </Section>

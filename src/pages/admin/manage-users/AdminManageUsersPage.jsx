@@ -9,6 +9,7 @@ import FormModal from "../../../components/modals/FormModal";
 import UserFormAdd from "../../../components/forms/UserFormAdd";
 import ConfirmationModal from "../../../components/common/ConfirmationModal";
 import Loader from "../../../components/common/Loader";
+import EmptyState from "../../../components/common/EmptyState";
 
 // AdminManageUsersPage component handles the management of users in the admin dashboard.
 const AdminManageUsersPage = () => {
@@ -61,14 +62,35 @@ const AdminManageUsersPage = () => {
     <Section>
       <Loader loading={loading} />
 
-      <Table
-        data={users}
-        // IDsIsLink={false}
-        handleArchiveBySelectedIds={handleArchiveBySelectedIds}
-        term={term}
-        filteredData={filteredData}
-        handleSearchChange={handleSearchChange}
-      />
+      {users.length > 0 ? (
+        <Table
+          data={users}
+          // IDsIsLink={false}
+          handleArchiveBySelectedIds={handleArchiveBySelectedIds}
+          term={term}
+          filteredData={filteredData}
+          handleSearchChange={handleSearchChange}
+        />
+      ) : (
+        <EmptyState
+          title="No users available at the moment"
+          message="Once activities are recorded, users will appear here."
+          icon={
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-16 w-16 text-gray-400"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          }
+        />
+      )}
 
       {/* Form Modal for Adding User */}
       <FormModal isOpen={isOpen} setIsOpen={setIsOpen} modalTitle="Add User">

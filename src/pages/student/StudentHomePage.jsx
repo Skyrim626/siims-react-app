@@ -39,6 +39,7 @@ const StudentHomePage = () => {
   // console.log(currently_applied_work_post);
   // console.log(student);
   // console.log(status);
+  // console.log(workPosts);
 
   // Apply Status
   const [canApply, setCanApply] = useState(null); // will hold the application status
@@ -62,13 +63,21 @@ const StudentHomePage = () => {
   const [isWithdrawModalOpen, setIsWithdrawalModalOpen] = useState(false);
   const [selectedWorkPostId, setSelectedWorkPostId] = useState(null);
 
-  // Calculate the total number of pages
-  const totalPages = Math.ceil(workPosts.length / workPostsPerPage);
+  // State for Active Tab
+  const [activeTab, setActiveTab] = useState("All");
 
-  // Get the workPosts for the current page
+  // Filtered Work Posts based on the selected tab
+  const filteredWorkPosts = workPosts.filter((workPost) => {
+    if (activeTab === "All") return true;
+    return workPost.work_post_type === activeTab;
+  });
+
+  // Calculate the total number of pages
+  // Calculate total pages for filtered work posts
+  const totalPages = Math.ceil(filteredWorkPosts.length / workPostsPerPage);
   const indexOfLastWorkPost = currentPage * workPostsPerPage;
   const indexOfFirstWorkPost = indexOfLastWorkPost - workPostsPerPage;
-  const currentWorkPost = workPosts.slice(
+  const currentWorkPost = filteredWorkPosts.slice(
     indexOfFirstWorkPost,
     indexOfLastWorkPost
   );
@@ -149,11 +158,14 @@ const StudentHomePage = () => {
     // Method POST
     // Create a new application record
     try {
-      const response = await postRequest({
+      /* const response = await postRequest({
         url: `/api/v1/student/jobs/${selectedWorkPostId}/apply`,
+      }); */
+      const response = await postRequest({
+        url: `/api/v1/applications/${selectedWorkPostId}/apply`,
       });
 
-      console.log(response);
+      // console.log(response);
 
       setIsModalOpen(false);
 
@@ -202,8 +214,46 @@ const StudentHomePage = () => {
       <Page className="p-4 overflow-y-auto mx-auto">
         {/* Loading */}
         <Loader loading={loading} />
+
         {/* New Post Box */}
         <PostBox />
+
+        {/* Tabs */}
+        {studentStatus == 8 && (
+          <div className="mb-6">
+            <button
+              onClick={() => setActiveTab("All")}
+              className={`mr-4 px-6 py-3 rounded-md font-medium ${
+                activeTab === "All"
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200 text-gray-700"
+              }`}
+            >
+              All
+            </button>
+            <button
+              onClick={() => setActiveTab("Internship")}
+              className={`mr-4 px-6 py-3 rounded-md font-medium ${
+                activeTab === "Internship"
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200 text-gray-700"
+              }`}
+            >
+              Internship
+            </button>
+            <button
+              onClick={() => setActiveTab("Immersion")}
+              className={`mr-4 px-6 py-3 rounded-md font-medium ${
+                activeTab === "Immersion"
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200 text-gray-700"
+              }`}
+            >
+              Immersion
+            </button>
+          </div>
+        )}
+
         {/* Reports Section */}
         {/* Deployed - 12 */}
         {studentStatus === 12 && (
@@ -217,22 +267,21 @@ const StudentHomePage = () => {
         {studentStatus === 8 && (
           <div className="container mx-auto">
             <h2 className="text-2xl font-semibold mb-4">
-              Available Internships
+              {activeTab === "All"
+                ? "Available Work Posts"
+                : `${activeTab} Opportunities`}
             </h2>
+
             <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-              {/* Can Apply or Not Apply */}
-              {currentWorkPost.map((workPost) => {
-                // console.log(workPost);
-                return (
-                  <WorkPost
-                    key={workPost.id}
-                    workPost={workPost}
-                    handleApplyClick={handleApplyClick}
-                    location={location}
-                    canApply={canApply}
-                  />
-                );
-              })}
+              {currentWorkPost.map((workPost) => (
+                <WorkPost
+                  key={workPost.id}
+                  workPost={workPost}
+                  handleApplyClick={() => handleApplyClick(workPost.id)}
+                  location={location}
+                  canApply={canApply}
+                />
+              ))}
             </div>
 
             {/* Pagination */}

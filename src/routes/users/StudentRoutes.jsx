@@ -68,7 +68,7 @@ const StudentRoutes = {
           /**
            * Response
            */
-          console.log("testing");
+          // console.log("testing");
           const currentAppliedWorkResponse = await axiosClient.get(
             "/api/v1/student/jobs/currently-applied"
           );
@@ -235,7 +235,7 @@ const StudentRoutes = {
 
           // Fetch Step-1 Documents
           const stepOneResponse = await axiosClient.get(
-            `/api/v1/student/applications/${application_id}/document-submissions/step-1/get`
+            `/api/v1/applications/${application_id}/step-1/get`
           );
 
           // Fetch Step-2 Documents
@@ -300,7 +300,7 @@ const StudentRoutes = {
            */
           return {
             initial_weekly_reports,
-            applicationId
+            applicationId,
           };
         } catch (error) {
           console.log(error);

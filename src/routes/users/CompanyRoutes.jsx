@@ -79,11 +79,11 @@ const CompanyRoutes = {
 
               return { initial_work_posts, work_types };
             } catch (error) {
-              console.error(
-                "Error fetching programs and chairpersons: ",
-                error
-              );
-              throw error; // Let the router handle errors
+              console.error("Error fetching company and work posts: ", error);
+              return {
+                initial_work_posts: [],
+                work_types: [],
+              };
             }
           },
         },
@@ -122,6 +122,9 @@ const CompanyRoutes = {
           element: <CompanyAddWorkPostPage />,
           loader: async () => {
             try {
+              /**
+               * Responses
+               */
               // Get work_types and offices
               const officesResponse = await axiosClient.get(
                 "/api/v1/company/offices"
@@ -130,20 +133,25 @@ const CompanyRoutes = {
                 "/api/v1/work-types"
               );
 
+              /**
+               * Variables
+               */
               // console.log(officesResponse.data);
               const offices = officesResponse.data;
               const work_types = workTypesResponse.data;
 
               // console.log(offices);
               // console.log(work_types);
-
+              /**
+               * Return
+               */
               return { offices, work_types };
             } catch (error) {
-              console.error(
-                "Error fetching programs and chairpersons: ",
-                error
-              );
-              throw error; // Let the router handle errors
+              console.error("Error fetching offices and work types: ", error);
+              return {
+                offices: [],
+                work_types: [],
+              };
             }
           },
         },
@@ -233,9 +241,7 @@ const CompanyRoutes = {
               /**
                * Response
                */
-              const response = await axiosClient.get(
-                "/api/v1/company/applicants"
-              );
+              const response = await axiosClient.get("/api/v1/applicants");
 
               /**
                * Variable
@@ -250,7 +256,7 @@ const CompanyRoutes = {
 
               // console.log(applicants);
 
-              return applicants;
+              return { applicants };
             } catch (error) {
               // Log the error in the console without breaking the client-side rendering
               console.error(
@@ -259,7 +265,9 @@ const CompanyRoutes = {
               );
 
               // Return an empty array to ensure the application continues functioning smoothly
-              return [];
+              return {
+                applicants: [],
+              };
             }
           },
         },
@@ -288,6 +296,7 @@ const CompanyRoutes = {
                    * Variables
                    */
                   const { application, statuses } = response.data;
+
                   // console.log(application);
                   // console.log(statuses);
 
@@ -296,7 +305,9 @@ const CompanyRoutes = {
                   return { application, statuses };
                 } catch (error) {
                   console.log(error);
-                  throw error;
+                  return {
+                    application: [],
+                  };
                 }
               },
             },

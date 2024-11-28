@@ -12,10 +12,11 @@ import { postRequest, putRequest, deleteRequest } from "../../api/apiHelpers";
 import DocumentTypeForm from "../../components/forms/DocumentTypeForm";
 import Table from "../../components/tables/Table";
 import Loader from "../../components/common/Loader";
+import EmptyState from "../../components/common/EmptyState";
 
 const AdminManageDocumentTypesPage = () => {
   // Retrieve the document_types data from the loader
-  const initial_document_types = useLoaderData();
+  const { initial_document_types } = useLoaderData();
 
   // console.log(initial_document_types);
 
@@ -184,12 +185,33 @@ const AdminManageDocumentTypesPage = () => {
         />
 
         {/* Table */}
-        <Table
-          data={documentTypes}
-          handleEdit={handleEdit}
-          // handleArchive={deleteDocumentType}
-          includeCheckboxes={false}
-        />
+        {documentTypes && documentTypes.length > 0 ? (
+          <Table
+            data={documentTypes}
+            handleEdit={handleEdit}
+            // handleArchive={deleteDocumentType}
+            includeCheckboxes={false}
+          />
+        ) : (
+          <EmptyState
+            title="No document types available at the moment"
+            message="Once activities are recorded, document types will appear here."
+            icon={
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-16 w-16 text-gray-400"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            }
+          />
+        )}
 
         {/* Modals */}
         <FormModal

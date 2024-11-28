@@ -9,10 +9,11 @@ import Section from "../../components/common/Section";
 import Heading from "../../components/common/Heading";
 import Text from "../../components/common/Text";
 import Table from "../../components/tables/Table";
+import EmptyState from "../../components/common/EmptyState";
 
 const CompanyManageApplicantsPage = () => {
   // Fetch data
-  const applicants = useLoaderData();
+  const { applicants } = useLoaderData();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -35,7 +36,28 @@ const CompanyManageApplicantsPage = () => {
       </Section>
 
       {/* Table */}
-      <Table data={applicants} handleView={viewApplicant} />
+      {applicants.length > 0 ? (
+        <Table data={applicants} handleView={viewApplicant} />
+      ) : (
+        <EmptyState
+          title="No applicants available at the moment"
+          message="Once activities are recorded, applicants will appear here."
+          icon={
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-16 w-16 text-gray-400"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          }
+        />
+      )}
     </Page>
   );
 };

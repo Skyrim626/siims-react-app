@@ -304,9 +304,9 @@ const companySidebarItemsConfig = [
   {
     icon: <UserSearch size={20} />,
     text: "Applicants",
-    alert: true,
+    alert: false,
     ariaLabel: "Applicants",
-    exact: true,
+    exact: false,
     path: "/auth/company/applicants",
   },
 ];

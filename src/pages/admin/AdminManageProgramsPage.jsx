@@ -11,6 +11,7 @@ import Table from "../../components/tables/Table";
 import ProgramForm from "../../components/forms/ProgramForm";
 import Loader from "../../components/common/Loader";
 import { checkResponseStatus } from "../../utils/checkResponse";
+import EmptyState from "../../components/common/EmptyState";
 
 const AdminManageProgramsPage = () => {
   // Retrieve the programs, list_of_chairperson, and list_of_colleges data from the loader
@@ -199,6 +200,33 @@ const AdminManageProgramsPage = () => {
       />
 
       {/* Table */}
+      {programs.length > 0 ? (
+        <Table
+          data={programs}
+          handleEdit={handleEdit}
+          handleArchive={deleteProgram}
+          includeCheckboxes={false}
+        />
+      ) : (
+        <EmptyState
+          title="No programs available at the moment"
+          message="Once activities are recorded, programs will appear here."
+          icon={
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-16 w-16 text-gray-400"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          }
+        />
+      )}
       <Table
         data={programs}
         handleEdit={handleEdit}

@@ -1,9 +1,9 @@
 // Libraries
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 // Icons
-import { Home } from "lucide-react";
+import { ArrowLeft, Home } from "lucide-react";
 
 // Assets
 import notFoundImage1 from "../assets/images/404-image-1.svg";
@@ -11,9 +11,13 @@ import notFoundImage2 from "../assets/images/404-image-2.svg";
 
 // Components
 import Section from "../components/common/Section";
+import { Button } from "@headlessui/react";
 
 // NotFoundPage Component
 export default function NotFoundPage() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   return (
     <>
       <Section className="flex items-center justify-center flex-col h-screen overflow-hidden">
@@ -25,13 +29,22 @@ export default function NotFoundPage() {
             We can’t find the page you’re looking for.
           </p>
           {/* Return to Homepage */}
-          <div className="flex justify-center">
+          <div className="flex justify-center space-x-5">
+            {/* Go Back to Previous Page */}
+            <Button
+              onClick={() => navigate(-1)} // Navigate back to the previous page
+              className="bg-gray-700 hover:bg-gray-800 transition text-white rounded-md flex items-center gap-2 px-4 py-3"
+            >
+              <ArrowLeft size={20} />
+              Go Back
+            </Button>
+            {/* Return to Homepage */}
             <Link
               to="/"
               className="bg-blue-900 hover:bg-blue-950 transition text-white rounded-md flex items-center gap-2 px-4 py-3"
             >
               <Home size={20} />
-              Go back
+              Go Home
             </Link>
           </div>
         </div>
