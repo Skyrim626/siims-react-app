@@ -5,10 +5,11 @@ import Section from "../../components/common/Section";
 import Heading from "../../components/common/Heading";
 import Table from "../../components/tables/Table";
 import Text from "../../components/common/Text";
+import EmptyState from "../../components/common/EmptyState";
 
 const ChairpersonViewCoordinatorPage = () => {
   // Fetch coordinators data
-  const coordinators = useLoaderData();
+  const { coordinators } = useLoaderData();
 
   // console.log(coordinators);
 
@@ -22,7 +23,14 @@ const ChairpersonViewCoordinatorPage = () => {
         <hr className="my-3" />
 
         {/* Table */}
-        <Table data={coordinators} />
+        {coordinators.length > 0 ? (
+          <Table data={coordinators} />
+        ) : (
+          <EmptyState
+            title="No coordinators available at the moment"
+            message="Once activities are recorded, coordinators will appear here."
+          />
+        )}
       </Section>
     </Page>
   );

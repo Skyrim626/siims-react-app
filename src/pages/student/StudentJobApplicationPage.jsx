@@ -421,18 +421,28 @@ const StudentJobApplicationPage = () => {
                   Request Endorsement
                 </Button>
               </div>
+
               {initial_application.endorsement && (
                 <div className="flex flex-col">
-                  <Text>
-                    <a>
-                      {initial_application.endorsement.endorsement_file
-                        ? `${toFilePath(
-                            initial_application.endorsement.endorsement_file
-                          )}`
-                        : "No endorsement yet"}
-                    </a>
-                  </Text>
-                  <Text>Already requested an endorsement</Text>
+                  {initial_application.endorsement.endorsement_file ? (
+                    initial_application.endorsement.status_id === 2 ? (
+                      <a
+                        href={`${toFilePath(
+                          initial_application.endorsement.endorsement_file
+                        )}`}
+                        target="_blank"
+                        className="underline text-blue-500 hover:text-blue-600"
+                      >
+                        Your endorsement file here
+                      </a>
+                    ) : (
+                      <Text className="p-2 bg-orange-300 w-max font-bold text-sm text-white  rounded-full">
+                        Waiting for approval
+                      </Text>
+                    )
+                  ) : (
+                    <Text>No endorsement yet</Text>
+                  )}
                 </div>
               )}
 

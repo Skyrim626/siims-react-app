@@ -14,6 +14,7 @@ import {
   UserSearch,
   UserRoundCheck,
   UserPen,
+  ContactRound,
   NotebookPen,
 } from "lucide-react";
 
@@ -280,6 +281,14 @@ const companySidebarItemsConfig = [
     path: "/auth/company/work-posts",
   },
   {
+    icon: <ContactRound size={20} />,
+    text: "Manage Interns",
+    alert: true,
+    ariaLabel: "Manage Interns",
+    exact: true,
+    path: "/auth/company/interns",
+  },
+  {
     icon: <Building size={20} />,
     text: "Offices",
     alert: true,
@@ -358,12 +367,28 @@ const deanSidebarItemsConfig = [
     path: "/auth/dean/profile",
   },
   {
+    icon: <UserPen />,
+    text: "Coordinators",
+    alert: true,
+    ariaLabel: "Coordinators",
+    exact: true,
+    path: "/auth/dean/coordinators",
+  },
+  {
     icon: <Presentation size={20} />,
     text: "Programs",
     alert: true,
     ariaLabel: "Programs",
     exact: false,
     path: "/auth/dean/programs",
+  },
+  {
+    icon: <Users size={20} />,
+    text: "Students",
+    alert: true,
+    ariaLabel: "Students",
+    exact: false,
+    path: "/auth/dean/students",
   },
   {
     icon: <Building size={20} />,

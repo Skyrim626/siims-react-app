@@ -20,7 +20,8 @@ import StudentEditProfilePage from "../../pages/student/StudentEditProfilePage";
 import StudentMessagingPage from "../../pages/student/StudentMessagingPage";
 import StudentWeeklyAccomplishmentPage from "../../pages/student/StudentWeeklyAccomplishmentPage";
 import StudentViewWorkPost from "../../pages/student/StudentViewWorkPost";
-
+import StudentPersonalInsight from "../../pages/student/StudentPersonalInsight";
+import StudentViewEditInsights from "../../pages/student/StudentViewEditInsights";
 // Routes for Student
 const StudentRoutes = {
   path: "my",
@@ -352,6 +353,18 @@ const StudentRoutes = {
     {
       path: "view-evaluations",
       element: <StudentViewEvaluationPage />,
+    },
+    {
+      path: "my-weekly",
+      element: <StudentWeeklyAccomplishmentPage />,
+    },
+    {
+      path: "insights",
+      element: <StudentPersonalInsight />,
+    },
+    {
+      path: "view-insights",
+      element: <StudentViewEditInsights />,
     },
   ],
 };

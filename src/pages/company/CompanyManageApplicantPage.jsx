@@ -289,12 +289,12 @@ const CompanyManageApplicantPage = () => {
           </Button> */}
 
           {/* Generate Acceptance Letter Button */}
-          {/* <Link
+          <Link
             to={`${location.pathname}/generate-acceptance`}
             className="bg-gradient-to-r from-green-500 to-teal-500 text-white py-2 px-6 rounded-full text-lg font-bold hover:scale-105 transform transition-all"
           >
             Generate Acceptance Letter
-          </Link> */}
+          </Link>
 
           {/* Upload Button */}
           <Button

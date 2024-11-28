@@ -7,6 +7,8 @@ import DeanProfilePage from "../../pages/dean/DeanProfilePage";
 import DeanManageCompaniesPage from "../../pages/dean/DeanManageCompaniesPage";
 import DeanProgramsPage from "../../pages/dean/DeanProgramsPage";
 import axiosClient from "../../api/axiosClient";
+import DeanManageCoordinatorPage from "../../pages/dean/DeanManageCoordinatorPage";
+import DeanManageStudentsPage from "../../pages/dean/DeanManageStudentsPage";
 
 // Routes for Dean
 const DeanRoutes = {
@@ -73,6 +75,81 @@ const DeanRoutes = {
     {
       path: "profile",
       element: <DeanProfilePage />,
+    },
+    {
+      path: "coordinators",
+      element: <DeanManageCoordinatorPage />,
+      loader: async () => {
+        try {
+          /**
+           * Response
+           */
+          const coordinatorsResponse = await axiosClient.get(
+            "/api/v1/users/coordinators/college"
+          );
+          const programResponse = await axiosClient.get(
+            "/api/v1/programs/dean"
+          );
+
+          /**
+           * Variables
+           */
+          const initial_coordinators = coordinatorsResponse.data;
+          const programs = programResponse.data;
+
+          /**
+           * Return
+           */
+          return {
+            initial_coordinators,
+            programs,
+          };
+        } catch (error) {
+          console.log(error);
+
+          return {
+            initial_coordinators: [],
+            programs: [],
+          };
+        }
+      },
+    },
+    {
+      path: "students",
+      element: <DeanManageStudentsPage />,
+      loader: async () => {
+        try {
+          /**
+           * Responses
+           */
+          const studentResponse = await axiosClient.get(
+            "/api/v1/users/students/dean"
+          );
+          const programResponse = await axiosClient.get(
+            "/api/v1/programs/dean"
+          );
+
+          /**
+           * Variables
+           */
+          const initial_students = studentResponse.data;
+          const programs = programResponse.data;
+
+          /**
+           * Return
+           */
+          return {
+            initial_students,
+            programs,
+          };
+        } catch (error) {
+          console.log(error);
+          return {
+            programs: [],
+            initial_students: [],
+          };
+        }
+      },
     },
     {
       path: "programs",

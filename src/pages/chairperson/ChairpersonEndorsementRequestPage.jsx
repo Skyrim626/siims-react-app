@@ -1,23 +1,83 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useLoaderData, useLocation } from "react-router-dom";
 import Page from "../../components/common/Page";
 import EmptyState from "../../components/common/EmptyState";
 import { Button } from "@headlessui/react";
+import FormModal from "../../components/modals/FormModal";
+import UploadFile from "../../components/common/UploadFile.";
+import { postFormDataRequest } from "../../api/apiHelpers";
+import Loader from "../../components/common/Loader";
 
 const ChairpersonEndorsementRequestPage = () => {
   const { endorsementLetterRequest, endorsementLetterRequestId } =
     useLoaderData();
+
+  /**
+   * File State
+   */
+  const [loading, setLoading] = useState(false);
+  const [isOpenImport, setIsOpenImport] = useState(false);
+  const [file, setFile] = useState(null);
+  const [status, setStatus] = useState(false);
   // const location = useLocation();
 
   // console.log(endorsementLetterRequestId);
 
-  const handleFileUpload = () => {
-    // Logic for handling file upload
-    console.log("File upload triggered");
+  /**
+   * Handle File Upload
+   */
+  const handleOpenModal = (selectedIds) => {
+    setIsOpenImport(true);
+  };
+
+  /**
+   * Handle File Change
+   */
+  const handleFileChange = (event) => {
+    const selectedFile = event.target.files[0];
+    setFile(selectedFile);
+    setStatus(""); // Reset status on file selection
+  };
+
+  // Submit File
+  const submitFile = async (event) => {
+    // Set Loading
+    setLoading(true);
+
+    event.preventDefault();
+    if (!file) {
+      setStatus("error");
+      return;
+    }
+
+    // Create a FormData object
+    const formData = new FormData();
+    formData.append("pdf_file", file);
+
+    try {
+      // POST FORM DATA
+      const response = await postFormDataRequest({
+        url: `/api/v1/endorsement-letter-requests/${endorsementLetterRequestId}/upload`,
+        data: formData,
+      });
+
+      if (response) {
+        setIsOpenImport(false);
+        navigate(-1);
+        setStatus("Endorsement Letter Uploaded Successfully!");
+      }
+    } catch (error) {
+      // console.log(error.response.data.errors);
+      setErrors(error.response.data.errors); // Assuming validation errors are in `errors`
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <Page>
+      <Loader loading={loading} />
+
       {endorsementLetterRequest ? (
         <div className="max-w-6xl mx-auto p-8 bg-white shadow-lg rounded-lg mt-6">
           {/* Header */}
@@ -27,7 +87,7 @@ const ChairpersonEndorsementRequestPage = () => {
             </h1>
             <div className="flex gap-4">
               <Button
-                onClick={handleFileUpload}
+                onClick={handleOpenModal}
                 className="px-6 py-2 bg-green-600 text-white font-semibold rounded-md shadow hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
               >
                 Upload Document
@@ -171,6 +231,19 @@ const ChairpersonEndorsementRequestPage = () => {
           }
         />
       )}
+
+      <FormModal
+        isOpen={isOpenImport}
+        setIsOpen={setIsOpenImport}
+        modalTitle="Upload Endorsement Letter"
+        onSubmit={submitFile}
+      >
+        <UploadFile
+          file={file}
+          set={setFile}
+          handleFileChange={handleFileChange}
+        />
+      </FormModal>
     </Page>
   );
 };

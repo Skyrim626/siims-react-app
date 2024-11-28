@@ -62,10 +62,12 @@ const ChairpersonRoutes = {
 
           const coordinators = response.data;
 
-          return coordinators;
+          return { coordinators };
         } catch (error) {
           console.error("Error fetching coordinators: ", error);
-          throw error; // Let the router handle errors
+          return {
+            coordinators: [],
+          };
         }
       },
     },
@@ -76,6 +78,31 @@ const ChairpersonRoutes = {
         {
           index: true,
           element: <ChairpersonManageCompaniesPage />,
+          loader: async () => {
+            try {
+              /**
+               * Responses
+               */
+              const companiesResponse = await axiosClient.get(
+                "/api/v1/chairperson/companies"
+              );
+
+              /**
+               * Variables
+               */
+              const initial_companies = companiesResponse.data;
+
+              /**
+               * Return
+               */
+              return { initial_companies };
+            } catch (error) {
+              console.log(error);
+              return {
+                initial_companies: [],
+              };
+            }
+          },
         },
         {
           path: ":company_id",
@@ -97,12 +124,16 @@ const ChairpersonRoutes = {
           const currentProgramIdResponse = await axiosClient.get(
             "/api/v1/users/chairpersons/current-program"
           );
+          const coordinatorsResponse = await axiosClient.get(
+            `/api/v1/users/coordinators/${currentProgramIdResponse.data}`
+          );
 
           /**
            * Variables
            */
           const initial_students = studentResponse.data;
           const current_program_id = currentProgramIdResponse.data;
+          const list_of_coordinators = coordinatorsResponse.data;
 
           // console.log(initial_students);
           /**
@@ -111,12 +142,14 @@ const ChairpersonRoutes = {
           return {
             initial_students,
             current_program_id,
+            list_of_coordinators,
           };
         } catch (error) {
           console.log(error);
           return {
             initial_students: [],
             current_program_id: 0,
+            coordinators: [],
           };
         }
       },
@@ -150,6 +183,7 @@ const ChairpersonRoutes = {
             }
           },
         },
+
         {
           path: ":endorsementLetterRequestId",
           element: <Outlet />,

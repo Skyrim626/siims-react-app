@@ -9,14 +9,18 @@ import FormModal from "../../components/modals/FormModal";
 import ChairpersonManageHeader from "../../components/users/chairperson/ChairpersonManageHeader";
 import ChairpersonCompanyFormAdd from "../../components/users/chairperson/forms/ChairpersonCompanyFormAdd";
 import ChairpersonCompaniesTable from "../../components/users/chairperson/table/ChairpersonCompaniesTable";
+import { useLoaderData } from "react-router-dom";
+import EmptyState from "../../components/common/EmptyState";
 
 // Chairperson Companies Page
 const ChairpersonManageCompaniesPage = () => {
+  const { initial_companies } = useLoaderData();
+
   // Modal State
   const [isOpen, setIsOpen] = useState(false);
 
   // Fetch State
-  const [companies, setCompanies] = useState([]);
+  const [companies, setCompanies] = useState(initial_companies);
 
   // Form State
   // Using the custom hook for Company Information (Add)
@@ -37,20 +41,6 @@ const ChairpersonManageCompaniesPage = () => {
     company_name: "",
     website_url: "",
   });
-
-  // Use Effect: Fetching Data
-  useEffect(() => {
-    // Method: fetchCompanies
-    const fetchCompanies = async () => {
-      const response = await getRequest({
-        url: "/api/v1/chairperson/companies",
-      });
-      // Set Companies State
-      setCompanies(response);
-    };
-    // Call Method: fetchCompanies
-    fetchCompanies();
-  }, []);
 
   // Handle Add Submit
   const handleAddSubmit = async () => {
@@ -87,10 +77,30 @@ const ChairpersonManageCompaniesPage = () => {
           isOpen={isOpen}
           setIsOpen={setIsOpen}
         />
-        {companies.length !== 0 && (
+
+        {companies.length > 0 ? (
           <ChairpersonCompaniesTable
             data={companies}
             searchPlaceholder="Search Companies"
+          />
+        ) : (
+          <EmptyState
+            title="No companies available at the moment"
+            message="Once activities are recorded, companies will appear here."
+            icon={
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-16 w-16 text-gray-400"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            }
           />
         )}
 

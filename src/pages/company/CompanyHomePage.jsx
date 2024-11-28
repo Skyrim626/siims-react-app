@@ -48,7 +48,7 @@ const CompanyDashboard = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* Card 1 */}
             <div
-              onClick={() => navigate("/work-posts")}
+              onClick={() => navigate("/auth/company/work-posts")}
               className="bg-white p-6 shadow rounded-md flex items-center space-x-4 cursor-pointer hover:bg-blue-50 transition"
             >
               <div className="bg-blue-100 p-4 rounded-full text-blue-600">
@@ -61,7 +61,7 @@ const CompanyDashboard = () => {
             </div>
             {/* Card 2 */}
             <div
-              onClick={() => navigate("/interns")}
+              onClick={() => navigate("/auth/company/interns")}
               className="bg-white p-6 shadow rounded-md flex items-center space-x-4 cursor-pointer hover:bg-green-50 transition"
             >
               <div className="bg-green-100 p-4 rounded-full text-green-600">
@@ -74,7 +74,7 @@ const CompanyDashboard = () => {
             </div>
             {/* Card 3 */}
             <div
-              onClick={() => navigate("/supervisors")}
+              onClick={() => navigate("/auth/company/supervisors")}
               className="bg-white p-6 shadow rounded-md flex items-center space-x-4 cursor-pointer hover:bg-yellow-50 transition"
             >
               <div className="bg-yellow-100 p-4 rounded-full text-yellow-600">

@@ -1,17 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import jsPDF from "jspdf";
-import axios from "axios"; // Make sure axios is installed
+import axios from "axios"; 
 import { postFormDataRequest } from "../../api/apiHelpers";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { stripLocation } from "../../utils/strip";
+import { UserPlus, Trash } from "lucide-react";
+
 
 const CompanyAcceptanceLetterPage = () => {
   // Get Params
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-
-  //console.log(id);
 
   const [students, setStudents] = useState([]);
   const [formData, setFormData] = useState({
@@ -26,6 +26,49 @@ const CompanyAcceptanceLetterPage = () => {
     representativeName: "",
     jobTitle: "",
   });
+  const getMonthName = (monthNumber) => {
+    const months = [
+      "January", "February", "March", "April", "May", "June", 
+      "July", "August", "September", "October", "November", "December"
+    ];
+    // Subtract 1 since month numbers are 1-based, but arrays are 0-based.
+    return months[monthNumber - 1];
+  };
+
+  // Set the day, month, and year to today's date when the component mounts
+  useEffect(() => {
+    const today = new Date();
+    const day = today.getDate();
+    const month = today.getMonth() + 1; // JavaScript months are 0-indexed (January is 0)
+    const year = today.getFullYear();
+
+    const monthName = getMonthName(month);
+
+    setFormData(prevData => ({
+      ...prevData,
+      day: day < 10 ? `0${day}` : day, // Add leading zero if day is a single digit
+      month: monthName, // Add leading zero if month is a single digit
+      year,
+    }));
+  }, []);
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString); // Convert the string to a Date object
+  
+    const months = [
+      "January", "February", "March", "April", "May", "June", 
+      "July", "August", "September", "October", "November", "December"
+    ];
+  
+    const monthName = months[date.getMonth()]; // Get month name
+    const day = date.getDate(); // Get the day
+    const year = date.getFullYear(); // Get the year
+  
+    // Format the date as 'Month Day, Year'
+    return `${monthName} ${day}, ${year}`;
+  };
+  
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -72,6 +115,9 @@ const CompanyAcceptanceLetterPage = () => {
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
 
+    const formattedStartDate = formatDate(startDate);
+
+
     // Set title and styling
     doc.setFont("helvetica", "bold");
     doc.setFontSize(16);
@@ -91,7 +137,7 @@ const CompanyAcceptanceLetterPage = () => {
     doc.line(margin, margin + 85, pageWidth - margin, margin + 85);
 
     doc.text(
-      `This is to certify that the following list of student trainee(s) are hereby accepted \n to undergo 486 training hours with our company starting ${startDate}.`,
+      `This is to certify that the following list of student trainee(s) are hereby accepted \n to undergo 486 training hours with our company starting ${formattedStartDate}.`,
       margin,
       margin + 100
     );
@@ -110,18 +156,12 @@ const CompanyAcceptanceLetterPage = () => {
       margin,
       studentListStartY + students.length * 10 + 20
     );
-    doc.text(
-      `Office/Company Name: ${companyName}`,
-      margin,
-      studentListStartY + students.length * 10 + 30
-    );
-    doc.text(
-      `Representative Name: ${representativeName}`,
+ 
+    doc.text(representativeName,
       margin,
       studentListStartY + students.length * 10 + 40
     );
-    doc.text(
-      `Title: ${jobTitle}`,
+    doc.text(` ${companyName} , ${jobTitle} `,
       margin,
       studentListStartY + students.length * 10 + 50
     );
@@ -160,18 +200,12 @@ const CompanyAcceptanceLetterPage = () => {
 
       // Handle response from the server
       try {
-        // Send the FormData to the backend for processing
         const response = await postFormDataRequest({
           url: `/api/v1/company/applicants/${id}/submit-acceptance-letter`,
           data: formDataWithPDF,
         });
-        // console.log("Success:", response.data);
-        // console.log("Success:", response); // Handle successful response
 
         if (response) {
-          // console.log(location.pathname);
-          // console.log(stripLocation(location.pathname, "/generate-acceptance"));
-
           navigate(stripLocation(location.pathname, "/generate-acceptance"));
         }
       } catch (error) {
@@ -229,6 +263,9 @@ const CompanyAcceptanceLetterPage = () => {
             onChange={handleInputChange}
             className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
+           <p className="text-sm text-gray-500 mt-1">
+              Select the start date for the internship.
+            </p>
         </div>
         <div className="grid grid-cols-3 gap-4">
           <div>
@@ -241,7 +278,6 @@ const CompanyAcceptanceLetterPage = () => {
               value={formData.day}
               onChange={handleInputChange}
               className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Day"
             />
           </div>
           <div>
@@ -254,7 +290,6 @@ const CompanyAcceptanceLetterPage = () => {
               value={formData.month}
               onChange={handleInputChange}
               className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Month"
             />
           </div>
           <div>
@@ -267,7 +302,6 @@ const CompanyAcceptanceLetterPage = () => {
               value={formData.year}
               onChange={handleInputChange}
               className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Year"
             />
           </div>
         </div>
@@ -346,28 +380,47 @@ const CompanyAcceptanceLetterPage = () => {
               />
               <button
                 onClick={() => removeStudent(index)}
-                className="text-red-600"
+                className="bg-red-100 hover:bg-red-200 p-2 rounded-full text-red-600"
               >
-                Remove
+                 <Trash size={16} />
               </button>
             </div>
           ))}
           <button
             onClick={addStudent}
-            className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg"
-          >
+            className="mt-2 px-4 py-2 bg-green-500 hover:bg-green-700 text-white rounded flex items-center gap-2"
+            >
+              <UserPlus size={18} />
             Add Student
           </button>
         </div>
         {/* Submit Acceptance Letter */}
-        <div className="mt-6">
+        <div className="mt-2">
           <button
             onClick={submitAcceptanceLetter}
-            className="px-6 py-3 bg-green-600 text-white rounded-lg"
+            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded"
           >
             Submit Acceptance Letter
           </button>
         </div>
+        {/* DOwnload PDF */}
+        <div className="space-y-2">
+          <button
+            onClick={() => {
+              const pdfBlob = generatePDF();
+              const url = window.URL.createObjectURL(pdfBlob);
+              const link = document.createElement("a");
+              link.href = url;
+              link.download = "Trainee_Acceptance_Letter.pdf";
+              link.click();
+              window.URL.revokeObjectURL(url);
+            }}
+            className="bg-orange-500 hover:bg-orange-700 text-white py-2 px-4 rounded"
+          >
+            Download Acceptance Letter
+          </button>
+        </div>
+
       </div>
     </div>
   );

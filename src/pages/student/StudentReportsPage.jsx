@@ -12,7 +12,9 @@ const StudentReportsPage = () => {
         </div>
       </header>
 
+      {/* Main Content */}
       <main className="container mx-auto px-4 py-6">
+        {/* Program Details Section */}
         <section className="bg-white shadow-md rounded-lg p-6 mb-6">
           <h2 className="text-xl font-semibold mb-4">Program Details</h2>
           <div className="grid grid-cols-2 gap-4">
@@ -37,6 +39,7 @@ const StudentReportsPage = () => {
           </div>
         </section>
 
+        {/* Reports Section */}
         <section className="bg-white shadow-md rounded-lg p-6 mb-6">
           <h2 className="text-xl font-semibold mb-4">Reports</h2>
           <div className="flex flex-wrap gap-2">
@@ -54,6 +57,7 @@ const StudentReportsPage = () => {
           </div>
         </section>
 
+        {/* Program Progress Section */}
         <section className="bg-white shadow-md rounded-lg p-6 mb-6">
           <h2 className="text-xl font-semibold mb-4">Program Progress</h2>
           <div>
@@ -73,6 +77,7 @@ const StudentReportsPage = () => {
           </div>
         </section>
 
+        {/* Notifications Section */}
         <section className="bg-white shadow-md rounded-lg p-6 mb-6">
           <h2 className="text-xl font-semibold mb-4">Notifications</h2>
           <ul className="list-disc list-inside">
@@ -81,6 +86,7 @@ const StudentReportsPage = () => {
           </ul>
         </section>
 
+        {/* Submitted Documents Section */}
         <section className="bg-white shadow-md rounded-lg p-6">
           <h2 className="text-xl font-semibold mb-4">Submitted Documents</h2>
           <ul className="space-y-2">

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation, NavLink } from "react-router-dom";
-import { Search, Bell } from "lucide-react";
+import { LogOut } from "lucide-react"; // Add LogOut icon import
 import logo from "../../assets/images/logo.svg";
 
 /**
@@ -55,43 +55,15 @@ const Navbar = ({ links }) => {
           }
         )}
 
-        {/* Profile section with dropdown */}
-        <div className="relative flex items-center space-x-2">
-          <img
-            src="/profile-pic.jpg"
-            alt="Profile"
-            className="w-8 h-8 rounded-full cursor-pointer"
-            onClick={toggleDropdown}
-          />
-          <span
-            className="hidden md:block text-sm font-semibold cursor-pointer"
-            onClick={toggleDropdown}
-          >
-            Me
-          </span>
-
-          {/* Dropdown */}
-          {dropdownOpen && (
-            <div className="absolute top-8 right-0 mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg z-10">
-              <ul className="py-1">
-                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                  <NavLink to="auth/my/profile" className="block w-full">
-                    Profile
-                  </NavLink>
-                </li>
-                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                  Settings & Privacy
-                </li>
-                <Button
-                  onClick={logout}
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                >
-                  Sign Out
-                </Button>
-              </ul>
-            </div>
-          )}
-        </div>
+        {/* Logout button */}
+        <button
+          onClick={logout}
+          aria-label="Logout"
+          className="flex flex-col items-center text-gray-600 hover:text-red-600 cursor-pointer"
+        >
+          <LogOut size={20} />
+          <span className="text-xs">Logout</span>
+        </button>
       </div>
     </nav>
   );
