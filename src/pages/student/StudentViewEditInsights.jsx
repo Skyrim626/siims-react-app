@@ -41,24 +41,31 @@ const StudentViewEditPersonalInsight = () => {
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
     // Check for valid file types (PNG and JPG)
-    const validFiles = files.filter((file) => file.type === "image/png" || file.type === "image/jpeg");
+    const validFiles = files.filter(
+      (file) => file.type === "image/png" || file.type === "image/jpeg"
+    );
 
     if (validFiles.length !== files.length) {
-        setError("Only PNG and JPG files are allowed.");
-        setTimeout(() => setError(""), 3000);
+      setError("Only PNG and JPG files are allowed.");
+      setTimeout(() => setError(""), 3000);
     }
 
     setFormData({
       ...formData,
       attachments: [
         ...formData.attachments,
-        ...validFiles.map((file) => ({ name: file.name, url: URL.createObjectURL(file) })),
+        ...validFiles.map((file) => ({
+          name: file.name,
+          url: URL.createObjectURL(file),
+        })),
       ],
     });
   };
 
   const removeFile = (index) => {
-    const updatedAttachments = formData.attachments.filter((_, i) => i !== index);
+    const updatedAttachments = formData.attachments.filter(
+      (_, i) => i !== index
+    );
     setFormData({ ...formData, attachments: updatedAttachments });
   };
 
@@ -69,117 +76,136 @@ const StudentViewEditPersonalInsight = () => {
     navigate("/auth/my/view-insights");
   };
 
-
   const exportToPDF = () => {
     if (!savedData || !savedData.attachments) {
       console.error("No data or attachments found!");
       return;
     }
-  
+
     const doc = new jsPDF("p", "mm", "a4");
-  
+
     // Logo paths
     const leftLogo = "/src/assets/images/logo/USTP-Logo-against-Light.png";
     const centerLogo = "/src/assets/images/logo/IT-Logo.png";
     const rightLogo = "/src/assets/images/logo/CITC_LOGO.png";
-  
+
     // Adjust logo sizes
     const leftCenterLogoWidth = 20; // Width for left and center logos
     const logoHeight = 20; // Height for all logos
     const rightLogoWidth = 35; // Width for the third logo (right logo)
     const pageWidth = 210; // A4 width in mm
-  
+
     // Reduced space between logos (e.g., 10mm)
-  const logoSpacing = 10; // Space between logos
+    const logoSpacing = 10; // Space between logos
 
-  // Calculate positions for logos to center them horizontally with reduced spacing
-  const logosTotalWidth = leftCenterLogoWidth * 2 + rightLogoWidth + logoSpacing * 2; // Left + Center + Right with spacing
-  const startX = (pageWidth - logosTotalWidth) / 2;
+    // Calculate positions for logos to center them horizontally with reduced spacing
+    const logosTotalWidth =
+      leftCenterLogoWidth * 2 + rightLogoWidth + logoSpacing * 2; // Left + Center + Right with spacing
+    const startX = (pageWidth - logosTotalWidth) / 2;
 
-  // Add logos with updated size and reduced spacing
-  doc.addImage(leftLogo, "PNG", startX, 10, leftCenterLogoWidth, logoHeight); // Left logo
-  doc.addImage(centerLogo, "PNG", startX + leftCenterLogoWidth + logoSpacing, 10, leftCenterLogoWidth, logoHeight); // Center logo
-  doc.addImage(rightLogo, "PNG", startX + (leftCenterLogoWidth + logoSpacing) * 2, 10, rightLogoWidth, logoHeight); // Right logo with adjusted width
+    // Add logos with updated size and reduced spacing
+    doc.addImage(leftLogo, "PNG", startX, 10, leftCenterLogoWidth, logoHeight); // Left logo
+    doc.addImage(
+      centerLogo,
+      "PNG",
+      startX + leftCenterLogoWidth + logoSpacing,
+      10,
+      leftCenterLogoWidth,
+      logoHeight
+    ); // Center logo
+    doc.addImage(
+      rightLogo,
+      "PNG",
+      startX + (leftCenterLogoWidth + logoSpacing) * 2,
+      10,
+      rightLogoWidth,
+      logoHeight
+    ); // Right logo with adjusted width
 
     // Add university name below logos
-    const universityName = "UNIVERSITY OF SCIENCE AND TECHNOLOGY OF SOUTHERN PHILIPPINES";
-    const campuses = "Alubijid | Cagayan de Oro | Claveria | Villanueva | Balubal | Jasaan | Oroquieta | Panaon";
+    const universityName =
+      "UNIVERSITY OF SCIENCE AND TECHNOLOGY OF SOUTHERN PHILIPPINES";
+    const campuses =
+      "Alubijid | Cagayan de Oro | Claveria | Villanueva | Balubal | Jasaan | Oroquieta | Panaon";
     const textY = 10 + logoHeight + 5; // Reduced space between logos and university name
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(10);
     doc.text(universityName, pageWidth / 2, textY, { align: "center" });
-    
+
     // Adjusted the Y position for campuses text to be closer
     doc.text(campuses, pageWidth / 2, textY + 4, { align: "center" });
-  
+
     // Add saved data content below the university name
     let yPosition = textY + 20;
-  
+
     doc.setFont("helvetica", "normal");
     doc.setFontSize(12);
-    doc.text(`Name: ${savedData.firstName} ${savedData.middleName} ${savedData.lastName}`, 10, yPosition);
+    doc.text(
+      `Name: ${savedData.firstName} ${savedData.middleName} ${savedData.lastName}`,
+      10,
+      yPosition
+    );
     yPosition += 8;
     doc.text(`Company Name: ${savedData.companyName}`, 10, yPosition);
     yPosition += 8;
     doc.text(`Department: ${savedData.department}`, 10, yPosition);
     yPosition += 10;
-  
+
     doc.text("Personal Insights:", 10, yPosition);
     yPosition += 8;
     const insightsText = doc.splitTextToSize(savedData.personalInsights, 180);
     doc.text(insightsText, 10, yPosition);
     yPosition += insightsText.length * 8;
-  
+
     // Add attachments if any
     if (savedData.attachments.length > 0) {
-        yPosition += 10;
-        doc.text("Attachments:", 10, yPosition);
-        yPosition += 8;
-    
-        let currentX = 10; // Starting X position for the first attachment
-        const maxRowWidth = pageWidth - 20; // Maximum width available for attachments
-        const attachmentWidth = 70; // Width of each attachment
-        const attachmentHeight = 70; // Height of each attachment
-        const attachmentSpacing = 10; // Space between attachments
-    
-        savedData.attachments.forEach((file, index) => {
+      yPosition += 10;
+      doc.text("Attachments:", 10, yPosition);
+      yPosition += 8;
+
+      let currentX = 10; // Starting X position for the first attachment
+      const maxRowWidth = pageWidth - 20; // Maximum width available for attachments
+      const attachmentWidth = 70; // Width of each attachment
+      const attachmentHeight = 70; // Height of each attachment
+      const attachmentSpacing = 10; // Space between attachments
+
+      savedData.attachments.forEach((file, index) => {
         const imageUrl = file.url;
         const imageType = file.name.toLowerCase().includes(".png")
-            ? "PNG"
-            : file.name.toLowerCase().includes(".jpg") || file.name.toLowerCase().includes(".jpeg")
-            ? "JPEG"
-            : null;
-    
+          ? "PNG"
+          : file.name.toLowerCase().includes(".jpg") ||
+            file.name.toLowerCase().includes(".jpeg")
+          ? "JPEG"
+          : null;
+
         if (imageType && imageUrl) {
-            // Check if the current attachment can fit on the same row
-            if (currentX + attachmentWidth > maxRowWidth) {
+          // Check if the current attachment can fit on the same row
+          if (currentX + attachmentWidth > maxRowWidth) {
             // If not, move to the next line
             yPosition += attachmentHeight + attachmentSpacing;
             currentX = 10; // Reset to the start of the line
-            }
-    
-            // Add the image to the PDF
-            doc.addImage(imageUrl, imageType, currentX, yPosition, attachmentWidth, attachmentHeight);
-    
-            // Update current X for the next attachment
-            currentX += attachmentWidth + attachmentSpacing;
+          }
+
+          // Add the image to the PDF
+          doc.addImage(
+            imageUrl,
+            imageType,
+            currentX,
+            yPosition,
+            attachmentWidth,
+            attachmentHeight
+          );
+
+          // Update current X for the next attachment
+          currentX += attachmentWidth + attachmentSpacing;
         }
-        });
+      });
     }
-  
-  
+
     // Save the PDF
     doc.save("Personal_Insights.pdf");
   };
-  
-  
-  
-  
-  
-  
-  
-
 
   return (
     <div className="max-w-4xl mx-auto p-5 bg-white border rounded-lg shadow-2xl">
@@ -191,7 +217,9 @@ const StudentViewEditPersonalInsight = () => {
         <form onSubmit={(e) => e.preventDefault()} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <label className="block text-xl font-semibold text-gray-700">First Name</label>
+              <label className="block text-xl font-semibold text-gray-700">
+                First Name
+              </label>
               <input
                 type="text"
                 name="firstName"
@@ -202,7 +230,9 @@ const StudentViewEditPersonalInsight = () => {
               />
             </div>
             <div>
-              <label className="block text-xl font-semibold text-gray-700">Middle Name</label>
+              <label className="block text-xl font-semibold text-gray-700">
+                Middle Name
+              </label>
               <input
                 type="text"
                 name="middleName"
@@ -212,7 +242,9 @@ const StudentViewEditPersonalInsight = () => {
               />
             </div>
             <div>
-              <label className="block text-xl font-semibold text-gray-700">Last Name</label>
+              <label className="block text-xl font-semibold text-gray-700">
+                Last Name
+              </label>
               <input
                 type="text"
                 name="lastName"
@@ -226,7 +258,9 @@ const StudentViewEditPersonalInsight = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-xl font-semibold text-gray-700">Company Name</label>
+              <label className="block text-xl font-semibold text-gray-700">
+                Company Name
+              </label>
               <input
                 type="text"
                 name="companyName"
@@ -237,7 +271,9 @@ const StudentViewEditPersonalInsight = () => {
               />
             </div>
             <div>
-              <label className="block text-xl font-semibold text-gray-700">Department</label>
+              <label className="block text-xl font-semibold text-gray-700">
+                Department
+              </label>
               <select
                 name="department"
                 value={formData.department}
@@ -252,7 +288,9 @@ const StudentViewEditPersonalInsight = () => {
           </div>
 
           <div>
-            <label className="block text-xl font-semibold text-gray-700">Personal Insights</label>
+            <label className="block text-xl font-semibold text-gray-700">
+              Personal Insights
+            </label>
             <textarea
               name="personalInsights"
               value={formData.personalInsights}
@@ -263,7 +301,9 @@ const StudentViewEditPersonalInsight = () => {
           </div>
 
           <div>
-            <label className="block text-xl font-semibold text-gray-700">Attachments</label>
+            <label className="block text-xl font-semibold text-gray-700">
+              Attachments
+            </label>
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 mt-2">
               <input
                 type="file"
@@ -321,7 +361,8 @@ const StudentViewEditPersonalInsight = () => {
       ) : (
         <div className="space-y-6">
           <p className="text-xl">
-            <strong>Name:</strong> {`${savedData.firstName} ${savedData.middleName} ${savedData.lastName}`}
+            <strong>Name:</strong>{" "}
+            {`${savedData.firstName} ${savedData.middleName} ${savedData.lastName}`}
           </p>
           <p className="text-xl">
             <strong>Company Name:</strong> {savedData.companyName}
