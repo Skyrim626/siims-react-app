@@ -65,23 +65,23 @@ export default function StudentLayout() {
         return auth["status_id"] === 10;
       },
     }, */
-    {
-      icon: <Briefcase size={20} />,
-      text: "Jobs",
-      path: "/auth/my/jobs",
-      active: true,
-      ariaLabel: "Jobs",
-      alert: true,
-      exact: false,
-      hidden: () => {
-        // Hides this briefcase if the student is now at status_id 9 or status_id 10
-        return (
-          auth["status_id"] === 9 ||
-          auth["status_id"] === 12 ||
-          auth["status_id"] === 10
-        );
-      },
-    },
+    // {
+    //   icon: <Briefcase size={20} />,
+    //   text: "Jobs",
+    //   path: "/auth/my/jobs",
+    //   active: true,
+    //   ariaLabel: "Jobs",
+    //   alert: true,
+    //   exact: false,
+    //   hidden: () => {
+    //     // Hides this briefcase if the student is now at status_id 9 or status_id 10
+    //     return (
+    //       auth["status_id"] === 9 ||
+    //       auth["status_id"] === 12 ||
+    //       auth["status_id"] === 10
+    //     );
+    //   },
+    // },
     {
       icon: <MessageSquareMore size={20} />,
       text: "Message",
