@@ -8,6 +8,10 @@ import axiosClient from "../../api/axiosClient";
 import SupervisorEditJobPage from "../../pages/supervisor/SupervisorEditJobPage";
 import SupervisorManageApplicantsPage from "../../pages/supervisor/SupervisorManageApplicantsPage";
 import SupervisorManageApplicantPage from "../../pages/supervisor/SupervisorManageApplicantPage";
+import SupervisorEvaluationPage from  "../../pages/supervisor/SupervisorEvaluationPage";
+import SupervisorViewInterns from "../../pages/supervisor/SupervisorViewInterns";
+import SupervisorManageDTR  from "../../pages/supervisor/SupervisorManageDTR";
+import SupervisorViewWeeklyReport from "../../pages/supervisor/SupervisorViewWeeklyReport"
 
 // Routes for Supervisor
 const SupervisorRoutes = {
@@ -167,7 +171,24 @@ const SupervisorRoutes = {
             }
           },
         },
+
       ],
+    },
+    {
+      path: "performance-evaluation",
+      element: <SupervisorEvaluationPage />,
+    },
+    {
+      path: "trainees",
+      element: <SupervisorViewInterns />,
+    },
+    {
+      path: "dtr/:id",
+      element: <SupervisorManageDTR />,
+    },
+    {
+      path: "weekly-report/:id",
+      element: <SupervisorViewWeeklyReport />,
     },
   ],
 };

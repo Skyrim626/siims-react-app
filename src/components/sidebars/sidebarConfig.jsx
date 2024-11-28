@@ -2,6 +2,7 @@ import {
   BookCopy,
   Building,
   ClipboardList,
+  ClipboardCheck,
   LayoutDashboard,
   Logs,
   MessageCircle,
@@ -251,6 +252,22 @@ const supervisorSidebarItemsConfig = [
       },
     ],
   },
+  {
+    icon: <ClipboardCheck size={20} />,
+    text: "Evaluation",
+    alert: true,
+    ariaLabel: "Evaluation",
+    exact: true, // Add an `exact` property for exact path matching
+    path: "/auth/supervisor/performance-evaluation",
+  },
+  {
+    icon: <ContactRound size={20} />,
+    text: "Trainees",
+    alert: true,
+    ariaLabel: "Trainees",
+    exact: true, // Add an `exact` property for exact path matching
+    path: "/auth/supervisor/trainees",
+  }
 ];
 
 // Configuration for sidebar items for Company
