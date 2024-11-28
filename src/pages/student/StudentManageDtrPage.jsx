@@ -9,10 +9,16 @@ import {
   useParams,
 } from "react-router-dom";
 import { deleteRequest, postRequest, putRequest } from "../../api/apiHelpers";
+import Loader from "../../components/common/Loader";
+import { Button } from "@headlessui/react";
 
 const StudentManageDtrPage = () => {
   // Fetch Data
   const { applicationId } = useParams();
+
+  // Loading State
+  const [loading, setLoading] = useState(false);
+
   // console.log(applicationId);
   const { status, dtrEntries } = useLoaderData();
   const location = useLocation();
@@ -194,6 +200,9 @@ const StudentManageDtrPage = () => {
   // Submit new record
   const handleAddNewRecord = async (e) => {
     e.preventDefault();
+
+    // Set Loading
+    setLoading(true);
     try {
       // Ready Payload
       const payload = newRecord;
@@ -210,6 +219,8 @@ const StudentManageDtrPage = () => {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
 
     // console.log(newRecord);
@@ -242,182 +253,206 @@ const StudentManageDtrPage = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg mt-8">
-      <h2 className="text-2xl font-bold text-gray-800 mb-4">
-        Daily Time Record
-      </h2>
+    <div>
+      <Loader loading={loading} />
+      <div className="max-w-5xl mx-auto p-6 bg-white shadow-md rounded-lg mt-8">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">
+          Daily Time Record
+        </h2>
 
-      <button
-        onClick={generatePDF}
-        className="px-4 py-2 bg-green-500 text-white rounded mb-6"
-      >
-        Download DTR as PDF
-      </button>
+        <div className="flex space-x-3">
+          <Button
+            onClick={generatePDF}
+            className=" transition px-4 py-2 text-white rounded-md  bg-blue-500  hover:bg-blue-600 active:bg-blue-700"
+          >
+            Download DTR as PDF
+          </Button>
+          <Button
+            className={`transition text-white rounded-md px-4 py-2 ${
+              status === 4
+                ? "bg-blue-500  hover:bg-blue-600 active:bg-blue-700"
+                : "bg-gray-600 cursor-not-allowed"
+            }`}
+            disabled={status !== 4}
+          >
+            Upload DTR
+          </Button>
+          <Button
+            className={`transition text-white rounded-md px-4 py-2 ${
+              status === 4
+                ? "bg-blue-500  hover:bg-blue-600 active:bg-blue-700"
+                : "bg-gray-600 cursor-not-allowed"
+            }`}
+          >
+            Submit DTR
+          </Button>
+        </div>
 
-      {/* Add New Record Form */}
-      <form onSubmit={handleAddNewRecord} className="mb-6">
-        <div className="mb-4">
-          <label className="block font-medium">Date</label>
-          <input
-            type="date"
-            name="date"
-            value={newRecord.date}
-            onChange={handleNewRecordChange}
-            className="w-full p-2 border rounded"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block font-medium">Time In</label>
-          <input
-            type="text"
-            name="time_in"
-            value={newRecord.time_in}
-            onChange={handleNewRecordChange}
-            placeholder="e.g., 08:00 AM"
-            className="w-full p-2 border rounded"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block font-medium">Time Out</label>
-          <input
-            type="text"
-            name="time_out"
-            value={newRecord.time_out}
-            onChange={handleNewRecordChange}
-            placeholder="e.g., 05:00 PM"
-            className="w-full p-2 border rounded"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block font-medium">Hours Received</label>
-          <input
-            type="number"
-            name="hours_received"
-            value={newRecord.hours_received}
-            onChange={handleNewRecordChange}
-            className="w-full p-2 border rounded"
-            required
-          />
-        </div>
-        <button
-          type="submit"
-          className="px-4 py-2 bg-blue-500 text-white rounded"
-        >
-          Add New Record
-        </button>
-      </form>
+        {/* Add New Record Form */}
+        <form onSubmit={handleAddNewRecord} className="mb-6">
+          <div className="mb-4">
+            <label className="block font-medium">Date</label>
+            <input
+              type="date"
+              name="date"
+              value={newRecord.date}
+              onChange={handleNewRecordChange}
+              className="w-full p-2 border rounded"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block font-medium">Time In</label>
+            <input
+              type="text"
+              name="time_in"
+              value={newRecord.time_in}
+              onChange={handleNewRecordChange}
+              placeholder="e.g., 08:00 AM"
+              className="w-full p-2 border rounded"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block font-medium">Time Out</label>
+            <input
+              type="text"
+              name="time_out"
+              value={newRecord.time_out}
+              onChange={handleNewRecordChange}
+              placeholder="e.g., 05:00 PM"
+              className="w-full p-2 border rounded"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block font-medium">Hours Received</label>
+            <input
+              type="number"
+              name="hours_received"
+              value={newRecord.hours_received}
+              onChange={handleNewRecordChange}
+              className="w-full p-2 border rounded"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            className="px-4 py-2 bg-blue-500 text-white rounded"
+          >
+            Add New Record
+          </button>
+        </form>
 
-      <table className="min-w-full bg-white border rounded-lg overflow-hidden">
-        <thead>
-          <tr className="bg-gray-800 text-white">
-            <th className="px-4 py-2 text-left">Date</th>
-            <th className="px-4 py-2 text-left">Time In</th>
-            <th className="px-4 py-2 text-left">Time Out</th>
-            <th className="px-4 py-2 text-left">Hours Received</th>
-            {/*  <th className="px-4 py-2 text-left">Status</th>{" "} */}
-            {/* New Status column */}
-            <th className="px-4 py-2 text-left">Actions</th>
-          </tr>
-        </thead>
-        <tbody className="text-gray-700">
-          {dailyRecords.map((record) => (
-            <tr key={record.id} className="border-b">
-              <td className="px-4 py-2">{record.date}</td>
-              <td className="px-4 py-2">{record.time_in}</td>
-              <td className="px-4 py-2">{record.time_out}</td>
-              <td className="px-4 py-2">{record.hours_received}</td>
-              {/* <td className="px-4 py-2 text-center">
+        <table className="min-w-full bg-white border rounded-lg overflow-hidden">
+          <thead>
+            <tr className="bg-gray-800 text-white">
+              <th className="px-4 py-2 text-left">Date</th>
+              <th className="px-4 py-2 text-left">Time In</th>
+              <th className="px-4 py-2 text-left">Time Out</th>
+              <th className="px-4 py-2 text-left">Hours Received</th>
+              {/*  <th className="px-4 py-2 text-left">Status</th>{" "} */}
+              {/* New Status column */}
+              <th className="px-4 py-2 text-left">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="text-gray-700">
+            {dailyRecords.map((record) => (
+              <tr key={record.id} className="border-b">
+                <td className="px-4 py-2">{record.date}</td>
+                <td className="px-4 py-2">{record.time_in}</td>
+                <td className="px-4 py-2">{record.time_out}</td>
+                <td className="px-4 py-2">{record.hours_received}</td>
+                {/* <td className="px-4 py-2 text-center">
                 <Text className="bg-green-500 p-2 rounded-full">
                   {record.status}
                 </Text>
               </td> */}
 
-              <td className="px-4 py-2 space-x-2">
-                <button
-                  onClick={() => handleEditRecord(record)}
-                  className="px-3 py-1 bg-blue-500 text-white rounded"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDeleteRecord(record)}
-                  className="px-3 py-1 bg-red-500 text-white rounded"
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                <td className="px-4 py-2 space-x-2">
+                  <button
+                    onClick={() => handleEditRecord(record)}
+                    className="px-3 py-1 bg-blue-500 text-white rounded"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeleteRecord(record)}
+                    className="px-3 py-1 bg-red-500 text-white rounded"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
 
-      {/* Edit Modal */}
-      {isEditModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg w-1/3">
-            <h3 className="text-lg font-bold mb-4">Edit Record</h3>
-            <div className="mb-4">
-              <label className="block font-medium">Date</label>
-              <input
-                type="date"
-                name="date"
-                value={editRecord.date}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block font-medium">Time In</label>
-              <input
-                type="text"
-                name="time_in"
-                value={editRecord.time_in}
-                onChange={handleInputChange}
-                placeholder="e.g., 08:00 AM"
-                className="w-full p-2 border rounded"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block font-medium">Time Out</label>
-              <input
-                type="text"
-                name="time_out"
-                value={editRecord.time_out}
-                onChange={handleInputChange}
-                placeholder="e.g., 05:00 PM"
-                className="w-full p-2 border rounded"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block font-medium">Hours Received</label>
-              <input
-                type="number"
-                name="hours_received"
-                value={editRecord.hours_received}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded"
-              />
-            </div>
-            <div className="flex justify-end">
-              <button
-                onClick={() => setIsEditModalOpen(false)}
-                className="px-4 py-2 bg-gray-500 text-white rounded mr-2"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleUpdateRecord}
-                className="px-4 py-2 bg-green-500 text-white rounded"
-              >
-                Save
-              </button>
+        {/* Edit Modal */}
+        {isEditModalOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div className="bg-white p-6 rounded-lg w-1/3">
+              <h3 className="text-lg font-bold mb-4">Edit Record</h3>
+              <div className="mb-4">
+                <label className="block font-medium">Date</label>
+                <input
+                  type="date"
+                  name="date"
+                  value={editRecord.date}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block font-medium">Time In</label>
+                <input
+                  type="text"
+                  name="time_in"
+                  value={editRecord.time_in}
+                  onChange={handleInputChange}
+                  placeholder="e.g., 08:00 AM"
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block font-medium">Time Out</label>
+                <input
+                  type="text"
+                  name="time_out"
+                  value={editRecord.time_out}
+                  onChange={handleInputChange}
+                  placeholder="e.g., 05:00 PM"
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block font-medium">Hours Received</label>
+                <input
+                  type="number"
+                  name="hours_received"
+                  value={editRecord.hours_received}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+              <div className="flex justify-end">
+                <button
+                  onClick={() => setIsEditModalOpen(false)}
+                  className="px-4 py-2 bg-gray-500 text-white rounded mr-2"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleUpdateRecord}
+                  className="px-4 py-2 bg-green-500 text-white rounded"
+                >
+                  Save
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

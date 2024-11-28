@@ -318,6 +318,33 @@ const StudentRoutes = {
     {
       path: "my-reports",
       element: <StudentReportsPage />,
+      loader: async () => {
+        try {
+          /**
+           * Responses
+           */
+          const documentReponse = await axiosClient.get(
+            "/api/v1/users/students/my-reports"
+          );
+
+          /**
+           * Variables
+           */
+          const initial_documents = documentReponse.data;
+
+          /**
+           * Return
+           */
+          return {
+            initial_documents,
+          };
+        } catch (error) {
+          console.log(error);
+          return {
+            initial_documents: [],
+          };
+        }
+      },
     },
     {
       path: ":applicationId/daily-time-records",

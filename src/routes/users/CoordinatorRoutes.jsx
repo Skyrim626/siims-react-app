@@ -50,6 +50,33 @@ const CoordinatorRoutes = {
     {
       path: "my-students-reports",
       element: <CoordinatorMyStudentsReports />,
+      loader: async () => {
+        try {
+          /**
+           * Responses
+           */
+          const studentReportResponse = await axiosClient.get(
+            "/api/v1/users/coordinators/students/reports"
+          );
+
+          /**
+           * Variables
+           */
+          const initial_student_reports = studentReportResponse.data;
+
+          /**
+           * Return
+           */
+          return {
+            initial_student_reports,
+          };
+        } catch (error) {
+          console.log(error);
+          return {
+            initial_student_reports: [],
+          };
+        }
+      },
     },
     {
       index: true,
