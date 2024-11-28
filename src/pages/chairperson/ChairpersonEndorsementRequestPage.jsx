@@ -30,6 +30,8 @@ const ChairpersonEndorsementRequestPage = () => {
     setIsOpenImport(true);
   };
 
+  console.log(endorsementLetterRequest);
+
   /**
    * Handle File Change
    */
@@ -99,6 +101,7 @@ const ChairpersonEndorsementRequestPage = () => {
                   endorse_students: endorsementLetterRequest.endorse_students,
                   main_student: endorsementLetterRequest.student,
                   request_id: endorsementLetterRequestId,
+                  company_name: endorsementLetterRequest.company,
                 }}
                 className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
@@ -159,7 +162,7 @@ const ChairpersonEndorsementRequestPage = () => {
           endorsementLetterRequest.endorse_students.length > 0 ? (
             <div className="mt-10">
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                Students to Endorse
+                Other Students to Endorse
               </h2>
               <div className="overflow-x-auto">
                 <table className="w-full border-collapse border border-gray-300">

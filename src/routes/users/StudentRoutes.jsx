@@ -250,7 +250,7 @@ const StudentRoutes = {
           // Storing Variables
           const initial_application = applicationResponse.data;
           // console.log(initial_application);
-          const stepOneDocuments = stepOneResponse.data;
+          const initial_step_one_documents = stepOneResponse.data;
           const stepTwoDocuments = stepTwoResponse.data;
           const job = jobResponse.data;
           const status = statusResponse.data;
@@ -259,14 +259,21 @@ const StudentRoutes = {
 
           return {
             initial_application,
-            stepOneDocuments,
+            initial_step_one_documents,
             stepTwoDocuments,
             job,
             status,
           };
         } catch (error) {
           console.error("Error fetching programs and chairpersons: ", error);
-          throw error; // Let the router handle errors
+          // throw error; // Let the router handle errors
+          return {
+            initial_application: {},
+            stepOneDocuments: [],
+            stepTwoDocuments: [],
+            job: null,
+            status: null,
+          };
         }
       },
     },

@@ -16,6 +16,7 @@ import ArchiveButton from "./ArchiveButton";
 import DeployStudentButton from "./DeployStudentButton";
 import AssignStudentButton from "./AssignStudentButton";
 import ApprovalForDean from "./ApprovalForDean";
+import ApproveEndorsementLetter from "./ApproveEndorsementLetter ";
 
 const Table = ({
   data,
@@ -29,6 +30,8 @@ const Table = ({
   handleDelete,
   handleView,
   handleApprovalForDean,
+  handleApprovedLetter,
+  openModal,
 
   ITEMS_PER_PAGE_LISTS = [
     { value: 25 },
@@ -107,6 +110,14 @@ const Table = ({
           disabled={selectedIds.size === 0}
         />
       )}
+
+      {handleApprovedLetter && (
+        <ApproveEndorsementLetter
+          onClick={() => handleApprovedLetter(selectedIds)}
+          disabled={selectedIds.size === 0}
+        />
+      )}
+
       <div className="flex justify-between items-center mb-4 mt-2">
         <Pagination
           totalPages={totalPages}
@@ -161,6 +172,7 @@ const Table = ({
             handleDelete={handleDelete}
             handleView={handleView}
             includeCheckboxes={includeCheckboxes}
+            openModal={openModal}
           />
         </table>
       </div>

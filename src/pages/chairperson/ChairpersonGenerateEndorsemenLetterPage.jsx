@@ -11,16 +11,31 @@ import Loader from "../../components/common/Loader";
 const ChairpersonGenerateEndorsemenLetterPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { requested_by, endorse_students, main_student, request_id } =
-    location.state;
+  const {
+    requested_by,
+    endorse_students,
+    main_student,
+    request_id,
+    company_name,
+  } = location.state;
+
+  const currentDate = new Date();
 
   // Loading State
   const [loading, setLoading] = useState(false);
 
-  // console.log(main_student);
-  const [date, setDate] = useState("February 17, 2023");
+  // Set the default date to the current date in the desired format
+  const [date, setDate] = useState(
+    currentDate.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
+  );
   const [recipient, setRecipient] = useState("Dear, Charisse Nadine A. Laroda");
-  const [company, setCompany] = useState("Fligno Software Phil");
+  const [company, setCompany] = useState(
+    company_name || "Fligno Software Phil"
+  );
   const [address, setAddress] = useState("Cagayan de Oro City");
   const [description, setDescription] = useState(
     "I hope this letter finds you well and in good spirits. I am writing to express my sincerest gratitude for taking the time to read this request on behalf of the College of Information Technology and Computing (CITC) at the University of Science and Technology of Southern Philippines (USTP). As you may be aware, the fourth-year students of our Bachelor of Science in Information Technology (BSIT) program are currently in their final semester of their course. As part of their graduation requirements, they must complete a mandatory On-the-Job Training (OJT) program, with a duration of 486 hours between February and May 2023."

@@ -25,13 +25,18 @@ const StudentJobApplicationPage = () => {
   // Fetch loader data
   const {
     initial_application,
-    stepOneDocuments,
+    initial_step_one_documents,
     stepTwoDocuments,
     job,
     status,
   } = useLoaderData();
   // console.log(stepOneDocuments);
   // console.log(status);
+
+  // Container State
+  const [stepOneDocuments, setStepOneDocuments] = useState(
+    initial_step_one_documents
+  );
 
   // Loading State
   const [loading, setLoading] = useState(false);
@@ -165,6 +170,9 @@ const StudentJobApplicationPage = () => {
    */
 
   const handleFileUpload = async (e, fileType) => {
+    // Loading State
+    setLoading(true);
+
     const file = e.target.files[0];
     if (file) {
       console.log(file);
@@ -179,9 +187,6 @@ const StudentJobApplicationPage = () => {
       formData.append("file", file);
       formData.append("type", file);
 
-      // Loading State
-      setLoading(true);
-
       try {
         // console.log("Uploading file to the backend...");
 
@@ -192,8 +197,8 @@ const StudentJobApplicationPage = () => {
 
         // Navigate after submitting
         if (response) {
+          // setStepOneDocuments(response.data);
           navigate(location.pathname);
-          setLoading(false);
         }
       } catch (error) {
         console.log(error);
@@ -323,7 +328,7 @@ const StudentJobApplicationPage = () => {
               <p className="text-gray-600">
                 Please upload the following documents to proceed with your
                 application. All documents must be marked as
-                <span className="font-medium text-green-600"> Complete</span> to
+                <span className="font-medium text-green-600"> Approve</span> to
                 move to the next step.
               </p>
 

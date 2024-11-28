@@ -7,6 +7,7 @@ import Text from "../../components/common/Text";
 import Table from "../../components/tables/Table";
 import EmptyState from "../../components/common/EmptyState";
 import Loader from "../../components/common/Loader";
+import { putRequest } from "../../api/apiHelpers";
 
 const ChairpersonEndorsementRequestsPage = () => {
   // Fetch endorsement letter requests
@@ -34,18 +35,18 @@ const ChairpersonEndorsementRequestsPage = () => {
 
   // Handle approval for Dean
   const handleApprovalForDean = async (selectedIds) => {
-    console.log(selectedIds);
+    // console.log(selectedIds);
 
     // Set loading state
-    // setLoading(true);
+    setLoading(true);
     // console.log(selectedIds);
-    /* try {
+    try {
       // Prepare payload containing the selected user IDs
       const payload = { ids: Array.from(selectedIds) };
       // console.log(payload);
       // Perform POST request to archive the selected users
-      const response = await deleteRequest({
-        url: "/api/v1/users/archive/selected",
+      const response = await putRequest({
+        url: "/api/v1/endorsement-letter-requests/mark-as-approval",
         data: payload,
         method: "post",
       });
@@ -53,13 +54,13 @@ const ChairpersonEndorsementRequestsPage = () => {
       // console.log(response);
       // Check Response
       if (response) {
-        setUsers(response.data);
+        setEndorsementRequests(response.data);
       }
     } catch (error) {
       console.log(error);
     } finally {
       setLoading(false);
-    } */
+    }
   };
 
   return (

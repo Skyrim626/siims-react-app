@@ -124,6 +124,7 @@ const ChairpersonManageStudentsPage = () => {
       </Section>
 
       <ManageHeader
+        showAddButton={false}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         addPlaceholder="Add New Student"

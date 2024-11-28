@@ -16,6 +16,7 @@ import {
   UserPen,
   ContactRound,
   NotebookPen,
+  FileCheck,
 } from "lucide-react";
 
 // Configuration for sidebar items for Admin
@@ -403,6 +404,14 @@ const deanSidebarItemsConfig = [
         path: "/auth/dean/companies/:company_id", // Dynamic path
       },
     ],
+  },
+  {
+    icon: <FileCheck size={20} />,
+    text: "Endorsement Approval",
+    alert: true,
+    ariaLabel: "Endorsement",
+    exact: false,
+    path: "/auth/dean/endorsement-letter-requests",
   },
 ];
 

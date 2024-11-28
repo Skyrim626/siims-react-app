@@ -9,6 +9,7 @@ import DeanProgramsPage from "../../pages/dean/DeanProgramsPage";
 import axiosClient from "../../api/axiosClient";
 import DeanManageCoordinatorPage from "../../pages/dean/DeanManageCoordinatorPage";
 import DeanManageStudentsPage from "../../pages/dean/DeanManageStudentsPage";
+import DeanEndorsementLetterRequestsPage from "../../pages/dean/DeanEndorsementLetterRequestsPage";
 
 // Routes for Dean
 const DeanRoutes = {
@@ -183,6 +184,37 @@ const DeanRoutes = {
           element: <DeanCompanyPage />,
         },
       ],
+    },
+    {
+      path: "endorsement-letter-requests",
+      element: <DeanEndorsementLetterRequestsPage />,
+      loader: async () => {
+        try {
+          /**
+           * Responses
+           */
+          const endorsementResponse = await axiosClient.get(
+            "/api/v1/endorsement-letter-requests/get-waiting-for-approval-letter-requests"
+          );
+
+          /**
+           * Variables
+           */
+          const initial_endorsement_letter_requests = endorsementResponse.data;
+
+          /**
+           * Return
+           */
+          return {
+            initial_endorsement_letter_requests,
+          };
+        } catch (error) {
+          console.log(error);
+          return {
+            initial_endorsement_letter_requests: [],
+          };
+        }
+      },
     },
     /* {
       path: "companies/:company_id",

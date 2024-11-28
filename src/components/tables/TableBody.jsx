@@ -1,4 +1,4 @@
-import { Button } from "@headlessui/react";
+import { Button, Input } from "@headlessui/react";
 import React from "react";
 import { FaArchive, FaEdit, FaEye } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
@@ -16,6 +16,7 @@ const TableBody = ({
   handleEdit,
   handleDelete,
   handleArchive,
+  openModal,
 }) => {
   // const location = useLocation();
 
@@ -71,6 +72,20 @@ const TableBody = ({
                       return <p key={index}>{role.name}</p>;
                     })}
                     {/* Join the names with a comma */}
+                  </td>
+                );
+              } else if (column === "update_endorsement") {
+                // console.log(openModal);
+                // console.log(data[column]);
+                // console.log(data);
+                return (
+                  <td key={column} className="text-center">
+                    <Button
+                      onClick={(e) => openModal(data)}
+                      className="px-4 py-2 text-sm font-bold text-white bg-blue-500 rounded-lg cursor-pointer hover:bg-blue-600"
+                    >
+                      Change File
+                    </Button>
                   </td>
                 );
               } else if (column === "file_path") {
