@@ -8,9 +8,11 @@ import {
 import { Button, Dialog, Input } from "@headlessui/react";
 import Page from "../../components/common/Page";
 import { getStatusBgColor, getStatusColor } from "../../utils/statusColor";
-import { putRequest } from "../../api/apiHelpers";
+import { postFormDataRequest, putRequest } from "../../api/apiHelpers";
 import toFilePath from "../../utils/baseURL";
 import Loader from "../../components/common/Loader";
+import FormModal from "../../components/modals/FormModal";
+import UploadFile from "../../components/common/UploadFile.";
 
 const CompanyManageApplicantPage = () => {
   // Fetch data
@@ -31,21 +33,62 @@ const CompanyManageApplicantPage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
 
-  // Handle file selection
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setSelectedFile(file);
-    }
+  /**
+   * File State
+   */
+  const [isOpenImport, setIsOpenImport] = useState(false);
+  const [file, setFile] = useState(null);
+  const [status, setStatus] = useState(false);
+
+  /**
+   * Handle File Upload
+   */
+  const handleOpenModal = (selectedIds) => {
+    setIsOpenImport(true);
   };
 
-  // Open modal
-  const openModal = () => setIsOpen(true);
+  /**
+   * Handle File Change
+   */
+  const handleFileChange = (event) => {
+    const selectedFile = event.target.files[0];
+    setFile(selectedFile);
+    setStatus(""); // Reset status on file selection
+  };
 
-  // Close modal
-  const closeModal = () => {
-    setIsOpen(false);
-    setSelectedFile(null); // Clear the file after closing modal
+  // Submit File
+  const submitFile = async (event) => {
+    // Set Loading
+    setLoading(true);
+
+    event.preventDefault();
+    if (!file) {
+      setStatus("error");
+      return;
+    }
+
+    // Create a FormData object
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      // POST FORM DATA
+      const response = await postFormDataRequest({
+        url: `/api/v1/applications/${application.id}/submit-acceptance-letter`,
+        data: formData,
+      });
+
+      if (response) {
+        setIsOpenImport(false);
+        // navigate(-1);
+        setStatus("Endorsement Letter Uploaded Successfully!");
+      }
+    } catch (error) {
+      // console.log(error.response.data.errors);
+      setErrors(error.response.data.errors); // Assuming validation errors are in `errors`
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Handle Status Change
@@ -298,7 +341,7 @@ const CompanyManageApplicantPage = () => {
 
           {/* Upload Button */}
           <Button
-            onClick={openModal}
+            onClick={handleOpenModal}
             className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-2 px-6 rounded-full text-lg font-bold hover:scale-105 transform transition-all"
           >
             Upload Document
@@ -319,30 +362,18 @@ const CompanyManageApplicantPage = () => {
       </div>
 
       {/* Modal for File Upload */}
-      <Dialog open={isOpen} onClose={closeModal}>
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg shadow-xl">
-            <h2 className="text-xl font-semibold mb-4">Upload New Document</h2>
-            <input type="file" onChange={handleFileChange} className="mb-4" />
-            {selectedFile && (
-              <p className="text-sm text-gray-600">
-                Selected File: {selectedFile.name}
-              </p>
-            )}
-            <div className="mt-6 flex justify-between">
-              <Button
-                onClick={closeModal}
-                className="text-gray-600 hover:text-gray-900"
-              >
-                Cancel
-              </Button>
-              <Button className="bg-blue-500 text-white px-6 py-2 rounded-full">
-                Upload
-              </Button>
-            </div>
-          </div>
-        </div>
-      </Dialog>
+      <FormModal
+        isOpen={isOpenImport}
+        setIsOpen={setIsOpenImport}
+        modalTitle="Upload Acceptance Letter"
+        onSubmit={submitFile}
+      >
+        <UploadFile
+          file={file}
+          set={setFile}
+          handleFileChange={handleFileChange}
+        />
+      </FormModal>
     </Page>
   );
 };

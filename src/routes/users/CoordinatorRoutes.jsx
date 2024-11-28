@@ -55,6 +55,7 @@ const CoordinatorRoutes = {
       index: true,
       element: <CoordinatorDashboardPage />,
     },
+
     {
       path: "students",
       element: <Outlet />,
@@ -138,14 +139,25 @@ const CoordinatorRoutes = {
       element: <CoordinatorProfilePage />,
       loader: async () => {
         try {
+          /**
+           * Responses
+           */
           const response = await axiosClient.get("/api/v1/coordinator/profile");
 
-          const profile = response.data;
+          /**
+           * Variables
+           */
+          const initial_profile = response.data;
 
-          return profile;
+          /**
+           * Returns
+           */
+          return { initial_profile };
         } catch (error) {
           console.error("Error fetching programs and chairpersons: ", error);
-          throw error; // Let the router handle errors
+          return {
+            initial_profile: {},
+          };
         }
       },
     },

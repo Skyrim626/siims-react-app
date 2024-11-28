@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import {
   Navigate,
   useLoaderData,
@@ -11,6 +11,8 @@ import Heading from "../../components/common/Heading";
 import Text from "../../components/common/Text";
 import Table from "../../components/tables/Table";
 import { putRequest } from "../../api/apiHelpers";
+import EmptyState from "../../components/common/EmptyState";
+import Loader from "../../components/common/Loader";
 
 const CoordinatorViewStudentsPage = () => {
   // Fetch students
@@ -20,6 +22,9 @@ const CoordinatorViewStudentsPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Loading State
+  const [loading, setLoading] = useState(false);
+
   // View Student
   const handleView = (id) => {
     navigate(`${location.pathname}/${id}/applications`);
@@ -28,7 +33,7 @@ const CoordinatorViewStudentsPage = () => {
   // Update Student Status to Deployed
   const handleDeployBySelectedIds = async (selectedIds) => {
     //console.log(selectedIds); // Example output: Set { 2024301502 }
-
+    setLoading(true);
     try {
       // Prepare payload
       const payload = {
@@ -55,11 +60,14 @@ const CoordinatorViewStudentsPage = () => {
         "Error during deployment:",
         error.response?.data || error.message
       );
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <Page>
+      <Loader loading={loading} />
       <Section>
         <Heading level={3} text={"Students"} />
         <Text className="text-sm text-blue-950">
@@ -69,11 +77,18 @@ const CoordinatorViewStudentsPage = () => {
       </Section>
 
       {/* Table */}
-      <Table
-        data={students}
-        handleView={handleView}
-        handleDeployBySelectedIds={handleDeployBySelectedIds}
-      />
+      {students.length > 0 ? (
+        <Table
+          data={students}
+          handleView={handleView}
+          handleDeployBySelectedIds={handleDeployBySelectedIds}
+        />
+      ) : (
+        <EmptyState
+          title="No students available at the moment"
+          message="Once activities are recorded, students will appear here."
+        />
+      )}
     </Page>
   );
 };

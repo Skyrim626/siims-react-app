@@ -332,13 +332,22 @@ const osaSidebarItemsConfig = [
     path: "/auth/osa",
   },
   {
+    icon: <User size={20} />,
+    text: "Profile",
+    alert: true,
+    ariaLabel: "Profile",
+    exact: true, // Add an `exact` property for exact path matching
+    path: "/auth/osa/profile",
+  },
+  {
     icon: <Users size={20} />,
     text: "Applicants",
-    alert: true,
+    alert: false,
     ariaLabel: "Applicants",
-    exact: true, // Add an `exact` property for exact path matching
+    exact: false, // Add an `exact` property for exact path matching
     path: "/auth/osa/applicants",
   },
+
   {
     icon: <File />,
     text: "Document Types",

@@ -6,6 +6,7 @@ import OsaManageDocumentTypesPage from "../../pages/osa/OsaManageDocumentTypesPa
 import axiosClient from "../../api/axiosClient";
 import OsaManageApplicantsPage from "../../pages/osa/OsaManageApplicantsPage";
 import OsaManageApplicantApplication from "../../pages/osa/OsaManageApplicantApplication";
+import OSAProfilePage from "../../pages/osa/OsaProfilePage";
 
 // Routes for Dean
 const OsaRoutes = {
@@ -48,6 +49,10 @@ const OsaRoutes = {
       element: <OsaDashboardPage />,
     },
     {
+      path: "profile",
+      element: <OSAProfilePage />,
+    },
+    {
       path: "applicants",
       element: <Outlet />,
       children: [
@@ -60,10 +65,13 @@ const OsaRoutes = {
 
               const applicants = response.data;
 
-              return applicants;
+              return { applicants };
             } catch (error) {
               console.error("Error fetching document types: ", error);
-              throw error; // Let the router handle errors
+
+              return {
+                applicants: [],
+              };
             }
           },
         },
@@ -117,10 +125,12 @@ const OsaRoutes = {
           const response = await axiosClient.get("/api/v1/osa/document-types");
           const initial_document_types = response.data;
           // console.log(initial_document_types);
-          return initial_document_types;
+          return { initial_document_types };
         } catch (error) {
           console.error("Error fetching document types: ", error);
-          throw error; // Let the router handle errors
+          return {
+            initial_document_types: [],
+          };
         }
       },
     },

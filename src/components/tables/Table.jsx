@@ -17,6 +17,7 @@ import DeployStudentButton from "./DeployStudentButton";
 import AssignStudentButton from "./AssignStudentButton";
 import ApprovalForDean from "./ApprovalForDean";
 import ApproveEndorsementLetter from "./ApproveEndorsementLetter ";
+import ReadyToDeployButton from "./ReadyToDeployButton";
 
 const Table = ({
   data,
@@ -31,6 +32,7 @@ const Table = ({
   handleView,
   handleApprovalForDean,
   handleApprovedLetter,
+  handleReadyToDeployBySelectedIds,
   openModal,
 
   ITEMS_PER_PAGE_LISTS = [
@@ -97,7 +99,12 @@ const Table = ({
           disabled={selectedIds.size === 0}
         />
       )}
-
+      {handleReadyToDeployBySelectedIds && (
+        <ReadyToDeployButton
+          onClick={() => handleReadyToDeployBySelectedIds(selectedIds)}
+          disabled={selectedIds.size === 0}
+        />
+      )}
       {handleAssignToCoordinatorsBySelectedIds && (
         <AssignStudentButton
           onClick={() => handleAssignToCoordinatorsBySelectedIds(selectedIds)}

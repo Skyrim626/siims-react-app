@@ -9,10 +9,11 @@ import ManageHeader from "../../components/common/ManageHeader";
 import OsaDocumentTypesTable from "../../components/users/osa/table/OsaDocumentTypesTable";
 import FormModal from "../../components/modals/FormModal";
 import OsaDocumentTypeForm from "./forms/OsaDocumentTypeForm";
+import EmptyState from "../../components/common/EmptyState";
 
 const OsaManageDocumentTypesPage = () => {
   // Retrieve the document_types data from the loader
-  const initial_document_types = useLoaderData();
+  const { initial_document_types } = useLoaderData();
 
   // console.log(initial_document_types);
 
@@ -27,24 +28,6 @@ const OsaManageDocumentTypesPage = () => {
 
   // Select State
   const [selectedDocumentType, setSelectedDocumentType] = useState(null);
-
-  // Archive a document type
-  const deleteDocumentType = async (id) => {
-    try {
-      // console.log(id);
-
-      // Make the DELETE request
-      const response = await deleteRequest({
-        url: `/api/v1/osa/document-types/${id}`,
-      });
-
-      setDocumentTypes((prevDocumentTypes) =>
-        prevDocumentTypes.filter((documentType) => documentType.id !== id)
-      );
-    } catch (error) {
-      console.log(`Cannot delete a document type: `, error);
-    }
-  };
 
   // Update a document type
   const updateDocumentType = async () => {
@@ -154,11 +137,14 @@ const OsaManageDocumentTypesPage = () => {
       />
 
       {/* Table */}
-      <OsaDocumentTypesTable
-        data={documentTypes}
-        handleEdit={handleEdit}
-        handleArchive={deleteDocumentType}
-      />
+      {documentTypes.length > 0 ? (
+        <OsaDocumentTypesTable data={documentTypes} handleEdit={handleEdit} />
+      ) : (
+        <EmptyState
+          title="No document types available at the moment"
+          message="Once activities are recorded, document types will appear here."
+        />
+      )}
 
       {/* Modals */}
       <FormModal

@@ -30,7 +30,7 @@ const ChairpersonEndorsementRequestPage = () => {
     setIsOpenImport(true);
   };
 
-  console.log(endorsementLetterRequest);
+  // console.log(endorsementLetterRequest);
 
   /**
    * Handle File Change
