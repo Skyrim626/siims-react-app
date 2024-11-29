@@ -8,6 +8,7 @@ const StudentWeeklyAccomplishmentPage = () => {
   // Fetch Params
   const { applicationId, initial_weekly_reports } = useLoaderData();
 
+  console.log(initial_weekly_reports);
   // console.log(applicationId);
   // console.log(initial_weekly_reports);
 
@@ -37,11 +38,15 @@ const StudentWeeklyAccomplishmentPage = () => {
   }, {});
 
   const handleChange = (e) => {
+    console.log(e);
+
     const { name, value } = e.target;
     setCurrentWeek({ ...currentWeek, [name]: value });
   };
 
   const addReport = async () => {
+    // console.log(currentWeek);
+    setLoading(true);
     try {
       if (
         currentWeek.start_date &&
@@ -67,6 +72,8 @@ const StudentWeeklyAccomplishmentPage = () => {
           learnings: currentWeek.learnings,
           no_of_hours: no_of_hours,
         };
+
+        console.log(payload);
 
         const response = await postRequest({
           url: `/api/v1/weekly-accomplishment-reports/${applicationId}`,
@@ -202,9 +209,9 @@ const StudentWeeklyAccomplishmentPage = () => {
       "Hours",
     ];
     const tableData = reportsForWeek.map((report) => [
-      report.weekNumber,
-      report.startDate,
-      report.endDate,
+      report.week_number,
+      report.stat_date,
+      report.end_date,
       report.tasks,
       report.learnings,
       report.hours,
@@ -274,7 +281,7 @@ const StudentWeeklyAccomplishmentPage = () => {
                 </select>
                 <button
                   onClick={exportToPDF}
-                  className="bg-orange-500 text-white px-4 py-2 rounded shadow hover:bg-orange-600 ml-4"
+                  className="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600 ml-4"
                 >
                   Export to PDF
                 </button>
@@ -296,8 +303,8 @@ const StudentWeeklyAccomplishmentPage = () => {
                 </label>
                 <input
                   type="number"
-                  name="weekNumber"
-                  value={currentWeek.weekNumber}
+                  name="week_number"
+                  value={currentWeek.week_number}
                   onChange={handleChange}
                   placeholder="e.g., 1"
                   className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
@@ -309,8 +316,8 @@ const StudentWeeklyAccomplishmentPage = () => {
                 </label>
                 <input
                   type="date"
-                  name="startDate"
-                  value={currentWeek.startDate}
+                  name="start_date"
+                  value={currentWeek.start_date}
                   onChange={handleChange}
                   className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
                 />
@@ -321,8 +328,8 @@ const StudentWeeklyAccomplishmentPage = () => {
                 </label>
                 <input
                   type="date"
-                  name="endDate"
-                  value={currentWeek.endDate}
+                  name="end_date"
+                  value={currentWeek.end_date}
                   onChange={handleChange}
                   className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
                 />
@@ -368,7 +375,7 @@ const StudentWeeklyAccomplishmentPage = () => {
             <div className="mt-4">
               <button
                 onClick={editingReport !== null ? saveEditedReport : addReport}
-                className="bg-orange-500 text-white px-4 py-2 rounded shadow hover:bg-orange-600"
+                className="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600"
               >
                 {editingReport !== null ? "Save Changes" : "Add Report"}
               </button>
@@ -396,9 +403,9 @@ const StudentWeeklyAccomplishmentPage = () => {
                 <tbody>
                   {weeklyReports.map((report, index) => (
                     <tr key={index}>
-                      <td className="px-4 py-2">{report.weekNumber}</td>
-                      <td className="px-4 py-2">{report.startDate}</td>
-                      <td className="px-4 py-2">{report.endDate}</td>
+                      <td className="px-4 py-2">{report.week_number}</td>
+                      <td className="px-4 py-2">{report.start_date}</td>
+                      <td className="px-4 py-2">{report.end_date}</td>
                       <td className="px-4 py-2">{report.tasks}</td>
                       <td className="px-4 py-2">{report.learnings}</td>
                       <td className="px-4 py-2">{report.hours}</td>
@@ -421,9 +428,9 @@ const StudentWeeklyAccomplishmentPage = () => {
                 </tbody>
               </table>
             </div>
-            <div className="mt-4">
-              <p>Total Hours: {totalHours}</p>
-            </div>
+            {/*             <div className="mt-4">
+              <p>Total Hours: {total_hours}</p>
+            </div> */}
           </div>
         </div>
       </div>

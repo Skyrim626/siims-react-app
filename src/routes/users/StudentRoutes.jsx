@@ -388,10 +388,7 @@ const StudentRoutes = {
       path: "view-evaluations",
       element: <StudentViewEvaluationPage />,
     },
-    {
-      path: "my-weekly",
-      element: <StudentWeeklyAccomplishmentPage />,
-    },
+
     {
       path: "insights",
       element: <StudentPersonalInsight />,

@@ -14,8 +14,9 @@ import {
   UserSearch,
   UserRoundCheck,
   UserPen,
-  ContactRound,
+  ClipboardCheck,
   NotebookPen,
+  ContactRound,
   FileCheck,
 } from "lucide-react";
 
@@ -234,7 +235,8 @@ const supervisorSidebarItemsConfig = [
     exact: true, // Add an `exact` property for exact path matching
     path: "/auth/supervisor/applicants",
   },
-  {
+
+  /*  {
     icon: <Briefcase size={20} />,
     text: "Manage Jobs",
     alert: true,
@@ -251,6 +253,22 @@ const supervisorSidebarItemsConfig = [
         path: "/auth/supervisor/work-posts/edit/:id", // Dynamic path
       },
     ],
+  }, */
+  {
+    icon: <ClipboardCheck size={20} />,
+    text: "Evaluation",
+    alert: true,
+    ariaLabel: "Evaluation",
+    exact: true, // Add an `exact` property for exact path matching
+    path: "/auth/supervisor/performance-evaluation",
+  },
+  {
+    icon: <ContactRound size={20} />,
+    text: "Trainees",
+    alert: false,
+    ariaLabel: "Trainees",
+    exact: false, // Add an `exact` property for exact path matching
+    path: "/auth/supervisor/trainees",
   },
 ];
 

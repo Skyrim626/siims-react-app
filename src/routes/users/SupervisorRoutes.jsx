@@ -8,6 +8,10 @@ import axiosClient from "../../api/axiosClient";
 import SupervisorEditJobPage from "../../pages/supervisor/SupervisorEditJobPage";
 import SupervisorManageApplicantsPage from "../../pages/supervisor/SupervisorManageApplicantsPage";
 import SupervisorManageApplicantPage from "../../pages/supervisor/SupervisorManageApplicantPage";
+import SupervisorEvaluationPage from "../../pages/supervisor/SupervisorEvaluationPage";
+import SupervisorViewInterns from "../../pages/supervisor/SupervisorViewIntern";
+import SupervisorManageDTR from "../../pages/supervisor/SupervisorManageDTR";
+import SupervisorViewWeeklyReport from "../../pages/supervisor/SupervisorViewWeeklyReport";
 
 // Routes for Supervisor
 const SupervisorRoutes = {
@@ -45,6 +49,145 @@ const SupervisorRoutes = {
       element: <Navigate to={"/supervisor"} />,
     },
     {
+      path: "performance-evaluation",
+      element: <SupervisorEvaluationPage />,
+      loader: async () => {
+        try {
+          /**
+           * Responses
+           */
+
+          const internResponse = await axiosClient.get(
+            "/api/v1/users/supervisors/interns/get-all-on-going-interns"
+          );
+
+          /**
+           * Variables
+           */
+          const list_of_interns = internResponse.data;
+
+          /**
+           * Return
+           */
+          return {
+            list_of_interns,
+          };
+        } catch (error) {
+          console.log(error);
+        }
+      },
+    },
+    {
+      path: "trainees",
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: <SupervisorViewInterns />,
+          loader: async () => {
+            try {
+              /**
+               * Responses
+               */
+              const internResponse = await axiosClient.get(
+                "/api/v1/users/supervisors/interns"
+              );
+
+              /**
+               * Variables
+               */
+              const initial_interns = internResponse.data;
+
+              /**
+               * Return
+               */
+              return {
+                initial_interns,
+              };
+            } catch (error) {
+              console.log(error);
+
+              return {
+                initial_interns: [],
+              };
+            }
+          },
+        },
+        {
+          path: "daily-time-records/:applicationId",
+          element: <SupervisorManageDTR />,
+          loader: async ({ params }) => {
+            try {
+              /**
+               * Params
+               */
+              const { applicationId } = params;
+
+              /**
+               * Responses
+               */
+              const dtrResponse = await axiosClient.get(
+                `/api/v1/users/supervisors/interns/daily-time-records/${applicationId}`
+              );
+
+              /**
+               * Variables
+               */
+              const initial_daily_time_records = dtrResponse.data;
+
+              /**
+               * Return
+               */
+              return {
+                initial_daily_time_records,
+              };
+            } catch (error) {
+              console.log(error);
+              return {
+                initial_daily_time_records: [],
+              };
+            }
+          },
+        },
+        {
+          path: "weekly-accomplishment-reports/:applicationId",
+          element: <SupervisorViewWeeklyReport />,
+          loader: async ({ params }) => {
+            try {
+              /**
+               * Params
+               */
+              const { applicationId } = params;
+
+              /**
+               * Responses
+               */
+              const warsResponse = await axiosClient.get(
+                `/api/v1/users/supervisors/interns/weekly-accomplishment-reports/${applicationId}`
+              );
+
+              /**
+               * Variables
+               */
+              const initial_wars = warsResponse.data;
+              // console.log(initial_wars);
+              /**
+               * Return
+               */
+              return {
+                initial_wars,
+              };
+            } catch (error) {
+              console.log(error);
+              return {
+                initial_wars: [],
+              };
+            }
+          },
+        },
+      ],
+    },
+    {
       index: true,
       element: <SupervisorDashboardPage />,
     },
@@ -70,6 +213,7 @@ const SupervisorRoutes = {
             }
           },
         },
+
         {
           path: ":applicantId",
           element: <SupervisorManageApplicantPage />,
