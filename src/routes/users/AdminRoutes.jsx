@@ -76,11 +76,12 @@ const AdminRoutes = {
           /**
            * Response
            */
-          const response = await axiosClient.get("/api/v1/dashboard"); // Fetch dashboard data from API
+          const response = await axiosClient.get("/api/v1/dashboards"); // Fetch dashboard data from API
 
           /**
            * Variables
            */
+
           const data = response.data;
 
           /**

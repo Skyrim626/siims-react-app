@@ -1,34 +1,64 @@
 import { useState, useEffect } from "react";
 import { getRequest } from "../api/apiHelpers";
 
-const useFetch = (url) => {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
+const useFetch = ({
+  url,
+  initialPage = 1,
+  initialItemsPerPage = 10,
+  options = {},
+  searchTerm = "",
+  setData = () => {},
+  setLoading,
+}) => {
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(initialPage);
+  const [itemsPerPage, setItemsPerPage] = useState(initialItemsPerPage);
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const fetchData = async (page, perPage, search) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const fullUrl = `/api/v1/${url}?page=${page}&per_page=${perPage}&search=${search}`;
+      const response = await getRequest({ url: fullUrl, ...options });
+      setData(response.data || []);
+      setTotalItems(response.meta.total || 0);
+      setTotalPages(response.meta.last_page || 1);
+    } catch (err) {
+      setError(err.message || "Error fetching data.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      setError(null);
+    fetchData(currentPage, itemsPerPage, searchTerm); // Fetch data with search term
+  }, [url, currentPage, itemsPerPage, searchTerm]); // Depend on searchTerm
 
-      try {
-        const response = await getRequest(url);
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const result = await response.json();
-        setData(result);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const handlePageChange = (page) => setCurrentPage(page);
+  const handleItemsPerPageChange = (perPage) => {
+    // console.log(perPage.target.value);
+    setItemsPerPage(Number(perPage.target.value));
+    setCurrentPage(1); // Reset to the first page when items per page changes
+  };
 
-    fetchData();
-  }, [url]);
+  const handleNextPage = () =>
+    currentPage < totalPages && setCurrentPage((prev) => prev + 1);
+  const handlePrevPage = () =>
+    currentPage > 1 && setCurrentPage((prev) => prev - 1);
 
-  return { data, loading, error };
+  return {
+    error,
+    currentPage,
+    itemsPerPage,
+    totalItems,
+    totalPages,
+    handlePageChange,
+    handleItemsPerPageChange,
+    handleNextPage,
+    handlePrevPage,
+  };
 };
 
 export default useFetch;

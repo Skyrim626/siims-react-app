@@ -137,8 +137,8 @@ const coordinatorSidebarItemsConfig = [
     text: "Students",
     alert: true,
     ariaLabel: "Students",
-    exact: true,
-    active: true,
+    exact: false,
+    active: false,
     path: "/auth/coordinator/students",
   },
   {

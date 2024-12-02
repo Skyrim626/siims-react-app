@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useLocalStorage("ACCESS_TOKEN", null);
 
   // Function to authenticate the user
-  const login = async (payload = {}, setLoading) => {
+  const login = async (payload = {}, setLoading, navigate) => {
     setLoading(true);
 
     try {
@@ -54,21 +54,27 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
 
       // Redirect user after successful login
-      return <Navigate to={"/auth"} />;
+      navigate("/auth");
     } catch (error) {
       // Handle validation errors (422)
       if (error.response && error.response.status === 422) {
-        // console.log(error.response);
-        // console.log(error.response.data.errors);
         return error.response.data.errors; // Return validation errors
+      } else if (error.response && error.response.status === 401) {
+        setLoading(false);
+        localStorage.setItem(
+          "loginError",
+          error.response.data.message || "An unexpected error occurred."
+        );
       }
 
-      // Handle other errors
-      /* localStorage.setItem(
+      // Optionally handle other errors
+      /* setLoading(false);
+      localStorage.setItem(
         "loginError",
         error.message || "An unexpected error occurred."
-      );
-      throw error; */
+      ); */
+
+      throw error;
     } finally {
       setLoading(false);
     }

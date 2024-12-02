@@ -30,18 +30,4 @@ const EmptyState = ({ icon, title, message, className }) => {
     </div>
   );
 };
-
-EmptyState.propTypes = {
-  icon: PropTypes.node, // Accepts a custom icon
-  title: PropTypes.string.isRequired, // Main text
-  message: PropTypes.string, // Supporting message
-  className: PropTypes.string, // Additional custom styles
-};
-
-EmptyState.defaultProps = {
-  icon: null,
-  message: "No data available at the moment.",
-  className: "",
-};
-
 export default EmptyState;

@@ -4,14 +4,7 @@ import { Field, Input, Label, Button } from "@headlessui/react";
 import { Eye, EyeOff } from "lucide-react";
 import Text from "../common/Text";
 
-const LoginForm = ({
-  id,
-  setId,
-  password,
-  setPassword,
-  handleSubmit,
-  errors,
-}) => {
+const LoginForm = ({ formData, handleChange, handleSubmit, errors }) => {
   // State to manage the visibility toggle for the password field
   const [toggleVisible, setToggleVisible] = useState(false);
 
@@ -26,13 +19,11 @@ const LoginForm = ({
           </Label>
           <Input
             type="text"
-            value={id} // Controlled input tied to loginInfo.id
+            value={formData.id} // Controlled input tied to loginInfo.id
             className={"outline-none rounded-md text-black p-3"}
             name="id"
             placeholder="Enter your ID"
-            onChange={(e) => {
-              setId(e.target.value);
-            }} // Updates form state on input change
+            onChange={handleChange} // Updates form state on input change
             autoComplete="off"
             required
           />
@@ -48,13 +39,11 @@ const LoginForm = ({
           <div className="flex items-center bg-white rounded-md text-black">
             <Input
               type={toggleVisible ? "text" : "password"} // Toggles between 'text' and 'password'
-              value={password} // Controlled input tied to loginInfo.password
+              value={formData.password} // Controlled input tied to loginInfo.password
               className={"w-full outline-none p-3 bg-transparent"}
               name="password"
               placeholder="Enter your password"
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }} // Updates form state on input change
+              onChange={handleChange} // Updates form state on input change
               autoComplete="off"
               required
             />
@@ -70,7 +59,7 @@ const LoginForm = ({
           </div>
           {errors.password && (
             <Text className="text-red-500">{errors.password[0]}</Text>
-          )}{" "}
+          )}
           {/* Display Password errors */}
         </Field>
 

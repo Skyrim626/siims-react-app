@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from "react";
 import LoginForm from "../../components/forms/LoginForm";
-import useForm from "../../hooks/useForm";
 import { useAuth } from "../../hooks/useAuth";
-import { showFailedAlert } from "../../utils/toastify";
 import AuthPrompt from "../../components/auth/AuthPrompt";
 import Loader from "../../components/common/Loader";
+import { useNavigate } from "react-router-dom";
+import useFormData from "../../hooks/useFormData";
 
 export default function LoginPage() {
+  const navigate = useNavigate(); // Get the navigate function from react-router-dom
+
   // Initialize form state for login credentials (id and password)
-  const [id, setId] = useState("");
-  const [password, setPassword] = useState("");
+  const { formData, handleChange } = useFormData({
+    id: "",
+    password: "",
+  });
+  // Handle Input Errors
   const [errors, setErrors] = useState({});
 
   // Loading State
@@ -17,25 +22,6 @@ export default function LoginPage() {
 
   // Destructure login function from the useAuth hook for handling login requests
   const { login } = useAuth();
-
-  /**
-   * useEffect hook to check for any login error stored in localStorage.
-   * If a login error exists, a toast notification is displayed, and the error
-   * is cleared from localStorage after a short delay.
-   */
-  useEffect(() => {
-    const loginError = localStorage.getItem("loginError");
-
-    if (loginError) {
-      // Show a toast alert for login failure
-      showFailedAlert(loginError);
-
-      // Clear the login error from localStorage after a short delay
-      setTimeout(() => {
-        localStorage.removeItem("loginError");
-      }, 100); // Adjust the delay timing as needed
-    }
-  }, []);
 
   /**
    * Handles form submission for login.
@@ -48,16 +34,12 @@ export default function LoginPage() {
     e.preventDefault();
 
     // Prepare the payload with the login information from the form
-    const payload = {
-      id,
-      password,
-    };
+    const payload = formData;
 
     // Attempt login and handle validation errors
-    const validationErrors = login(payload, setLoading);
+    const validationErrors = login(payload, setLoading, navigate);
 
     // console.log(validationErrors);
-
     if (validationErrors) {
       setErrors(validationErrors); // Set errors in state
     }
@@ -73,12 +55,11 @@ export default function LoginPage() {
         heading={"Welcome back"}
         description={"Please enter log in details below."}
       />
+
       {/* Login form component */}
       <LoginForm
-        id={id}
-        password={password}
-        setId={setId}
-        setPassword={setPassword}
+        formData={formData}
+        handleChange={handleChange}
         handleSubmit={handleSubmit}
         errors={errors} // Pass validation errors
       />

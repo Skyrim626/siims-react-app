@@ -54,7 +54,7 @@ const DeanRoutes = {
           /**
            * Responses
            */
-          const response = await axiosClient.get("/api/v1/dashboard");
+          const response = await axiosClient.get("/api/v1/dashboards");
 
           /**
            * Variables
