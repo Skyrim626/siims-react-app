@@ -10,161 +10,137 @@ import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
 import Table from "../../components/tables/Table";
 import ProgramForm from "../../components/forms/ProgramForm";
 import Loader from "../../components/common/Loader";
-import { checkResponseStatus } from "../../utils/checkResponse";
 import EmptyState from "../../components/common/EmptyState";
+import useSearch from "../../hooks/test/useSearch";
+import useRequest from "../../hooks/useRequest";
+import DataTable from "../../components/tables/DataTable";
+import useFetch from "../../hooks/useFetch";
+import DeleteConfirmModal from "../../components/modals/DeleteConfirmModal";
 
 const AdminManageProgramsPage = () => {
   // Retrieve the programs, list_of_chairperson, and list_of_colleges data from the loader
-  const { initial_programs, list_of_chairpersons, list_of_colleges } =
-    useLoaderData();
+  const { list_of_chairpersons, list_of_colleges } = useLoaderData();
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Loader State
-  const [loading, setLoading] = useState(false);
+  // console.log(list_of_colleges);
 
-  // State for programs and form modal
-  const [programs, setPrograms] = useState(initial_programs);
+  // Container Data
+  const [programs, setPrograms] = useState([]);
+  /**
+   * Modal State
+   */
   const [isOpen, setIsOpen] = useState(false);
   const [editIsOpen, setEditIsOpen] = useState(false);
-
-  // Form input and errors
-  const [collegeId, setCollegeId] = useState(0);
-  const [chairpersonId, setChairpersonId] = useState(null);
-  const [programName, setProgramName] = useState("");
-  const [errors, setErrors] = useState({});
-
-  // Select State
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  /**
+   * Loading State
+   */
+  const [loading, setLoading] = useState(false);
+  /**
+   * Select State
+   */
   const [selectedProgram, setSelectedProgram] = useState(null);
+  const [selectedProgramID, setSelectedProgramID] = useState(null);
+  /**
+   * Input State
+   */
+  const [programName, setProgramName] = useState("");
+  const [chairpersonId, setChairpersonId] = useState(null);
+  const [collegeId, setCollegeId] = useState(0);
+
+  /**
+   *
+   *
+   *
+   * Custom Hooks
+   *
+   *
+   *
+   */
+  // Search Hooks
+  const { searchTerm, triggerSearch, handleSearchChange, handleKeyDown } =
+    useSearch();
+  // Fetch document types with search and pagination
+  const {
+    error,
+    currentPage,
+    itemsPerPage,
+    totalItems,
+    totalPages,
+    handlePageChange,
+    handleItemsPerPageChange,
+    handleNextPage,
+    handlePrevPage,
+  } = useFetch({
+    url: "/programs", // URL for Programs
+    initialPage: 1,
+    initialItemsPerPage: 5,
+    searchTerm: triggerSearch ? searchTerm : "", // Only pass search term when search is triggered
+    setData: setPrograms,
+    setLoading: setLoading,
+  });
+
+  /**
+   * Use Request
+   */
+  const { errors, postData, putData, deleteData } = useRequest({
+    setData: setPrograms,
+    setLoading,
+    setIsOpen: setIsOpen,
+  });
+
+  /**
+   * Delete Functions
+   */
 
   // Delete a program
-  const deleteProgram = async (id) => {
-    // Set Loading
-    setLoading(true);
-
-    try {
-      // console.log(id);
-
-      // Make the DELETE Request
-      const response = await deleteRequest({
-        url: `/api/v1/programs/${id}`,
-      });
-
-      setPrograms((prevPrograms) =>
-        prevPrograms.filter((program) => program.id !== id)
-      );
-    } catch (error) {
-      // console.log(`Cannot delete a program: `, error);
-    } finally {
-      setLoading(false);
-    }
+  const grabProgramById = (id) => {
+    // Set Selected ID
+    setSelectedProgramID(id);
+    setIsDeleteOpen(!isDeleteOpen);
+  };
+  const deleteProgram = () => {
+    deleteData({
+      url: `/programs/${selectedProgramID}`,
+      id: selectedProgramID,
+      setIsDeleteOpen: setIsDeleteOpen,
+    });
   };
 
   // Submit new Program data
-  const submitProgram = async () => {
-    // Set Loading
-    setLoading(true);
+  const addNewProgram = () => {
+    // Ready Paylod
+    const payload = {
+      college_id: collegeId,
+      name: programName,
+    };
 
-    try {
-      const payload = {
-        college_id: collegeId,
-        name: programName,
-      };
-
-      // console.log(payload);
-
-      // Make the POST request
-      const response = await postRequest({
-        url: "/api/v1/programs",
-        data: payload,
-      });
-
-      // Add the new program to the local state
-      setPrograms((prevPrograms) => [...prevPrograms, response.data]);
-      // Reset form and close modal on success
-      setCollegeId("");
-      setProgramName("");
-      setErrors({});
-      setIsOpen(false);
-    } catch (error) {
-      // Handle and set errors
-      if (error.response && error.response.data && error.response.data.errors) {
-        // console.log(error.response.data.errors);
-        setErrors(error.response.data.errors); // Assuming validation errors are in `errors`
-      } else {
-        // console.error("An unexpected error occurred:", error);
-        setErrors({
-          general: "An unexpected error occurred. Please try again.",
-        });
-      }
-    } finally {
-      setLoading(false);
-    }
+    postData({
+      url: "/programs",
+      payload: payload,
+    });
   };
 
   // Handle Edit Submit
-  const handleEditSubmit = async () => {
-    // Set Loader State
-    setLoading(true);
+  const updateProgram = () => {
+    // Ready Payload
+    const payload = {
+      chairperson_id: chairpersonId,
+      name: programName,
+    };
 
-    try {
-      // Ready Payload
-      const payload = {
-        chairperson_id: chairpersonId,
-        name: programName,
-      };
-
-      // console.log(payload);
-      // console.log(selectedProgram["id"]);
-
-      // console.log(payload);
-      // Send update request to the backend
-      const response = await putRequest({
-        url: `/api/v1/programs/${selectedProgram["id"]}`,
-        data: payload,
-      });
-
-      // Update the program in the state
-      setPrograms((prevPrograms) =>
-        prevPrograms.map((program) =>
-          program.id === selectedProgram["id"]
-            ? { ...program, ...response.data }
-            : program
-        )
-      );
-
-      // Reset inputs and modals
-      setProgramName(null);
-      setCollegeId(null);
-      setChairpersonId(null);
-      setEditIsOpen(false);
-
-      // Refresh
-      if (response) {
-        navigate(location.pathname, {
-          replace: true,
-        });
-        // windows.reload
-      }
-    } catch (error) {
-      // Handle and set errors
-      if (error.response && error.response.data && error.response.data.errors) {
-        console.log(error.response.data.errors);
-        setErrors(error.response.data.errors); // Assuming validation errors are in `errors`
-      } else {
-        console.error("An unexpected error occurred:", error);
-        setErrors({
-          general: "An unexpected error occurred. Please try again.",
-        });
-      }
-    } finally {
-      setLoading(false);
-    }
+    putData({
+      url: `/programs/${selectedProgram["id"]}`,
+      payload: payload,
+      selectedData: selectedProgram,
+      setIsOpen: setEditIsOpen,
+    });
   };
 
-  // Handle Edit Select Program
-  const handleEdit = (program) => {
-    console.log(program);
+  // Grab Program  Select Program
+  const grabProgram = (program) => {
+    // console.log(program);
 
     // Set Program State
     // console.log(program);
@@ -200,46 +176,45 @@ const AdminManageProgramsPage = () => {
       />
 
       {/* Table */}
-      {programs.length > 0 ? (
-        <Table
-          data={programs}
-          handleEdit={handleEdit}
-          handleArchive={deleteProgram}
-          includeCheckboxes={false}
-        />
+      {error ? (
+        <EmptyState title="Error" message={errors} />
+      ) : programs && programs.length > 0 ? (
+        <>
+          <DataTable
+            data={programs} // Pass the fetched data to the table
+            handleEdit={grabProgram}
+            handleArchive={grabProgramById}
+            includeCheckboxes={false}
+            /** Pagination */
+            totalPages={totalPages}
+            currentPage={currentPage}
+            setCurrentPage={handlePageChange}
+            ITEMS_PER_PAGE_LISTS={[{ value: 5 }, { value: 25 }, { value: 50 }]}
+            itemsPerPage={itemsPerPage}
+            totalItems={totalItems}
+            handleItemsPerPageChange={handleItemsPerPageChange}
+            handleNextPage={handleNextPage}
+            handlePrevPage={handlePrevPage}
+            /** Search */
+            searchPlaceholder={"Search Programs..."}
+            searchTerm={searchTerm}
+            handleKeyDown={handleKeyDown}
+            handleSearchChange={handleSearchChange}
+          />
+        </>
       ) : (
         <EmptyState
           title="No programs available at the moment"
           message="Once activities are recorded, programs will appear here."
-          icon={
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-16 w-16 text-gray-400"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M9 18l6-6-6-6" />
-            </svg>
-          }
         />
       )}
-      <Table
-        data={programs}
-        handleEdit={handleEdit}
-        handleArchive={deleteProgram}
-        includeCheckboxes={false}
-      />
 
       {/* Modals */}
       <FormModal
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         modalTitle="Add Program"
-        onSubmit={submitProgram}
+        onSubmit={addNewProgram}
       >
         <ProgramForm
           colleges={list_of_colleges}
@@ -255,8 +230,8 @@ const AdminManageProgramsPage = () => {
         <FormModal
           isOpen={editIsOpen}
           setIsOpen={setEditIsOpen}
-          modalTitle="Edit College"
-          onSubmit={handleEditSubmit}
+          modalTitle="Edit Program"
+          onSubmit={updateProgram}
         >
           <ProgramForm
             method="put"
@@ -272,6 +247,15 @@ const AdminManageProgramsPage = () => {
           />
         </FormModal>
       )}
+
+      {/* Delete Form Modal */}
+      <DeleteConfirmModal
+        open={isDeleteOpen}
+        setOpen={setIsDeleteOpen}
+        title="Delete Program"
+        message="Are you sure you want to delete this Program?"
+        handleDelete={deleteProgram}
+      />
     </Page>
   );
 };

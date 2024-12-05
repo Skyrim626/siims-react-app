@@ -120,19 +120,6 @@ const OsaRoutes = {
     {
       path: "document-types",
       element: <OsaManageDocumentTypesPage />,
-      loader: async () => {
-        try {
-          const response = await axiosClient.get("/api/v1/osa/document-types");
-          const initial_document_types = response.data;
-          // console.log(initial_document_types);
-          return { initial_document_types };
-        } catch (error) {
-          console.error("Error fetching document types: ", error);
-          return {
-            initial_document_types: [],
-          };
-        }
-      },
     },
   ],
 };

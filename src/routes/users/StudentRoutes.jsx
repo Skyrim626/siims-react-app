@@ -172,7 +172,7 @@ const StudentRoutes = {
               /**
                * Responses
                */
-              const profileResponse = await axiosClient.get("/api/v1/profile");
+              const profileResponse = await axiosClient.get("/api/v1/profiles");
 
               // console.log("Testing");
               // console.log(response);

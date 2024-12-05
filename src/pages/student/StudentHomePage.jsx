@@ -1,323 +1,271 @@
-import { useEffect, useState } from "react";
-import Page from "../../components/common/Page";
-import {
-  Link,
-  NavLink,
-  useLoaderData,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
-import { Button, Dialog } from "@headlessui/react";
-import { getRequest, postRequest, putRequest } from "../../api/apiHelpers";
-import Text from "../../components/common/Text";
-import Loader from "../../components/common/Loader";
-import ApplyModal from "../../components/workPosts/ApplyModal";
-import WithdrawModal from "../../components/workPosts/WithdrawModal";
-import PostBox from "../../components/workPosts/PostBox";
-import ReportsSection from "../../components/workPosts/ReportsSection";
-import WorkPost from "../../components/workPosts/WorkPost";
-import Pagination from "../../components/workPosts/Pagination";
-import CurrentlyJobApplied from "../../components/workPosts/CurrentlyJobApplied";
-/**
- *
- * Status_id of Student Display Features:
- * 08 - Not yet applied - [Display Job List Features]
- * 09 - Applying        - [Display Job List Features]
- * 10 - Applied         - [Hide Job List Features, Display Reports Features]
- */
+import React, { useState } from "react";
+import JobPost from "../../components/workPosts/JobPost";
+import { Button, Input } from "@headlessui/react";
 
 const StudentHomePage = () => {
-  // Fetch initial_workPost_posts
-  const {
-    workPosts,
-    student,
-    currently_applied_work_post,
-    application_id,
-    status,
-    application_status,
-  } = useLoaderData();
-  // console.log(currently_applied_work_post);
-  // console.log(student);
-  // console.log(status);
-  // console.log(workPosts);
+  const [activeTab, setActiveTab] = useState("All Jobs");
+  const [selectedSkill, setSelectedSkill] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedSkills, setSelectedSkills] = useState([]);
 
-  // Apply Status
-  const [canApply, setCanApply] = useState(null); // will hold the application status
-  const [errors, setErrors] = useState("");
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+  };
 
-  // Loading State
-  const [loading, setLoading] = useState(false);
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
 
-  // Location and Navigate
-  const location = useLocation();
-  const navigate = useNavigate();
+  const handleSkillFilterChange = (event) => {
+    setSelectedSkills(event.target.value);
+  };
 
-  // Fetch State
-  const studentStatus = student["status_id"] || 8;
-  // console.log(studentStatus);
-  const [currentPage, setCurrentPage] = useState(1);
-  const workPostsPerPage = 5; // Maximum workPost per page
+  const jobPosts = [
+    {
+      jobTitle: "Sr. Frontend Engineer",
+      company: "Invision",
+      description:
+        "Lorem ipsum dolor sit amet, consectetuer adipiscing elit consectetuer adipiscing elit consectetuer adipiscing elit consectetuer adipiscing elit...",
+      experience: "2 Years",
+      salary: "180-250k",
+      skills: ["JavaScript", "React", "CSS"],
+    },
+    {
+      jobTitle: "Backend Developer",
+      company: "Tech Solutions",
+      description: "Sed diam nonummy nibh euismod tincidunt ut laoreet...",
+      experience: "3 Years",
+      salary: "150-200k",
+      skills: ["Node.js", "Git", "SQL"],
+    },
+  ];
 
-  // Modal State
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isWithdrawModalOpen, setIsWithdrawalModalOpen] = useState(false);
-  const [selectedWorkPostId, setSelectedWorkPostId] = useState(null);
-
-  // State for Active Tab
-  const [activeTab, setActiveTab] = useState("All");
-
-  // Filtered Work Posts based on the selected tab
-  const filteredWorkPosts = workPosts.filter((workPost) => {
-    if (activeTab === "All") return true;
-    return workPost.work_post_type === activeTab;
-  });
-
-  // Calculate the total number of pages
-  // Calculate total pages for filtered work posts
-  const totalPages = Math.ceil(filteredWorkPosts.length / workPostsPerPage);
-  const indexOfLastWorkPost = currentPage * workPostsPerPage;
-  const indexOfFirstWorkPost = indexOfLastWorkPost - workPostsPerPage;
-  const currentWorkPost = filteredWorkPosts.slice(
-    indexOfFirstWorkPost,
-    indexOfLastWorkPost
+  const filteredJobPosts = jobPosts.filter((post) =>
+    post.jobTitle.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  useEffect(() => {
-    // Call the backend API to check if the student can apply
-    const checkStudentStatus = async () => {
-      try {
-        // const response = await axios.get(`/api/students/${studentId}/check-apply-status`);
-        const response = await getRequest({
-          url: `/api/v1/users/students/${student.id}/check-apply-status`,
-        });
-
-        if (response.can_apply) {
-          setCanApply(true);
-        } else {
-          setCanApply(false);
-          setErrors(response.data.message); // Display the blocking message
-        }
-      } catch (error) {
-        console.error("Error checking student status:", error);
-        setCanApply(false);
-        setErrors("An error occurred while checking application status.");
-      }
-    };
-
-    checkStudentStatus();
-  }, [student.id]);
-
-  // Modal Logic
-  // Modal Apply Logic
-  const handleApplyClick = (workPostId) => {
-    setSelectedWorkPostId(workPostId);
-    setIsModalOpen(true);
-  };
-
-  // Modal Withdraw Logic
-  const handleWithdrawClick = (workPostId) => {
-    setSelectedWorkPostId(workPostId);
-    setIsWithdrawalModalOpen(true);
-  };
-
-  // Navigate to Job Details
-  const navigateToJobDetails = () => {
-    const to = `${location.pathname}/jobs/${currently_applied_work_post.id}`;
-
-    navigate(to);
-  };
-
-  // Navigate to Daily Time Record
-  const navigateToDtr = () => {
-    const to = `${location.pathname}/${application_id}/daily-time-records`;
-
-    navigate(to);
-  };
-
-  // Navigate to Weekly Accomplishment Reports
-  const navigateToWeekly = () => {
-    const to = `${location.pathname}/${application_id}/my-weekly-reports`;
-
-    navigate(to);
-  };
-
-  // Navigate to Application Page
-  const navigateToApplication = () => {
-    // console.log(`${location.pathname}/application/${application_id}`);
-    const to = `${location.pathname}/applications/${application_id}`;
-
-    // apply/:job_id
-    navigate(to);
-  };
-
-  // Applies into a Job
-  const handleConfirmApply = async () => {
-    // Set Loading
-    setLoading(true);
-
-    // Method POST
-    // Create a new application record
-    try {
-      /* const response = await postRequest({
-        url: `/api/v1/student/jobs/${selectedWorkPostId}/apply`,
-      }); */
-      const response = await postRequest({
-        url: `/api/v1/applications/${selectedWorkPostId}/apply`,
-      });
-
-      // console.log(response);
-
-      setIsModalOpen(false);
-
-      if (response) {
-        navigate(
-          `${location.pathname}/applications/${response.application_id}`
-        );
-      }
-    } catch (error) {
-      // Handle and set errors
-      if (error.response && error.response.data && error.response.data.errors) {
-        console.log(error.response.data.errors);
-        setErrors(error.response.data.errors); // Assuming validation errors are in `errors`
-      } else {
-        console.error("An unexpected error occurred:", error);
-        setErrors({
-          general: "An unexpected error occurred. Please try again.",
-        });
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Withdraws in a Job applied
-  const handleConfirmWithdraw = async () => {
-    setLoading(true);
-
-    try {
-      const response = await putRequest({
-        url: `/api/v1/applications/${application_id}/withdraw`,
-      });
-
-      if (response) {
-        setIsWithdrawalModalOpen(false);
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
-    <>
-      <Page className="p-4 overflow-y-auto mx-auto">
-        {/* Loading */}
-        <Loader loading={loading} />
+    <div className="min-h-screen overflow-y-auto">
+      <div className="flex flex-col lg:flex-row space-y-10 lg:space-y-0 lg:space-x-10">
+        {/* Profile Sidebar (Fixed Left) */}
+        <div className="lg:w-1/4 w-full">
+          <div className="bg-white p-8 rounded-lg shadow-xl border border-gray-200">
+            {/* Profile Header */}
+            <div className="flex items-center space-x-6">
+              <div className="w-20 h-20">
+                <img
+                  src="/images/EC25KRDBo-K3w8GexNHSE.png"
+                  alt="Profile"
+                  className="w-full h-full rounded-full border-4 border-indigo-600 object-cover"
+                />
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold text-gray-900">
+                  John Doe
+                </h3>
+              </div>
+            </div>
 
-        {/* New Post Box */}
-        <PostBox />
+            {/* Contact Information */}
+            <div className="mt-8">
+              <h4 className="text-lg font-semibold text-gray-800">
+                Contact Information
+              </h4>
+              <ul className="mt-4 text-sm text-gray-600 space-y-3">
+                <li className="flex items-center space-x-2">
+                  <span className="text-indigo-600">✉️</span>
+                  <a
+                    href="mailto:johndoe@example.com"
+                    className="text-blue-600 hover:underline"
+                  >
+                    johndoe@example.com
+                  </a>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <span className="text-indigo-600">📞</span>
+                  <a
+                    href="tel:123-456-7890"
+                    className="text-blue-600 hover:underline"
+                  >
+                    123-456-7890
+                  </a>
+                </li>
+              </ul>
+            </div>
 
-        {/* Tabs */}
-        {studentStatus == 8 && (
-          <div className="mb-6">
-            <button
-              onClick={() => setActiveTab("All")}
-              className={`mr-4 px-6 py-3 rounded-md font-medium ${
-                activeTab === "All"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-200 text-gray-700"
+            {/* Work Experience */}
+            <div className="mt-8">
+              <h4 className="text-lg font-semibold text-gray-800">
+                Work Experience
+              </h4>
+              <ul className="mt-4 text-sm text-gray-600 space-y-3">
+                <li>
+                  <strong className="text-gray-900">Frontend Engineer</strong> -
+                  Invision
+                  <p className="text-xs text-gray-500">Jan 2020 - Present</p>
+                </li>
+                <li>
+                  <strong className="text-gray-900">Junior Developer</strong> -
+                  Tech Solutions
+                  <p className="text-xs text-gray-500">Jul 2018 - Dec 2019</p>
+                </li>
+              </ul>
+            </div>
+
+            {/* Education */}
+            <div className="mt-8">
+              <h4 className="text-lg font-semibold text-gray-800">Education</h4>
+              <ul className="mt-4 text-sm text-gray-600 space-y-3">
+                <li>
+                  <strong className="text-gray-900">
+                    Bachelor of Science in Information Technology
+                  </strong>
+                  <p className="text-xs text-gray-500">XYZ University - 2018</p>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Job Listings and Filters (Scrollable Middle) */}
+        <div className="lg:w-1/2 w-full">
+          {/* Tabs for filtering job types */}
+          <div className="flex space-x-4 border-b border-gray-300 pb-2">
+            <Button
+              onClick={() => handleTabChange("All Jobs")}
+              className={`text-lg font-semibold ${
+                activeTab === "All Jobs" ? "text-blue-600" : "text-gray-600"
               }`}
             >
-              All
-            </button>
-            <button
-              onClick={() => setActiveTab("Internship")}
-              className={`mr-4 px-6 py-3 rounded-md font-medium ${
-                activeTab === "Internship"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-200 text-gray-700"
+              All Jobs
+            </Button>
+            <Button
+              onClick={() => handleTabChange("Internship")}
+              className={`text-lg font-semibold ${
+                activeTab === "Internship" ? "text-blue-600" : "text-gray-600"
               }`}
             >
               Internship
-            </button>
-            <button
-              onClick={() => setActiveTab("Immersion")}
-              className={`mr-4 px-6 py-3 rounded-md font-medium ${
-                activeTab === "Immersion"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-200 text-gray-700"
+            </Button>
+            <Button
+              onClick={() => handleTabChange("Immersion")}
+              className={`text-lg font-semibold ${
+                activeTab === "Immersion" ? "text-blue-600" : "text-gray-600"
               }`}
             >
               Immersion
-            </button>
+            </Button>
           </div>
-        )}
 
-        {/* Reports Section */}
-        {/* Deployed - 12 */}
-        {studentStatus === 12 && (
-          <ReportsSection
-            navigateToDtr={navigateToDtr}
-            navigateToWeekly={navigateToWeekly}
-          />
-        )}
-        {/* WorkPost List Section */}
-        {/* Not yet applied - 10 */}
-        {studentStatus === 8 && (
-          <div className="container mx-auto">
-            <h2 className="text-2xl font-semibold mb-4">
-              {activeTab === "All"
-                ? "Available Work Posts"
-                : `${activeTab} Opportunities`}
-            </h2>
-
-            <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-              {currentWorkPost.map((workPost) => (
-                <WorkPost
-                  key={workPost.id}
-                  workPost={workPost}
-                  handleApplyClick={() => handleApplyClick(workPost.id)}
-                  location={location}
-                  canApply={canApply}
-                />
-              ))}
-            </div>
-
-            {/* Pagination */}
-            <Pagination
-              setCurrentPage={setCurrentPage}
-              totalPages={totalPages}
-              currentPage={currentPage}
+          {/* Search Input */}
+          <div className="mt-8 flex items-center space-x-4">
+            <Input
+              type="text"
+              placeholder="Search job listings..."
+              value={searchQuery}
+              onChange={handleSearchChange}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
-        )}
+          {/* Duplicate Job Posts for scrolling */}
+          <div className="space-y-8">
+            {jobPosts.map((post, index) => (
+              <JobPost
+                key={index}
+                jobTitle={post.jobTitle}
+                company={post.company}
+                description={post.description}
+                experience={post.experience}
+                salary={post.salary}
+                skills={post.skills}
+              />
+            ))}
+          </div>
+        </div>
 
-        {/* If the student already applied, display this */}
-        {currently_applied_work_post && application_status !== 6 && (
-          <CurrentlyJobApplied
-            currently_applied_work_post={currently_applied_work_post}
-            handleWithdrawClick={handleWithdrawClick}
-            navigateToApplication={navigateToApplication}
-            status={status}
-            navigateToJobDetails={navigateToJobDetails}
-          />
-        )}
-        {/* Modal */}
-        {/* Apply Modal  */}
-        <ApplyModal
-          isModalOpen={isModalOpen}
-          setIsModalOpen={setIsModalOpen}
-          handleConfirmApply={handleConfirmApply}
-        />
-        {/* Withdraw Modal  */}
-        <WithdrawModal
-          isWithdrawModalOpen={isWithdrawModalOpen}
-          setIsWithdrawalModalOpen={setIsWithdrawalModalOpen}
-          handleConfirmWithdraw={handleConfirmWithdraw}
-        />
-      </Page>
-    </>
+        {/* Skills Filter Sidebar (Fixed Right) */}
+        <div className="lg:w-1/4 w-full">
+          <div className="bg-gradient-to-r from-indigo-100 to-indigo-50 p-8 rounded-xl shadow-lg border border-indigo-200">
+            {/* Sidebar Title */}
+            <h4 className="text-2xl font-semibold text-indigo-800 mb-8 tracking-wide">
+              Filter by Skill
+            </h4>
+
+            {/* Skill Filter Checkboxes */}
+            <div className="space-y-4">
+              <label className="flex items-center space-x-3 text-gray-700">
+                <Input
+                  type="checkbox"
+                  value="JavaScript"
+                  onChange={handleSkillFilterChange}
+                  checked={selectedSkills.includes("JavaScript")}
+                  className="form-checkbox text-indigo-600"
+                />
+                <span className="text-sm">JavaScript</span>
+              </label>
+
+              <label className="flex items-center space-x-3 text-gray-700">
+                <Input
+                  type="checkbox"
+                  value="React"
+                  onChange={handleSkillFilterChange}
+                  checked={selectedSkills.includes("React")}
+                  className="form-checkbox text-indigo-600"
+                />
+                <span className="text-sm">React</span>
+              </label>
+
+              <label className="flex items-center space-x-3 text-gray-700">
+                <Input
+                  type="checkbox"
+                  value="CSS"
+                  onChange={handleSkillFilterChange}
+                  checked={selectedSkills.includes("CSS")}
+                  className="form-checkbox text-indigo-600"
+                />
+                <span className="text-sm">CSS</span>
+              </label>
+
+              <label className="flex items-center space-x-3 text-gray-700">
+                <Input
+                  type="checkbox"
+                  value="Node.js"
+                  onChange={handleSkillFilterChange}
+                  checked={selectedSkills.includes("Node.js")}
+                  className="form-checkbox text-indigo-600"
+                />
+                <span className="text-sm">Node.js</span>
+              </label>
+
+              <label className="flex items-center space-x-3 text-gray-700">
+                <Input
+                  type="checkbox"
+                  value="Git"
+                  onChange={handleSkillFilterChange}
+                  checked={selectedSkills.includes("Git")}
+                  className="form-checkbox text-indigo-600"
+                />
+                <span className="text-sm">Git</span>
+              </label>
+            </div>
+
+            {/* Filter Description */}
+            <p className="text-sm text-gray-600 mt-5 leading-relaxed">
+              Select one or more skills to filter candidates based on their
+              expertise.
+            </p>
+
+            {/* Reset Button */}
+            <Button
+              onClick={() => handleSkillFilterChange({ target: { value: [] } })}
+              className="mt-6 w-full py-3 px-5 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 transition"
+            >
+              Clear Filter
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

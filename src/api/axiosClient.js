@@ -95,7 +95,7 @@ function handleUnauthorizedError(response) {
   sessionStorage.clear();
 
   // Redirect user to login page
-  // window.location.href = "/login";
+  window.location.href = "/login";
 }
 
 // Export axiosClient service

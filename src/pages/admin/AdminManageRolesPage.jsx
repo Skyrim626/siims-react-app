@@ -14,63 +14,79 @@ import { useLoaderData } from "react-router-dom";
 import Table from "../../components/tables/Table";
 import Loader from "../../components/common/Loader";
 import EmptyState from "../../components/common/EmptyState";
+import useFetch from "../../hooks/useFetch";
+import useRequest from "../../hooks/useRequest";
+import DataTable from "../../components/tables/DataTable";
+import useSearch from "../../hooks/test/useSearch";
 
 const AdminManageRolesPage = () => {
   // Retrieve the user_roles data from the loader
-  const { initialRoles, userRoles } = useLoaderData();
+  const { userRoles } = useLoaderData();
 
-  // console.log(userRoles);
+  // Container Data
+  const [roles, setRoles] = useState([]);
 
-  // Loader State
+  // Loader, Select, Modal State
   const [loading, setLoading] = useState(false);
-
-  // State for roles and form modal
-  const [roles, setRoles] = useState(initialRoles);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTab, setSelectedTab] = useState(0);
 
   // Form input and errors
   const [roleName, setRoleName] = useState("");
-  const [errors, setErrors] = useState({});
+
+  /**
+   *
+   *
+   *
+   * Custom Hooks
+   *
+   *
+   *
+   */
+  // Search Hooks
+  const { searchTerm, triggerSearch, handleSearchChange, handleKeyDown } =
+    useSearch();
+
+  // Fetch document types with search and pagination
+  const {
+    error,
+    currentPage,
+    itemsPerPage,
+    totalItems,
+    totalPages,
+    handlePageChange,
+    handleItemsPerPageChange,
+    handleNextPage,
+    handlePrevPage,
+  } = useFetch({
+    url: "/roles", // URL for document types
+    initialPage: 1,
+    initialItemsPerPage: 5,
+    searchTerm: triggerSearch ? searchTerm : "", // Only pass search term when search is triggered
+    setData: setRoles,
+    setLoading: setLoading,
+  });
+
+  /**
+   * Use Request
+   */
+  const { errors, postData } = useRequest({
+    setData: setRoles,
+    setLoading,
+    setIsOpen: setIsOpen,
+  });
 
   // Submit new role data
-  const submitRole = async () => {
-    // Set Loading
-    setLoading(true);
+  const addNewRole = async () => {
+    // Prepare the payload
+    const payload = {
+      name: roleName,
+    };
 
-    try {
-      // Prepare the payload
-      const payload = {
-        name: roleName,
-      };
-
-      // Make the POST request
-      const response = await postRequest({
-        url: "/api/v1/admin/roles",
-        data: payload,
-      });
-
-      // Add the new role to the local state
-      setRoles((prevRoles) => [...prevRoles, response.data]);
-
-      // Reset form and close modal on success
-      setRoleName("");
-      setErrors({});
-      setIsOpen(false);
-    } catch (error) {
-      // Handle and set errors
-      if (error.response && error.response.data && error.response.data.errors) {
-        console.log(error.response.data.errors);
-        setErrors(error.response.data.errors); // Assuming validation errors are in `errors`
-      } else {
-        console.error("An unexpected error occurred:", error);
-        setErrors({
-          general: "An unexpected error occurred. Please try again.",
-        });
-      }
-    } finally {
-      setLoading(false);
-    }
+    postData({
+      url: "/roles",
+      payload: payload,
+    });
   };
 
   return (
@@ -118,25 +134,30 @@ const AdminManageRolesPage = () => {
       {selectedTab === 0 ? (
         <AdminUserRolesTable searchPlaceholder="Search User" data={userRoles} />
       ) : roles && roles.length > 0 ? (
-        <Table data={roles} includeCheckboxes={false} />
+        <DataTable
+          data={roles} // Pass the fetched data to the table
+          // handleEdit={grabDocumentType}
+          includeCheckboxes={false}
+          /** Pagination */
+          totalPages={totalPages}
+          currentPage={currentPage}
+          setCurrentPage={handlePageChange}
+          ITEMS_PER_PAGE_LISTS={[{ value: 5 }, { value: 25 }, { value: 50 }]}
+          itemsPerPage={itemsPerPage}
+          totalItems={totalItems}
+          handleItemsPerPageChange={handleItemsPerPageChange}
+          handleNextPage={handleNextPage}
+          handlePrevPage={handlePrevPage}
+          /** Search */
+          searchPlaceholder={"Search Roles..."}
+          searchTerm={searchTerm}
+          handleKeyDown={handleKeyDown}
+          handleSearchChange={handleSearchChange}
+        />
       ) : (
         <EmptyState
           title="No roles available at the moment"
           message="Once activities are recorded, roles will appear here."
-          icon={
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-16 w-16 text-gray-400"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M9 18l6-6-6-6" />
-            </svg>
-          }
         />
       )}
 
@@ -149,7 +170,7 @@ const AdminManageRolesPage = () => {
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         modalTitle="Add Role"
-        onSubmit={submitRole}
+        onSubmit={addNewRole}
       >
         <AdminRoleFormAdd
           roleName={roleName}

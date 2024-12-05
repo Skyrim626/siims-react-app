@@ -96,35 +96,7 @@ const AdminRoutes = {
     {
       path: "document-types",
       element: <AdminManageDocumentTypesPage />,
-      loader: async () => {
-        try {
-          /**
-           * Responses
-           */
-          const response = await axiosClient.get("/api/v1/document-types");
-
-          /**
-           * Variables
-           */
-          const initial_document_types = response.data;
-
-          /**
-           * Return
-           */
-          return { initial_document_types };
-        } catch (error) {
-          // Log the error for debugging (optional)
-          console.error("Failed to fetch document types:", error);
-
-          // Return an empty array as a fallback
-          return { initial_document_types: [] };
-        }
-      },
     },
-    /* {
-      path: "messaging",
-      element: <AdminMessagingPage />,
-    }, */
     {
       path: "messaging",
       element: <ChatLayout />,
@@ -193,7 +165,6 @@ const AdminRoutes = {
         },
       ],
     },
-
     {
       path: "roles", // Route for managing user roles
       element: <AdminManageRolesPage />,
@@ -202,7 +173,6 @@ const AdminRoutes = {
           /**
            * Responses
            */
-          const roleResponse = await axiosClient.get("/api/v1/roles");
           const userRoleResponse = await axiosClient.get(
             "/api/v1/roles/user-roles"
           );
@@ -210,20 +180,15 @@ const AdminRoutes = {
           /**
            * Variables
            */
-          const initialRoles = roleResponse.data;
           const userRoles = userRoleResponse.data;
-
-          // console.log(initialRoles);
-          // console.log(userRoles);
 
           /**
            * Return
            */
-          return { initialRoles, userRoles }; // Return both as an object
+          return { userRoles }; // Return both as an object
         } catch (error) {
           console.error("Error fetching user roles: ", error);
           return {
-            initialRoles: [],
             userRoles: [],
           };
         }
@@ -237,7 +202,6 @@ const AdminRoutes = {
           /**
            * Responses
            */
-          const collegeResponse = await axiosClient.get("/api/v1/colleges");
           const deanResponse = await axiosClient.get(
             "/api/v1/users/deans/including-colleges"
           );
@@ -245,18 +209,16 @@ const AdminRoutes = {
           /**
            * Variables
            */
-          const initial_colleges = collegeResponse.data;
           const list_of_deans = deanResponse.data;
 
           /**
            * Return
            */
-          return { initial_colleges, list_of_deans };
+          return { list_of_deans };
         } catch (error) {
           console.error("Error fetching colleges: ", error);
 
           return {
-            initial_colleges: [],
             list_of_deans: [],
           };
         }
@@ -270,8 +232,9 @@ const AdminRoutes = {
           /**
            * Responses
            */
-          const programResponse = await axiosClient.get("/api/v1/programs");
-          const collegeResponse = await axiosClient.get("/api/v1/colleges");
+          const collegeResponse = await axiosClient.get(
+            "/api/v1/colleges/lists"
+          );
           const chairpersonResponse = await axiosClient.get(
             "/api/v1/users/chairpersons/including-programs"
           );
@@ -279,7 +242,6 @@ const AdminRoutes = {
           /**
            * Variables
            */
-          const initial_programs = programResponse.data;
           const list_of_colleges = collegeResponse.data;
           const list_of_chairpersons = chairpersonResponse.data;
 
@@ -287,12 +249,11 @@ const AdminRoutes = {
            * Return
            */
 
-          return { initial_programs, list_of_chairpersons, list_of_colleges };
+          return { list_of_chairpersons, list_of_colleges };
         } catch (error) {
           console.error("Error fetching programs and chairpersons: ", error);
 
           return {
-            initial_programs: [],
             list_of_chairpersons: [],
             list_of_colleges: [],
           };

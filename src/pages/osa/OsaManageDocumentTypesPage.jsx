@@ -10,116 +10,108 @@ import OsaDocumentTypesTable from "../../components/users/osa/table/OsaDocumentT
 import FormModal from "../../components/modals/FormModal";
 import OsaDocumentTypeForm from "./forms/OsaDocumentTypeForm";
 import EmptyState from "../../components/common/EmptyState";
+import useSearch from "../../hooks/test/useSearch";
+import useFetch from "../../hooks/useFetch";
+import DataTable from "../../components/tables/DataTable";
+import useRequest from "../../hooks/useRequest";
+import Loader from "../../components/common/Loader";
 
 const OsaManageDocumentTypesPage = () => {
-  // Retrieve the document_types data from the loader
-  const { initial_document_types } = useLoaderData();
-
-  // console.log(initial_document_types);
-
-  // State for documentTypes and form modal
-  const [documentTypes, setDocumentTypes] = useState(initial_document_types);
+  // Container Data
+  const [documentTypes, setDocumentTypes] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [editIsOpen, setEditIsOpen] = useState(false);
 
-  // Form input and errors
-  const [documentTypeName, setDocumentTypeName] = useState("");
-  const [errors, setErrors] = useState({});
+  // Loading State
+  const [loading, setLoading] = useState(false);
 
-  // Select State
+  // Input State
+  const [documentTypeName, setDocumentTypeName] = useState("");
   const [selectedDocumentType, setSelectedDocumentType] = useState(null);
+
+  /**
+   *
+   *
+   *
+   * Custom Hooks
+   *
+   *
+   *
+   */
+  // Search Hooks
+  const { searchTerm, triggerSearch, handleSearchChange, handleKeyDown } =
+    useSearch();
+
+  // Fetch document types with search and pagination
+  const {
+    error,
+    currentPage,
+    itemsPerPage,
+    totalItems,
+    totalPages,
+    handlePageChange,
+    handleItemsPerPageChange,
+    handleNextPage,
+    handlePrevPage,
+  } = useFetch({
+    url: "/document-types", // URL for document types
+    initialPage: 1,
+    initialItemsPerPage: 5,
+    searchTerm: triggerSearch ? searchTerm : "", // Only pass search term when search is triggered
+    setData: setDocumentTypes,
+    setLoading: setLoading,
+  });
+
+  /**
+   * Use Request
+   */
+  const { errors, postData, putData } = useRequest({
+    setData: setDocumentTypes,
+    setLoading,
+    setIsOpen: setIsOpen,
+  });
 
   // Update a document type
   const updateDocumentType = async () => {
-    try {
-      // Ready payload
-      const payload = {
-        name: documentTypeName,
-      };
+    // Ready Payload
+    const payload = {
+      name: documentTypeName,
+    };
 
-      // console.log(payload);
-      // Send update request to the backend
-      const response = await putRequest({
-        url: `/api/v1/osa/document-types/${selectedDocumentType["id"]}`,
-        data: payload,
-      });
-
-      // Update the document type in the state
-      setDocumentTypes((prevDocumentTypes) =>
-        prevDocumentTypes.map((documentType) =>
-          documentType.id === selectedDocumentType["id"]
-            ? { ...documentType, ...response.data }
-            : documentType
-        )
-      );
-
-      // Reset inputs and modals
-      setDocumentTypeName("");
-      setEditIsOpen(false);
-    } catch (error) {
-      // Handle and set errors
-      if (error.response && error.response.data && error.response.data.errors) {
-        console.log(error.response.data.errors);
-        setErrors(error.response.data.errors); // Assuming validation errors are in `errors`
-      } else {
-        console.error("An unexpected error occurred:", error);
-        setErrors({
-          general: "An unexpected error occurred. Please try again.",
-        });
-      }
-    }
+    // Update Data
+    putData({
+      url: `/document-types/${selectedDocumentType["id"]}`,
+      payload: payload,
+      selectedData: selectedDocumentType,
+      setIsOpen: setEditIsOpen,
+    });
   };
 
   // Handle Edit Select Document Type
-  const handleEdit = (documentType) => {
-    // Set Document Type State
-    // console.log(documentType);
+  const grabDocumentType = (documentType) => {
     setSelectedDocumentType(documentType);
-    setDocumentTypeName(documentType["name"]);
-
+    setDocumentTypeName(documentType.name);
     // Open Modal
     setEditIsOpen(true);
   };
 
-  // Add a new program
-  const addDocumentType = async () => {
-    try {
-      // Ready for payload
-      const payload = {
-        name: documentTypeName,
-      };
-
-      // Make the POST request
-      const response = await postRequest({
-        url: "/api/v1/osa/document-types",
-        data: payload,
-      });
-
-      // Add the new document type to the local state
-      setDocumentTypes((prevDocumentTypes) => [
-        ...prevDocumentTypes,
-        response.data,
-      ]);
-      // Reset form and close modal on success
-      setDocumentTypeName("");
-      setErrors({});
-      setIsOpen(false);
-    } catch (error) {
-      // Handle and set errors
-      if (error.response && error.response.data && error.response.data.errors) {
-        console.log(error.response.data.errors);
-        setErrors(error.response.data.errors); // Assuming validation errors are in `errors`
-      } else {
-        console.error("An unexpected error occurred:", error);
-        setErrors({
-          general: "An unexpected error occurred. Please try again.",
-        });
-      }
-    }
+  // Add new Document Type
+  const addDocumentType = () => {
+    // Ready Payload
+    const payload = {
+      name: documentTypeName,
+    };
+    // Add Data
+    postData({
+      url: "/document-types",
+      payload: payload,
+    });
   };
 
   return (
     <Page>
+      {/* Loading Component */}
+      <Loader loading={loading} />
       <Section>
         <Heading level={3} text={"Document Types"} />
         <Text className="text-sm text-blue-950">
@@ -137,8 +129,31 @@ const OsaManageDocumentTypesPage = () => {
       />
 
       {/* Table */}
-      {documentTypes.length > 0 ? (
-        <OsaDocumentTypesTable data={documentTypes} handleEdit={handleEdit} />
+      {error ? (
+        <EmptyState title="Error" message={errors} />
+      ) : documentTypes && documentTypes.length > 0 ? (
+        <>
+          <DataTable
+            data={documentTypes} // Pass the fetched data to the table
+            handleEdit={grabDocumentType}
+            includeCheckboxes={false}
+            /** Pagination */
+            totalPages={totalPages}
+            currentPage={currentPage}
+            setCurrentPage={handlePageChange}
+            ITEMS_PER_PAGE_LISTS={[{ value: 5 }, { value: 25 }, { value: 50 }]}
+            itemsPerPage={itemsPerPage}
+            totalItems={totalItems}
+            handleItemsPerPageChange={handleItemsPerPageChange}
+            handleNextPage={handleNextPage}
+            handlePrevPage={handlePrevPage}
+            /** Search */
+            searchPlaceholder={"Search Document Type"}
+            searchTerm={searchTerm}
+            handleKeyDown={handleKeyDown}
+            handleSearchChange={handleSearchChange}
+          />
+        </>
       ) : (
         <EmptyState
           title="No document types available at the moment"

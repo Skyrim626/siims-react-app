@@ -1,152 +1,145 @@
 import React, { useEffect, useState } from "react";
 import Page from "../../components/common/Page";
-import {
-  deleteRequest,
-  getRequest,
-  postRequest,
-  putRequest,
-} from "../../api/apiHelpers";
+import { postRequest, putRequest } from "../../api/apiHelpers";
 import Section from "../../components/common/Section";
 import Text from "../../components/common/Text";
 import Heading from "../../components/common/Heading";
 import FormModal from "../../components/modals/FormModal";
-import AdminCollegeFormAdd from "./forms/AdminCollegeFormAdd";
-import AdminCollegeFormEdit from "./forms/AdminCollegeFormEdit";
-import useForm from "../../hooks/useForm";
-import AdminCollegesTable from "../../components/users/admin/table/AdminCollegesTable";
-import useHandleSubmit from "../../hooks/useHandleSubmit";
 import ManageHeader from "../../components/common/ManageHeader";
 import { useLoaderData, useNavigate, useLocation } from "react-router-dom";
 import Table from "../../components/tables/Table";
 import CollegeForm from "../../components/forms/CollegeForm";
 import Loader from "../../components/common/Loader";
 import EmptyState from "../../components/common/EmptyState";
+import useSearch from "../../hooks/test/useSearch";
+import useFetch from "../../hooks/useFetch";
+import useRequest from "../../hooks/useRequest";
+import DataTable from "../../components/tables/DataTable";
+import DeleteConfirmModal from "../../components/modals/DeleteConfirmModal";
 
 const AdminManageCollegesPage = () => {
-  // Retrieve the user_roles data from the loader
-  const { initial_colleges, list_of_deans } = useLoaderData();
+  /**
+   *
+   * Loader, navigate, and location state
+   */
+  const { list_of_deans } = useLoaderData();
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Loader state
+  /**
+   *  Loading, container, modal state
+   */
   const [loading, setLoading] = useState(false);
-
-  // console.log(list_of_deans);
-
-  // State for colleges and form modal
-  const [colleges, setColleges] = useState(initial_colleges);
+  const [colleges, setColleges] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [editIsOpen, setEditIsOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
-  // Form input and errors
+  /**
+   * Input, and Select State
+   */
   const [collegeName, setCollegeName] = useState("");
   const [deanId, setDeanId] = useState(null);
-  const [errors, setErrors] = useState({});
-
-  // Select State
   const [selectedCollege, setSelectedCollege] = useState({});
+  const [selectedCollegeID, setSelectedCollegeID] = useState(null);
+
+  /**
+   *
+   *
+   *
+   * Custom Hooks
+   *
+   *
+   *
+   */
+  // Search Hooks
+  const { searchTerm, triggerSearch, handleSearchChange, handleKeyDown } =
+    useSearch();
+
+  // Fetch document types with search and pagination
+  const {
+    error,
+    currentPage,
+    itemsPerPage,
+    totalItems,
+    totalPages,
+    handlePageChange,
+    handleItemsPerPageChange,
+    handleNextPage,
+    handlePrevPage,
+  } = useFetch({
+    url: "/colleges", // URL for document types
+    initialPage: 1,
+    initialItemsPerPage: 5,
+    searchTerm: triggerSearch ? searchTerm : "", // Only pass search term when search is triggered
+    setData: setColleges,
+    setLoading: setLoading,
+  });
+
+  /**
+   * Use Request
+   */
+  const { errors, postData, putData, deleteData } = useRequest({
+    setData: setColleges,
+    setLoading,
+    setIsOpen: setIsOpen,
+  });
 
   // Add new College
-  const addNewCollege = async () => {
-    // Set loading
-    setLoading(true);
+  const addNewCollege = () => {
+    // Payload
+    const payload = {
+      name: collegeName,
+    };
 
-    try {
-      // Payload
-      const payload = {
-        name: collegeName,
-      };
-
-      // Make the POST request
-      const response = await postRequest({
-        url: "/api/v1/colleges",
-        data: payload,
-      });
-
-      // Add the new college to the local state
-      setColleges((prevColleges) => [...prevColleges, response.data]);
-      // Reset form and close modal on success
-      setCollegeName("");
-      setErrors({});
-      setIsOpen(false);
-    } catch (error) {
-      // Handle and set errors
-      if (error.response && error.response.data && error.response.data.errors) {
-        console.log(error.response.data.errors);
-        setErrors(error.response.data.errors); // Assuming validation errors are in `errors`
-      } else {
-        console.error("An unexpected error occurred:", error);
-        setErrors({
-          general: "An unexpected error occurred. Please try again.",
-        });
-      }
-    } finally {
-      setLoading(false);
-    }
+    postData({
+      url: "/colleges",
+      payload: payload,
+    });
   };
 
   // Update College
   const updateCollege = async () => {
-    // Set Loading State
-    setLoading(true);
+    // Ready Payload
+    const payload = {
+      dean_id: deanId,
+      name: collegeName,
+    };
 
-    try {
-      // Ready Payload
-      const payload = {
-        dean_id: deanId,
-        name: collegeName,
-      };
+    putData({
+      url: `/colleges/${selectedCollege["id"]}`,
+      payload: payload,
+      selectedData: selectedCollege["id"],
+      setIsOpen: setEditIsOpen,
+    });
+  };
+  /**
+   * Delete Functions
+   */
+  // Grab College By ID
+  const grabCollegeById = async (id) => {
+    // Set Selected ID
+    setSelectedCollegeID(id);
+    setIsDeleteOpen(!isDeleteOpen);
+  };
 
-      // Send update request to the backend
-      const response = await putRequest({
-        url: `/api/v1/colleges/${selectedCollege["id"]}`,
-        data: payload,
-      });
-
-      // Update the college in the state
-      setColleges((prevColleges) =>
-        prevColleges.map((college) =>
-          college.id === selectedCollege["id"]
-            ? { ...college, ...response.data }
-            : college
-        )
-      );
-
-      // Reset inputs and modals
-      setCollegeName("");
-      setDeanId(null);
-      setEditIsOpen(false);
-
-      // Refresh Page
-      if (response) {
-        navigate(location.pathname, { replace: true });
-      }
-    } catch (error) {
-      // Handle and set errors
-      if (error.response && error.response.data && error.response.data.errors) {
-        console.log(error.response.data.errors);
-        setErrors(error.response.data.errors); // Assuming validation errors are in `errors`
-      } else {
-        console.error("An unexpected error occurred:", error);
-        setErrors({
-          general: "An unexpected error occurred. Please try again.",
-        });
-      }
-      console.error("Error updating role:", error);
-    } finally {
-      setLoading(false);
-    }
+  // Delete College
+  const deleteCollege = () => {
+    deleteData({
+      url: `/colleges/${selectedCollegeID}`,
+      id: selectedCollegeID,
+      setIsDeleteOpen: setIsDeleteOpen,
+    });
   };
 
   // Handle Edit Select College
-  const handleEdit = (college) => {
+  const grabCollege = (college) => {
     // Set College State
     setSelectedCollege(college);
 
     // Pre-fill the collegeName and dean_id
     setCollegeName(college.name);
     setDeanId(college.dean_id);
-    setErrors({});
 
     // Open Modal
     setEditIsOpen(true);
@@ -174,26 +167,40 @@ const AdminManageCollegesPage = () => {
         />
 
         {/* Table */}
-        {colleges.length > 0 ? (
-          <Table data={colleges} handleEdit={handleEdit} />
+        {error ? (
+          <EmptyState title="Error" message={errors} />
+        ) : colleges && colleges.length > 0 ? (
+          <>
+            <DataTable
+              data={colleges} // Pass the fetched data to the table
+              handleEdit={grabCollege}
+              handleArchive={grabCollegeById}
+              includeCheckboxes={false}
+              /** Pagination */
+              totalPages={totalPages}
+              currentPage={currentPage}
+              setCurrentPage={handlePageChange}
+              ITEMS_PER_PAGE_LISTS={[
+                { value: 5 },
+                { value: 25 },
+                { value: 50 },
+              ]}
+              itemsPerPage={itemsPerPage}
+              totalItems={totalItems}
+              handleItemsPerPageChange={handleItemsPerPageChange}
+              handleNextPage={handleNextPage}
+              handlePrevPage={handlePrevPage}
+              /** Search */
+              searchPlaceholder={"Search Colleges..."}
+              searchTerm={searchTerm}
+              handleKeyDown={handleKeyDown}
+              handleSearchChange={handleSearchChange}
+            />
+          </>
         ) : (
           <EmptyState
             title="No colleges available at the moment"
             message="Once activities are recorded, colleges will appear here."
-            icon={
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-16 w-16 text-gray-400"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M9 18l6-6-6-6" />
-              </svg>
-            }
           />
         )}
 
@@ -231,6 +238,14 @@ const AdminManageCollegesPage = () => {
             />
           </FormModal>
         )}
+
+        {/* Delete Form Modal */}
+        <DeleteConfirmModal
+          open={isDeleteOpen}
+          setOpen={setIsDeleteOpen}
+          message="Are you sure you want to delete this College?"
+          handleDelete={deleteCollege}
+        />
       </Page>
     </>
   );

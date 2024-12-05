@@ -47,8 +47,11 @@ const ChairpersonManageStudentsPage = () => {
 
   // Update Student Status to Deployed
   const handleConfirmAssign = async () => {
-    console.log(selectedIds);
-    /* try {
+    // Loading State
+    setLoading(true);
+
+    // console.log(selectedIds);
+    try {
       // Ensure a coordinator is selected
       if (!selectedCoordinator) {
         alert("Please select a coordinator before confirming.");
@@ -69,7 +72,9 @@ const ChairpersonManageStudentsPage = () => {
       setSelectedCoordinator("");
     } catch (error) {
       console.error("Error during assignment:", error);
-    } */
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleFileChange = (event) => {

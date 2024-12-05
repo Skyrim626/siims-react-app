@@ -155,21 +155,7 @@ const DeanRoutes = {
     {
       path: "programs",
       element: <DeanProgramsPage />,
-      loader: async () => {
-        try {
-          const response = await axiosClient.get("/api/v1/programs");
-
-          // Fetch the list of programs and chairpersons
-          const initial_programs = response.data;
-
-          // console.log(initial_programs);
-
-          return initial_programs;
-        } catch (error) {
-          console.error("Error fetching programs: ", error);
-          throw error; // Let the router handle errors
-        }
-      },
+   
     },
     {
       path: "companies",

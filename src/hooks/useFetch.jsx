@@ -20,7 +20,7 @@ const useFetch = ({
     setLoading(true);
     setError(null);
     try {
-      const fullUrl = `/api/v1/${url}?page=${page}&per_page=${perPage}&search=${search}`;
+      const fullUrl = `/api/v1${url}?page=${page}&per_page=${perPage}&search=${search}`;
       const response = await getRequest({ url: fullUrl, ...options });
       setData(response.data || []);
       setTotalItems(response.meta.total || 0);

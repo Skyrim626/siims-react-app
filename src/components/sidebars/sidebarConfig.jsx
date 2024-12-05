@@ -31,7 +31,7 @@ const adminSidebarItemsConfig = [
     path: "/auth/admin",
   },
   {
-    icon: <File />,
+    icon: <File size={20} />,
     text: "Document Types",
     alert: true,
     ariaLabel: "Document Types",
@@ -45,6 +45,12 @@ const adminSidebarItemsConfig = [
     ariaLabel: "Roles",
     exact: true,
     path: "/auth/admin/roles",
+    sublinks: [
+      {
+        text: "Roles",
+        path: "/auth/admin//user-roles",
+      },
+    ],
   },
 
   {
@@ -102,14 +108,14 @@ const adminSidebarItemsConfig = [
     path: "/auth/admin/offices",
   }, */
 
-  {
+  /* {
     icon: <MessageCircle size={20} />,
     text: "Messaging",
     alert: true,
     ariaLabel: "Messaging",
     exact: false,
     path: "/auth/admin/messaging",
-  },
+  }, */
   { isDivider: true, role: "all" },
   {
     icon: <Logs size={20} />,
