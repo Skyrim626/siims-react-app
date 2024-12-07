@@ -73,9 +73,9 @@ const adminSidebarItemsConfig = [
   {
     icon: <User size={20} />,
     text: "Users",
-    alert: true,
+    alert: false,
     ariaLabel: "Users",
-    exact: true, // No exact match needed for partial path
+    exact: false, // No exact match needed for partial path
     path: "/auth/admin/users",
     sublinks: [
       {

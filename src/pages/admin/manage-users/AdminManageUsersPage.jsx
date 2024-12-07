@@ -1,35 +1,61 @@
-import React, { useEffect, useState } from "react"; // Importing necessary React hooks for state and lifecycle management
+import React, { useState } from "react"; // Importing necessary React hooks for state and lifecycle management
 import Section from "../../../components/common/Section"; // Importing Section component for layout structure
-import { deleteRequest, getRequest } from "../../../api/apiHelpers"; // Importing API helper functions for making HTTP requests
+import { deleteRequest } from "../../../api/apiHelpers"; // Importing API helper functions for making HTTP requests
 import Table from "../../../components/tables/Table"; // Importing Table component for displaying user data
-import useSearch from "../../../hooks/useSearch"; // Importing custom hook for handling search functionality
-import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
-import ManageHeader from "../../../components/common/ManageHeader";
+import { useLocation, useNavigate } from "react-router-dom";
 import FormModal from "../../../components/modals/FormModal";
 import UserFormAdd from "../../../components/forms/UserFormAdd";
-import ConfirmationModal from "../../../components/common/ConfirmationModal";
 import Loader from "../../../components/common/Loader";
 import EmptyState from "../../../components/common/EmptyState";
+import useSearch from "../../../hooks/test/useSearch";
+import DataTable from "../../../components/tables/DataTable";
+import useFetch from "../../../hooks/useFetch";
 
-// AdminManageUsersPage component handles the management of users in the admin dashboard.
 const AdminManageUsersPage = () => {
-  const { initial_users, programs, colleges } = useLoaderData();
+  // Location and Navigate
   const location = useLocation();
   const navigate = useNavigate();
 
   // Container state
-  const [users, setUsers] = useState(initial_users);
+  const [users, setUsers] = useState([]);
 
-  // Loading State
+  /**
+   * Loading State
+   */
   const [loading, setLoading] = useState(false);
 
-  // Modal State
-  const [isOpen, setIsOpen] = useState(false);
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState(null);
+  /**
+   *
+   *
+   *
+   * Custom Hooks
+   *
+   *
+   *
+   */
+  // Search Hooks
+  const { searchTerm, triggerSearch, handleSearchChange, handleKeyDown } =
+    useSearch();
+  // Fetch document types with search and pagination
+  const {
+    error,
+    currentPage,
+    itemsPerPage,
+    totalItems,
+    totalPages,
+    handlePageChange,
+    handleItemsPerPageChange,
+    handleNextPage,
+    handlePrevPage,
+  } = useFetch({
+    url: "/users", // URL for Users
+    initialPage: 1,
+    initialItemsPerPage: 5,
+    searchTerm: triggerSearch ? searchTerm : "", // Only pass search term when search is triggered
+    setData: setUsers,
+    setLoading: setLoading,
+  });
 
-  // Custom Hook for Search Table
-  const { term, filteredData, handleSearchChange } = useSearch(users, ""); // Using the custom hook to manage search term and filtered data
   // Function to handle the archiving of multiple users based on selected IDs
   const handleArchiveBySelectedIds = async (selectedIds) => {
     // Set loading state
@@ -62,40 +88,37 @@ const AdminManageUsersPage = () => {
     <Section>
       <Loader loading={loading} />
 
-      {users.length > 0 ? (
-        <Table
-          data={users}
-          // IDsIsLink={false}
-          handleArchiveBySelectedIds={handleArchiveBySelectedIds}
-          term={term}
-          filteredData={filteredData}
-          handleSearchChange={handleSearchChange}
-        />
+      {/* Table */}
+      {error ? (
+        <EmptyState title="Error" message={errors} />
+      ) : users && users.length > 0 ? (
+        <>
+          <DataTable
+            data={users} // Pass the fetched data to the table
+            includeCheckboxes={true}
+            /** Pagination */
+            totalPages={totalPages}
+            currentPage={currentPage}
+            setCurrentPage={handlePageChange}
+            ITEMS_PER_PAGE_LISTS={[{ value: 5 }, { value: 25 }, { value: 50 }]}
+            itemsPerPage={itemsPerPage}
+            totalItems={totalItems}
+            handleItemsPerPageChange={handleItemsPerPageChange}
+            handleNextPage={handleNextPage}
+            handlePrevPage={handlePrevPage}
+            /** Search */
+            searchPlaceholder={"Search Users..."}
+            searchTerm={searchTerm}
+            handleKeyDown={handleKeyDown}
+            handleSearchChange={handleSearchChange}
+          />
+        </>
       ) : (
         <EmptyState
           title="No users available at the moment"
           message="Once activities are recorded, users will appear here."
-          icon={
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-16 w-16 text-gray-400"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M9 18l6-6-6-6" />
-            </svg>
-          }
         />
       )}
-
-      {/* Form Modal for Adding User */}
-      <FormModal isOpen={isOpen} setIsOpen={setIsOpen} modalTitle="Add User">
-        <UserFormAdd programs={programs} colleges={colleges} />
-      </FormModal>
     </Section>
   );
 };

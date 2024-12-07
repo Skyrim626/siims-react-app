@@ -8,7 +8,7 @@ const useRequest = ({ setLoading, setIsOpen, setData }) => {
   /**
    * POST METHOD
    */
-  const postData = async ({ url, payload }) => {
+  const postData = async ({ url, payload, resetForm }) => {
     // Set loading state to true
     setLoading(true);
 
@@ -23,6 +23,11 @@ const useRequest = ({ setLoading, setIsOpen, setData }) => {
         setData((prevData) => [...prevData, response.data]); // Save the response data
         setIsOpen(false);
         setErrors({});
+      }
+
+      // Resets the Form
+      if (resetForm) {
+        resetForm();
       }
     } catch (error) {
       setErrors(error.response?.data?.errors || "An error occurred");

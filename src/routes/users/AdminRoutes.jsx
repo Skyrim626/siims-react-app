@@ -291,45 +291,6 @@ const AdminRoutes = {
         {
           index: true, // Default route for user management
           element: <AdminManageUsersPage />, // Render the users management page
-          loader: async () => {
-            try {
-              /**
-               * Responses
-               */
-
-              const response = await axiosClient.get("/api/v1/users");
-              const programsResponse = await axiosClient.get(
-                "/api/v1/programs"
-              );
-              const collegesResponse = await axiosClient.get(
-                "/api/v1/colleges"
-              );
-
-              /**
-               * Variables
-               */
-              // console.log(response.data);
-
-              const initial_users = response.data;
-              const programs = programsResponse.data;
-              const colleges = collegesResponse.data;
-
-              /**
-               * Return
-               */
-              return { initial_users, programs, colleges };
-            } catch (error) {
-              console.error(
-                "Error fetching users, programs, and colleges: ",
-                error
-              );
-              return {
-                initial_users: [],
-                programs: [],
-                colleges: [],
-              };
-            }
-          },
         },
         {
           path: "coordinators",
@@ -409,26 +370,26 @@ const AdminRoutes = {
               /**
                * Responses
                */
-              const deanResponse = await axiosClient.get(
-                "/api/v1/users/deans/including-colleges"
+              const collegeResponse = await axiosClient.get(
+                "/api/v1/colleges/lists"
               );
-              const collegeResponse = await axiosClient.get("/api/v1/colleges");
 
               /**
                * Variables
                */
-              const initial_deans = deanResponse.data;
               const colleges = collegeResponse.data;
 
               /**
                * Return
                */
               return {
-                initial_deans,
                 colleges,
               };
             } catch (error) {
               console.log(error);
+              return {
+                colleges: [],
+              };
             }
           },
         },

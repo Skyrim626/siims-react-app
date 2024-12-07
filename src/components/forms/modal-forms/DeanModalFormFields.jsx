@@ -46,11 +46,13 @@ const DeanModalFormFields = ({
 }) => {
   return (
     <>
-      <LoginInfoFields
-        info={deanInfo}
-        handleInfoChange={handleDeanInfoChange}
-        requiredFields={requiredFields}
-      />
+      {method === "post" && (
+        <LoginInfoFields
+          info={deanInfo}
+          handleInfoChange={handleDeanInfoChange}
+          requiredFields={requiredFields}
+        />
+      )}
 
       <PersonalInfoFields
         personalInfo={deanInfo}
