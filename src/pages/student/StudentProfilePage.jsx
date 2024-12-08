@@ -1,166 +1,373 @@
-import React, { useRef, useState } from "react";
-import { useLoaderData, useNavigate, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import jsPDF from "jspdf";
 import { formatDateOnly } from "../../utils/formatDate";
 import { getFullAddress } from "../../utils/formatAddress";
+import useForm from "../../hooks/useForm";
+import Loader from "../../components/common/Loader";
+import {
+  deleteRequest,
+  getRequest,
+  postRequest,
+  putRequest,
+} from "../../api/apiHelpers";
+import SectionCard from "../../components/profiles/SectionCard";
+import Text from "../../components/common/Text";
+import { Button, Input } from "@headlessui/react";
+import { Edit3, Check, X, Trash2 } from "lucide-react";
+import WorkExperiencesSection from "../../components/profiles/WorkExperiencesSection";
+import ContactInformationSection from "../../components/profiles/ContactInformationSection";
+import AboutMeSection from "../../components/profiles/AboutMeSection";
+import EducationSection from "../../components/profiles/EducationSection";
 
 const StudentProfilePage = () => {
-  // Fetch Data
-  const { profile } = useLoaderData();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const [loading, setLoading] = useState(false);
 
-  const {
-    user,
-    educations,
-    work_experiences,
-    program: program,
-    program: { college },
-    ...student
-  } = profile;
+  // User Information State
+  const [user, handleUserChange, resetForm, setFormValues] = useForm({
+    id: 2024301502,
+    first_name: "John",
+    middle_name: "Doe",
+    last_name: "Ramirez",
+    email: "rodriguez@email.com",
+    gender: "Male",
+    phone_number: "987-654-3210",
+    street: "Main St",
+    barangay: "Barangay Central",
+    city_municipality: "Metro City",
+    province: "Central Province",
+    postal_code: "45678",
+    profile_image_url: null,
+    program: "Bachelor of Science in Information Technology",
+    college: "College of Information Technology and Computing",
+  });
 
-  const [profilePic, setProfilePic] = useState(user.profile_url || student.profilePic);
+  const [workExperiences, setWorkExperiences] = useState([]);
+  const [educations, setEducations] = useState([]);
+  const [profilePic, setProfilePic] = useState(
+    user.profile_image_url || "/default-profile.png"
+  );
+
+  // Work experience states
+  const [newWork, setNewWork] = useState({
+    company_name: "",
+    job_position: "",
+    full_address: "",
+    start_date: "",
+    end_date: "",
+  });
+  const [editingWork, setEditingWork] = useState(null);
+  const [editingData, setEditingData] = useState({});
+
+  // Education states
+  const [newEducation, setNewEducation] = useState({
+    school_name: "",
+    full_address: "",
+    start_date: "",
+    end_date: "",
+  });
+  const [editingEducation, setEditingEducation] = useState(null);
+  const [editingEducationData, setEditingEducationData] = useState({});
+
+  // Fetch Profile Data
+  useEffect(() => {
+    const fetchProfile = async () => {
+      setLoading(true);
+      try {
+        const response = await getRequest({ url: "/api/v1/profiles/student" });
+        if (response) {
+          setFormValues(response);
+          setWorkExperiences(response.work_experiences);
+          setEducations(response.educations);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = () => {
-        setProfilePic(reader.result);
-      };
+      reader.onload = () => setProfilePic(reader.result);
       reader.readAsDataURL(file);
-
-      // Optional: Add upload logic here to send the file to a backend server
     }
   };
 
   const exportToPDF = () => {
     const doc = new jsPDF();
-    // PDF generation logic
-    doc.save(`${student.name.replace(/ /g, "_")}_Profile.pdf`);
+    doc.text(`${user.first_name} ${user.last_name} - Profile`, 10, 10);
+    doc.save(`${user.first_name}_${user.last_name}_Profile.pdf`);
   };
 
-  const SectionCard = ({ title, children }) => (
-    <div className="p-6 border rounded-lg shadow-lg bg-gray-50 space-y-4">
-      <h2 className="text-xl font-semibold text-gray-800">{title}</h2>
-      <div>{children}</div>
-    </div>
-  );
+  /**
+   * ADDING FUNCTIONS
+   */
+  const addWorkExperience = async () => {
+    setLoading(true);
+
+    try {
+      const response = await postRequest({
+        url: "/api/v1/work-experiences",
+        data: newWork,
+      });
+
+      if (response) {
+        setWorkExperiences((prev) => [...prev, response.data]);
+        setNewWork({
+          company_name: "",
+          job_position: "",
+          full_address: "",
+          start_date: "",
+          end_date: "",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const addEducation = async () => {
+    setLoading(true);
+
+    try {
+      const response = await postRequest({
+        url: "/api/v1/educations",
+        data: newEducation,
+      });
+
+      if (response) {
+        setEducations((prev) => [...prev, response.data]);
+        setNewEducation({
+          school_name: "",
+          full_address: "",
+          start_date: "",
+          end_date: "",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Edit work experience
+  const handleEdit = (work) => {
+    setEditingWork(work.id);
+    setEditingData({ ...work });
+  };
+
+  const handleEditEducation = (education) => {
+    setEditingEducation(education.id);
+    setEditingEducationData({ ...education });
+  };
+
+  const saveEdit = async () => {
+    setLoading(true);
+    try {
+      const response = await putRequest({
+        url: `/api/v1/work-experiences/${editingWork}`,
+        data: editingData,
+      });
+      if (response) {
+        setWorkExperiences((prev) =>
+          prev.map((work) =>
+            work.id === editingWork ? { ...editingData } : work
+          )
+        );
+        cancelEdit();
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const saveEditEducation = async () => {
+    setLoading(true);
+
+    try {
+      // PUT METHOD
+      const response = await putRequest({
+        url: `/api/v1/educations/${editingEducation}`,
+        data: editingEducationData,
+      });
+      if (response) {
+        setEducations((prev) =>
+          prev.map((education) =>
+            education.id === editingEducation
+              ? { ...editingEducationData }
+              : education
+          )
+        );
+        cancelEditEducation();
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const cancelEdit = () => {
+    setEditingWork(null);
+    setEditingData({});
+  };
+
+  const cancelEditEducation = () => {
+    setEditingEducation(null);
+    setEditingEducationData({});
+  };
+
+  const deleteWorkExperience = async (id) => {
+    // console.log(id);
+
+    setLoading(true);
+
+    try {
+      // DELETE METHOD
+      const response = await deleteRequest({
+        url: `/api/v1/work-experiences/${id}`,
+      });
+
+      if (response) {
+        setWorkExperiences((prev) => prev.filter((data) => data.id !== id));
+
+        cancelEdit();
+      }
+
+      // console.log("Testing");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteEducation = async (id) => {
+    setLoading(true);
+
+    try {
+      // DELETE METHOD
+      const response = await deleteRequest({
+        url: `/api/v1/educations/${id}`,
+      });
+
+      if (response) {
+        setEducations((prev) => prev.filter((data) => data.id !== id));
+
+        cancelEdit();
+      }
+
+      // console.log("Testing");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="container mx-auto p-6 bg-white rounded-lg shadow-xl space-y-6">
-      {/* Header Section */}
-      <div className="flex items-center space-x-6 border-b pb-6 mb-6">
-        <div className="relative">
-          <img
-            src={profilePic}
-            alt="Profile"
-            className="w-24 h-24 rounded-full border-4 border-gray-300 shadow-md"
-          />
-          <label
-            htmlFor="profile-upload"
-            className="absolute bottom-0 right-0 bg-blue-500 text-white p-2 rounded-full cursor-pointer"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-          </label>
-          <input
-            id="profile-upload"
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleFileChange}
-          />
-        </div>
-        <div>
-          <h1 className="text-3xl font-semibold text-gray-800">
-            {user.first_name} {user.middle_name} {user.last_name}
-          </h1>
-        </div>
-        <div className="flex space-x-4">
-          <button
-            onClick={exportToPDF}
-            className="bg-orange-500 text-white px-6 py-3 rounded-md shadow-lg hover:bg-orange-600 transition"
-          >
-            Export to PDF
-          </button>
-          <button
-            onClick={() => navigate("edit", { state: { profile } })}
-            className="bg-blue-500 text-white px-6 py-3 rounded-md shadow-lg hover:bg-blue-600 transition"
-          >
-            Edit Profile
-          </button>
+    <div>
+      <Loader loading={loading} />
+      <div className="bg-gray-100 min-h-screen">
+        <div className="container mx-auto py-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 px-4">
+            {/* Profile Sidebar */}
+            <div className="col-span-1">
+              <div className="bg-white shadow rounded-lg p-6">
+                <div className="flex flex-col items-center">
+                  <img
+                    src={profilePic}
+                    alt={`${user.first_name}'s profile`}
+                    className="w-32 h-32 bg-gray-300 rounded-full mb-4"
+                  />
+                  <h1 className="text-xl font-bold">
+                    {user.first_name} {user.last_name}
+                  </h1>
+                  <Text className="text-gray-700">{user.program}</Text>
+                  <Text className="text-sm text-gray-500">{user.college}</Text>
+                  <div className="mt-6 flex flex-wrap gap-4 justify-center">
+                    <Button
+                      onClick={exportToPDF}
+                      className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+                    >
+                      Download Profile
+                    </Button>
+                    <label className="cursor-pointer bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded">
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleFileChange}
+                      />
+                      Change Picture
+                    </label>
+                  </div>
+                </div>
+                <hr className="mt-3" />
+                <div className="flex flex-col mt-2">
+                  <span className="text-gray-700 uppercase font-bold tracking-wider mb-2">
+                    Skills
+                  </span>
+                  <ul>
+                    <li>JavaScript</li>
+                    <li>React</li>
+                    <li>Node.js</li>
+                    <li>HTML/CSS</li>
+                    <li>Tailwind CSS</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            {/* Main Content */}
+            <div className="col-span-3">
+              <div className="bg-white shadow rounded-lg p-6 space-y-3">
+                {/* About Me Section */}
+                <AboutMeSection user={user} />
+                {/* Contact Information Section */}
+                <ContactInformationSection user={user} />
+                {/* Work Experience Section */}
+                <WorkExperiencesSection
+                  workExperiences={workExperiences}
+                  editingData={editingData}
+                  setEditingData={setEditingData}
+                  saveEdit={saveEdit}
+                  cancelEdit={cancelEdit}
+                  deleteWorkExperience={deleteWorkExperience}
+                  handleEdit={handleEdit}
+                  newWork={newWork}
+                  setNewWork={setNewWork}
+                  addWorkExperience={addWorkExperience}
+                  editingWork={editingWork}
+                />
+                {/* Education Section */}
+                <EducationSection
+                  educations={educations}
+                  editingEducationData={editingEducationData}
+                  setEditingEducationData={setEditingEducationData}
+                  editingEducation={editingEducation}
+                  saveEditEducation={saveEditEducation}
+                  cancelEditEducation={cancelEditEducation}
+                  deleteEducation={deleteEducation}
+                  handleEditEducation={handleEditEducation}
+                  newEducation={newEducation}
+                  setNewEducation={setNewEducation}
+                  addEducation={addEducation}
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-
-      <SectionCard title="Contact Information">
-        <p>
-          <strong>Email:</strong> {user.email}
-        </p>
-        <p>
-          <strong>Phone:</strong> {user.phone_number}
-        </p>
-        <p>
-          <strong>Address:</strong>{" "}
-          {getFullAddress({
-            street: user.street,
-            barangay: user.barangay,
-            province: user.province,
-            city: user.city_municipality,
-            postalCode: user.postal_code,
-          })}
-        </p>
-      </SectionCard>
-
-      <SectionCard title="About Me">
-        <p>{student.aboutMe || "No information provided."}</p>
-      </SectionCard>
-
-      <SectionCard title="Work Experience">
-        {work_experiences.map((job, index) => (
-          <div className="space-y-2 mt-3" key={index}>
-            <p>
-              <strong>{job.job_position}</strong> at {job.company_name}
-            </p>
-            <p>
-              <strong>Duration:</strong> {formatDateOnly(job.start_date)} -{" "}
-              {formatDateOnly(job.end_date)}
-            </p>
-            <p>
-              <strong>Location:</strong> {job.full_address}
-            </p>
-          </div>
-        ))}
-      </SectionCard>
-
-      <SectionCard title="Education Background">
-        {educations.map((edu, index) => (
-          <div className="space-y-2 mt-3" key={index}>
-            <p>
-              <strong>{edu.school_name}</strong>
-            </p>
-            <p>
-              <strong>Location:</strong> {edu.full_address}
-            </p>
-            <p>
-              <strong>Duration:</strong> {formatDateOnly(edu.start_date)} -{" "}
-              {formatDateOnly(edu.end_date)}
-            </p>
-          </div>
-        ))}
-      </SectionCard>
     </div>
   );
 };

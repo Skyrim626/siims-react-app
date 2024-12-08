@@ -167,32 +167,6 @@ const StudentRoutes = {
         {
           index: true,
           element: <StudentProfilePage />,
-          loader: async () => {
-            try {
-              /**
-               * Responses
-               */
-              const profileResponse = await axiosClient.get("/api/v1/profiles");
-
-              // console.log("Testing");
-              // console.log(response);
-
-              /**
-               * Variables
-               */
-              const profile = profileResponse.data;
-
-              // console.log(profile);
-
-              /**
-               * Return Data
-               */
-              return { profile };
-            } catch (error) {
-              console.log(error);
-              throw error;
-            }
-          },
         },
         {
           path: "edit",
