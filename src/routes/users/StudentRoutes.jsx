@@ -64,62 +64,6 @@ const StudentRoutes = {
     {
       index: true,
       element: <StudentHomePage />,
-      loader: async () => {
-        try {
-          /**
-           * Response
-           */
-          // console.log("testing");
-          const currentAppliedWorkResponse = await axiosClient.get(
-            "/api/v1/student/jobs/currently-applied"
-          );
-
-          // console.log(currentAppliedWorkResponse);
-
-          const statusResponse = await axiosClient.get(
-            "/api/v1/users/students/get-student-status-id"
-          );
-          const response = await axiosClient.get("/api/v1/student/jobs");
-          const workPostsResponse = await axiosClient.get("/api/v1/work-posts");
-
-          /**
-           * Variables
-           */
-
-          const {
-            currently_applied_work_post,
-            application_id,
-            application_status,
-          } = currentAppliedWorkResponse.data;
-
-          const status = statusResponse.data;
-          const initial_job_posts = workPostsResponse.data;
-
-          /**
-           * Variables
-           */
-          // const { initial_job_posts, student } = response.data;
-          const { student } = response.data;
-          const workPosts = initial_job_posts;
-
-          // console.log(initial_job_posts);
-          // console.log(student);
-          // console.log(currently_applied_work_post);
-          // console.log(application_id);
-
-          return {
-            workPosts,
-            student,
-            currently_applied_work_post,
-            application_id,
-            status,
-            application_status,
-          };
-        } catch (error) {
-          console.error("Error fetching programs and chairpersons: ", error);
-          throw error; // Let the router handle errors
-        }
-      },
     },
     {
       path: "jobs/:workPostId",

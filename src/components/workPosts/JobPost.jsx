@@ -1,114 +1,134 @@
+import { Button } from "@headlessui/react";
 import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
-const JobPost = ({
-  jobTitle,
-  company,
-  description,
-  startDate,
-  endDate,
-  workDuration,
-  maxApplicants,
-  skills,
-}) => {
-  const [showFullDescription, setShowFullDescription] = useState(false);
+const JobPost = ({ job, handleApplyClick, canApply }) => {
+  // Open location and navigation
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const toggleDescription = () => {
-    setShowFullDescription(!showFullDescription);
+  const [showFullQualification, setShowFullQualification] = useState(false);
+
+  const toggleQualification = () => {
+    setShowFullQualification(!showFullQualification);
   };
 
-  // Set the truncation limit to 20 characters
-  const truncatedDescription =
-    description.length > 20
-      ? description.substring(0, 20) + "..."
-      : description;
+  const truncatedQualification =
+    job.qualifications.length > 20
+      ? `${job.qualifications.substring(0, 20)}...`
+      : job.qualifications;
 
   return (
-    <div className="group mx-2 mt-10 grid max-w-screen-md grid-cols-12 space-x-8 overflow-hidden rounded-lg border py-8 text-gray-700 shadow transition hover:shadow-lg sm:mx-auto bg-white">
-      <a
-        href="#"
-        className="order-2 col-span-1 mt-4 -ml-14 text-left text-gray-600 hover:text-gray-700 sm:-order-1 sm:ml-4"
-      >
-        <div className="group relative h-16 w-16 overflow-hidden rounded-lg">
+    <div className="group mx-2 mt-8 grid max-w-screen-md grid-cols-12 gap-6 rounded-lg border border-gray-300 bg-white p-6 shadow-sm transition hover:shadow-md sm:mx-auto">
+      {/* Company Logo */}
+      <div className="col-span-2 flex items-start">
+        <div className="h-16 w-16 overflow-hidden rounded-lg border border-gray-200">
           <img
             src="/images/EC25KRDBo-K3w8GexNHSE.png"
             alt="company logo"
-            className="h-full w-full object-cover text-gray-700"
+            className="h-full w-full object-cover"
           />
         </div>
-      </a>
-      <div className="col-span-11 flex flex-col pr-8 text-left sm:pl-4">
-        <h3 className="text-sm text-gray-600">{company}</h3>
+      </div>
+
+      {/* Job Details */}
+      <div className="col-span-10 flex flex-col">
+        <h3 className="text-sm font-medium text-gray-600">
+          {job.company_name}
+        </h3>
         <a
           href="#"
-          className="mb-3 overflow-hidden pr-7 text-lg font-semibold sm:text-xl"
+          className="mb-3 text-lg font-semibold text-gray-800 hover:underline sm:text-xl"
         >
-          {jobTitle}
+          {job.title}
         </a>
-        <p className="overflow-hidden pr-7 text-sm">
-          {showFullDescription ? description : truncatedDescription}{" "}
-          <button
-            onClick={toggleDescription}
-            className="text-sm text-blue-600 hover:underline mt-2"
+        <p className="text-sm text-gray-700">
+          {showFullQualification ? job.qualifications : truncatedQualification}{" "}
+          <Button
+            onClick={toggleQualification}
+            className="text-blue-600 hover:underline"
           >
-            {showFullDescription ? "View Less" : "View More"}
-          </button>
+            {showFullQualification ? "View Less" : "View More"}
+          </Button>
         </p>
 
-        <div className="mt-5 flex flex-col space-y-3 text-sm font-medium text-gray-500 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-2">
+        {/* Date and Work Details */}
+        <div className="mt-4 grid grid-cols-2 gap-y-2 gap-x-4 text-sm font-medium text-gray-600">
           <div>
-            <div className="">
+            <span className="block font-semibold text-gray-800">
               Start Date:
-              <span className="ml-2 mr-3 rounded-full bg-green-100 px-2 py-0.5 text-green-900">
-                {startDate}
-              </span>
-            </div>
-            <div className="">
-              End Date:
-              <span className="ml-2 mr-3 rounded-full bg-red-100 px-2 py-0.5 text-red-900">
-                {endDate}
-              </span>
-            </div>
+            </span>
+            <span className="block bg-green-100 px-2 py-1 rounded text-green-900">
+              {job.start_date}
+            </span>
           </div>
           <div>
-            <div className="">
-              Work Duration (hours):
-              <span className="ml-2 mr-3 rounded-full bg-blue-100 px-2 py-0.5 text-blue-900">
-                {workDuration}
-              </span>
-            </div>
-            <div className="">
+            <span className="block font-semibold text-gray-800">End Date:</span>
+            <span className="block bg-red-100 px-2 py-1 rounded text-red-900">
+              {job.end_date}
+            </span>
+          </div>
+          <div>
+            <span className="block font-semibold text-gray-800">
+              Work Duration:
+            </span>
+            <span className="block bg-blue-100 px-2 py-1 rounded text-blue-900">
+              {job.work_duration} hours
+            </span>
+          </div>
+          <div>
+            <span className="block font-semibold text-gray-800">
               Max Applicants:
-              <span className="ml-2 mr-3 rounded-full bg-yellow-100 px-2 py-0.5 text-yellow-900">
-                {maxApplicants}
-              </span>
-            </div>
+            </span>
+            <span className="block bg-yellow-100 px-2 py-1 rounded text-yellow-900">
+              {job.max_applicants}
+            </span>
           </div>
         </div>
 
+        {/* Skills */}
         <div className="mt-4">
-          <h4 className="text-sm font-semibold text-gray-700">
+          <h4 className="text-sm font-semibold text-gray-800">
             Skills Required:
           </h4>
-          <div className="mt-2 flex flex-wrap space-x-3">
-            {skills.map((skill, index) => (
-              <span
-                key={index}
-                className="text-white text-xs px-3 py-1 rounded-full bg-blue-500"
-              >
-                {skill}
+          <div className="mt-2 flex flex-wrap gap-2">
+            {job.skills ? (
+              job.skills.map((skill, index) => (
+                <span
+                  key={index}
+                  className="rounded-full bg-blue-500 px-3 py-1 text-xs font-medium text-white"
+                >
+                  {skill}
+                </span>
+              ))
+            ) : (
+              <span className="rounded-full bg-green-500 px-3 py-1 text-xs font-medium text-white">
+                {" "}
+                None
               </span>
-            ))}
+            )}
           </div>
         </div>
 
-        {/* Redesigned Buttons */}
-        <div className="mt-5 flex space-x-4">
-          <button className="px-5 py-2 text-sm text-white bg-gray-800 rounded-md shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition">
+        {/* Actions */}
+        <div className="mt-6 flex space-x-4">
+          <Button
+            onClick={() => navigate(`${location.pathname}/jobs/${job.id}`)}
+            className="rounded-md bg-gray-800 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+          >
             View Details
-          </button>
-          <button className="px-5 py-2 text-sm text-white bg-blue-600 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition">
-            Apply
-          </button>
+          </Button>
+          <Button
+            onClick={() => handleApplyClick(job.id)}
+            className={`w-full sm:w-auto px-6 py-3 rounded-md font-medium text-white transition ${
+              job.is_closed || !canApply
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700"
+            }`}
+            disabled={job.is_closed || !canApply}
+          >
+            Apply Now
+          </Button>
         </div>
       </div>
     </div>

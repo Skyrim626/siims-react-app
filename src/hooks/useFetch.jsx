@@ -19,6 +19,7 @@ const useFetch = ({
   const fetchData = async (page, perPage, search) => {
     setLoading(true);
     setError(null);
+
     try {
       const fullUrl = `/api/v1${url}?page=${page}&per_page=${perPage}&search=${search}`;
       const response = await getRequest({ url: fullUrl, ...options });
