@@ -5,6 +5,7 @@ import Section from "../../components/common/Section";
 import Text from "../../components/common/Text";
 import Heading from "../../components/common/Heading";
 import Card from "../../components/common/Card";
+import DocumentSection from "../../components/applications/DocumentSection";
 
 const CoordinatorViewStudentApplication = () => {
   // Fetch Application
@@ -106,6 +107,8 @@ const CoordinatorViewStudentApplication = () => {
       </Section>
 
       {/* Document Submissions */}
+      {console.log(document_submissions)}
+      {/* <DocumentSection documents={document_submissions} /> */}
       <Section>
         <Heading
           level={4}

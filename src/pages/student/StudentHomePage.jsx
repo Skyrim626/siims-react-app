@@ -10,6 +10,7 @@ import { getRequest, postRequest } from "../../api/apiHelpers";
 import ApplyModal from "../../components/workPosts/ApplyModal";
 import WithdrawModal from "../../components/workPosts/WithdrawModal";
 import JobListsSection from "../../components/workPosts/JobListsSection";
+import CurrentlyJobApplied from "../../components/workPosts/CurrentlyJobApplied";
 
 const StudentHomePage = () => {
   // Loading State
@@ -21,6 +22,8 @@ const StudentHomePage = () => {
 
   // Container State
   const [jobPosts, setJobPosts] = useState([]);
+  const [currentlyAppliedWorkPost, setCurrentlyAppliedWorkPost] =
+    useState(null);
 
   // Fetch State
   const [studentStatus, setStudentStatus] = useState(null);
@@ -76,6 +79,8 @@ const StudentHomePage = () => {
         if (response) {
           setStudentStatus(response.studentStatus || null);
           setStudent(response.student);
+
+          setCurrentlyAppliedWorkPost(response.currently_applied_work_post);
         }
 
         const responseApplyStatus = await getRequest({
@@ -117,7 +122,7 @@ const StudentHomePage = () => {
 
   // Navigate to Job Details
   const navigateToJobDetails = () => {
-    const to = `${location.pathname}/jobs/${currently_applied_work_post.id}`;
+    const to = `${location.pathname}/jobs/${currentlyAppliedWorkPost.work_post.id}`;
 
     navigate(to);
   };
@@ -145,7 +150,7 @@ const StudentHomePage = () => {
   // Navigate to Application Page
   const navigateToApplication = () => {
     // console.log(`${location.pathname}/application/${application_id}`);
-    const to = `${location.pathname}/applications/${application_id}`;
+    const to = `${location.pathname}/applications/${currentlyAppliedWorkPost.id}`;
 
     // apply/:job_id
     navigate(to);
@@ -303,19 +308,39 @@ const StudentHomePage = () => {
             </div>
           </div>
 
-          {/* Job Listings and Filters (Scrollable Middle) */}
+          {/* If the student already applied, display this */}
+          {currentlyAppliedWorkPost &&
+            currentlyAppliedWorkPost.status_type_id !== 6 && (
+              <CurrentlyJobApplied
+                currently_applied_work_post={currentlyAppliedWorkPost.work_post}
+                handleWithdrawClick={handleWithdrawClick}
+                navigateToApplication={navigateToApplication}
+                status={currentlyAppliedWorkPost.status_type_id}
+                navigateToJobDetails={navigateToJobDetails}
+              />
+            )}
 
-          {studentStatus && studentStatus === 8 && (
-            <JobListsSection
-              jobPosts={jobPosts}
-              activeTab={activeTab}
-              handleTabChange={handleTabChange}
-              searchQuery={searchQuery}
-              handleSearchChange={handleSearchChange}
-              handleApplyClick={handleApplyClick}
-              canApply={canApply}
-            />
-          )}
+          {/* Job Listings and Filters (Scrollable Middle) */}
+          {studentStatus &&
+            studentStatus === 8 &&
+            (student.student.coordinator_id ? (
+              <JobListsSection
+                jobPosts={jobPosts}
+                activeTab={activeTab}
+                handleTabChange={handleTabChange}
+                searchQuery={searchQuery}
+                handleSearchChange={handleSearchChange}
+                handleApplyClick={handleApplyClick}
+                canApply={canApply}
+              />
+            ) : (
+              <>
+                <EmptyState
+                  title="No jobs available at the moment. You don't have a coordinator just yet."
+                  message="Once activities are recorded, jobs will appear here if you have a coordinator."
+                />
+              </>
+            ))}
 
           {/* Skills Filter Sidebar (Fixed Right) */}
           <div className="lg:w-1/4 w-full hidden">

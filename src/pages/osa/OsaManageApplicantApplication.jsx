@@ -6,6 +6,9 @@ import toFilePath from "../../utils/baseURL";
 import { putRequest } from "../../api/apiHelpers";
 import { Button } from "@headlessui/react";
 import Loader from "../../components/common/Loader";
+import ApplicationHeader from "../../components/applications/ApplicationHeader";
+import PersonalInformationSection from "../../components/applications/PersonalInformationSection";
+import DocumentSection from "../../components/applications/DocumentSection";
 
 const OsaManageApplicantApplication = () => {
   // Fetch Data
@@ -105,152 +108,26 @@ const OsaManageApplicantApplication = () => {
       <Loader loading={loading} />
 
       <div className="container mx-auto p-8">
-        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-8 rounded-xl shadow-xl mb-8">
-          <h1 className="text-4xl font-bold text-center mb-4">
-            Applicant Overview
-          </h1>
-          <p className="text-center text-lg">
-            Manage applicant information and document status with ease.
-          </p>
-        </div>
+        <ApplicationHeader
+          title="Applicant Overview"
+          description="Manage applicant information and document status with ease."
+        />
         <Button
           onClick={() => handleApprove(application.id)}
           className={`mb-6 bg-gradient-to-r from-green-600 to-green-400 text-white py-2 px-6 rounded-full text-lg font-bold hover:scale-105 transform transition-all`}
         >
           Approve All Documents
         </Button>
-        <div className="grid md:grid-cols-2 gap-8 mb-8">
+        <div className="grid gap-5 mb-8">
           {/* Applicant Info Section */}
-          <div className="bg-white rounded-lg shadow-lg p-6 space-y-4">
-            <h2 className="text-2xl font-semibold text-indigo-700">
-              Personal Information
-            </h2>
-            <div className="space-y-2">
-              <p>
-                <strong>Name:</strong>{" "}
-                {`${application.first_name} ${application.middle_name} ${application.last_name}`}
-              </p>
-              <p>
-                <strong>Email:</strong> {application.email}
-              </p>
-              <p>
-                <strong>Phone:</strong> {application.phone_number}
-              </p>
-              <p>
-                <strong>Date of Birth:</strong> {application.date_of_birth}
-              </p>
-              <p>
-                <strong>Program:</strong> {application.program}
-              </p>
-              <p>
-                <strong>College:</strong> {application.college}
-              </p>
-            </div>
-            <div className="flex items-center justify-between mt-6">
-              <p className="text-xl font-semibold">Status: </p>
-              <span
-                className={`px-4 py-2 rounded-full ${getStatusColor(
-                  application.status
-                )} text-lg font-bold ${getStatusBgColor(application.status)} `}
-              >
-                {application.status}
-              </span>
-            </div>
-          </div>
+          <PersonalInformationSection application={application} />
 
           {/* Documents Section */}
-          <div className="bg-white rounded-lg shadow-lg p-6 space-y-6">
-            <h2 className="text-2xl font-semibold text-indigo-700">
-              Document Status
-            </h2>
-            <ul className="space-y-4">
-              {documents.map((doc) => {
-                // console.log(doc);
-
-                return (
-                  <li
-                    key={doc.id}
-                    className="p-6 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-300 rounded-lg shadow-xl transform transition hover:scale-105 hover:shadow-2xl"
-                  >
-                    <div className="flex justify-between items-center">
-                      <span className="text-lg font-medium">
-                        {doc.document_type}
-                      </span>
-                      <span
-                        className={`text-sm px-3 py-1 rounded-full font-semibold ${getStatusColor(
-                          doc.status
-                        )} ${getStatusBgColor(doc.status)} `}
-                      >
-                        {doc.status}
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-600 mt-2">
-                      <strong>Remarks:</strong> {doc.remarks}
-                    </p>
-                    <div className="text-sm text-gray-500 mt-2">
-                      {doc.file_path ? (
-                        <p>
-                          <strong>Document:</strong>
-                          <a
-                            href={toFilePath(doc.file_path)}
-                            className="text-blue-600 hover:text-blue-800 transition-all"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            View here
-                          </a>
-                        </p>
-                      ) : (
-                        <p>
-                          <strong>Resume:</strong> Not uploaded
-                        </p>
-                      )}
-                    </div>
-                    <div className="text-xs text-gray-400 mt-2">
-                      <p>
-                        <strong>Created At:</strong>{" "}
-                        {new Date(doc.created_at).toLocaleString()}
-                      </p>
-                      <p>
-                        <strong>Updated At:</strong>{" "}
-                        {new Date(doc.updated_at).toLocaleString()}
-                      </p>
-                    </div>
-                    {/* Document Status Dropdown (Select) */}
-                    {doc.can_modify && (
-                      <div className="mt-4">
-                        <label
-                          htmlFor="status"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          Change Status
-                        </label>
-                        <select
-                          id="status"
-                          value={
-                            statuses.find(
-                              (status) => status.name === doc.status
-                            )?.id || ""
-                          }
-                          onChange={(e) =>
-                            handleStatusChange(doc.id, e.target.value)
-                          }
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm p-2"
-                        >
-                          {statuses &&
-                            statuses.map((status) => (
-                              <option key={status.id} value={status.id}>
-                                {status.name}
-                              </option>
-                            ))}
-                        </select>
-                      </div>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
+          <DocumentSection
+            documents={documents}
+            statuses={statuses}
+            handleStatusChange={handleStatusChange}
+          />
         </div>
       </div>
     </Page>

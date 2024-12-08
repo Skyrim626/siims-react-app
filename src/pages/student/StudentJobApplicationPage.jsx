@@ -197,8 +197,14 @@ const StudentJobApplicationPage = () => {
 
         // Navigate after submitting
         if (response) {
-          // setStepOneDocuments(response.data);
-          navigate(location.pathname);
+          // console.log();
+          // setStepOneDocuments((prev) => [...prev, ...response.data]);
+          setStepOneDocuments((prevData) =>
+            prevData.map((data) =>
+              data.id === fileType ? { ...data, ...response.data } : data
+            )
+          );
+          // navigate(location.pathname);
         }
       } catch (error) {
         console.log(error);

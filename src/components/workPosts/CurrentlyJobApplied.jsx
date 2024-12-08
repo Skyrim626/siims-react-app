@@ -9,13 +9,13 @@ const CurrentlyJobApplied = ({
   navigateToJobDetails,
 }) => {
   return (
-    <div className="container mx-auto mb-8">
+    <div className="lg:w-3/4 w-full">
       <h2 className="text-2xl font-semibold mb-6 text-gray-800">
         Currently Applied Job
       </h2>
       <div
         key={currently_applied_work_post.id}
-        className="bg-white shadow-md rounded-lg p-6 transition-all transform hover:scale-105 duration-300"
+        className="bg-white shadow-md rounded-lg p-6"
       >
         <h3 className="text-2xl font-bold text-gray-800 mb-3">
           {currently_applied_work_post.title}

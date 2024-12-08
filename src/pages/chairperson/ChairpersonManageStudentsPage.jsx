@@ -9,7 +9,7 @@ import ManageHeader from "../../components/common/ManageHeader";
 import Table from "../../components/tables/Table";
 import FormModal from "../../components/modals/FormModal";
 import ImportStudentForm from "../admin/forms/ImportStudentForm";
-import { postFormDataRequest } from "../../api/apiHelpers";
+import { postFormDataRequest, putRequest } from "../../api/apiHelpers";
 import EmptyState from "../../components/common/EmptyState";
 import { Select } from "@headlessui/react";
 
@@ -60,16 +60,23 @@ const ChairpersonManageStudentsPage = () => {
 
       // Prepare payload
       const payload = {
-        ids: Array.from(selectedIds),
+        student_ids: Array.from(selectedIds).map((id) => ({ student_id: id })),
         coordinator_id: selectedCoordinator,
       };
 
       // Simulate API call
       console.log("Assigning students:", payload);
 
-      // Close modal and reset state
-      setIsAssignModalOpen(false);
-      setSelectedCoordinator("");
+      const response = await putRequest({
+        url: "/api/v1/chairperson/students/assign-to-coordinator",
+        data: payload,
+      });
+
+      if (response) {
+        // Close modal and reset state
+        setIsAssignModalOpen(false);
+        setSelectedCoordinator("");
+      }
     } catch (error) {
       console.error("Error during assignment:", error);
     } finally {

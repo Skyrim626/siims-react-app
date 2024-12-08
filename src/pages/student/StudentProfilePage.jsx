@@ -313,7 +313,7 @@ const StudentProfilePage = () => {
                     </label>
                   </div>
                 </div>
-                <hr className="mt-3" />
+                {/* <hr className="mt-3" />
                 <div className="flex flex-col mt-2">
                   <span className="text-gray-700 uppercase font-bold tracking-wider mb-2">
                     Skills
@@ -325,7 +325,7 @@ const StudentProfilePage = () => {
                     <li>HTML/CSS</li>
                     <li>Tailwind CSS</li>
                   </ul>
-                </div>
+                </div> */}
               </div>
             </div>
             {/* Main Content */}

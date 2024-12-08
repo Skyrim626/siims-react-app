@@ -85,7 +85,7 @@ export const AuthProvider = ({ children }) => {
     await axiosClient
       .post("/api/v1/auth/logout")
       .then((response) => {
-        console.log("Successful Log Out");
+        // console.log("Successful Log Out");
 
         // Remove Local Storages
         localStorage.removeItem("ACCESS_TOKEN");
