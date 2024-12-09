@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     left: "50%",
     transform: [{ translateX: "-40%" }], // Center the image horizontally over the name
     top: -30, // Adjust the vertical position of the signature if necessary
-    left: 0,
+    // left: 0,
     height: 80, // Set a height for the signature image
   },
 
