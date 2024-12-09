@@ -31,9 +31,6 @@ const CoordinatorViewStudentApplication = () => {
     // Add other statuses here as necessary
   };
 
-  // BASE URL
-  const baseURL = import.meta.env.VITE_API_BASE_URL;
-
   return (
     <Page>
       {/* Application Header */}
@@ -108,8 +105,9 @@ const CoordinatorViewStudentApplication = () => {
 
       {/* Document Submissions */}
       {console.log(document_submissions)}
-      {/* <DocumentSection documents={document_submissions} /> */}
-      <Section>
+      <DocumentSection documents={document_submissions} role={"coordinator"} />
+
+      {/* <Section>
         <Heading
           level={4}
           text="Document Submissions"
@@ -161,7 +159,7 @@ const CoordinatorViewStudentApplication = () => {
             </Card>
           ))}
         </div>
-      </Section>
+      </Section> */}
     </Page>
   );
 };

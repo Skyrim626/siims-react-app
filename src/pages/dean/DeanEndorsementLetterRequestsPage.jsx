@@ -148,8 +148,8 @@ const DeanEndorsementLetterRequestsPage = () => {
         />
       ) : (
         <EmptyState
-          title="No endorsement requests available at the moment"
-          message="Once activities are recorded, endorsement requests will appear here."
+          title="No endorsement approvals available at the moment"
+          message="Once activities are recorded, endorsement approvals will appear here."
         />
       )}
 

@@ -309,13 +309,14 @@ const StudentHomePage = () => {
           </div>
 
           {/* If the student already applied, display this */}
+          {console.log(currentlyAppliedWorkPost)}
           {currentlyAppliedWorkPost &&
-            currentlyAppliedWorkPost.status_type_id !== 6 && (
+            currentlyAppliedWorkPost.student.status_id !== 6 && (
               <CurrentlyJobApplied
                 currently_applied_work_post={currentlyAppliedWorkPost.work_post}
                 handleWithdrawClick={handleWithdrawClick}
                 navigateToApplication={navigateToApplication}
-                status={currentlyAppliedWorkPost.status_type_id}
+                status={currentlyAppliedWorkPost.student.status_id}
                 navigateToJobDetails={navigateToJobDetails}
               />
             )}

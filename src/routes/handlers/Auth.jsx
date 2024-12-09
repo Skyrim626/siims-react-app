@@ -44,6 +44,8 @@ const Auth = () => {
       return <Navigate to={"chairperson"} />;
     case "company":
       return <Navigate to={"company"} />;
+    case "coordinator":
+      return <Navigate to={"coordinator"} />;
     case "osa":
       return <Navigate to={"osa"} />;
     case "supervisor":

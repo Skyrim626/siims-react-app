@@ -206,29 +206,33 @@ const CompanyManageApplicantPage = () => {
             Manage Documents
           </Button> */}
 
+          {/* Upload Button */}
+          <Button
+            onClick={handleOpenModal}
+            className="bg-blue-500 text-white py-2 px-6 rounded border border-blue-600 text-lg font-semibold hover:bg-blue-600 hover:border-blue-700 transition-all"
+          >
+            Upload Document
+          </Button>
+
           {/* Generate Acceptance Letter Button */}
           <Link
             to={`${location.pathname}/generate-acceptance`}
-            className="bg-gradient-to-r from-green-500 to-teal-500 text-white py-2 px-6 rounded-full text-lg font-bold hover:scale-105 transform transition-all"
+            state={{
+              application: application,
+            }}
+            className="bg-blue-500 text-white py-2 px-6 rounded border border-blue-600 text-lg font-semibold hover:bg-blue-600 hover:border-blue-700 transition-all"
           >
             Generate Acceptance Letter
           </Link>
 
-          {/* Upload Button */}
-          <Button
-            onClick={handleOpenModal}
-            className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-2 px-6 rounded-full text-lg font-bold hover:scale-105 transform transition-all"
-          >
-            Upload Document
-          </Button>
           {/* Approve Button */}
           <Button
             onClick={() => handleApprove(application.id)}
-            className={`bg-gradient-to-r ${
+            className={`${
               application.status === "Applying"
-                ? "from-green-600 to-green-400"
-                : "from-gray-600 to-gray-400 cursor-not-allowed"
-            } text-white py-2 px-6 rounded-full text-lg font-bold hover:scale-105 transform transition-all`}
+                ? "bg-blue-500 text-white border border-blue-600 hover:bg-blue-600 hover:border-blue-700"
+                : "bg-gray-300 text-gray-600 border border-gray-400 cursor-not-allowed"
+            } py-2 px-6 rounded text-lg font-semibold transition-all`}
             disabled={application.status !== "Applying"}
           >
             Approve

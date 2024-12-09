@@ -553,12 +553,7 @@ const ChairpersonGenerateEndorsemenLetterPage = () => {
           <div>
             <Button
               onClick={handleSubmitForApproval}
-              className={` text-white py-2 px-4 rounded-md font-semibold  ${
-                signatureImage
-                  ? "bg-blue-500 hover:bg-blue-600"
-                  : "cursor-not-allowed bg-gray-500 "
-              }`}
-              disabled={!signatureImage}
+              className="text-white py-2 px-4 rounded-md font-semibold bg-blue-500 hover:bg-blue-600"
             >
               Submit for approval to Dean
             </Button>

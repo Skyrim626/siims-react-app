@@ -1,5 +1,6 @@
 import { Button } from "@headlessui/react";
 import React from "react";
+import { formatDateOnly } from "../../utils/formatDate";
 
 const CurrentlyJobApplied = ({
   currently_applied_work_post,
@@ -8,6 +9,8 @@ const CurrentlyJobApplied = ({
   status,
   navigateToJobDetails,
 }) => {
+  console.log(status);
+
   return (
     <div className="lg:w-3/4 w-full">
       <h2 className="text-2xl font-semibold mb-6 text-gray-800">
@@ -27,15 +30,11 @@ const CurrentlyJobApplied = ({
         <div className="flex flex-col space-y-2 mb-4">
           <p className="text-sm text-gray-500">
             <span className="font-semibold">Start Date:</span>{" "}
-            {new Date(
-              currently_applied_work_post.start_date
-            ).toLocaleDateString()}
+            {formatDateOnly(currently_applied_work_post.start_date)}
           </p>
           <p className="text-sm text-gray-500">
             <span className="font-semibold">End Date:</span>{" "}
-            {new Date(
-              currently_applied_work_post.end_date
-            ).toLocaleDateString()}
+            {formatDateOnly(currently_applied_work_post.end_date)}
           </p>
         </div>
 
@@ -46,7 +45,7 @@ const CurrentlyJobApplied = ({
             disabled={[10, 11, 12].includes(status)}
             className={`w-full sm:w-auto py-2 px-6 rounded-md text-white font-medium ${
               [10, 11, 12].includes(status)
-                ? "bg-gray-600"
+                ? "bg-gray-600 cursor-not-allowed"
                 : "bg-red-600 hover:bg-red-700"
             } transition-all`}
           >
