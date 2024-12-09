@@ -11,6 +11,7 @@ import ChairpersonGenerateEndorsemenLetterPage from "../../pages/chairperson/Cha
 import ChairpersonEndorsementRequestsPage from "../../pages/chairperson/ChairpersonEndorsementRequestsPage";
 import ChairpersonEndorsementRequestPage from "../../pages/chairperson/ChairpersonEndorsementRequestPage";
 import ChairpersonManageStudentsPage from "../../pages/chairperson/ChairpersonManageStudentsPage";
+import PDFFile from "../../components/letters/PDFFile";
 
 // Routes for Chairperson
 const ChairpersonRoutes = {
@@ -153,6 +154,10 @@ const ChairpersonRoutes = {
           };
         }
       },
+    },
+    {
+      path: "test",
+      element: <PDFFile />,
     },
     {
       path: "endorsement-requests",

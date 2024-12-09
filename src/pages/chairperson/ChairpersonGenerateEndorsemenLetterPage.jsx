@@ -1,278 +1,219 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { jsPDF } from "jspdf";
-import "jspdf-autotable";
-import getFullName from "../../utils/getFullName";
-import { Button, Field, Input, Label } from "@headlessui/react";
-import { postFormDataRequest } from "../../api/apiHelpers";
-import Text from "../../components/common/Text";
 import Loader from "../../components/common/Loader";
+import { Button, Field, Input, Label } from "@headlessui/react";
+import getFullName from "../../utils/getFullName";
+import { getFullAddress } from "../../utils/formatAddress";
+import Text from "../../components/common/Text";
+import SignatureCapture from "../../components/letters/SignatureCanvas";
+import GenerateEndorsementLetter from "../../components/letters/GenerateEndorsementLetter";
+import { pdf, PDFDownloadLink } from "@react-pdf/renderer";
+
+import image1 from "../../assets/images/logo/head.png";
+import image2 from "../../assets/images/logo/CITC_LOGO.png";
+import { postFormDataRequest } from "../../api/apiHelpers";
 
 const ChairpersonGenerateEndorsemenLetterPage = () => {
+  // Open Location and Navigate
   const navigate = useNavigate();
   const location = useLocation();
-  const {
-    requested_by,
-    endorse_students,
-    main_student,
-    request_id,
-    company_name,
-  } = location.state;
 
-  const currentDate = new Date();
+  // Modal State
+  const [isOpenSignatureModal, setIsOpenSignatureModal] = useState(false);
 
-  // Loading State
-  const [loading, setLoading] = useState(false);
-
-  // Set the default date to the current date in the desired format
-  const [date, setDate] = useState(
-    currentDate.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    })
-  );
-  const [recipient, setRecipient] = useState("Dear, Charisse Nadine A. Laroda");
-  const [company, setCompany] = useState(
-    company_name || "Fligno Software Phil"
-  );
-  const [address, setAddress] = useState("Cagayan de Oro City");
-  const [description, setDescription] = useState(
-    "I hope this letter finds you well and in good spirits. I am writing to express my sincerest gratitude for taking the time to read this request on behalf of the College of Information Technology and Computing (CITC) at the University of Science and Technology of Southern Philippines (USTP). As you may be aware, the fourth-year students of our Bachelor of Science in Information Technology (BSIT) program are currently in their final semester of their course. As part of their graduation requirements, they must complete a mandatory On-the-Job Training (OJT) program, with a duration of 486 hours between February and May 2023."
-  );
-  const [footerDescription, setFooterDescription] = useState();
+  // Error State
   const [errors, setErrors] = useState({});
 
-  // Format of Endorsement Letter
-  const endorsementLetterPDFFormat = () => {
-    const doc = new jsPDF({
-      format: "a4", // Set the page size to A4
-    });
+  /**
+   * Function that calls the Endorsement Letter
+   */
+  const callEndorsementLetter = () => {
+    return (
+      <GenerateEndorsementLetter
+        imageHeight={80}
+        signatureImage={signatureImage}
+        currentDate={currentDate}
+        ownerName={ownerName}
+        position={position}
+        companyName={companyName}
+        fullAddress={fullAddress}
+        greetingMessage={greetingMessage}
+        college={college}
+        program={program}
+        hourDuration={hourDuration}
+        startingMonth={startingMonth}
+        endingMonth={endingMonth}
+        targetYear={targetYear}
+        mainStudent={main_student.user}
+        otherStudents={otherStudents}
+        workType={workType}
+        deanOfficeNumber={deanOfficeNumber}
+        localNumber={localNumber}
+        ojtCoordinatorFullName={ojtCoordinatorFullName}
+        ojtCoordinatorMail={ojtCoordinatorMail}
+        chairpersonFullName={chairpersonFullName}
+        deanFullName={deanFullName}
+      />
+    );
+  };
 
-    // const date = new Date().toLocaleDateString();
-    const margin = 10;
-    const pageWidth = doc.internal.pageSize.width;
-    const pageHeight = doc.internal.pageSize.height;
+  /**
+   * Function that view the PDF
+   */
+  const viewPdf = async () => {
+    try {
+      const document = callEndorsementLetter();
+      const blob = await pdf(document).toBlob();
 
-    doc.setFontSize(12);
+      const blobUrl = URL.createObjectURL(blob);
+      // console.log(blobUrl); // Log the URL
+      window.open(blobUrl, "_blank");
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    }
+  };
 
-    // Header Image
-    // const leftLogo = "/src/assets/images/logo/USTP-Logo-against-Light.png"; // Left logo path
-    // const rightLogo = "/src/assets/images/logo/CITC_LOGO.png"; // Right logo path
-
-    const leftLogo = "/src/assets/images/logo/USTP-Logo-against-Light.png";
-    const centerLogo = "/src/assets/images/logo/IT-Logo.png";
-    const rightLogo = "/src/assets/images/logo/CITC_LOGO.png";
-
-    /* const leftLogoWidth = 25;
-    const leftLogoHeight = 25;
-    const rightLogoWidth = 35;
-    const rightLogoHeight = 25; */
-
-    // Adjust logo sizes
-    const leftCenterLogoWidth = 20; // Width for left and center logos
-    const logoHeight = 20; // Height for all logos
-    const rightLogoWidth = 35; // Width for the third logo (right logo)
-
-    // Reduced space between logos (e.g., 10mm)
-    const logoSpacing = 10; // Space between logos
-
-    // Calculate positions for logos to center them horizontally with reduced spacing
-    const logosTotalWidth =
-      leftCenterLogoWidth * 2 + rightLogoWidth + logoSpacing * 2; // Left + Center + Right with spacing
-    const startX = (pageWidth - logosTotalWidth) / 2;
-
-    // Add logos with updated size and reduced spacing
-    doc.addImage(leftLogo, "PNG", startX, 10, leftCenterLogoWidth, logoHeight); // Left logo
-    doc.addImage(
-      centerLogo,
-      "PNG",
-      startX + leftCenterLogoWidth + logoSpacing,
-      10,
-      leftCenterLogoWidth,
-      logoHeight
-    ); // Center logo
-    doc.addImage(
-      rightLogo,
-      "PNG",
-      startX + (leftCenterLogoWidth + logoSpacing) * 2,
-      10,
-      rightLogoWidth,
-      logoHeight
-    ); // Right logo with adjusted width
-
-    // Add university name below logos
-    const universityName =
-      "UNIVERSITY OF SCIENCE AND TECHNOLOGY OF SOUTHERN PHILIPPINES";
-    const campuses =
-      "Alubijid | Cagayan de Oro | Claveria | Villanueva | Balubal | Jasaan | Oroquieta | Panaon";
-    const textY = 10 + logoHeight + 5; // Reduced space between logos and university name
-
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(10);
-    doc.text(universityName, pageWidth / 2, textY, { align: "center" });
-
-    // Adjusted the Y position for campuses text to be closer
-    doc.text(campuses, pageWidth / 2, textY + 4, { align: "center" });
-
-    // Add saved data content below the university name
-    let yPosition = textY + 20;
-
-    // Add Date
-    doc.setFont("helvetica", "normal"); // Ensure normal font style (not bold)
-    doc.setFontSize(11);
-    doc.text(date, 10, 50); // Do not Bold
-
-    // Add Company Owner
-    doc.setFontSize(11);
-    doc.text(company, 10, 55); // Do not Bold
-
-    // Address
-    doc.setFontSize(11);
-    doc.text(address, 10, 60); // Do not Bold
-
-    // Add Recipient
-    doc.setFont("helvetica", "normal"); // Set font to normal
-    doc.setFontSize(11); // Set font size to 11
-    doc.text(`${recipient}`, 10, 70);
-
-    // Add Description
-    const textWidth = pageWidth - 2 * margin; // The available width for text
-    doc.setFontSize(11);
-
-    // Split the text into lines that fit the specified width
-    const descriptionLines = doc.splitTextToSize(description, textWidth);
-
-    // Calculate the total height based on the number of lines
-    const lineHeight = 9 * 0.3528; // Approximate line height in mm for 11pt font
-    const descriptionHeight = descriptionLines.length * lineHeight;
-
-    // Starting Y position for description
-    let descriptionY = 80;
-
-    // Check if the description will overflow the page height
-    if (descriptionY + descriptionHeight > pageHeight - margin) {
-      doc.addPage();
-      descriptionY = margin; // Reset to the top margin of the new page
+  /**
+   * Function that submits the Endorsement Letter to the Dean
+   */
+  const handleSubmitForApproval = async () => {
+    if (!signatureImage) {
+      setErrors({ pdf_file: "The pdf file is required" });
+      return;
     }
 
-    // Render the description
-    doc.text(descriptionLines, margin, descriptionY, { align: "left" });
-
-    // console.log(descriptionY);
-    // console.log(descriptionHeight);
-
-    // Adjust the padding between the description and the table
-    const tablePadding = 25; // Adjust this value as needed
-    const tableStartY = descriptionY + descriptionHeight + tablePadding; // Position table after the description
-
-    // Add the table
-    doc.autoTable({
-      startY: tableStartY, // Set table to start after description
-      head: [["Student ID", "Full Name", "Email", "Phone Number"]],
-      body: [
-        [
-          main_student.id, // Main student's Student ID
-          getFullName(
-            main_student.user.first_name,
-            main_student.user.middle_name,
-            main_student.user.last_name
-          ), // Main student's full name
-          main_student.user.email, // Main student's email
-          main_student.user.phone_number, // Main student's phone number
-        ],
-        ...endorse_students.map((student) => [
-          student.student_id,
-          student.full_name,
-          student.email,
-          student.phone_number,
-        ]),
-      ],
-      theme: "grid",
-      styles: {
-        fontSize: 10, // Adjust font size
-        cellPadding: 2, // Padding for better readability
-        lineWidth: 0.1, // Thin border lines
-        lineColor: [200, 200, 200], // Light gray border color
-      },
-      headStyles: {
-        fillColor: [240, 240, 240], // Light gray header background
-        fontStyle: "bold", // Bold header text
-        textColor: [60, 60, 60], // Dark gray text color for header
-      },
-      bodyStyles: {
-        fillColor: [255, 255, 255], // White background for table rows
-        textColor: [80, 80, 80], // Dark gray text for rows
-        halign: "left", // Align body text to the left
-      },
-      columnStyles: {
-        0: {
-          // Student ID column
-          fontStyle: "normal", // Bold student IDs
-          textColor: [0, 0, 0], // Black color for student IDs
-          halign: "left", // Left-align Student ID text
-        },
-      },
-    });
-
-    // Add Signatures
-    const finalY = doc.lastAutoTable.finalY + 20;
-
-    // Chairperson Signature
-    doc.line(15, finalY + 20, 60, finalY + 20); // Draw line first
-    doc.text("Chairperson", 20, finalY + 30); // Place title below the line
-
-    // Dean Signature
-    doc.line(145, finalY + 20, 190, finalY + 20); // Draw line first
-    doc.text("Dean", 150, finalY + 30); // Place title below the line
-
-    // Returns the PDF document
-    return doc;
-  };
-
-  // Generates a PDF
-  const generatePDF = () => {
-    const doc = endorsementLetterPDFFormat();
-    // Save PDF
-    doc.save("Endorsement_Letter.pdf");
-  };
-
-  // Submit to Dean
-  const handleSubmitForApproval = async () => {
-    // Set Loading
-    setLoading(true);
-
-    const doc = endorsementLetterPDFFormat();
-
-    // Generate the PDF as a Blob
-    const pdfBlob = doc.output("blob");
-
-    // Create a File from the Blob
-    const pdfFile = new File([pdfBlob], "Endorsement_Letter.pdf", {
-      type: "application/pdf",
-    });
-
-    // Create FormData and append the file
-    const formData = new FormData();
-    formData.append("pdf_file", pdfFile);
+    setLoading(true); // Start loading
 
     try {
-      // POST FORM DATA
+      // Generate the PDF as a Blob using react-pdf
+      const pdfBlob = await pdf(callEndorsementLetter()).toBlob();
+
+      // Create a File from the Blob
+      const pdfFile = new File([pdfBlob], fileName, {
+        type: "application/pdf",
+      });
+
+      // Create FormData and append the file
+      const formData = new FormData();
+      formData.append("pdf_file", pdfFile);
+
+      // POST the form data to your endpoint
       const response = await postFormDataRequest({
         url: `/api/v1/endorsement-letter-requests/${request_id}/upload`,
         data: formData,
       });
 
       if (response) {
-        navigate(-1);
+        navigate(-1); // Navigate back upon success
       }
     } catch (error) {
-      // console.log(error.response.data.errors);
-      setErrors(error.response.data.errors); // Assuming validation errors are in `errors`
+      setErrors(error.response?.data?.errors || {});
     } finally {
-      setLoading(false);
+      setLoading(false); // Stop loading
     }
   };
+
+  /**
+   * Location State
+   */
+  const {
+    requested_by,
+    endorse_students,
+    main_student,
+    request_id,
+    company_details,
+    program_details,
+    college_details,
+    coordinator_details,
+    chairperson_details,
+    dean_details,
+  } = location.state;
+
+  // console.log(company_details);
+  // console.log(chairperson_details);
+
+  // Open Date
+  const date = new Date();
+
+  // Loading State
+  const [loading, setLoading] = useState(false);
+
+  /**
+   * Signature State
+   */
+  const [signatureImage, setSignatureImage] = useState(null);
+  // Set the default date to the current date in the desired format
+  const [currentDate, setCurrentDate] = useState(
+    date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
+  );
+  const [ownerName, setOwnerName] = useState(
+    company_details.first_name || company_details.last_name
+      ? getFullName(
+          company_details.first_name,
+          company_details.middle_name,
+          company_details.last_name
+        )
+      : "No Name"
+  );
+  const [position, setPosition] = useState("No Position");
+  const [companyName, setCompanyName] = useState(company_details.name);
+  const [fullAddress, setFullAddress] = useState(
+    getFullAddress({
+      street: company_details.user.street,
+      barangay: company_details.user.barangay,
+      city: company_details.user.city_municipality,
+      province: company_details.user.province,
+      postalCode: company_details.user.postal_code,
+    })
+  );
+  const [greetingMessage, setGreetingMessage] = useState("Dear Ms. Lim,");
+  const [college, setCollege] = useState(college_details.name);
+  const [program, setProgram] = useState(program_details.name);
+  const [hourDuration, setHourDuration] = useState("486 hours");
+  const [startingMonth, setStartingMonth] = useState("February");
+  const [endingMonth, setEndingMonth] = useState("March");
+  const [targetYear, setTargetYear] = useState(
+    date.toLocaleDateString("en-US", {
+      year: "numeric",
+    })
+  );
+
+  const [mainStudent, setMainStudent] = useState(main_student);
+  const [otherStudents, setOtherStudents] = useState(endorse_students);
+  const [workType, setWorkType] = useState("internship");
+  const [deanOfficeNumber, setDeanOfficeNumber] = useState("088-857-1739");
+  const [localNumber, setLocalNumber] = useState("1153");
+  const [ojtCoordinatorFullName, setOjtCoordinatorFullName] = useState(
+    getFullName(
+      coordinator_details.user.first_name,
+      coordinator_details.user.middle_name,
+      coordinator_details.user.last_name
+    )
+  );
+  const [ojtCoordinatorMail, setOjtCoordinatorMail] = useState(
+    coordinator_details.user.email
+  );
+  const [chairpersonFullName, setChairpersonFullName] = useState(
+    `ENGR, ${getFullName(
+      chairperson_details.first_name,
+      chairperson_details.middle_name,
+      chairperson_details.last_name
+    ).toUpperCase()}`
+  );
+  const [deanFullName, setDeanFullName] = useState(
+    getFullName(
+      dean_details.first_name,
+      dean_details.middle_name,
+      dean_details.last_name
+    ).toUpperCase()
+  );
+
+  // File Name
+  const [fileName, setFileName] = useState("endorsement-letter.pdf");
 
   return (
     <>
@@ -285,8 +226,8 @@ const ChairpersonGenerateEndorsemenLetterPage = () => {
           <Label className="block text-gray-700 font-semibold mb-2">Date</Label>
           <Input
             type="text"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
+            value={currentDate}
+            onChange={(e) => setCurrentDate(e.target.value)}
             className="w-full px-4 py-2 border rounded-md shadow focus:ring focus:outline-none"
             placeholder="Enter Date"
           />
@@ -294,12 +235,52 @@ const ChairpersonGenerateEndorsemenLetterPage = () => {
 
         <Field className="mb-6">
           <Label className="block text-gray-700 font-semibold mb-2">
+            Greeting Message
+          </Label>
+          <Input
+            type="text"
+            value={greetingMessage}
+            onChange={(e) => setGreetingMessage(e.target.value)}
+            className="w-full px-4 py-2 border rounded-md shadow focus:ring focus:outline-none"
+            placeholder="Enter Date"
+          />
+        </Field>
+
+        <div className="grid grid-cols-2 gap-3">
+          <Field className="mb-6">
+            <Label className="block text-gray-700 font-semibold mb-2">
+              Recipient Name
+            </Label>
+            <Input
+              type="text"
+              value={ownerName}
+              onChange={(e) => setOwnerName(e.target.value)}
+              className="w-full px-4 py-2 border rounded-md shadow focus:ring focus:outline-none"
+              placeholder="Enter Date"
+            />
+          </Field>
+          <Field className="mb-6">
+            <Label className="block text-gray-700 font-semibold mb-2">
+              Position
+            </Label>
+            <Input
+              type="text"
+              value={position}
+              onChange={(e) => setPosition(e.target.value)}
+              className="w-full px-4 py-2 border rounded-md shadow focus:ring focus:outline-none"
+              placeholder="e.g.(HR Specialist, Manager, Supervisor, Regional Director)"
+            />
+          </Field>
+        </div>
+
+        <Field className="mb-6">
+          <Label className="block text-gray-700 font-semibold mb-2">
             Company
           </Label>
           <Input
             type="text"
-            value={company}
-            onChange={(e) => setCompany(e.target.value)}
+            value={companyName}
+            onChange={(e) => setCompanyName(e.target.value)}
             className="w-full px-4 py-2 border rounded-md shadow focus:ring focus:outline-none"
             placeholder="Enter recipient (e.g., Dear Dr. Smith)"
           />
@@ -311,40 +292,159 @@ const ChairpersonGenerateEndorsemenLetterPage = () => {
           </Label>
           <Input
             type="text"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
+            value={fullAddress}
+            onChange={(e) => setFullAddress(e.target.value)}
             className="w-full px-4 py-2 border rounded-md shadow focus:ring focus:outline-none"
             placeholder="Enter recipient (e.g., Dear Dr. Smith)"
           />
         </Field>
 
-        <Field className="mb-6">
-          <Label className="block text-gray-700 font-semibold mb-2">
-            Recipient
-          </Label>
-          <Input
-            type="text"
-            value={recipient}
-            onChange={(e) => setRecipient(e.target.value)}
-            className="w-full px-4 py-2 border rounded-md shadow focus:ring focus:outline-none"
-            placeholder="Enter recipient (e.g., Dear Dr. Smith)"
-          />
-        </Field>
+        <div className="grid grid-cols-2 gap-3">
+          <Field className="mb-6">
+            <Label className="block text-gray-700 font-semibold mb-2">
+              Chairperson
+            </Label>
+            <Input
+              type="text"
+              value={chairpersonFullName}
+              onChange={(e) => sEtChairpersonFullName(e.target.value)}
+              className="w-full px-4 py-2 border rounded-md shadow focus:ring focus:outline-none"
+              placeholder="Enter recipient (e.g., Dear Dr. Smith)"
+            />
+          </Field>
+          <Field className="mb-6">
+            <Label className="block text-gray-700 font-semibold mb-2">
+              Dean
+            </Label>
+            <Input
+              type="text"
+              value={deanFullName}
+              onChange={(e) => setDeanFullName(e.target.value)}
+              className="w-full px-4 py-2 border rounded-md shadow focus:ring focus:outline-none"
+              placeholder="Enter recipient (e.g., Dear Dr. Smith)"
+            />
+          </Field>
+        </div>
 
-        <Field className="mb-6">
-          <Label className="block text-gray-700 font-semibold mb-2">
-            Description
-          </Label>
-          <textarea
-            type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="w-full px-4 py-2 border rounded-md shadow focus:ring focus:outline-none"
-            placeholder="Enter description (e.g., I hope this message finds you well...)"
-            rows="5"
-            cols="40"
-          />
-        </Field>
+        <div className="grid grid-cols-2 gap-3">
+          <Field className="mb-6">
+            <Label className="block text-gray-700 font-semibold mb-2">
+              OJT Coordinator
+            </Label>
+            <Input
+              type="text"
+              value={ojtCoordinatorFullName}
+              onChange={(e) => setOjtCoordinatorFullName(e.target.value)}
+              className="w-full px-4 py-2 border rounded-md shadow focus:ring focus:outline-none"
+              placeholder="Enter recipient (e.g., Dear Dr. Smith)"
+            />
+          </Field>
+          <Field className="mb-6">
+            <Label className="block text-gray-700 font-semibold mb-2">
+              OJT Coordinator's Email
+            </Label>
+            <Input
+              type="text"
+              value={ojtCoordinatorMail}
+              onChange={(e) => setOjtCoordinatorMail(e.target.value)}
+              className="w-full px-4 py-2 border rounded-md shadow focus:ring focus:outline-none"
+              placeholder="Enter recipient (e.g., Dear Dr. Smith)"
+            />
+          </Field>
+        </div>
+
+        <div className="grid grid-cols-3 gap-3">
+          <Field className="mb-6">
+            <Label className="block text-gray-700 font-semibold mb-2">
+              Office Number
+            </Label>
+            <Input
+              type="text"
+              value={deanOfficeNumber}
+              onChange={(e) => setDeanOfficeNumber(e.target.value)}
+              className="w-full px-4 py-2 border rounded-md shadow focus:ring focus:outline-none"
+              placeholder="Enter recipient (e.g., Dear Dr. Smith)"
+            />
+          </Field>
+          <Field className="mb-6">
+            <Label className="block text-gray-700 font-semibold mb-2">
+              Local Number
+            </Label>
+            <Input
+              type="text"
+              value={localNumber}
+              onChange={(e) => setLocalNumber(e.target.value)}
+              className="w-full px-4 py-2 border rounded-md shadow focus:ring focus:outline-none"
+              placeholder="Enter recipient (e.g., Dear Dr. Smith)"
+            />
+          </Field>
+        </div>
+
+        <div className="grid grid-cols-3 gap-3">
+          <Field className="mb-6">
+            <Label className="block text-gray-700 font-semibold mb-2">
+              Starting Month
+            </Label>
+            <Input
+              type="text"
+              value={startingMonth}
+              onChange={(e) => setStartingMonth(e.target.value)}
+              className="w-full px-4 py-2 border rounded-md shadow focus:ring focus:outline-none"
+              placeholder="Enter recipient (e.g., Dear Dr. Smith)"
+            />
+          </Field>
+          <Field className="mb-6">
+            <Label className="block text-gray-700 font-semibold mb-2">
+              Ending Month
+            </Label>
+            <Input
+              type="text"
+              value={endingMonth}
+              onChange={(e) => setEndingMonth(e.target.value)}
+              className="w-full px-4 py-2 border rounded-md shadow focus:ring focus:outline-none"
+              placeholder="Enter recipient (e.g., Dear Dr. Smith)"
+            />
+          </Field>
+          <Field className="mb-6">
+            <Label className="block text-gray-700 font-semibold mb-2">
+              Year
+            </Label>
+            <Input
+              type="text"
+              value={targetYear}
+              onChange={(e) => setTargetYear(e.target.value)}
+              className="w-full px-4 py-2 border rounded-md shadow focus:ring focus:outline-none"
+              placeholder="Enter recipient (e.g., Dear Dr. Smith)"
+            />
+          </Field>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <Field className="mb-6">
+            <Label className="block text-gray-700 font-semibold mb-2">
+              College
+            </Label>
+            <Input
+              type="text"
+              value={college}
+              onChange={(e) => setCollege(e.target.value)}
+              className="w-full px-4 py-2 border rounded-md shadow focus:ring focus:outline-none"
+              placeholder="Enter recipient (e.g., Dear Dr. Smith)"
+            />
+          </Field>
+          <Field className="mb-6">
+            <Label className="block text-gray-700 font-semibold mb-2">
+              Program
+            </Label>
+            <Input
+              type="text"
+              value={program}
+              onChange={(e) => setProgram(e.target.value)}
+              className="w-full px-4 py-2 border rounded-md shadow focus:ring focus:outline-none"
+              placeholder="Enter recipient (e.g., Dear Dr. Smith)"
+            />
+          </Field>
+        </div>
 
         <h2 className="text-xl font-semibold mb-4">Students to Endorse</h2>
         <div className="overflow-x-auto mb-6">
@@ -406,22 +506,72 @@ const ChairpersonGenerateEndorsemenLetterPage = () => {
           </table>
         </div>
 
+        <Field className="mb-6">
+          <Label className="block text-gray-700 font-semibold mb-2">
+            File Name
+          </Label>
+          <Input
+            type="text"
+            value={fileName}
+            onChange={(e) => setFileName(e.target.value)}
+            className="w-full px-4 py-2 border rounded-md shadow focus:ring focus:outline-none"
+            placeholder="Enter file name"
+          />
+        </Field>
+
         <div className="flex justify-end space-x-5">
+          <PDFDownloadLink
+            document={callEndorsementLetter()}
+            fileName={fileName}
+          >
+            {({ loading }) =>
+              loading ? (
+                <Button className="px-6 py-2 bg-gray-600 text-white font-semibold rounded-md shadow hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 cursor-not-allowed">
+                  Loading Document...
+                </Button>
+              ) : (
+                <Button className="px-6 py-2 bg-green-600 text-white font-semibold rounded-md shadow hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+                  Download Signed Document
+                </Button>
+              )
+            }
+          </PDFDownloadLink>
+
           <Button
-            onClick={generatePDF}
+            onClick={() => setIsOpenSignatureModal(!isOpenSignatureModal)}
             className="px-6 py-2 bg-green-600 text-white font-semibold rounded-md shadow hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
           >
-            Generate PDF
+            Add Signature
+          </Button>
+
+          <Button
+            onClick={viewPdf}
+            className="px-6 py-2 bg-green-600 text-white font-semibold rounded-md shadow hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+          >
+            View PDF
           </Button>
           <div>
             <Button
               onClick={handleSubmitForApproval}
-              className="bg-blue-500 text-white py-2 px-4 rounded-md font-semibold hover:bg-blue-600"
+              className={` text-white py-2 px-4 rounded-md font-semibold  ${
+                signatureImage
+                  ? "bg-blue-500 hover:bg-blue-600"
+                  : "cursor-not-allowed bg-gray-500 "
+              }`}
+              disabled={!signatureImage}
             >
               Submit for approval to Dean
             </Button>
             {errors["pdf_file"] && <Text>The pdf file is required</Text>}
           </div>
+
+          {isOpenSignatureModal && (
+            <SignatureCapture
+              setSignatureImage={setSignatureImage}
+              isOpen={isOpenSignatureModal}
+              setIsOpenSignatureModal={setIsOpenSignatureModal}
+            />
+          )}
         </div>
       </div>
     </>

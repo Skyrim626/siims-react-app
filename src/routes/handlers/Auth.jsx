@@ -44,6 +44,10 @@ const Auth = () => {
       return <Navigate to={"chairperson"} />;
     case "company":
       return <Navigate to={"company"} />;
+    case "osa":
+      return <Navigate to={"osa"} />;
+    case "supervisor":
+      return <Navigate to={"supervisor"} />;
     default:
       return <Navigate to={"unauthorized"} />;
   }

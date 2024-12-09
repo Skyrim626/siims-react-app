@@ -41,8 +41,6 @@ const router = createBrowserRouter([
              */
             const userRoles = response.data;
 
-            // console.log(userRoles);
-
             /**
              * Return Data
              */

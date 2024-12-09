@@ -101,7 +101,16 @@ const ChairpersonEndorsementRequestPage = () => {
                   endorse_students: endorsementLetterRequest.endorse_students,
                   main_student: endorsementLetterRequest.student,
                   request_id: endorsementLetterRequestId,
-                  company_name: endorsementLetterRequest.company,
+                  company_details: endorsementLetterRequest.company_details,
+                  program_details: endorsementLetterRequest.student.program,
+                  college_details:
+                    endorsementLetterRequest.student.program.college,
+                  coordinator_details:
+                    endorsementLetterRequest.student.coordinator,
+                  chairperson_details:
+                    endorsementLetterRequest.student.program.chairperson,
+                  dean_details:
+                    endorsementLetterRequest.student.program.college.dean,
                 }}
                 className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
