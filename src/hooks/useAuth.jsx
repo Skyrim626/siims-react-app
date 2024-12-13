@@ -67,13 +67,6 @@ export const AuthProvider = ({ children }) => {
         );
       }
 
-      // Optionally handle other errors
-      /* setLoading(false);
-      localStorage.setItem(
-        "loginError",
-        error.message || "An unexpected error occurred."
-      ); */
-
       throw error;
     } finally {
       setLoading(false);
@@ -91,9 +84,6 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem("ACCESS_TOKEN");
         localStorage.removeItem("user");
         localStorage.removeItem("roles");
-
-        // Redirect user after successful login
-        // return <Navigate to={"/login"} replace={true} />;
 
         window.location.href = "/login";
       })

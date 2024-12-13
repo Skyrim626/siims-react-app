@@ -1,9 +1,10 @@
 import React from "react";
-import { FileDown, FileUp, UserRoundPlus } from "lucide-react";
+import { FileDown, FileUp, Plus, UserRoundPlus } from "lucide-react";
 import { Button } from "@headlessui/react";
 import Text from "./Text";
 
 const ManageHeader = ({
+  className = "mb-3",
   addPlaceholder = "Add new something...",
   isOpen,
   setIsOpen,
@@ -15,7 +16,7 @@ const ManageHeader = ({
   setIsImportOpen = () => {},
 }) => {
   return (
-    <div className="flex justify-end items-center">
+    <div className={`flex justify-end items-center ${className}`}>
       <div className="button-group | flex gap-2">
         {showAllButtons && (
           <>
@@ -39,11 +40,11 @@ const ManageHeader = ({
             {showAddButton && (
               <Button
                 onClick={() => setIsOpen(!isOpen)}
-                className={`transition text-sm py-1 px-3 font-bold text-white flex items-center justify-center gap-2 border-2 rounded-md border-transparent ${
+                className={`transition text-sm py-2 px-3 font-bold text-white flex items-center justify-center gap-2 border-2 rounded-md border-transparent ${
                   isOpen ? "bg-blue-700" : "bg-blue-500 hover:bg-blue-600"
                 }`}
               >
-                <UserRoundPlus size={15} />
+                <Plus size={20} />
                 <Text>{addPlaceholder}</Text>
               </Button>
             )}

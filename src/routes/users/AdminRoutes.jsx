@@ -31,6 +31,7 @@ import ChatWindow from "../../components/messaging/ChatWindow";
 import TestChatWindow from "../../components/messaging/TestChatWindow";
 import TestingPage from "../../pages/TestingPage";
 import AdminViewLogsPage from "../../pages/admin/AdminViewLogsPage";
+import ViewDocumentTypePage from "../../pages/ViewDocumentTypesPage";
 
 // Define routes for the Admin section
 const AdminRoutes = {
@@ -95,7 +96,7 @@ const AdminRoutes = {
     },
     {
       path: "document-types",
-      element: <AdminManageDocumentTypesPage />,
+      element: <ViewDocumentTypePage authorizeRole={"admin"} />,
     },
     {
       path: "messaging",

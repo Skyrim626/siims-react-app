@@ -2,12 +2,16 @@ import React from "react";
 import { getStatusBgColor, getStatusColor } from "../../utils/statusColor";
 import toFilePath from "../../utils/baseURL";
 import { formatDateTime } from "../../utils/formatDate";
+import { Button } from "@headlessui/react";
 
 const DocumentSection = ({
   documents = [],
   statuses = [],
   handleStatusChange,
   role,
+  allowActions = false,
+  handleApproveDocument,
+  handleRejectDocument,
 }) => {
   // console.log(documents);
 
@@ -98,6 +102,11 @@ const DocumentSection = ({
                 <th className="border border-gray-200 p-3 text-left text-sm font-medium text-gray-700">
                   Change Status
                 </th>
+                {allowActions && (
+                  <th className="border border-gray-200 p-3 text-left text-sm font-medium text-gray-700">
+                    Actions
+                  </th>
+                )}
               </tr>
             </thead>
             <tbody>
@@ -160,6 +169,22 @@ const DocumentSection = ({
                       "N/A"
                     )}
                   </td>
+                  {allowActions && (
+                    <td className="border border-gray-200 p-3 text-sm flex items-center justify-center gap-3">
+                      <Button
+                        onClick={() => handleApproveDocument(doc.id)}
+                        className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition"
+                      >
+                        Approve
+                      </Button>
+                      <Button
+                        onClick={() => handeRejectDocument(doc.id)}
+                        className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition"
+                      >
+                        Reject
+                      </Button>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>

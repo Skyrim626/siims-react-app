@@ -1,8 +1,5 @@
 import React, { useState } from "react";
 import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
-import Page from "../../components/common/Page";
-import { getStatusBgColor, getStatusColor } from "../../utils/statusColor";
-import toFilePath from "../../utils/baseURL";
 import { putRequest } from "../../api/apiHelpers";
 import { Button } from "@headlessui/react";
 import Loader from "../../components/common/Loader";
@@ -45,6 +42,16 @@ const OsaManageApplicantApplication = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Handle Approve Document
+  const handleApproveDocument = async (id) => {
+    console.log(id);
+  };
+
+  // Handle Reject Document
+  const handleRejectDocument = async (id) => {
+    console.log(id);
   };
 
   // Handle Status Change
@@ -127,6 +134,9 @@ const OsaManageApplicantApplication = () => {
             documents={documents}
             statuses={statuses}
             handleStatusChange={handleStatusChange}
+            allowActions={true}
+            handleApproveDocument={handleApproveDocument}
+            handleRejectDocument={handleRejectDocument}
           />
         </div>
       </div>

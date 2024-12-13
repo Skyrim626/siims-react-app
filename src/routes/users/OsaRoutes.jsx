@@ -7,6 +7,7 @@ import axiosClient from "../../api/axiosClient";
 import OsaManageApplicantsPage from "../../pages/osa/OsaManageApplicantsPage";
 import OsaManageApplicantApplication from "../../pages/osa/OsaManageApplicantApplication";
 import OSAProfilePage from "../../pages/osa/OsaProfilePage";
+import ViewDocumentTypePage from "../../pages/ViewDocumentTypesPage";
 
 // Routes for Dean
 const OsaRoutes = {
@@ -116,10 +117,9 @@ const OsaRoutes = {
         },
       ],
     },
-
     {
       path: "document-types",
-      element: <OsaManageDocumentTypesPage />,
+      element: <ViewDocumentTypePage authorizeRole={"osa"} />,
     },
   ],
 };

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { deleteRequest, postRequest, putRequest } from "../api/apiHelpers";
 
-const useRequest = ({ setLoading, setIsOpen, setData }) => {
+const useRequest = ({ setIsOpen, setData }) => {
+  const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const request_path = "/api/v1";
 
@@ -39,7 +40,13 @@ const useRequest = ({ setLoading, setIsOpen, setData }) => {
   /**
    * PUT METHOD
    */
-  const putData = async ({ url, payload, selectedData, setIsOpen }) => {
+  const putData = async ({
+    url,
+    payload,
+    selectedData,
+    setIsOpen,
+    resetForm,
+  }) => {
     // Set loading state to true
     setLoading(true);
 
@@ -65,6 +72,11 @@ const useRequest = ({ setLoading, setIsOpen, setData }) => {
         );
         setIsOpen(false);
         setErrors({});
+      }
+
+      // Resets the Form
+      if (resetForm) {
+        resetForm();
       }
     } catch (error) {
       // console.log(error);
@@ -103,7 +115,7 @@ const useRequest = ({ setLoading, setIsOpen, setData }) => {
     }
   };
 
-  return { postData, putData, deleteData, errors };
+  return { postData, putData, deleteData, loading, errors };
 };
 
 export default useRequest;

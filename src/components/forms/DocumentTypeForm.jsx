@@ -6,7 +6,8 @@ import Text from "../common/Text";
 
 const DocumentTypeForm = ({
   documentTypeName = "",
-  setDocumentTypeName = () => {},
+  handleInputChange,
+
   requiredFields = {
     documentTypeName: true,
   },
@@ -34,9 +35,7 @@ const DocumentTypeForm = ({
                 type="text"
                 className="outline-none text-black rounded-sm p-2 text-sm"
                 name="documentTypeName"
-                onChange={(e) => {
-                  setDocumentTypeName(e.target.value);
-                }}
+                onChange={handleInputChange}
                 placeholder="Document Type Name"
                 value={documentTypeName}
                 required={requiredFields["documentTypeName"]}
