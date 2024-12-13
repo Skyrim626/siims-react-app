@@ -53,7 +53,16 @@ const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
 }));
 
 const DynamicDataGrid = React.memo(
-  ({ rows, setRows, columns, url, pageSizeOptions = [5, 10, 15] }) => {
+  ({
+    rows,
+    setRows,
+    columns,
+    url,
+    pageSizeOptions = [5, 10, 15],
+    // Search Props
+    searchPlaceholder = "Search Something",
+    allowSearch = true,
+  }) => {
     const [totalCount, setTotalCount] = useState(0); // Total count of records
     const [loading, setLoading] = useState(true); // Loading state
     const [searchInput, setSearchInput] = useState(""); // Current value in the input field
@@ -136,17 +145,20 @@ const DynamicDataGrid = React.memo(
             />
           </div>
 
-          <div className="p-2 w-[300px] rounded-full border border-blue-950 flex items-center space-x-3 bg-white">
-            <Search size={20} />
-            <Input
-              type="text"
-              placeholder="Search Document Types"
-              value={searchInput}
-              onChange={handleSearchInputChange} // Update input field only
-              className={"bg-transparent w-full outline-none"}
-              onKeyDown={handleSearchKeyDown} // Trigger search on Enter key press
-            />
-          </div>
+          {/* If allowSearch is true then display the Search Input */}
+          {allowSearch && (
+            <div className="p-2 w-[300px] rounded-full border border-blue-950 flex items-center space-x-3 bg-white">
+              <Search size={20} />
+              <Input
+                type="text"
+                placeholder={searchPlaceholder}
+                value={searchInput}
+                onChange={handleSearchInputChange} // Update input field only
+                className={"bg-transparent w-full outline-none"}
+                onKeyDown={handleSearchKeyDown} // Trigger search on Enter key press
+              />
+            </div>
+          )}
         </div>
 
         {/* DataGrid component */}
@@ -178,6 +190,10 @@ const DynamicDataGrid = React.memo(
                 ".MuiSvgIcon-root": {
                   color: "white",
                 },
+              },
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: "#1976d2", // Set your desired background color
+                color: "#fff", // Optional: Set the text color
               },
               // Custom styles for sorting icon and sorting menu
               "& .MuiDataGrid-sortIcon": {

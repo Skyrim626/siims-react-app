@@ -218,6 +218,7 @@ const ViewDocumentTypePage = ({ authorizeRole }) => {
       />
 
       <DynamicDataGrid
+        searchPlaceholder={"Search Roles"}
         rows={rows}
         setRows={setRows}
         columns={columns}

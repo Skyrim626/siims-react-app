@@ -21,17 +21,15 @@ import AdminManageRolesPage from "../../pages/admin/AdminManageRolesPage"; // Im
 import AdminManageCompaniesPage from "../../pages/admin/AdminManageCompaniesPage"; // Importing the page to manage companies
 import AdminManageOfficesPage from "../../pages/admin/AdminManageOfficesPage";
 import AdminManageProgramsPage from "../../pages/admin/AdminManageProgramsPage";
-import AdminManageDocumentTypesPage from "../../pages/admin/AdminManageDocumentTypesPage";
 import AdminManageCompanyOfficesPage from "../../pages/admin/manage-users/AdminManageCompanyOfficesPage";
-import AdminMessagingPage from "../../pages/admin/AdminMessagingPage";
 import ChatLayout from "../../components/layouts/ChatLayout";
 import AdminManageStudentsPage from "../../pages/admin/AdminManageStudentsPage";
 import AdminManageCoordinatorsPage from "../../pages/admin/AdminManageCoordinatorsPage";
 import ChatWindow from "../../components/messaging/ChatWindow";
-import TestChatWindow from "../../components/messaging/TestChatWindow";
 import TestingPage from "../../pages/TestingPage";
 import AdminViewLogsPage from "../../pages/admin/AdminViewLogsPage";
 import ViewDocumentTypePage from "../../pages/ViewDocumentTypesPage";
+import ViewRolesPage from "../../pages/ViewRolesPage";
 
 // Define routes for the Admin section
 const AdminRoutes = {
@@ -168,32 +166,7 @@ const AdminRoutes = {
     },
     {
       path: "roles", // Route for managing user roles
-      element: <AdminManageRolesPage />,
-      loader: async () => {
-        try {
-          /**
-           * Responses
-           */
-          const userRoleResponse = await axiosClient.get(
-            "/api/v1/roles/user-roles"
-          );
-
-          /**
-           * Variables
-           */
-          const userRoles = userRoleResponse.data;
-
-          /**
-           * Return
-           */
-          return { userRoles }; // Return both as an object
-        } catch (error) {
-          console.error("Error fetching user roles: ", error);
-          return {
-            userRoles: [],
-          };
-        }
-      },
+      element: <ViewRolesPage />,
     },
     {
       path: "colleges", // Route for managing colleges

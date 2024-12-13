@@ -2,7 +2,6 @@ import { Navigate, Outlet } from "react-router-dom";
 import OsaLayout from "../../components/layouts/OsaLayout";
 import ProtectedRoute from "../handlers/ProtectedRoute";
 import OsaDashboardPage from "../../pages/osa/OsaDashboardPage";
-import OsaManageDocumentTypesPage from "../../pages/osa/OsaManageDocumentTypesPage";
 import axiosClient from "../../api/axiosClient";
 import OsaManageApplicantsPage from "../../pages/osa/OsaManageApplicantsPage";
 import OsaManageApplicantApplication from "../../pages/osa/OsaManageApplicantApplication";
