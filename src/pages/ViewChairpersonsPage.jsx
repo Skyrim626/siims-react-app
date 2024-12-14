@@ -1,24 +1,21 @@
 import React, { useEffect, useMemo, useState } from "react";
-import Loader from "../components/common/Loader";
 import DynamicDataGrid from "../components/tables/DynamicDataGrid";
 import { Button } from "@headlessui/react";
 import ManageHeader from "../components/common/ManageHeader";
+import Loader from "../components/common/Loader";
 import FormModal from "../components/modals/FormModal";
-import DeanForm from "../components/forms/DeanForm";
 import useForm from "../hooks/useForm";
-import { getRequest } from "../api/apiHelpers";
+import ChairpersonForm from "../components/forms/ChairpersonForm";
 import useRequest from "../hooks/useRequest";
+import { getRequest } from "../api/apiHelpers";
 import DeleteConfirmModal from "../components/modals/DeleteConfirmModal";
 
-/**
- * Roles Allowed: Admin
- */
-const ViewDeansPage = () => {
+const ViewChairpersonsPage = () => {
   // Loading State
   const [loading, setLoading] = useState(false);
 
   // Container State for Lists
-  const [listOfColleges, setListOfColleges] = useState([]);
+  const [listOfPrograms, setListOfPrograms] = useState([]);
 
   // Row State
   const [rows, setRows] = useState([]);
@@ -29,7 +26,7 @@ const ViewDeansPage = () => {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   // Select State
-  const [selectedDean, setSelectedDean] = useState({});
+  const [selectedChairperson, setSelectedChairperson] = useState({});
 
   // Use the useForm hook to manage form data
   const { formData, handleInputChange, resetForm, setFormValues } = useForm({
@@ -46,7 +43,8 @@ const ViewDeansPage = () => {
     cityMunicipality: "",
     province: "",
     postalCode: "",
-    collegeId: "",
+    programId: "",
+    allowCoordinator: false,
   });
 
   /**
@@ -64,12 +62,14 @@ const ViewDeansPage = () => {
   });
 
   /**
-   * Function that adds new dean
+   * Function that adds a new chairperson
    */
-  const addDean = () => {
+  const addChairperson = () => {
+    // console.log(formData);
+
     // POST METHOD
     postData({
-      url: "/users/deans",
+      url: "/users/chairpersons",
       payload: {
         id: formData.id,
         password: formData.password,
@@ -84,19 +84,20 @@ const ViewDeansPage = () => {
         city_municipality: formData.cityMunicipality,
         province: formData.province,
         postal_code: formData.postalCode,
-        college_id: formData.collegeId,
+        program_id: formData.programId,
+        allow_coordinator: formData.allowCoordinator,
       },
       resetForm: resetForm,
     });
   };
 
   /**
-   * Function that updates a dean
+   * Function that updates a chairperson
    */
-  const updateDean = () => {
+  const updateChairperson = () => {
     // PUT METHOD
     putData({
-      url: `/users/deans/${selectedDean["id"]}`,
+      url: `/users/chairpersons/${selectedChairperson["id"]}`,
       payload: {
         first_name: formData.firstName,
         middle_name: formData.middleName,
@@ -109,9 +110,8 @@ const ViewDeansPage = () => {
         city_municipality: formData.cityMunicipality,
         province: formData.province,
         postal_code: formData.postalCode,
-        college_id: formData.collegeId,
       },
-      selectedData: selectedDean,
+      selectedData: selectedChairperson,
       setIsOpen: setEditIsOpen,
       resetForm: resetForm,
     });
@@ -122,7 +122,7 @@ const ViewDeansPage = () => {
    */
   const handleEditModal = (row) => {
     // Set Select State
-    setSelectedDean(row);
+    setSelectedChairperson(row);
 
     // console.log(row);
 
@@ -139,7 +139,6 @@ const ViewDeansPage = () => {
       cityMunicipality: row.city_municipality,
       province: row.province,
       postalCode: row.postal_code,
-      collegeId: row.college_id,
     });
 
     // Open Edit Modal
@@ -149,11 +148,11 @@ const ViewDeansPage = () => {
   /**
    * Function that deletes a dean
    */
-  const deleteDean = () => {
+  const deleteChairperson = () => {
     // DELETE METHOD
     deleteData({
-      url: `/users/deans/${selectedDean["id"]}`,
-      id: selectedDean["id"],
+      url: `/users/chairpersons/${selectedChairperson["id"]}`,
+      id: selectedChairperson["id"],
       setIsDeleteOpen: setIsDeleteOpen,
     });
   };
@@ -163,7 +162,7 @@ const ViewDeansPage = () => {
    */
   const handleDeleteModal = (row) => {
     // Set Select State
-    setSelectedDean(row);
+    setSelectedChairperson(row);
 
     // Open Delete Modal
     setIsDeleteOpen(true);
@@ -202,17 +201,22 @@ const ViewDeansPage = () => {
         width: 250,
         headerClassName: "super-app-theme--header",
       },
-
-      {
-        field: "college_name",
-        headerName: "College Assigned",
-        width: 300,
-        headerClassName: "super-app-theme--header",
-      },
       {
         field: "email_verified_at",
         headerName: "Email Verified At",
         width: 250,
+        headerClassName: "super-app-theme--header",
+      },
+      {
+        field: "program",
+        headerName: "Program Assigned",
+        width: 300,
+        headerClassName: "super-app-theme--header",
+      },
+      {
+        field: "college",
+        headerName: "College",
+        width: 300,
         headerClassName: "super-app-theme--header",
       },
       {
@@ -323,17 +327,17 @@ const ViewDeansPage = () => {
   // Loads the lists using UseEffect
   useEffect(() => {
     // Fetch Needed Data for Lists in Select
-    const fetchListOfCollege = async () => {
+    const fetchListOfPrograms = async () => {
       // Set Loading
       setLoading(true);
 
       try {
-        const listOfCollegesResponse = await getRequest({
-          url: "/api/v1/colleges/lists",
+        const listOfProgramsResponse = await getRequest({
+          url: "/api/v1/programs/lists",
         });
 
         // Set State
-        setListOfColleges(listOfCollegesResponse);
+        setListOfPrograms(listOfProgramsResponse);
       } catch (error) {
         console.log(error);
       } finally {
@@ -341,7 +345,7 @@ const ViewDeansPage = () => {
       }
     };
 
-    fetchListOfCollege(); // Call Function
+    fetchListOfPrograms(); // Call Function
   }, []);
 
   return (
@@ -351,17 +355,17 @@ const ViewDeansPage = () => {
         <ManageHeader
           isOpen={isOpen}
           setIsOpen={setIsOpen}
-          addPlaceholder="Add New Dean"
+          addPlaceholder="Add New Chairperson"
           showExportButton={false}
           showImportButton={false}
         />
 
         <DynamicDataGrid
-          searchPlaceholder={"Search Dean"}
+          searchPlaceholder={"Search Chairperson"}
           rows={rows}
           setRows={setRows}
           columns={columns}
-          url={"/users/deans"}
+          url={"/users/chairpersons"}
         />
 
         {/* Modals */}
@@ -369,30 +373,32 @@ const ViewDeansPage = () => {
         <FormModal
           isOpen={isOpen}
           setIsOpen={setIsOpen}
-          modalTitle="Add Dean"
-          onSubmit={addDean}
+          modalTitle="Add Chairperson"
+          onSubmit={addChairperson}
         >
-          <DeanForm
+          <ChairpersonForm
             method="post"
-            colleges={listOfColleges}
-            deanInfo={formData}
-            handleDeanInfoChange={handleInputChange}
+            chairpersonInfo={formData}
+            handleChairpersonInfoChange={handleInputChange}
             requiredFields={{
               id: true,
               password: true,
               first_name: true,
               middle_name: false,
               last_name: false,
+              phone_number: false,
               email: true,
               gender: false,
-              phone_number: false,
+              phoneNumber: false,
               street: false,
               barangay: false,
-              city_municipality: false,
+              cityMunicipality: false,
               province: false,
-              postal_code: false,
-              college_id: true,
+              postalCode: false,
+              allow_coordinator: false,
+              program_id: false,
             }}
+            programs={listOfPrograms}
             errors={validationErrors}
           />
         </FormModal>
@@ -401,28 +407,32 @@ const ViewDeansPage = () => {
         <FormModal
           isOpen={isEditOpen}
           setIsOpen={setEditIsOpen}
-          modalTitle="Edit Dean"
-          onSubmit={updateDean}
+          modalTitle="Edit Chairperson"
+          onSubmit={updateChairperson}
         >
-          <DeanForm
+          <ChairpersonForm
             method="put"
-            colleges={listOfColleges}
-            deanInfo={formData}
-            handleDeanInfoChange={handleInputChange}
+            chairpersonInfo={formData}
+            handleChairpersonInfoChange={handleInputChange}
             requiredFields={{
+              id: false,
+              password: false,
               first_name: true,
               middle_name: false,
               last_name: false,
+              phone_number: false,
               email: true,
               gender: false,
-              phone_number: false,
+              phoneNumber: false,
               street: false,
               barangay: false,
-              city_municipality: false,
+              cityMunicipality: false,
               province: false,
-              postal_code: false,
-              college_id: true,
+              postalCode: false,
+              allow_coordinator: false,
+              program_id: false,
             }}
+            programs={listOfPrograms}
             errors={validationErrors}
           />
         </FormModal>
@@ -431,13 +441,13 @@ const ViewDeansPage = () => {
         <DeleteConfirmModal
           open={isDeleteOpen}
           setOpen={setIsDeleteOpen}
-          title="Delete Dean"
-          message="Are you sure you want to delete this Dean?"
-          handleDelete={deleteDean}
+          title="Delete chairperson"
+          message="Are you sure you want to delete this chairperson?"
+          handleDelete={deleteChairperson}
         />
       </div>
     </>
   );
 };
 
-export default ViewDeansPage;
+export default ViewChairpersonsPage;

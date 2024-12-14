@@ -32,6 +32,7 @@ import ViewCollegesPage from "../../pages/ViewCollegesPage";
 import ViewProgramsPage from "../../pages/ViewProgramsPage";
 import ViewUsersPage from "../../pages/ViewUsersPage";
 import ViewDeansPage from "../../pages/ViewDeansPage";
+import ViewChairpersonsPage from "../../pages/ViewChairpersonsPage";
 
 // Define routes for the Admin section
 const AdminRoutes = {
@@ -241,6 +242,10 @@ const AdminRoutes = {
           element: <ViewDeansPage />,
         },
         {
+          path: "chairpersons",
+          element: <ViewChairpersonsPage />,
+        },
+        {
           path: "coordinators",
           element: <AdminManageCoordinatorsPage />,
           loader: async () => {
@@ -278,8 +283,9 @@ const AdminRoutes = {
             }
           },
         },
+
         {
-          path: "chairpersons", // Route for managing chairpersons
+          path: "test/chairpersons", // Route for managing chairpersons
           element: <AdminManageChairpersonsPage />,
           loader: async () => {
             try {

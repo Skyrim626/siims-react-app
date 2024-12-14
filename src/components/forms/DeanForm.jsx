@@ -32,7 +32,7 @@ const DeanForm = ({
   requiredFields = {
     id: true,
     password: true,
-    first_name: false,
+    first_name: true,
     middle_name: false,
     last_name: false,
     email: true,

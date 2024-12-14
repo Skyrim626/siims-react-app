@@ -2,135 +2,148 @@ import React from "react";
 import LoginFields from "../fields/LoginFields";
 import BasicInformationFields from "./fields/BasicInformationFields";
 import Heading from "../common/Heading";
-import { Select, Switch } from "@headlessui/react";
+import { Input, Select, Switch } from "@headlessui/react";
 import FormField from "../common/FormField";
+import LoginInfoFields from "./fields/LoginInfoFields";
+import PersonalInfoFields from "./fields/PersonalInfoFields";
+import AddressInfoFields from "./fields/AddressInfoFields";
+import Text from "../common/Text";
 
 const ChairpersonForm = ({
-  id,
-  password,
-  firstName,
-  middleName,
-  lastName,
-  email,
-  phoneNumber,
-  programId,
-  setId,
-  setPassword,
-  setFirstName,
-  setMiddleName,
-  setLastName,
-  setEmail,
-  setPhoneNumber,
-  setProgramId,
+  method = "post",
+  chairpersonInfo = {
+    id: "",
+    password: "",
+    firstName: "",
+    middleName: "",
+    lastName: "",
+    email: "",
+    gender: "",
+    phoneNumber: "",
+    street: "",
+    barangay: "",
+    cityMunicipality: "",
+    province: "",
+    postalCode: "",
+    programId: "",
+    allowCoordinator: false,
+  },
+  handleChairpersonInfoChange,
+  handleSubmit = () => console.log("Testing"),
   requiredFields = {
-    id: false,
-    password: false,
-    firstName: false,
-    middleName: false,
-    lastName: false,
+    id: true,
+    password: true,
+    first_name: true,
+    middle_name: false,
+    last_name: false,
+    phone_number: false,
+    email: true,
+    gender: false,
     phoneNumber: false,
-    email: false,
-    programId: false,
+    street: false,
+    barangay: false,
+    cityMunicipality: false,
+    province: false,
+    postalCode: false,
+    allow_coordinator: false,
+    program_id: false,
   },
   programs = [],
-  errors,
-  isCheckAllowCoordinator,
-  setIsCheckAllowCoordinator,
+  errors = {},
 }) => {
   return (
-    <div>
-      <div className="flex flex-col space-y-3">
-        <LoginFields
-          id={id}
-          password={password}
-          setId={setId}
-          setPassword={setPassword}
-        />
-
-        {/* Allow Coordinator Creation Information */}
-
-        <div className="mt-6">
-          <Heading
-            level={5}
-            color="black"
-            text={"Allow Coordinator"}
-            className="border-l-2 rounded-lg border-blue-700 px-3 font-bold text-md"
+    <>
+      <form className="space-y-3">
+        {method !== "put" && (
+          <LoginInfoFields
+            info={chairpersonInfo}
+            handleInfoChange={handleChairpersonInfoChange}
+            requiredFields={requiredFields}
+            errors={errors}
           />
+        )}
 
-          <div className="grid grid-cols-3 gap-4 mt-4">
-            <Switch
-              checked={isCheckAllowCoordinator}
-              onChange={setIsCheckAllowCoordinator}
-              className={`${
-                isCheckAllowCoordinator ? "bg-blue-500" : "bg-gray-300"
-              } relative inline-flex h-6 w-11 items-center rounded-full transition`}
-            >
-              <span
-                className={`${
-                  isCheckAllowCoordinator ? "translate-x-6" : "translate-x-1"
-                } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-              />
-            </Switch>
-          </div>
-        </div>
-
-        <BasicInformationFields
-          firstName={firstName}
-          middleName={middleName}
-          lastName={lastName}
-          email={email}
-          phoneNumber={phoneNumber}
-          setFirstName={setFirstName}
-          setMiddleName={setMiddleName}
-          setLastName={setLastName}
-          setEmail={setEmail}
-          setPhoneNumber={setPhoneNumber}
+        <PersonalInfoFields
+          personalInfo={chairpersonInfo}
+          handlePersonalInfoChange={handleChairpersonInfoChange}
           requiredFields={requiredFields}
           errors={errors}
         />
 
-        {/* Program Assign */}
-        <div className="mt-6">
-          <Heading
-            level={5}
-            color="black"
-            text={"Program Assign"}
-            className="border-l-2 rounded-lg border-blue-700 px-3 font-bold text-md"
-          />
-          <div className="mt-4">
-            <FormField
-              label={"Chairperson Assign"}
-              name={"programId"}
-              labelClassName="text-sm text-black font-semibold"
-              required={requiredFields["programId"]}
-            >
-              <Select
-                typeof="text"
-                className="outline-none text-black rounded-sm p-2 text-sm"
-                name="programId"
-                onChange={(e) => {
-                  setProgramId(e.target.value);
-                }}
-                value={programId}
-                required={requiredFields["programId"]}
-              >
-                <option value="">-Program Assign-</option>
-                {programs.map((program) => {
-                  return (
-                    <option key={program.id} value={program.id}>
-                      {program.name} | {program.program}
-                    </option>
-                  );
-                })}
-              </Select>
-              {errors.program_id && (
-                <Text className="text-red-500">{errors.program_id[0]}</Text>
-              )}
-            </FormField>
+        <AddressInfoFields
+          addressInfo={chairpersonInfo}
+          handleAddressInfoChange={handleChairpersonInfoChange}
+          errors={errors}
+        />
+
+        {/* Chairperson Information: Display if method is POST */}
+        {method === "post" && (
+          <div>
+            <Heading
+              level={5}
+              color="black"
+              text={"Chairperson Information"}
+              className="border-l-2 rounded-lg border-blue-700 px-3 font-bold text-md"
+            />
+            <div className="flex flex-col">
+              <div className="grid grid-cols-3 gap-2 mt-4">
+                <div className="flex items-center space-x-3">
+                  <Input
+                    type="checkbox"
+                    name="allowCoordinator"
+                    checked={chairpersonInfo.allowCoordinator}
+                    onChange={handleChairpersonInfoChange}
+                    className="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  />
+                  <Text className="text-sm font-bold">Allow Coordinator</Text>
+                </div>
+
+                {/* Chairperson Program Assign */}
+                <div>
+                  <FormField
+                    label={"Program Assign"}
+                    name={"programId"}
+                    labelClassName="text-sm text-black font-semibold"
+                    required={requiredFields["program_id"]}
+                  >
+                    <Select
+                      name="programId"
+                      className="border data-[hover]:shadow data-[focus]:bg-blue-100 h-full outline-none p-2"
+                      aria-label="Select program"
+                      onChange={handleChairpersonInfoChange}
+                      value={chairpersonInfo.programId}
+                      required={requiredFields["program_id"]}
+                    >
+                      <option value="">-Select a Program-</option>
+                      {programs.map((program) => {
+                        return (
+                          <option
+                            key={program.id}
+                            value={program.id}
+                            className={`${
+                              program.chairperson_id &&
+                              "text-blue-700 font-bold cursor-not-allowed"
+                            }`}
+                            disabled={program.chairperson_id}
+                          >
+                            {program.chairperson_id
+                              ? `Occupied | ${program.name}`
+                              : program.name}
+                          </option>
+                        );
+                      })}
+                    </Select>
+                  </FormField>
+                  {errors.program_id && (
+                    <Text className="text-red-500">{errors.program_id[0]}</Text>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
+        )}
+      </form>
+    </>
   );
 };
 
