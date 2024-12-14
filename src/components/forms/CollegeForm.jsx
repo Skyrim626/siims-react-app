@@ -9,8 +9,7 @@ const CollegeForm = ({
   method = "post",
   collegeName = "",
   deanId = "",
-  setCollegeName = () => {},
-  setDeanId = () => {},
+  handleInputChange,
   requiredFields = {
     collegeName: true,
     deanId: false,
@@ -41,9 +40,7 @@ const CollegeForm = ({
                 type="text"
                 className="outline-none text-black rounded-sm p-2 text-sm"
                 name="collegeName"
-                onChange={(e) => {
-                  setCollegeName(e.target.value);
-                }}
+                onChange={handleInputChange}
                 placeholder="College Name"
                 value={collegeName}
                 required={requiredFields["collegeName"]}
@@ -63,9 +60,7 @@ const CollegeForm = ({
                 <Select
                   name="deanId"
                   value={deanId}
-                  onChange={(e) => {
-                    setDeanId(e.target.value);
-                  }}
+                  onChange={handleInputChange}
                   className="outline-none text-black rounded-sm p-2 text-sm"
                 >
                   <option value="">Select Dean (Optional)</option>

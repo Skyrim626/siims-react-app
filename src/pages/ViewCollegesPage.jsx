@@ -1,23 +1,26 @@
-import React, { useCallback, useMemo, useState } from "react";
-import DynamicDataGrid from "../components/tables/DynamicDataGrid";
+import React, { useMemo, useState } from "react";
+import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
 import Page from "../components/common/Page";
 import Section from "../components/common/Section";
 import Heading from "../components/common/Heading";
 import Text from "../components/common/Text";
-import ManageHeader from "../components/common/ManageHeader";
-import FormModal from "../components/modals/FormModal";
-import DocumentTypeForm from "../components/forms/DocumentTypeForm";
-import useForm from "../hooks/useForm";
-import useRequest from "../hooks/useRequest";
 import Loader from "../components/common/Loader";
+import useRequest from "../hooks/useRequest";
+import ManageHeader from "../components/common/ManageHeader";
+import DynamicDataGrid from "../components/tables/DynamicDataGrid";
 import { Button } from "@headlessui/react";
-import { debounce } from "@mui/material";
+import FormModal from "../components/modals/FormModal";
+import CollegeForm from "../components/forms/CollegeForm";
+import useForm from "../hooks/useForm";
 import DeleteConfirmModal from "../components/modals/DeleteConfirmModal";
 
-/**
- * Role Allowed: Admin, OSA
- */
-const ViewDocumentTypePage = ({ authorizeRole }) => {
+const ViewCollegesPage = () => {
+  // Use Loader Data
+  const { list_of_deans } = useLoaderData();
+  // Navigate and Location
+  const navigate = useNavigate();
+  const location = useLocation();
+
   // Row state
   const [rows, setRows] = useState([]);
 
@@ -27,11 +30,12 @@ const ViewDocumentTypePage = ({ authorizeRole }) => {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   // Select State
-  const [selectedDocumentType, setSelectedDocumentType] = useState({});
+  const [selectedCollege, setSelectedCollege] = useState({});
 
   // Use the useForm hook to manage form data
   const { formData, handleInputChange, resetForm, setFormValues } = useForm({
-    documentTypeName: "",
+    collegeName: "",
+    deanId: "",
   });
 
   /**
@@ -49,33 +53,30 @@ const ViewDocumentTypePage = ({ authorizeRole }) => {
   });
 
   /**
-   * Function that adds a new document type
+   * Function that adds new college
    */
-  const addDocumentType = () => {
-    // Ready Payload
-    const payload = {
-      name: formData.documentTypeName,
-    };
-
+  const addNewCollege = () => {
     // POST METHOD
     postData({
-      url: "/document-types",
-      payload: payload,
+      url: "/colleges",
+      payload: {
+        name: formData.collegeName,
+      },
       resetForm: resetForm,
     });
   };
 
   /**
-   * Function that updates a document type
+   * Function that updates a college
    */
-  const updateDocumentType = () => {
-    // UPDATE METHOD
+  const updateCollege = () => {
     putData({
-      url: `/document-types/${selectedDocumentType["id"]}`,
+      url: `/colleges/${selectedCollege["id"]}`,
       payload: {
-        name: formData.documentTypeName,
+        name: formData.collegeName,
+        dean_id: formData.deanId,
       },
-      selectedData: selectedDocumentType,
+      selectedData: selectedCollege,
       setIsOpen: setIsEditOpen,
       resetForm: resetForm,
     });
@@ -85,14 +86,12 @@ const ViewDocumentTypePage = ({ authorizeRole }) => {
    * Function that opens a modal for edit
    */
   const handleEditModal = (row) => {
-    // console.log(row);
-
     // Set Select State
-    setSelectedDocumentType(row);
+    setSelectedCollege(row);
 
     // Set Form Values
     setFormValues({
-      documentTypeName: row.name,
+      collegeName: row.name,
     });
 
     // Open Edit Modal
@@ -100,13 +99,13 @@ const ViewDocumentTypePage = ({ authorizeRole }) => {
   };
 
   /**
-   * Function that deletes a document type
+   * Function that deletes a college
    */
-  const deleteDocumentType = () => {
+  const deleteCollege = () => {
     // DELETE METHOD
     deleteData({
-      url: `/document-types/${selectedDocumentType["id"]}`,
-      id: selectedDocumentType["id"],
+      url: `/colleges/${selectedCollege["id"]}`,
+      id: selectedCollege["id"],
       setIsDeleteOpen: setIsDeleteOpen,
     });
   };
@@ -116,7 +115,7 @@ const ViewDocumentTypePage = ({ authorizeRole }) => {
    */
   const handleDeleteModal = (row) => {
     // Set Select State
-    setSelectedDocumentType(row);
+    setSelectedCollege(row);
 
     // Open Delete Modal
     setIsDeleteOpen(true);
@@ -132,8 +131,20 @@ const ViewDocumentTypePage = ({ authorizeRole }) => {
         headerClassName: "super-app-theme--header",
       },
       {
+        field: "dean_id",
+        headerName: "Dean ID",
+        width: 300,
+        headerClassName: "super-app-theme--header",
+      },
+      {
         field: "name",
-        headerName: "Document Type",
+        headerName: "College Name",
+        width: 300,
+        headerClassName: "super-app-theme--header",
+      },
+      {
+        field: "email",
+        headerName: "Email",
         width: 300,
         headerClassName: "super-app-theme--header",
       },
@@ -176,20 +187,18 @@ const ViewDocumentTypePage = ({ authorizeRole }) => {
           </Button>
 
           {/* Delete is only allowed for Admin */}
-          {authorizeRole === "admin" && (
-            <Button
-              className="bg-red-500 hover:bg-red-600 text-white py-1 px-4 rounded"
-              onClick={() => handleDeleteModal(params.row)}
-            >
-              Delete
-            </Button>
-          )}
+          <Button
+            className="bg-red-500 hover:bg-red-600 text-white py-1 px-4 rounded"
+            onClick={() => handleDeleteModal(params.row)}
+          >
+            Delete
+          </Button>
         </div>
       ),
       sortable: false, // Prevent sorting for the actions column
       filterable: false, // Prevent filtering for the actions column
     }),
-    [authorizeRole]
+    []
   );
 
   const columns = useMemo(
@@ -200,11 +209,10 @@ const ViewDocumentTypePage = ({ authorizeRole }) => {
   return (
     <Page>
       <Loader loading={loading} />
-
       <Section>
-        <Heading level={3} text="Document Types" />
+        <Heading level={3} text="Manage Colleges" />
         <Text className="text-md text-blue-950">
-          This is where you manage the document types.
+          This is where you manage the colleges.
         </Text>
         <hr className="my-3" />
       </Section>
@@ -212,42 +220,47 @@ const ViewDocumentTypePage = ({ authorizeRole }) => {
       <ManageHeader
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        addPlaceholder="Add New Document Type"
+        addPlaceholder="Add New College"
         showExportButton={false}
         showImportButton={false}
       />
 
       <DynamicDataGrid
-        searchPlaceholder={"Search Roles"}
+        searchPlaceholder={"Search Colleges"}
         rows={rows}
         setRows={setRows}
         columns={columns}
-        url={"/document-types"}
+        url={"/colleges"}
       />
 
-      {/* Modals */}
+      {/* Form Modal */}
+      {/* Add Form Modal */}
       <FormModal
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        modalTitle="Add Document Type"
-        onSubmit={addDocumentType}
+        modalTitle="Add College"
+        onSubmit={addNewCollege}
       >
-        <DocumentTypeForm
-          documentTypeName={formData.documentTypeName}
+        <CollegeForm
+          collegeName={formData.collegeName}
           handleInputChange={handleInputChange}
           errors={validationErrors}
         />
       </FormModal>
 
+      {/* Edit Form Modal */}
       <FormModal
         isOpen={isEditOpen}
         setIsOpen={setIsEditOpen}
-        modalTitle="Edit Document Type"
-        onSubmit={updateDocumentType}
+        modalTitle="Edit College"
+        onSubmit={updateCollege}
       >
-        <DocumentTypeForm
-          documentTypeName={formData.documentTypeName}
+        <CollegeForm
+          method="put"
+          collegeName={formData.collegeName}
+          deanId={formData.deanId}
           handleInputChange={handleInputChange}
+          deans={list_of_deans}
           errors={validationErrors}
         />
       </FormModal>
@@ -256,12 +269,12 @@ const ViewDocumentTypePage = ({ authorizeRole }) => {
       <DeleteConfirmModal
         open={isDeleteOpen}
         setOpen={setIsDeleteOpen}
-        title="Delete document Type"
-        message="Are you sure you want to archive a document type?"
-        handleDelete={deleteDocumentType}
+        title="Delete college"
+        message="Are you sure you want to archive a college?"
+        handleDelete={deleteCollege}
       />
     </Page>
   );
 };
 
-export default ViewDocumentTypePage;
+export default ViewCollegesPage;

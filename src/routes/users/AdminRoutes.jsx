@@ -30,6 +30,7 @@ import TestingPage from "../../pages/TestingPage";
 import AdminViewLogsPage from "../../pages/admin/AdminViewLogsPage";
 import ViewDocumentTypePage from "../../pages/ViewDocumentTypesPage";
 import ViewRolesPage from "../../pages/ViewRolesPage";
+import ViewCollegesPage from "../../pages/ViewCollegesPage";
 
 // Define routes for the Admin section
 const AdminRoutes = {
@@ -170,6 +171,36 @@ const AdminRoutes = {
     },
     {
       path: "colleges", // Route for managing colleges
+      element: <ViewCollegesPage />,
+      loader: async () => {
+        try {
+          /**
+           * Responses
+           */
+          const deanResponse = await axiosClient.get(
+            "/api/v1/users/deans/including-colleges"
+          );
+
+          /**
+           * Variables
+           */
+          const list_of_deans = deanResponse.data;
+
+          /**
+           * Return
+           */
+          return { list_of_deans };
+        } catch (error) {
+          console.error("Error fetching colleges: ", error);
+
+          return {
+            list_of_deans: [],
+          };
+        }
+      },
+    },
+    {
+      path: "test/colleges", // Route for managing colleges
       element: <AdminManageCollegesPage />,
       loader: async () => {
         try {
