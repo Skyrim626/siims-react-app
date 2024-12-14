@@ -30,6 +30,8 @@ import ViewDocumentTypePage from "../../pages/ViewDocumentTypesPage";
 import ViewRolesPage from "../../pages/ViewRolesPage";
 import ViewCollegesPage from "../../pages/ViewCollegesPage";
 import ViewProgramsPage from "../../pages/ViewProgramsPage";
+import ViewUsersPage from "../../pages/ViewUsersPage";
+import ViewDeansPage from "../../pages/ViewDeansPage";
 
 // Define routes for the Admin section
 const AdminRoutes = {
@@ -229,11 +231,14 @@ const AdminRoutes = {
     {
       path: "users", // Base path for user management
       element: <AdminManageUserSelection />, // Render user selection component
-
       children: [
         {
           index: true, // Default route for user management
-          element: <AdminManageUsersPage />, // Render the users management page
+          element: <ViewUsersPage />, // Render the users management page
+        },
+        {
+          path: "deans", // Route for managing deans
+          element: <ViewDeansPage />,
         },
         {
           path: "coordinators",
@@ -305,37 +310,7 @@ const AdminRoutes = {
             }
           },
         },
-        {
-          path: "deans", // Route for managing deans
-          element: <AdminManageDeansPage />,
-          loader: async () => {
-            try {
-              /**
-               * Responses
-               */
-              const collegeResponse = await axiosClient.get(
-                "/api/v1/colleges/lists"
-              );
 
-              /**
-               * Variables
-               */
-              const colleges = collegeResponse.data;
-
-              /**
-               * Return
-               */
-              return {
-                colleges,
-              };
-            } catch (error) {
-              console.log(error);
-              return {
-                colleges: [],
-              };
-            }
-          },
-        },
         {
           path: "students",
           element: <AdminManageStudentsPage />,

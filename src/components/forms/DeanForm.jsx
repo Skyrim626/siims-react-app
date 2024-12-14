@@ -5,6 +5,7 @@ import AddressInfoFields from "./fields/AddressInfoFields";
 import Heading from "../common/Heading";
 import FormField from "../common/FormField";
 import { Button, Select } from "@headlessui/react";
+import Text from "../common/Text";
 
 const DeanForm = ({
   colleges = [],
@@ -13,18 +14,18 @@ const DeanForm = ({
   deanInfo = {
     id: "",
     password: "",
-    first_name: "",
-    middle_name: "",
-    last_name: "",
+    firstName: "",
+    middleName: "",
+    lastName: "",
     email: "",
     gender: "",
-    phone_number: "",
+    phoneNumber: "",
     street: "",
     barangay: "",
-    city_municipality: "",
+    cityMunicipality: "",
     province: "",
-    postal_code: "",
-    college_id: "",
+    postalCode: "",
+    collegeId: "",
   },
   handleDeanInfoChange,
   handleSubmit = () => console.log("Testing"),
@@ -44,25 +45,31 @@ const DeanForm = ({
     postal_code: false,
     college_id: true,
   },
+  errors = {},
 }) => {
   return (
     <>
       <form className="space-y-3" onSubmit={handleSubmit}>
-        <LoginInfoFields
-          info={deanInfo}
-          handleInfoChange={handleDeanInfoChange}
-          requiredFields={requiredFields}
-        />
+        {method !== "put" && (
+          <LoginInfoFields
+            info={deanInfo}
+            handleInfoChange={handleDeanInfoChange}
+            requiredFields={requiredFields}
+            errors={errors}
+          />
+        )}
 
         <PersonalInfoFields
           personalInfo={deanInfo}
           handlePersonalInfoChange={handleDeanInfoChange}
           requiredFields={requiredFields}
+          errors={errors}
         />
 
         <AddressInfoFields
           addressInfo={deanInfo}
           handleAddressInfoChange={handleDeanInfoChange}
+          errors={errors}
         />
 
         <div>
@@ -74,40 +81,45 @@ const DeanForm = ({
           />
           <div className="flex flex-col">
             <div className="grid grid-cols-3 gap-2 mt-4">
-              <FormField
-                label={"College"}
-                name={"college_id"}
-                labelClassName="text-sm text-black font-semibold"
-                required={requiredFields["college_id"]}
-              >
-                <Select
-                  name="college_id"
-                  className="border data-[hover]:shadow data-[focus]:bg-blue-100 h-full outline-none p-2"
-                  aria-label="Select college"
-                  onChange={handleDeanInfoChange}
+              <div>
+                <FormField
+                  label={"College"}
+                  name={"collegeId"}
+                  labelClassName="text-sm text-black font-semibold"
                   required={requiredFields["college_id"]}
-                  value={deanInfo.college_id}
                 >
-                  <option value="">-Select a College-</option>
-                  {colleges.map((college) => {
-                    return (
-                      <option
-                        key={college.id}
-                        value={college.id}
-                        className={`${
-                          college.dean_id &&
-                          "text-blue-700 font-bold cursor-not-allowed"
-                        }`}
-                        disabled={college.dean_id}
-                      >
-                        {college.dean_id
-                          ? `Occupied | ${college.name}`
-                          : college.name}
-                      </option>
-                    );
-                  })}
-                </Select>
-              </FormField>
+                  <Select
+                    name="collegeId"
+                    className="border data-[hover]:shadow data-[focus]:bg-blue-100 h-full outline-none p-2"
+                    aria-label="Select college"
+                    onChange={handleDeanInfoChange}
+                    value={deanInfo.collegeId}
+                    required={requiredFields["college_id"]}
+                  >
+                    <option value="">-Select a College-</option>
+                    {colleges.map((college) => {
+                      return (
+                        <option
+                          key={college.id}
+                          value={college.id}
+                          className={`${
+                            college.dean_id &&
+                            "text-blue-700 font-bold cursor-not-allowed"
+                          }`}
+                          disabled={college.dean_id}
+                        >
+                          {college.dean_id
+                            ? `Occupied | ${college.name}`
+                            : college.name}
+                        </option>
+                      );
+                    })}
+                  </Select>
+                </FormField>
+                {errors.college_id && (
+                  <Text className="text-red-500">{errors.college_id[0]}</Text>
+                )}
+              </div>
             </div>
           </div>
         </div>

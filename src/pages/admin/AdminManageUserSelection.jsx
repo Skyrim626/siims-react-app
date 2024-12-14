@@ -38,7 +38,7 @@ const AdminManageUserSelection = () => {
 
   // Mapping routes to the description/body texts to display under headings
   const routeBody = {
-    "/auth/admin/users": "Manage different types of users.",
+    "/auth/admin/users": "View different types of users.",
     "/auth/admin/users/students": "Use this module to enroll students.",
     "/auth/admin/users/companies": "Use this module to register companies.",
     "/auth/admin/users/deans": "Use this module to register companies.",
@@ -52,7 +52,7 @@ const AdminManageUserSelection = () => {
   // Determine the heading and body text based on the current route
   const headingText = routeHeadings[location.pathname] || "Users";
   const bodyText =
-    routeBody[location.pathname] || "Manage different types of users";
+    routeBody[location.pathname] || "View different types of users";
 
   return (
     <Page>
