@@ -12,6 +12,7 @@ import ChairpersonEndorsementRequestsPage from "../../pages/chairperson/Chairper
 import ChairpersonEndorsementRequestPage from "../../pages/chairperson/ChairpersonEndorsementRequestPage";
 import ChairpersonManageStudentsPage from "../../pages/chairperson/ChairpersonManageStudentsPage";
 import PDFFile from "../../components/letters/PDFFile";
+import ViewCoordinatorsPage from "../../pages/ViewCoordinatorsPage";
 
 // Routes for Chairperson
 const ChairpersonRoutes = {
@@ -54,6 +55,10 @@ const ChairpersonRoutes = {
     },
     {
       path: "coordinators",
+      element: <ViewCoordinatorsPage authorizeRole={"chairperson"} />,
+    },
+    {
+      path: "test/coordinators",
       element: <ChairpersonViewCoordinatorPage />,
       loader: async () => {
         try {

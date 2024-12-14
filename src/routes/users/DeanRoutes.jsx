@@ -7,10 +7,10 @@ import DeanProfilePage from "../../pages/dean/DeanProfilePage";
 import DeanManageCompaniesPage from "../../pages/dean/DeanManageCompaniesPage";
 import DeanProgramsPage from "../../pages/dean/DeanProgramsPage";
 import axiosClient from "../../api/axiosClient";
-import DeanManageCoordinatorPage from "../../pages/dean/DeanManageCoordinatorPage";
 import DeanManageStudentsPage from "../../pages/dean/DeanManageStudentsPage";
 import DeanEndorsementLetterRequestsPage from "../../pages/dean/DeanEndorsementLetterRequestsPage";
 import ViewProgramsPage from "../../pages/ViewProgramsPage";
+import ViewCoordinatorsPage from "../../pages/ViewCoordinatorsPage";
 
 // Routes for Dean
 const DeanRoutes = {
@@ -80,41 +80,7 @@ const DeanRoutes = {
     },
     {
       path: "coordinators",
-      element: <DeanManageCoordinatorPage />,
-      loader: async () => {
-        try {
-          /**
-           * Response
-           */
-          const coordinatorsResponse = await axiosClient.get(
-            "/api/v1/users/coordinators/college"
-          );
-          const programResponse = await axiosClient.get(
-            "/api/v1/programs/dean"
-          );
-
-          /**
-           * Variables
-           */
-          const initial_coordinators = coordinatorsResponse.data;
-          const programs = programResponse.data;
-
-          /**
-           * Return
-           */
-          return {
-            initial_coordinators,
-            programs,
-          };
-        } catch (error) {
-          console.log(error);
-
-          return {
-            initial_coordinators: [],
-            programs: [],
-          };
-        }
-      },
+      element: <ViewCoordinatorsPage authorizeRole={"dean"} />,
     },
     {
       path: "students",

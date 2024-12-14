@@ -22,7 +22,6 @@ import AdminManageOfficesPage from "../../pages/admin/AdminManageOfficesPage";
 import AdminManageCompanyOfficesPage from "../../pages/admin/manage-users/AdminManageCompanyOfficesPage";
 import ChatLayout from "../../components/layouts/ChatLayout";
 import AdminManageStudentsPage from "../../pages/admin/AdminManageStudentsPage";
-import AdminManageCoordinatorsPage from "../../pages/admin/AdminManageCoordinatorsPage";
 import ChatWindow from "../../components/messaging/ChatWindow";
 import TestingPage from "../../pages/TestingPage";
 import AdminViewLogsPage from "../../pages/admin/AdminViewLogsPage";
@@ -33,6 +32,7 @@ import ViewProgramsPage from "../../pages/ViewProgramsPage";
 import ViewUsersPage from "../../pages/ViewUsersPage";
 import ViewDeansPage from "../../pages/ViewDeansPage";
 import ViewChairpersonsPage from "../../pages/ViewChairpersonsPage";
+import ViewCoordinatorsPage from "../../pages/ViewCoordinatorsPage";
 
 // Define routes for the Admin section
 const AdminRoutes = {
@@ -247,41 +247,7 @@ const AdminRoutes = {
         },
         {
           path: "coordinators",
-          element: <AdminManageCoordinatorsPage />,
-          loader: async () => {
-            try {
-              /**
-               * Responses
-               */
-              const coordinatorResponse = await axiosClient.get(
-                "/api/v1/users/coordinators"
-              );
-              const programResponse = await axiosClient.get("/api/v1/programs");
-
-              /**
-               * Variables
-               */
-              const initial_coordinators = coordinatorResponse.data;
-              const programs = programResponse.data;
-
-              /**
-               * Return
-               */
-              return {
-                initial_coordinators,
-                programs,
-              };
-            } catch (error) {
-              console.error(
-                "Error fetching coordinators and programs: ",
-                error
-              );
-              return {
-                initial_coordinators: [],
-                programs: [],
-              };
-            }
-          },
+          element: <ViewCoordinatorsPage authorizeRole={"admin"} />,
         },
 
         {
