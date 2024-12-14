@@ -1,41 +1,44 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
 import Page from "../components/common/Page";
 import Section from "../components/common/Section";
 import Heading from "../components/common/Heading";
 import Text from "../components/common/Text";
-import Loader from "../components/common/Loader";
-import useRequest from "../hooks/useRequest";
 import ManageHeader from "../components/common/ManageHeader";
 import DynamicDataGrid from "../components/tables/DynamicDataGrid";
 import { Button } from "@headlessui/react";
 import FormModal from "../components/modals/FormModal";
-import CollegeForm from "../components/forms/CollegeForm";
+import ProgramForm from "../components/forms/ProgramForm";
 import useForm from "../hooks/useForm";
+import useRequest from "../hooks/useRequest";
+import Loader from "../components/common/Loader";
 import DeleteConfirmModal from "../components/modals/DeleteConfirmModal";
+import { getRequest } from "../api/apiHelpers";
 
-const ViewCollegesPage = () => {
+const ViewProgramsPage = ({ authorizeRole }) => {
   // Loading State
   const [loading, setLoading] = useState(false);
 
-  // Use Loader Data
-  const { list_of_deans } = useLoaderData();
+  // Container State for Lists
+  const [listOfChairpersons, setListOfChairpersons] = useState([]);
+  const [listOfColleges, setListOfColleges] = useState([]);
 
   // Row state
   const [rows, setRows] = useState([]);
 
   // Modal State
   const [isOpen, setIsOpen] = useState(false);
-  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isEditOpen, setEditIsOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   // Select State
-  const [selectedCollege, setSelectedCollege] = useState({});
+  const [selectedProgram, setSelectedProgram] = useState({});
 
   // Use the useForm hook to manage form data
   const { formData, handleInputChange, resetForm, setFormValues } = useForm({
-    collegeName: "",
-    deanId: "",
+    collegeId: "",
+    chairpersonId: "",
+    programName: "",
   });
 
   /**
@@ -53,31 +56,33 @@ const ViewCollegesPage = () => {
   });
 
   /**
-   * Function that adds new college
+   * Function that adds new program
    */
-  const addNewCollege = () => {
+  const addProgram = () => {
     // POST METHOD
     postData({
-      url: "/colleges",
+      url: "/programs",
       payload: {
-        name: formData.collegeName,
+        name: formData.programName,
+        college_id: formData.collegeId,
       },
       resetForm: resetForm,
     });
   };
 
   /**
-   * Function that updates a college
+   * Function that updates a program
    */
-  const updateCollege = () => {
+  const updateProgram = () => {
+    // PUT METHOD
     putData({
-      url: `/colleges/${selectedCollege["id"]}`,
+      url: `/programs/${selectedProgram["id"]}`,
       payload: {
-        name: formData.collegeName,
-        dean_id: formData.deanId,
+        name: formData.programName,
+        chairperson_id: formData.chairpersonId,
       },
-      selectedData: selectedCollege,
-      setIsOpen: setIsEditOpen,
+      selectedData: selectedProgram,
+      setIsOpen: setEditIsOpen,
       resetForm: resetForm,
     });
   };
@@ -87,25 +92,27 @@ const ViewCollegesPage = () => {
    */
   const handleEditModal = (row) => {
     // Set Select State
-    setSelectedCollege(row);
+    setSelectedProgram(row);
 
     // Set Form Values
     setFormValues({
-      collegeName: row.name,
+      collegeId: row.college_id,
+      programName: row.name,
+      chairpersonId: row.chairperson_id,
     });
 
     // Open Edit Modal
-    setIsEditOpen(true);
+    setEditIsOpen(true);
   };
 
   /**
-   * Function that deletes a college
+   * Function that deletes a program
    */
-  const deleteCollege = () => {
+  const deleteProgram = () => {
     // DELETE METHOD
     deleteData({
-      url: `/colleges/${selectedCollege["id"]}`,
-      id: selectedCollege["id"],
+      url: `/programs/${selectedProgram["id"]}`,
+      id: selectedProgram["id"],
       setIsDeleteOpen: setIsDeleteOpen,
     });
   };
@@ -115,15 +122,69 @@ const ViewCollegesPage = () => {
    */
   const handleDeleteModal = (row) => {
     // Set Select State
-    setSelectedCollege(row);
+    setSelectedProgram(row);
 
     // Open Delete Modal
     setIsDeleteOpen(true);
   };
 
+  /**
+   *
+   * Use Effect Area
+   *
+   */
+  // Loads the lists using UseEffect
+  useEffect(() => {
+    // Fetch Needed Data for Lists in Select
+    const fetchListOfCollege = async () => {
+      // Set Loading
+      setLoading(true);
+
+      try {
+        const listOfCollegesResponse = await getRequest({
+          url: "/api/v1/colleges/lists",
+        });
+
+        // Set State
+        setListOfColleges(listOfCollegesResponse);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // Fetch Needed Data for Lists in Select
+    const fetchListsOfChairpersons = async () => {
+      // Set Loading
+      setLoading(true);
+
+      try {
+        const listOfChairpersonsResponse = await getRequest({
+          url: "/api/v1/users/chairpersons/including-programs",
+        });
+
+        // Set State
+        setListOfChairpersons(listOfChairpersonsResponse);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // Check if role is authorized
+    if (authorizeRole === "admin") {
+      fetchListOfCollege(); // Call Function
+    }
+
+    // Call Method
+    fetchListsOfChairpersons();
+  }, []);
+
   // Static Columns
-  const staticColumns = useMemo(
-    () => [
+  const staticColumns = useMemo(() => {
+    const columns = [
       {
         field: "id",
         headerName: "ID",
@@ -131,20 +192,44 @@ const ViewCollegesPage = () => {
         headerClassName: "super-app-theme--header",
       },
       {
-        field: "dean_id",
-        headerName: "Dean ID",
+        field: "chairperson_id",
+        headerName: "Chairperson ID",
         width: 300,
         headerClassName: "super-app-theme--header",
       },
       {
         field: "name",
-        headerName: "College Name",
+        headerName: "Program Name",
+        width: 300,
+        headerClassName: "super-app-theme--header",
+      },
+      {
+        field: "total_students",
+        headerName: "Total Students",
+        width: 300,
+        headerClassName: "super-app-theme--header",
+      },
+      {
+        field: "chairperson_assigned",
+        headerName: "Assigned Chairperson",
         width: 300,
         headerClassName: "super-app-theme--header",
       },
       {
         field: "email",
-        headerName: "Email",
+        headerName: "Chairperson Email",
+        width: 300,
+        headerClassName: "super-app-theme--header",
+      },
+      {
+        field: "phone_number",
+        headerName: "Phone Number",
+        width: 300,
+        headerClassName: "super-app-theme--header",
+      },
+      {
+        field: "college",
+        headerName: "College Name",
         width: 300,
         headerClassName: "super-app-theme--header",
       },
@@ -160,15 +245,20 @@ const ViewCollegesPage = () => {
         width: 300,
         headerClassName: "super-app-theme--header",
       },
-      {
+    ];
+
+    // Add the "Deleted At" column only if the role is "admin"
+    if (authorizeRole === "admin") {
+      columns.push({
         field: "deleted_at",
         headerName: "Deleted At",
         width: 300,
         headerClassName: "super-app-theme--header",
-      },
-    ],
-    []
-  );
+      });
+    }
+
+    return columns;
+  }, [authorizeRole]);
 
   // Action Column
   const actionColumn = useMemo(
@@ -186,7 +276,6 @@ const ViewCollegesPage = () => {
             Edit
           </Button>
 
-          {/* Delete is only allowed for Admin */}
           <Button
             className="bg-red-500 hover:bg-red-600 text-white py-1 px-4 rounded"
             onClick={() => handleDeleteModal(params.row)}
@@ -198,7 +287,7 @@ const ViewCollegesPage = () => {
       sortable: false, // Prevent sorting for the actions column
       filterable: false, // Prevent filtering for the actions column
     }),
-    []
+    [authorizeRole]
   );
 
   const columns = useMemo(
@@ -210,9 +299,9 @@ const ViewCollegesPage = () => {
     <Page>
       <Loader loading={loading} />
       <Section>
-        <Heading level={3} text="Manage Colleges" />
+        <Heading level={3} text="Manage Programs" />
         <Text className="text-md text-blue-950">
-          This is where you manage the colleges.
+          This is where you manage the programs.
         </Text>
         <hr className="my-3" />
       </Section>
@@ -220,48 +309,55 @@ const ViewCollegesPage = () => {
       <ManageHeader
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        addPlaceholder="Add New College"
+        addPlaceholder="Add New Program"
         showExportButton={false}
         showImportButton={false}
       />
 
       <DynamicDataGrid
-        searchPlaceholder={"Search Colleges"}
+        searchPlaceholder={"Search Programs"}
         rows={rows}
         setRows={setRows}
         columns={columns}
-        url={"/colleges"}
+        url={"/programs"}
       />
 
-      {/* Form Modal */}
+      {/* Modals */}
       {/* Add Form Modal */}
       <FormModal
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        modalTitle="Add College"
-        onSubmit={addNewCollege}
+        modalTitle="Add Program"
+        onSubmit={addProgram}
       >
-        <CollegeForm
-          collegeName={formData.collegeName}
+        <ProgramForm
+          authorizeRole={authorizeRole} // Admin or Dean
+          method="post"
+          collegeId={formData.collegeId}
+          programName={formData.programName}
           handleInputChange={handleInputChange}
           errors={validationErrors}
+          colleges={listOfColleges}
         />
       </FormModal>
 
       {/* Edit Form Modal */}
       <FormModal
         isOpen={isEditOpen}
-        setIsOpen={setIsEditOpen}
-        modalTitle="Edit College"
-        onSubmit={updateCollege}
+        setIsOpen={setEditIsOpen}
+        modalTitle="Edit Program"
+        onSubmit={updateProgram}
       >
-        <CollegeForm
+        <ProgramForm
+          authorizeRole={authorizeRole} // Admin or Dean
           method="put"
-          collegeName={formData.collegeName}
-          deanId={formData.deanId}
+          collegeId={formData.collegeId}
+          programName={formData.programName}
+          chairpersonId={formData.chairpersonId}
           handleInputChange={handleInputChange}
-          deans={list_of_deans}
           errors={validationErrors}
+          colleges={listOfColleges}
+          chairpersons={listOfChairpersons}
         />
       </FormModal>
 
@@ -269,12 +365,12 @@ const ViewCollegesPage = () => {
       <DeleteConfirmModal
         open={isDeleteOpen}
         setOpen={setIsDeleteOpen}
-        title="Delete college"
-        message="Are you sure you want to archive a college?"
-        handleDelete={deleteCollege}
+        title="Delete Program"
+        message="Are you sure you want to delete this Program?"
+        handleDelete={deleteProgram}
       />
     </Page>
   );
 };
 
-export default ViewCollegesPage;
+export default ViewProgramsPage;

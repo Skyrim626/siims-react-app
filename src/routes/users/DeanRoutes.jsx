@@ -10,6 +10,7 @@ import axiosClient from "../../api/axiosClient";
 import DeanManageCoordinatorPage from "../../pages/dean/DeanManageCoordinatorPage";
 import DeanManageStudentsPage from "../../pages/dean/DeanManageStudentsPage";
 import DeanEndorsementLetterRequestsPage from "../../pages/dean/DeanEndorsementLetterRequestsPage";
+import ViewProgramsPage from "../../pages/ViewProgramsPage";
 
 // Routes for Dean
 const DeanRoutes = {
@@ -154,8 +155,7 @@ const DeanRoutes = {
     },
     {
       path: "programs",
-      element: <DeanProgramsPage />,
-   
+      element: <ViewProgramsPage authorizeRole={"dean"} />,
     },
     {
       path: "companies",

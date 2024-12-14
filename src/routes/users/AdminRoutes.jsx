@@ -16,11 +16,9 @@ import AdminManageUserSelection from "../../pages/admin/AdminManageUserSelection
 import AdminManageDeansPage from "../../pages/admin/manage-users/deans/AdminManageDeansPage"; // Importing the page to manage deans
 import AdminManageUsersPage from "../../pages/admin/manage-users/AdminManageUsersPage"; // Importing the general user management page
 import AdminManageChairpersonsPage from "../../pages/admin/manage-users/chairpersons/AdminManageChairpersonsPage"; // Importing the page to manage chairpersons
-import AdminManageCollegesPage from "../../pages/admin/AdminManageCollegesPage"; // Importing the page to manage colleges
-import AdminManageRolesPage from "../../pages/admin/AdminManageRolesPage"; // Importing the page to manage user roles
 import AdminManageCompaniesPage from "../../pages/admin/AdminManageCompaniesPage"; // Importing the page to manage companies
 import AdminManageOfficesPage from "../../pages/admin/AdminManageOfficesPage";
-import AdminManageProgramsPage from "../../pages/admin/AdminManageProgramsPage";
+
 import AdminManageCompanyOfficesPage from "../../pages/admin/manage-users/AdminManageCompanyOfficesPage";
 import ChatLayout from "../../components/layouts/ChatLayout";
 import AdminManageStudentsPage from "../../pages/admin/AdminManageStudentsPage";
@@ -31,6 +29,7 @@ import AdminViewLogsPage from "../../pages/admin/AdminViewLogsPage";
 import ViewDocumentTypePage from "../../pages/ViewDocumentTypesPage";
 import ViewRolesPage from "../../pages/ViewRolesPage";
 import ViewCollegesPage from "../../pages/ViewCollegesPage";
+import ViewProgramsPage from "../../pages/ViewProgramsPage";
 
 // Define routes for the Admin section
 const AdminRoutes = {
@@ -200,71 +199,10 @@ const AdminRoutes = {
       },
     },
     {
-      path: "test/colleges", // Route for managing colleges
-      element: <AdminManageCollegesPage />,
-      loader: async () => {
-        try {
-          /**
-           * Responses
-           */
-          const deanResponse = await axiosClient.get(
-            "/api/v1/users/deans/including-colleges"
-          );
-
-          /**
-           * Variables
-           */
-          const list_of_deans = deanResponse.data;
-
-          /**
-           * Return
-           */
-          return { list_of_deans };
-        } catch (error) {
-          console.error("Error fetching colleges: ", error);
-
-          return {
-            list_of_deans: [],
-          };
-        }
-      },
-    },
-    {
       path: "programs",
-      element: <AdminManageProgramsPage />,
-      loader: async () => {
-        try {
-          /**
-           * Responses
-           */
-          const collegeResponse = await axiosClient.get(
-            "/api/v1/colleges/lists"
-          );
-          const chairpersonResponse = await axiosClient.get(
-            "/api/v1/users/chairpersons/including-programs"
-          );
-
-          /**
-           * Variables
-           */
-          const list_of_colleges = collegeResponse.data;
-          const list_of_chairpersons = chairpersonResponse.data;
-
-          /**
-           * Return
-           */
-
-          return { list_of_chairpersons, list_of_colleges };
-        } catch (error) {
-          console.error("Error fetching programs and chairpersons: ", error);
-
-          return {
-            list_of_chairpersons: [],
-            list_of_colleges: [],
-          };
-        }
-      },
+      element: <ViewProgramsPage authorizeRole={"admin"} />,
     },
+
     {
       path: "companies/:id",
       element: <AdminManageCompanyOfficesPage />,

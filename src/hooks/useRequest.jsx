@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { deleteRequest, postRequest, putRequest } from "../api/apiHelpers";
 
-const useRequest = ({ setIsOpen, setData }) => {
-  const [loading, setLoading] = useState(false);
+const useRequest = ({ setIsOpen, setData, setLoading }) => {
+  // const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const request_path = "/api/v1";
 
@@ -115,7 +115,7 @@ const useRequest = ({ setIsOpen, setData }) => {
     }
   };
 
-  return { postData, putData, deleteData, loading, errors };
+  return { postData, putData, deleteData, errors };
 };
 
 export default useRequest;

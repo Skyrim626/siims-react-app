@@ -4,13 +4,12 @@ import Heading from "../common/Heading";
 import FormField from "../common/FormField";
 import Text from "../common/Text";
 const ProgramForm = ({
+  authorizeRole,
   method = "post",
   collegeId = 0,
   chairpersonId = 0,
   programName = "",
-  setCollegeId = () => {},
-  setProgramName = () => {},
-  setChairpersonId = () => {},
+  handleInputChange,
   requiredFields = {
     collegeId: true,
     programName: true,
@@ -26,6 +25,8 @@ const ProgramForm = ({
   // console.log(colleges);
   // console.log(chairpersons);
 
+  // console.log(collegeId);
+
   return (
     <>
       <div>
@@ -38,7 +39,7 @@ const ProgramForm = ({
 
         <div className="flex flex-col">
           <div className="grid grid-cols-3 gap-2 mt-4">
-            {displayFields.collegeId && (
+            {displayFields.collegeId && authorizeRole === "admin" && (
               <FormField
                 label={"College"}
                 name={"collegeId"}
@@ -51,9 +52,7 @@ const ProgramForm = ({
                     method !== "post" && "bg-gray-400"
                   }`}
                   name="collegeId"
-                  onChange={(e) => {
-                    setCollegeId(e.target.value);
-                  }}
+                  onChange={handleInputChange}
                   disabled={method === "put"}
                   value={collegeId}
                   required={requiredFields["collegeId"]}
@@ -83,9 +82,7 @@ const ProgramForm = ({
                 type="text"
                 className="outline-none text-black rounded-sm p-2 text-sm"
                 name="programName"
-                onChange={(e) => {
-                  setProgramName(e.target.value);
-                }}
+                onChange={handleInputChange}
                 placeholder="Program Name"
                 value={programName}
                 required={requiredFields["programName"]}
@@ -106,9 +103,7 @@ const ProgramForm = ({
                   typeof="text"
                   className="outline-none text-black rounded-sm p-2 text-sm"
                   name="chairpersonId"
-                  onChange={(e) => {
-                    setChairpersonId(e.target.value);
-                  }}
+                  onChange={handleInputChange}
                   value={chairpersonId}
                   required={requiredFields["chairpersonId"]}
                 >

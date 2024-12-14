@@ -18,6 +18,9 @@ import DeleteConfirmModal from "../components/modals/DeleteConfirmModal";
  * Role Allowed: Admin, OSA
  */
 const ViewDocumentTypePage = ({ authorizeRole }) => {
+  // Loading State
+  const [loading, setLoading] = useState(false);
+
   // Row state
   const [rows, setRows] = useState([]);
 
@@ -42,10 +45,10 @@ const ViewDocumentTypePage = ({ authorizeRole }) => {
     postData,
     putData,
     deleteData,
-    loading,
   } = useRequest({
     setData: setRows,
     setIsOpen: setIsOpen,
+    setLoading: setLoading,
   });
 
   /**
@@ -202,7 +205,7 @@ const ViewDocumentTypePage = ({ authorizeRole }) => {
       <Loader loading={loading} />
 
       <Section>
-        <Heading level={3} text="Document Types" />
+        <Heading level={3} text="Manage Document Types" />
         <Text className="text-md text-blue-950">
           This is where you manage the document types.
         </Text>
