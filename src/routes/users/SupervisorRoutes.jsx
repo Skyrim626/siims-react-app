@@ -12,6 +12,8 @@ import SupervisorEvaluationPage from "../../pages/supervisor/SupervisorEvaluatio
 import SupervisorViewInterns from "../../pages/supervisor/SupervisorViewIntern";
 import SupervisorManageDTR from "../../pages/supervisor/SupervisorManageDTR";
 import SupervisorViewWeeklyReport from "../../pages/supervisor/SupervisorViewWeeklyReport";
+import ViewActiveStudentsPage from "../../pages/ViewActiveStudentsPage";
+import ViewDtrPage from "../../pages/ViewDtrPage";
 
 // Routes for Supervisor
 const SupervisorRoutes = {
@@ -83,6 +85,14 @@ const SupervisorRoutes = {
       children: [
         {
           index: true,
+          element: <ViewActiveStudentsPage authorizeRole={"supervisor"} />,
+        },
+        {
+          path: "applications/:id/daily-time-records",
+          element: <ViewDtrPage authorizeRole={"supervisor"} />,
+        },
+        {
+          path: "test",
           element: <SupervisorViewInterns />,
           loader: async () => {
             try {

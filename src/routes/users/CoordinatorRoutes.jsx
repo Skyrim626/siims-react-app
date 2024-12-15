@@ -9,6 +9,7 @@ import CoordinatorViewStudentApplications from "../../pages/coordinator/Coordina
 import CoordinatorViewStudentApplication from "../../pages/coordinator/CoordinatorViewStudentApplication";
 import CoordinatorMyStudentProgress from "../../pages/coordinator/CoordinatorMyStudentsReports";
 import CoordinatorMyStudentsReports from "../../pages/coordinator/CoordinatorMyStudentsReports";
+import ViewActiveStudentsPage from "../../pages/ViewActiveStudentsPage";
 
 // Routes for Coordinator
 const CoordinatorRoutes = {
@@ -49,35 +50,15 @@ const CoordinatorRoutes = {
     },
     {
       path: "my-students-reports",
-      element: <CoordinatorMyStudentsReports />,
-      loader: async () => {
-        try {
-          /**
-           * Responses
-           */
-          const studentReportResponse = await axiosClient.get(
-            "/api/v1/users/coordinators/students/reports"
-          );
-
-          /**
-           * Variables
-           */
-          const initial_student_reports = studentReportResponse.data;
-
-          /**
-           * Return
-           */
-          return {
-            initial_student_reports,
-          };
-        } catch (error) {
-          console.log(error);
-          return {
-            initial_student_reports: [],
-          };
-        }
-      },
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: <ViewActiveStudentsPage authorizeRole={"coordinator"} />,
+        },
+      ],
     },
+
     {
       index: true,
       element: <CoordinatorDashboardPage />,

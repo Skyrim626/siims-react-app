@@ -141,3 +141,60 @@ export const getTimeRecordStatusColor = (status) => {
       };
   }
 };
+
+// Function to map student status to text color and background color
+export const getStudentStatusColor = (status) => {
+  switch (status) {
+    case "Not Yet Enrolled":
+      return {
+        textColor: "text-black", // Black text
+        backgroundColor: "bg-gray-300", // Light gray background (not yet enrolled)
+      };
+    case "Enrolled":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-blue-500", // Blue background (enrolled)
+      };
+    case "Pending Approval":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-yellow-500", // Yellow background (pending approval)
+      };
+    case "Active":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-green-500", // Green background (active)
+      };
+    case "Completed":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-teal-500", // Teal background (completed)
+      };
+    case "Dropped Out":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-orange-500", // Orange background (dropped out)
+      };
+    case "Suspended":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-purple-500", // Purple background (suspended)
+      };
+    case "Expelled":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-red-500", // Red background (expelled)
+      };
+    case "Failed":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-pink-500", // Pink background (failed)
+      };
+    default:
+      return {
+        textColor: "text-black", // Black text for default case
+        backgroundColor: "bg-gray-200", // Light gray background for unknown status
+      };
+  }
+};
+

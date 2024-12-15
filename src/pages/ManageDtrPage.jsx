@@ -12,6 +12,8 @@ import useForm from "../hooks/useForm";
 import useRequest from "../hooks/useRequest";
 import { getTimeRecordStatusColor } from "../utils/statusColor";
 import DeleteConfirmModal from "../components/modals/DeleteConfirmModal";
+import GenerateDailyTimeRecord from "../components/letters/GenerateDailyTimeRecord";
+import { pdf, PDFDownloadLink } from "@react-pdf/renderer";
 
 const ManageDtrPage = ({ authorizeRole }) => {
   // Navigation
@@ -39,6 +41,9 @@ const ManageDtrPage = ({ authorizeRole }) => {
     hoursReceived: "",
   });
 
+  // File Name
+  const [fileName, setFileName] = useState("daily-time-record.pdf");
+
   /**
    * Use Request
    */
@@ -52,6 +57,34 @@ const ManageDtrPage = ({ authorizeRole }) => {
     setIsOpen: setIsOpen,
     setLoading: setLoading,
   });
+
+  /**
+   * Function that calls the Time Record Letter
+   */
+  const callDailyTimeRecordReport = () => {
+    return <GenerateDailyTimeRecord dailyTimeRecords={rows} />;
+  };
+
+  /**
+   * Function that generates Daily Time Record PDF
+   */
+  const generateDailyTimeRecordPDF = () => {};
+
+  /**
+   * Function that views Daily Time Record PDF
+   */
+  const viewDailyTimeRecordPDF = async () => {
+    try {
+      const document = callDailyTimeRecordReport();
+      const blob = await pdf(document).toBlob();
+
+      const blobUrl = URL.createObjectURL(blob);
+
+      window.open(blobUrl, "_blank");
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    }
+  };
 
   /**
    * Function that adds a new Daily Time Record
@@ -277,11 +310,42 @@ const ManageDtrPage = ({ authorizeRole }) => {
           Daily Time Record
         </h2>
 
-        <div className="flex items-center justify-end space-x-3 my-3">
+        <div className="flex items-center justify-between my-3">
+          <div className="flex items-center space-x-2">
+            <Button
+              type="button"
+              onClick={viewDailyTimeRecordPDF}
+              className="text-sm flex items-center justify-center gap-2 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded"
+            >
+              View DTR as PDF
+            </Button>
+
+            <PDFDownloadLink
+              document={callDailyTimeRecordReport()}
+              fileName={fileName}
+            >
+              {({ loading }) =>
+                loading ? (
+                  <Button className="text-sm flex items-center justify-center gap-2 px-3 py-2 bg-gray-500 cursor-not-allowed text-white rounded">
+                    Loading DTR...
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    onClick={generateDailyTimeRecordPDF}
+                    className="text-sm flex items-center justify-center gap-2 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded"
+                  >
+                    Download DTR as PDF
+                  </Button>
+                )
+              }
+            </PDFDownloadLink>
+          </div>
+
           <Button
             onClick={() => setIsOpen(!isOpen)}
             type="button"
-            className="flex items-center justify-center gap-2 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded"
+            className="text-sm flex items-center justify-center gap-2 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded"
           >
             <Plus size={20} />
             <Text>Add New Record</Text>

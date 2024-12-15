@@ -70,7 +70,12 @@ const useRequest = ({ setIsOpen, setData, setLoading }) => {
               : data
           )
         );
-        setIsOpen(false);
+
+        // Check if setIsOpen
+        if (setIsOpen) {
+          setIsOpen(false);
+        }
+
         setErrors({});
       }
 
