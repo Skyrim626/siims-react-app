@@ -6,6 +6,7 @@ import Loader from "../../components/common/Loader";
 import ApplicationHeader from "../../components/applications/ApplicationHeader";
 import PersonalInformationSection from "../../components/applications/PersonalInformationSection";
 import DocumentSection from "../../components/applications/DocumentSection";
+import Page from "../../components/common/Page";
 
 const OsaManageApplicantApplication = () => {
   // Fetch Data

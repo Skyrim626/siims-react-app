@@ -22,6 +22,7 @@ import StudentWeeklyAccomplishmentPage from "../../pages/student/StudentWeeklyAc
 import StudentViewWorkPost from "../../pages/student/StudentViewWorkPost";
 import StudentPersonalInsight from "../../pages/student/StudentPersonalInsight";
 import StudentViewEditInsights from "../../pages/student/StudentViewEditInsights";
+import ManageDtrPage from "../../pages/ManageDtrPage";
 // Routes for Student
 const StudentRoutes = {
   path: "my",
@@ -263,6 +264,10 @@ const StudentRoutes = {
           };
         }
       },
+    },
+    {
+      path: ":applicationId/daily-time-records",
+      element: <ManageDtrPage />,
     },
     {
       path: ":applicationId/daily-time-records",

@@ -11,6 +11,7 @@ import ApplyModal from "../../components/workPosts/ApplyModal";
 import WithdrawModal from "../../components/workPosts/WithdrawModal";
 import JobListsSection from "../../components/workPosts/JobListsSection";
 import CurrentlyJobApplied from "../../components/workPosts/CurrentlyJobApplied";
+import ReportsSection from "../../components/workPosts/ReportsSection";
 
 const StudentHomePage = () => {
   // Loading State
@@ -78,6 +79,7 @@ const StudentHomePage = () => {
 
         if (response) {
           setStudentStatus(response.studentStatus || null);
+          // console.log(response.studentStatus);
           setStudent(response.student);
 
           setCurrentlyAppliedWorkPost(response.currently_applied_work_post);
@@ -135,7 +137,7 @@ const StudentHomePage = () => {
 
   // Navigate to Daily Time Record
   const navigateToDtr = () => {
-    const to = `${location.pathname}/${application_id}/daily-time-records`;
+    const to = `${location.pathname}/${currentlyAppliedWorkPost.id}/daily-time-records`;
 
     navigate(to);
   };
@@ -205,7 +207,7 @@ const StudentHomePage = () => {
 
     try {
       const response = await putRequest({
-        url: `/api/v1/applications/${application_id}/withdraw`,
+        url: `/api/v1/applications/${currentlyAppliedWorkPost.id}/withdraw`,
       });
 
       if (response) {
@@ -308,10 +310,20 @@ const StudentHomePage = () => {
             </div>
           </div>
 
+          {/* Reports Section */}
+          {/* Deployed - 12 */}
+          {studentStatus === 12 && (
+            <ReportsSection
+              navigateToDtr={navigateToDtr}
+              navigateToWeekly={navigateToWeekly}
+            />
+          )}
+
           {/* If the student already applied, display this */}
-          {console.log(currentlyAppliedWorkPost)}
+
           {currentlyAppliedWorkPost &&
-            currentlyAppliedWorkPost.student.status_id !== 6 && (
+            currentlyAppliedWorkPost.student.status_id !== 6 &&
+            currentlyAppliedWorkPost.student.status_id !== 12 && (
               <CurrentlyJobApplied
                 currently_applied_work_post={currentlyAppliedWorkPost.work_post}
                 handleWithdrawClick={handleWithdrawClick}

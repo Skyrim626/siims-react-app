@@ -79,3 +79,65 @@ export const getStatusBgColor = (status) => {
       return 'bg-gray-200';
   }
 };
+
+
+// Function to map daily time record statuses to text color and background color
+export const getTimeRecordStatusColor = (status) => {
+  switch (status) {
+    case "In":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-green-500", // Green background (working, in)
+      };
+    case "Out":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-gray-500", // Gray background (out, leaving)
+      };
+    case "On Break":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-yellow-500", // Yellow background (on break)
+      };
+    case "Off":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-blue-500", // Blue background (off work)
+      };
+    case "Overtime":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-red-500", // Red background (overtime)
+      };
+    case "Leave":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-purple-500", // Purple background (on leave)
+      };
+    case "Absent":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-orange-500", // Orange background (absent)
+      };
+    case "Holiday":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-teal-500", // Teal background (holiday)
+      };
+    case "Late":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-pink-500", // Pink background (late)
+      };
+    case "Early Out":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-indigo-500", // Indigo background (early out)
+      };
+    default:
+      return {
+        textColor: "text-black", // Black text for default case
+        backgroundColor: "bg-gray-200", // Light gray background for default
+      };
+  }
+};

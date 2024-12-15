@@ -38,6 +38,8 @@ const StudentJobApplicationPage = () => {
     initial_step_one_documents
   );
 
+  console.log(stepOneDocuments);
+
   // Loading State
   const [loading, setLoading] = useState(false);
 
@@ -108,17 +110,6 @@ const StudentJobApplicationPage = () => {
         student_ids: filteredStudentIds, // Process comma-separated student IDs
       };
 
-      // console.log("Payload to submit:", payload);
-
-      // console.log(initial_application.id);
-      // console.log(studentIdsArray);
-
-      // Make POST request
-      /* const response = await postRequest({
-        url: `/api/v1/student/applications/${initial_application.id}/request-endorsement-letter`,
-        data: payload,
-      }); */
-
       // Make POST request
       const response = await postRequest({
         url: `/api/v1/endorsement-letter-requests`,
@@ -138,7 +129,7 @@ const StudentJobApplicationPage = () => {
       }
     } catch (error) {
       if (error.response && error.response.data && error.response.data.errors) {
-        console.log(error.response.data.errors);
+        // console.log(error.response.data.errors);
         setErrors(error.response.data.errors); // Assuming validation errors are in `errors`
       } else {
         console.error("An unexpected error occurred:", error);
@@ -169,13 +160,14 @@ const StudentJobApplicationPage = () => {
    *
    */
 
+  // Submit Document
   const handleFileUpload = async (e, fileType) => {
     // Loading State
     setLoading(true);
 
     const file = e.target.files[0];
     if (file) {
-      console.log(file);
+      // console.log(file);
 
       setUploadedFiles((prevFiles) => ({
         ...prevFiles,
@@ -207,7 +199,7 @@ const StudentJobApplicationPage = () => {
           // navigate(location.pathname);
         }
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       } finally {
         setLoading(false);
       }
