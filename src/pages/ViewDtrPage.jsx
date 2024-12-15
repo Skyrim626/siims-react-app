@@ -6,12 +6,13 @@ import Section from "../components/common/Section";
 import Text from "../components/common/Text";
 import DynamicDataGrid from "../components/tables/DynamicDataGrid";
 import Heading from "../components/common/Heading";
-import { Button, Select } from "@headlessui/react";
+import { Button, Dialog, Select } from "@headlessui/react";
 import { getTimeRecordStatusColor } from "../utils/statusColor";
-import { HelpCircle } from "lucide-react";
+import { HelpCircle, X } from "lucide-react";
 import { getRequest } from "../api/apiHelpers";
 import { formatDateOnly } from "../utils/formatDate";
 import useRequest from "../hooks/useRequest";
+
 const ViewDtrPage = ({ authorizeRole }) => {
   // Get params ID
   const { id } = useParams();
@@ -22,6 +23,9 @@ const ViewDtrPage = ({ authorizeRole }) => {
   // Container State
   const [dailyTimeRecordStatusesLists, setDailyTimeRecordStatusesLists] =
     useState([]);
+
+  // Modal State
+  const [isOpen, setIsOpen] = useState(false);
 
   // Row state
   const [rows, setRows] = useState([]);
@@ -81,12 +85,6 @@ const ViewDtrPage = ({ authorizeRole }) => {
 
     // Optionally, you can make an API call to update the status on the server
     // await updateStatusOnServer(params.row.id, newStatus);
-  };
-
-  //  TODO: Handle Question Mark Button Click
-  const handleQuestionMarkClick = () => {
-    console.log("Question mark clicked! Display info modal.");
-    // Place your modal logic here
   };
 
   // Static Columns
@@ -150,38 +148,44 @@ const ViewDtrPage = ({ authorizeRole }) => {
   }, [authorizeRole]);
 
   const actionColumn = useMemo(() => {
-    if (authorizeRole !== "supervisor") return null; // Exclude the action column if role is not supervisor
+    const columns = [];
 
-    return {
-      field: "actions",
-      headerName: "Actions",
-      width: 200,
-      headerClassName: "super-app-theme--header",
-      renderCell: (params) => (
-        <div className="flex space-x-2 items-center justify-center">
-          <Select
-            className="border border-gray-300 rounded-md p-2 bg-white text-gray-700 shadow-sm focus:ring-indigo-500 h-full focus:border-indigo-500"
-            value={params.row.status_id}
-            onChange={(e) => handleDailyTimeRecordStatusChange(e, params)}
-          >
-            <option>--Select Status--</option>
-            {dailyTimeRecordStatusesLists.map((status) => (
-              <option key={status.id} value={status.id}>
-                {status.name}
-              </option>
-            ))}
-          </Select>
-        </div>
-      ),
-      sortable: false,
-      filterable: false,
-    };
+    // ! For Supervisor Only
+    if (authorizeRole === "supervisor") {
+      columns.push({
+        field: "actions",
+        headerName: "Actions",
+        width: 200,
+        headerClassName: "super-app-theme--header",
+        renderCell: (params) => (
+          <div className="flex space-x-2 items-center justify-center">
+            <Select
+              className="border border-gray-300 rounded-md p-2 bg-white text-gray-700 shadow-sm focus:ring-indigo-500 h-full focus:border-indigo-500"
+              value={params.row.status_id}
+              onChange={(e) => handleDailyTimeRecordStatusChange(e, params)}
+            >
+              <option>--Select Status--</option>
+              {dailyTimeRecordStatusesLists.map((status) => (
+                <option key={status.id} value={status.id}>
+                  {status.name}
+                </option>
+              ))}
+            </Select>
+          </div>
+        ),
+        sortable: false,
+        filterable: false,
+      });
+    } // Exclude the action column if role is not supervisor
+
+    return columns;
   }, [authorizeRole, dailyTimeRecordStatusesLists]);
 
-  const columns = useMemo(
-    () => [...staticColumns, actionColumn],
-    [staticColumns, actionColumn]
-  );
+  const columns = useMemo(() => {
+    return authorizeRole === "supervisor"
+      ? [...staticColumns, ...actionColumn]
+      : staticColumns; // Do not append actionColumn if not a supervisor
+  }, [authorizeRole, staticColumns, actionColumn]);
 
   return (
     <Page>
@@ -200,7 +204,7 @@ const ViewDtrPage = ({ authorizeRole }) => {
           <div>
             <Button
               className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full"
-              onClick={handleQuestionMarkClick}
+              onClick={() => setIsOpen(!isOpen)}
             >
               <HelpCircle size={25} />
             </Button>
@@ -216,6 +220,70 @@ const ViewDtrPage = ({ authorizeRole }) => {
         columns={columns}
         url={`/applications/${id}/daily-time-records`}
       />
+
+      {/* Status List Modal */}
+      <Dialog
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        className="relative z-50"
+      >
+        {/* The backdrop */}
+        <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
+
+        {/* Centered container */}
+        <div className="fixed inset-0 flex items-center justify-center p-4">
+          {/* Modal Panel */}
+          <Dialog.Panel className="w-full max-w-lg rounded-lg bg-white shadow-xl">
+            {/* Modal Header */}
+            <div className="flex justify-between items-center border-b border-gray-200 p-4">
+              <Dialog.Title className=" text-lg font-semibold text-gray-800">
+                Time Record Status Descriptions
+              </Dialog.Title>
+              <Button
+                onClick={() => setIsOpen(false)}
+                className="text-gray-500 hover:text-gray-800"
+              >
+                <X className="w-5 h-5" /> {/* Lucide close icon */}
+              </Button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-4 space-y-4 max-h-96 overflow-y-auto">
+              {dailyTimeRecordStatusesLists.map((status, index) => {
+                const { textColor, backgroundColor } = getTimeRecordStatusColor(
+                  status.name
+                );
+
+                return (
+                  <div
+                    key={index}
+                    className="rounded-lg p-4 border border-gray-200 bg-gray-50"
+                  >
+                    <h3
+                      className={`rounded-full px-3 text-base font-semibold ${textColor} ${backgroundColor}`}
+                    >
+                      {status.name}
+                    </h3>
+                    <p className="text-sm text-gray-600 mt-1">
+                      {status.description}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex justify-end border-t border-gray-200 p-4">
+              <button
+                onClick={() => setIsOpen(false)}
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none"
+              >
+                Close
+              </button>
+            </div>
+          </Dialog.Panel>
+        </div>
+      </Dialog>
     </Page>
   );
 };

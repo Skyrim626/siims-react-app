@@ -150,10 +150,10 @@ const coordinatorSidebarItemsConfig = [
   {
     icon: <Users size={20} />,
     text: "My Student's Reports",
-    alert: true,
+    alert: false,
     ariaLabel: "My Student's Reports",
-    exact: true,
-    active: true,
+    exact: false,
+    active: false,
     path: "/auth/coordinator/my-students-reports",
   },
   {

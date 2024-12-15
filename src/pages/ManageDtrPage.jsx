@@ -253,16 +253,6 @@ const ManageDtrPage = ({ authorizeRole }) => {
       },
     ];
 
-    // Add the "Deleted At" column only if the role is "admin"
-    if (authorizeRole === "admin") {
-      columns.push({
-        field: "deleted_at",
-        headerName: "Deleted At",
-        width: 300,
-        headerClassName: "super-app-theme--header",
-      });
-    }
-
     return columns;
   }, [authorizeRole]);
 
