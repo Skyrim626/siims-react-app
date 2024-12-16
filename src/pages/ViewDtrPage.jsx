@@ -150,8 +150,8 @@ const ViewDtrPage = ({ authorizeRole }) => {
   const actionColumn = useMemo(() => {
     const columns = [];
 
-    // ! For Supervisor Only
-    if (authorizeRole === "supervisor") {
+    // ! For Company and Supervisor Only
+    if (authorizeRole === "supervisor" || authorizeRole === "company") {
       columns.push({
         field: "actions",
         headerName: "Actions",
@@ -182,7 +182,7 @@ const ViewDtrPage = ({ authorizeRole }) => {
   }, [authorizeRole, dailyTimeRecordStatusesLists]);
 
   const columns = useMemo(() => {
-    return authorizeRole === "supervisor"
+    return authorizeRole === "supervisor" || authorizeRole === "company"
       ? [...staticColumns, ...actionColumn]
       : staticColumns; // Do not append actionColumn if not a supervisor
   }, [authorizeRole, staticColumns, actionColumn]);

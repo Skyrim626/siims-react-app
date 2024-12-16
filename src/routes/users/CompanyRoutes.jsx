@@ -16,7 +16,9 @@ import CompanyEditWorkPostPage from "../../pages/company/CompanyEditWorkPostPage
 import CompanyManageApplicantsPage from "../../pages/company/CompanyManageApplicantsPage";
 import CompanyAcceptanceLetterPage from "../../pages/company/CompanyAcceptanceLetterPage";
 import CompanyManageApplicantPage from "../../pages/company/CompanyManageApplicantPage";
-import CompanyManageInternsPage from "../..//pages/company/CompanyManageInternsPage"
+import CompanyManageInternsPage from "../..//pages/company/CompanyManageInternsPage";
+import ViewActiveStudentsPage from "../../pages/ViewActiveStudentsPage";
+import ViewDtrPage from "../../pages/ViewDtrPage";
 
 // Routes for Company
 const CompanyRoutes = {
@@ -63,8 +65,19 @@ const CompanyRoutes = {
     },
     {
       path: "interns",
-      element: <CompanyManageInternsPage />,
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: <ViewActiveStudentsPage />,
+        },
+        {
+          path: "applications/:id/daily-time-records",
+          element: <ViewDtrPage authorizeRole={"company"} />,
+        },
+      ],
     },
+
     {
       path: "work-posts",
       element: <Outlet />,

@@ -160,7 +160,7 @@ const ViewActiveStudentsPage = ({ authorizeRole }) => {
           }
         />
         <Text className="text-md text-blue-950">
-          {authorizeRole === "supervisor"
+          {authorizeRole === "supervisor" || authorizeRole === "company"
             ? "This is where you view active trainees' reports."
             : "This is where you view active students' reports."}
         </Text>

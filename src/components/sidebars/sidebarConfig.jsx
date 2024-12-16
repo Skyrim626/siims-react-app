@@ -310,7 +310,7 @@ const companySidebarItemsConfig = [
     text: "Manage Interns",
     alert: true,
     ariaLabel: "Manage Interns",
-    exact: true,
+    exact: false,
     path: "/auth/company/interns",
   },
   {

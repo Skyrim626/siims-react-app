@@ -144,7 +144,7 @@ const StudentHomePage = () => {
 
   // Navigate to Weekly Accomplishment Reports
   const navigateToWeekly = () => {
-    const to = `${location.pathname}/${application_id}/my-weekly-reports`;
+    const to = `${location.pathname}/${currentlyAppliedWorkPost.id}/weekly-accomplishment-reports`;
 
     navigate(to);
   };

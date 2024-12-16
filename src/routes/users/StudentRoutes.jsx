@@ -23,6 +23,7 @@ import StudentViewWorkPost from "../../pages/student/StudentViewWorkPost";
 import StudentPersonalInsight from "../../pages/student/StudentPersonalInsight";
 import StudentViewEditInsights from "../../pages/student/StudentViewEditInsights";
 import ManageDtrPage from "../../pages/ManageDtrPage";
+import ManageWarPage from "../../pages/ManageWarPage";
 // Routes for Student
 const StudentRoutes = {
   path: "my",
@@ -200,40 +201,7 @@ const StudentRoutes = {
       path: "apply/:job_id/request-endorsement",
       element: <StudentRequestEndorsementPage />,
     },
-    {
-      path: ":applicationId/my-weekly-reports",
-      element: <StudentWeeklyAccomplishmentPage />,
-      loader: async ({ params }) => {
-        try {
-          /**
-           * Params
-           */
-          const { applicationId } = params;
 
-          /**
-           * Responses
-           */
-          const weeklyResponse = await axiosClient.get(
-            `/api/v1/weekly-accomplishment-reports/${applicationId}`
-          );
-
-          /**
-           * Variables
-           */
-          const initial_weekly_reports = weeklyResponse.data;
-
-          /**
-           * Return
-           */
-          return {
-            initial_weekly_reports,
-            applicationId,
-          };
-        } catch (error) {
-          console.log(error);
-        }
-      },
-    },
     {
       path: "my-reports",
       element: <StudentReportsPage />,
@@ -270,8 +238,12 @@ const StudentRoutes = {
       element: <ManageDtrPage />,
     },
     {
-      path: ":applicationId/daily-time-records",
-      element: <StudentManageDtrPage />,
+      path: ":applicationId/weekly-accomplishment-reports",
+      element: <ManageWarPage />,
+    },
+    {
+      path: "test/:applicationId/my-weekly-reports",
+      element: <StudentWeeklyAccomplishmentPage />,
       loader: async ({ params }) => {
         try {
           /**
@@ -282,31 +254,28 @@ const StudentRoutes = {
           /**
            * Responses
            */
-
-          const statusResponse = await axiosClient.get(
-            "/api/v1/users/students/get-student-status-id"
-          );
-          const dtrResponse = await axiosClient.get(
-            `/api/v1/daily-time-records/${applicationId}`
+          const weeklyResponse = await axiosClient.get(
+            `/api/v1/weekly-accomplishment-reports/${applicationId}`
           );
 
           /**
            * Variables
            */
-          const status = statusResponse.data;
-          const dtrEntries = dtrResponse.data;
+          const initial_weekly_reports = weeklyResponse.data;
 
-          // console.log(dtrEntries);
-
+          /**
+           * Return
+           */
           return {
-            status,
-            dtrEntries,
+            initial_weekly_reports,
+            applicationId,
           };
         } catch (error) {
           console.log(error);
         }
       },
     },
+
     {
       path: "view-evaluations",
       element: <StudentViewEvaluationPage />,
