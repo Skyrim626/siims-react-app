@@ -77,10 +77,10 @@ const ChairpersonGenerateEndorsemenLetterPage = () => {
    * Function that submits the Endorsement Letter to the Dean
    */
   const handleSubmitForApproval = async () => {
-    if (!signatureImage) {
+    /* if (!signatureImage) {
       setErrors({ pdf_file: "The pdf file is required" });
       return;
-    }
+    } */
 
     setLoading(true); // Start loading
 

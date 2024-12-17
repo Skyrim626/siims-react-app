@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Page from "../components/common/Page";
 import Loader from "../components/common/Loader";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Section from "../components/common/Section";
 import Heading from "../components/common/Heading";
 import Text from "../components/common/Text";
@@ -16,8 +16,32 @@ import {
 import { showFailedAlert } from "../utils/toastify";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import { pdf, PDFDownloadLink } from "@react-pdf/renderer";
+import { document } from "postcss";
+import GeneratePerformanceEvaluationReport from "../components/letters/GeneratePerformanceEvaluationReport";
+import { postFormDataRequest } from "../api/apiHelpers";
+
+// A function that checks if criteria have scores
+const isCriteriaChecked = (criterias, scores) => {
+  // Check if all criteria have scores
+  const totalCriteriaItems = criterias.reduce(
+    (count, criterion) => count + criterion.items.length,
+    0
+  );
+
+  if (Object.keys(scores).length < totalCriteriaItems) {
+    // alert("");
+    showFailedAlert("Please score all criteria before submitting or viewing.");
+    return false;
+  }
+
+  return true;
+};
 
 const ManagePerformanceEvaluationPage = ({ authorizeRole }) => {
+  // Open Params
+  const { applicationId } = useParams();
+
   // Loading State
   const [loading, setLoading] = useState(false);
 
@@ -35,6 +59,7 @@ const ManagePerformanceEvaluationPage = ({ authorizeRole }) => {
     companyName: company,
     noOfHours,
     companyFullAddress: companyAddress,
+    officeName: office,
   } = location.state || {};
 
   // Input State
@@ -43,16 +68,20 @@ const ManagePerformanceEvaluationPage = ({ authorizeRole }) => {
   const [companyName, setCompanyName] = useState(company || "");
   const [companyFullAddress, setCompanyFullAddress] = useState(companyAddress);
   const [noOfTrainingHours, setNoOfTrainingHours] = useState(noOfHours || "");
+  const [officeName, setOfficeName] = useState(office || "");
   const [jobTitle, setJobTitle] = useState(job || "");
   const [scores, setScores] = useState({});
   const [totalPoints, setTotalPoints] = useState(0);
   const [equivalentRating, setEquivalentRating] = useState(0);
   const [comments, setComments] = useState("");
 
+  // File Name
+  const [fileName, setFileName] = useState("performance-evaluation.pdf");
+
   // Criterias
   const criterias = [
     {
-      category: "Attendance and Punctuality",
+      category: "ATTENDANCE AND PUNCTUALITY",
       items: [
         "Reports for work on time.",
         "Reports for work regularly.",
@@ -60,7 +89,7 @@ const ManagePerformanceEvaluationPage = ({ authorizeRole }) => {
       ],
     },
     {
-      category: "Performance",
+      category: "PERFORMANCE",
       items: [
         "Knows his/her work well.",
         "Completes assignments on time.",
@@ -73,7 +102,7 @@ const ManagePerformanceEvaluationPage = ({ authorizeRole }) => {
       ],
     },
     {
-      category: "General Attitude",
+      category: "GENERAL ATTITUDE",
       items: [
         "Shows interest in his/her work.",
         "Accepts suggestions.",
@@ -116,130 +145,88 @@ const ManagePerformanceEvaluationPage = ({ authorizeRole }) => {
   };
 
   // Function that submits the performance evaluation
-  const handleSubmit = () => {
-    // Check if all criteria have scores
-    const totalCriteriaItems = criterias.reduce(
-      (count, criterion) => count + criterion.items.length,
-      0
-    );
+  const handleSubmit = async () => {
+    // Set Loading
+    setLoading(true);
 
-    console.log(totalCriteriaItems);
+    try {
+      // Check if all criteria have scores
+      const totalCriteriaItems = criterias.reduce(
+        (count, criterion) => count + criterion.items.length,
+        0
+      );
 
-    if (Object.keys(scores).length < totalCriteriaItems) {
-      // alert("");
-      showFailedAlert("Please score all criteria before submitting.");
-      return;
+      if (Object.keys(scores).length < totalCriteriaItems) {
+        // alert("");
+        showFailedAlert("Please score all criteria before submitting.");
+        return;
+      }
+
+      // If validation passes, notify the coordinator
+      // console.log("Coordinator notified");
+
+      // Generate the PDF as a Blob using react-pdf
+      const pdfBlob = await pdf(callPerformanceEvaluationReport()).toBlob();
+
+      // Create a File from the Blob
+      // Create a File from the Blob
+      const pdfFile = new File([pdfBlob], fileName, {
+        type: "application/pdf",
+      });
+
+      // Create FormData and append the file
+      const formData = new FormData();
+      formData.append("performance_report", pdfFile);
+
+      // POST the form data to your endpoint
+      const response = await postFormDataRequest({
+        url: `/api/v1/reports/${applicationId}/performance-evaluation/submit`,
+        data: formData,
+      });
+
+      if (response) {
+        navigate(-1); // Navigate back upon success
+      }
+
+      // Open modal on successful submission
+      setIsModalOpen(true);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
-
-    // If validation passes, notify the coordinator
-    console.log("Coordinator notified");
-
-    // Open modal on successful submission
-    setIsModalOpen(true);
   };
 
-  const downloadEvaluation = () => {
-    const pdf = new jsPDF();
-    const pageWidth = pdf.internal.pageSize.width;
-    const pageHeight = pdf.internal.pageSize.height;
-
-    // Set margins
-    const margin = 20;
-    let currentY = 25; // Start Y position for the title
-
-    // Title
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(14);
-    pdf.text("Performance Evaluation", pageWidth / 2, currentY, {
-      align: "center",
-    });
-
-    // General Info
-    pdf.setFontSize(10);
-    pdf.setFont("helvetica", "normal");
-    currentY += 10;
-    pdf.text(`Name of Student: ${studentFullName}`, margin, currentY);
-    currentY += 10;
-    pdf.text(`No. of Training Hours: ${trainingHours}`, margin, currentY);
-    currentY += 10;
-    pdf.text(`Name of Company: ${companyName}`, margin, currentY);
-    currentY += 10;
-    pdf.text(`Address of Company: ${companyFullAddress}`, margin, currentY);
-
-    // Directions
-    currentY += 20;
-    pdf.text(
-      "Directions: Please mark (X) on the appropriate column to rate the performance.",
-      margin,
-      currentY
+  // Function that calls the Performance Evaluation
+  const callPerformanceEvaluationReport = () => {
+    // Check if criteria is checked
+    return (
+      <GeneratePerformanceEvaluationReport
+        criterias={criterias}
+        scores={scores}
+        studentName={studentFullName}
+        companyName={companyName}
+        noOfTrainingHours={noOfTrainingHours}
+        companyAddress={companyFullAddress}
+        comments={comments}
+        jobTitle={jobTitle}
+        officeName={officeName}
+      />
     );
+  };
 
-    // Table setup
-    const tableBody = [];
-    criterias.forEach((criterion, criterionIndex) => {
-      tableBody.push([
-        {
-          content: criterion.category,
-          colSpan: 6,
-          styles: { halign: "left", fontStyle: "bold" },
-        },
-      ]);
+  // Function that views the performance evaluation
+  const viewPerformanceEvaluationPDF = async () => {
+    try {
+      const document = callPerformanceEvaluationReport();
+      const blob = await pdf(document).toBlob();
 
-      criterion.items.forEach((item, itemIndex) => {
-        const scoreKey = `${criterionIndex}-${itemIndex}`;
-        const score = scores[scoreKey] || "";
+      const blobUrl = URL.createObjectURL(blob);
 
-        const row = [item];
-        [1, 2, 3, 4, 5].forEach((colScore) => {
-          if (score == colScore) {
-            row.push({
-              content: "X",
-              styles: { halign: "center" },
-            });
-          } else {
-            row.push("");
-          }
-        });
-        tableBody.push(row);
-      });
-    });
-
-    // Generate the table with jsPDF-AutoTable
-    pdf.autoTable({
-      head: [["CRITERIA", "1", "2", "3", "4", "5"]],
-      body: tableBody,
-      startY: currentY + 10, // Set the starting Y dynamically after general info
-      theme: "grid",
-      styles: { fontSize: 8, cellPadding: 3 },
-      margin: { left: margin, right: margin },
-      pageBreak: "auto",
-      showHead: "firstPage",
-      headStyles: {
-        fillColor: [0, 0, 255], // RGB for blue (Red, Green, Blue)
-        textColor: [255, 255, 255], // White text color for contrast
-        fontStyle: "bold", // Bold font for header
-      },
-    });
-
-    // Update currentY after table
-    const tableFinalY = pdf.lastAutoTable.finalY;
-
-    // Total Points and Equivalent Rating (Make sure it's not overlapping the table)
-    let finalY = tableFinalY + 10;
-    if (finalY < pageHeight - 20) {
-      pdf.text(`Total Points: ${totalPoints}`, margin, finalY);
-      finalY += 10;
-      pdf.text(`Equivalent Rating: ${equivalentRating}`, margin, finalY);
+      window.open(blobUrl, "_blank");
+    } catch (error) {
+      console.error("Error generating PDF:", error);
     }
-
-    // Add Comments Section to PDF
-    const commentsY = finalY + 20;
-    pdf.text("Comments and Suggestions:", margin, commentsY);
-    pdf.setFontSize(9);
-    pdf.text(comments, margin, commentsY + 10);
-
-    // Save the PDF
-    pdf.save("performance-evaluation.pdf");
   };
 
   return (
@@ -304,6 +291,38 @@ const ManagePerformanceEvaluationPage = ({ authorizeRole }) => {
               value={companyFullAddress}
               onChange={(e) => setCompanyFullAddress(e.target.value)}
               placeholder="Address of company"
+              className="w-full border rounded p-2"
+              required
+            />
+          </Field>
+        </div>
+
+        {/* Job Title */}
+        <div>
+          <Field className="mb-4">
+            <Label>Job Title</Label>
+
+            <Input
+              type="text"
+              value={jobTitle}
+              onChange={(e) => setJobTitle(e.target.value)}
+              placeholder="Job Title"
+              className="w-full border rounded p-2"
+              required
+            />
+          </Field>
+        </div>
+
+        {/* Office Name */}
+        <div>
+          <Field className="mb-4">
+            <Label>Office</Label>
+
+            <Input
+              type="text"
+              value={officeName}
+              onChange={(e) => setOfficeName(e.target.value)}
+              placeholder="Job Title"
               className="w-full border rounded p-2"
               required
             />
@@ -453,18 +472,21 @@ const ManagePerformanceEvaluationPage = ({ authorizeRole }) => {
           <Button
             type="button"
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-            onClick={() => {}}
+            onClick={viewPerformanceEvaluationPDF}
           >
             View in PDF
           </Button>
-
-          <Button
-            type="button"
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-            onClick={downloadEvaluation}
+          <PDFDownloadLink
+            document={callPerformanceEvaluationReport()}
+            fileName={fileName}
           >
-            Download
-          </Button>
+            <Button
+              type="button"
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              Download
+            </Button>
+          </PDFDownloadLink>
 
           <Button
             type="button"

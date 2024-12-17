@@ -156,16 +156,17 @@ const ViewActiveStudentsPage = ({ authorizeRole }) => {
                         params.row.middle_name,
                         params.row.last_name
                       ),
+                      officeName: params.row.office_name,
                       jobTitle: params.row.job_title,
                       companyName: params.row.company_name,
                       noOfHours: params.row.no_of_hours,
-                      companyFullAddress: getFullAddress(
-                        params.row.company_street,
-                        params.row.barangay,
-                        params.row.city_municipality,
-                        params.row.province,
-                        params.row.postal_code
-                      ),
+                      companyFullAddress: getFullAddress({
+                        street: params.row.company_street,
+                        barangay: params.row.company_barangay,
+                        city: params.row.company_city_municipality,
+                        province: params.row.company_provice,
+                        postalCode: params.row.company_postal_code,
+                      }),
                     }, // Pass the data as state
                   }
                 )
