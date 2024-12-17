@@ -9,6 +9,8 @@ import { getStudentStatusColor } from "../utils/statusColor";
 import { Button } from "@headlessui/react";
 import { BookText, CalendarClock, ClipboardCheck } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
+import getFullName from "../utils/getFullName";
+import { getFullAddress } from "../utils/formatAddress";
 
 const ViewActiveStudentsPage = ({ authorizeRole }) => {
   // Loading State
@@ -106,7 +108,18 @@ const ViewActiveStudentsPage = ({ authorizeRole }) => {
           </Button>
           <Button
             className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded"
-            onClick={() => console.log(params.row)}
+            onClick={() =>
+              navigate(
+                `${location.pathname}/applications/${params.row.application_id}/weekly-accomplishment-reports`,
+                {
+                  state: {
+                    firstName: params.row.first_name,
+                    middleName: params.row.middle_name,
+                    lastName: params.row.last_name,
+                  }, // Pass the data as state
+                }
+              )
+            }
           >
             <BookText size={15} />
             View Weekly Reports
@@ -121,7 +134,11 @@ const ViewActiveStudentsPage = ({ authorizeRole }) => {
                   ? "bg-blue-500 hover:bg-blue-600"
                   : "bg-gray-500 cursor-not-allowed"
               }`}
-              onClick={() => console.log(params.row)}
+              onClick={() =>
+                navigate(
+                  `${location.pathname}/applications/${params.row.application_id}/performance-evaluation`
+                )
+              }
             >
               <ClipboardCheck size={15} className="text-white" />
               Evaluate
@@ -129,7 +146,30 @@ const ViewActiveStudentsPage = ({ authorizeRole }) => {
           ) : (
             <Button
               className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded"
-              onClick={() => console.log(params.row)}
+              onClick={() =>
+                navigate(
+                  `${location.pathname}/applications/${params.row.application_id}/performance-evaluation`,
+                  {
+                    state: {
+                      studentName: getFullName(
+                        params.row.first_name,
+                        params.row.middle_name,
+                        params.row.last_name
+                      ),
+                      jobTitle: params.row.job_title,
+                      companyName: params.row.company_name,
+                      noOfHours: params.row.no_of_hours,
+                      companyFullAddress: getFullAddress(
+                        params.row.company_street,
+                        params.row.barangay,
+                        params.row.city_municipality,
+                        params.row.province,
+                        params.row.postal_code
+                      ),
+                    }, // Pass the data as state
+                  }
+                )
+              }
             >
               <ClipboardCheck size={15} className="text-white" />
               Evaluate

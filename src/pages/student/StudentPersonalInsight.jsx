@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const StudentPersonalInsight = () => {
-    const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: "",
     middleName: "",
@@ -25,11 +25,13 @@ const StudentPersonalInsight = () => {
     const files = Array.from(e.target.files);
 
     // Check for valid file types (PNG and JPG)
-    const validFiles = files.filter((file) => file.type === "image/png" || file.type === "image/jpeg");
+    const validFiles = files.filter(
+      (file) => file.type === "image/png" || file.type === "image/jpeg"
+    );
 
     if (validFiles.length !== files.length) {
-        setError("Only PNG and JPG files are allowed.");
-        setTimeout(() => setError(""), 3000);
+      setError("Only PNG and JPG files are allowed.");
+      setTimeout(() => setError(""), 3000);
     }
     // Add valid files to the existing attachment list
     setFormData({

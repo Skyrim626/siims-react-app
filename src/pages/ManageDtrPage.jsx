@@ -66,11 +66,6 @@ const ManageDtrPage = ({ authorizeRole }) => {
   };
 
   /**
-   * Function that generates Daily Time Record PDF
-   */
-  const generateDailyTimeRecordPDF = () => {};
-
-  /**
    * Function that views Daily Time Record PDF
    */
   const viewDailyTimeRecordPDF = async () => {
@@ -322,7 +317,6 @@ const ManageDtrPage = ({ authorizeRole }) => {
                 ) : (
                   <Button
                     type="button"
-                    onClick={generateDailyTimeRecordPDF}
                     className="text-sm flex items-center justify-center gap-2 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded"
                   >
                     Download DTR as PDF

@@ -11,6 +11,7 @@ import CoordinatorMyStudentProgress from "../../pages/coordinator/CoordinatorMyS
 import CoordinatorMyStudentsReports from "../../pages/coordinator/CoordinatorMyStudentsReports";
 import ViewActiveStudentsPage from "../../pages/ViewActiveStudentsPage";
 import ViewDtrPage from "../../pages/ViewDtrPage";
+import ViewWarPage from "../../pages/ViewWarPage";
 
 // Routes for Coordinator
 const CoordinatorRoutes = {
@@ -60,6 +61,10 @@ const CoordinatorRoutes = {
         {
           path: "applications/:id/daily-time-records",
           element: <ViewDtrPage authorizeRole={"coordinator"} />,
+        },
+        {
+          path: "applications/:applicationId/weekly-accomplishment-reports",
+          element: <ViewWarPage authorizeRole={"coordinator"} />,
         },
       ],
     },

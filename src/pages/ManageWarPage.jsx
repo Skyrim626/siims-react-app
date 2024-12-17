@@ -4,13 +4,14 @@ import useRequest from "../hooks/useRequest";
 import { useParams } from "react-router-dom";
 import { Button } from "@headlessui/react";
 import Loader from "../components/common/Loader";
-import { PDFDownloadLink } from "@react-pdf/renderer";
+import { pdf, PDFDownloadLink } from "@react-pdf/renderer";
 import DynamicDataGrid from "../components/tables/DynamicDataGrid";
 import { Plus } from "lucide-react";
 import Text from "../components/common/Text";
 import FormModal from "../components/modals/FormModal";
 import WeeklyEntryForm from "../components/forms/WeeklyEntryForm";
 import DeleteConfirmModal from "../components/modals/DeleteConfirmModal";
+import GenerateWeeklyAccomplishmentReport from "../components/letters/GenerateWeeklyAccomplishmentReport";
 
 const ManageWarPage = ({ authorizeRole }) => {
   // Open Params
@@ -59,6 +60,29 @@ const ManageWarPage = ({ authorizeRole }) => {
     setIsOpen: setIsOpen,
     setLoading: setLoading,
   });
+
+  /**
+   * Function that calls the Weekly Report PDF Format
+   */
+  const callWeeklyReport = () => {
+    return <GenerateWeeklyAccomplishmentReport weeklyEntries={rows} />;
+  };
+
+  /**
+   * Function that views the Weekly Reports PDF
+   */
+  const viewWeeklyReportPDF = async () => {
+    try {
+      const document = callWeeklyReport();
+      const blob = await pdf(document).toBlob();
+
+      const blobUrl = URL.createObjectURL(blob);
+
+      window.open(blobUrl, "_blank");
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    }
+  };
 
   // Function that adds a new weekly entry
   const addWeeklyEntry = () => {
@@ -240,16 +264,13 @@ const ManageWarPage = ({ authorizeRole }) => {
           <div className="flex items-center space-x-2">
             <Button
               type="button"
-              onClick={() => console.log("View DTR")}
+              onClick={viewWeeklyReportPDF}
               className="text-sm flex items-center justify-center gap-2 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded"
             >
               View Weekly Reports as PDF
             </Button>
 
-            <PDFDownloadLink
-            // document={callDailyTimeRecordReport()}
-            // fileName={fileName}
-            >
+            <PDFDownloadLink document={callWeeklyReport()} fileName={fileName}>
               {({ loading }) =>
                 loading ? (
                   <Button className="text-sm flex items-center justify-center gap-2 px-3 py-2 bg-gray-500 cursor-not-allowed text-white rounded">
@@ -258,7 +279,6 @@ const ManageWarPage = ({ authorizeRole }) => {
                 ) : (
                   <Button
                     type="button"
-                    onClick={generateDailyTimeRecordPDF}
                     className="text-sm flex items-center justify-center gap-2 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded"
                   >
                     Download Weekly Report as PDF

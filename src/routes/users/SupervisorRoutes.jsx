@@ -14,6 +14,8 @@ import SupervisorManageDTR from "../../pages/supervisor/SupervisorManageDTR";
 import SupervisorViewWeeklyReport from "../../pages/supervisor/SupervisorViewWeeklyReport";
 import ViewActiveStudentsPage from "../../pages/ViewActiveStudentsPage";
 import ViewDtrPage from "../../pages/ViewDtrPage";
+import ViewWarPage from "../../pages/ViewWarPage";
+import ManagePerformanceEvaluationPage from "../../pages/ManagePerformanceEvaluationPage";
 
 // Routes for Supervisor
 const SupervisorRoutes = {
@@ -90,6 +92,16 @@ const SupervisorRoutes = {
         {
           path: "applications/:id/daily-time-records",
           element: <ViewDtrPage authorizeRole={"supervisor"} />,
+        },
+        {
+          path: "applications/:applicationId/weekly-accomplishment-reports",
+          element: <ViewWarPage authorizeRole={"supervisor"} />,
+        },
+        {
+          path: "applications/:applicationId/performance-evaluation",
+          element: (
+            <ManagePerformanceEvaluationPage authorizeRole={"supervisor"} />
+          ),
         },
         {
           path: "test",
