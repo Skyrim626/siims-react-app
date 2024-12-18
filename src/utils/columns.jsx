@@ -29,17 +29,35 @@ export const getStudentStaticColumns = (authorizeRole) => {
       headerClassName: "super-app-theme--header",
     },
     {
-      field: "program_name",
-      headerName: "Program",
-      width: 350,
+      field: "coordinator",
+      headerName: "Coordinator",
+      width: 150,
       headerClassName: "super-app-theme--header",
     },
-    {
-      field: "college",
-      headerName: "College",
-      width: 350,
-      headerClassName: "super-app-theme--header",
-    },
+    // ! Only add the program_name column if the role is admin or dean
+    ...(authorizeRole === "admin" || authorizeRole === "dean"
+      ? [
+          {
+            field: "program_name",
+            headerName: "Program",
+            width: 350,
+            headerClassName: "super-app-theme--header",
+          },
+        ]
+      : []),
+
+    //  ! Only add the email_verified_at column if the role is admin
+    ...(authorizeRole === "admin"
+      ? [
+          {
+            field: "college",
+            headerName: "College",
+            width: 350,
+            headerClassName: "super-app-theme--header",
+          },
+        ]
+      : []),
+
     {
       field: "email",
       headerName: "Email",

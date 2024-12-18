@@ -8,7 +8,7 @@ import useRequest from "../hooks/useRequest";
 import ManageHeader from "../components/common/ManageHeader";
 import DynamicDataGrid from "../components/tables/DynamicDataGrid";
 import useForm from "../hooks/useForm";
-import { Button } from "@headlessui/react";
+import { Button, Tab, TabGroup, TabList } from "@headlessui/react";
 import {
   getStudentActionColumns,
   getStudentStaticColumns,
@@ -18,6 +18,18 @@ import FormModal from "../components/modals/FormModal";
 import { getRequest, postFormDataRequest } from "../api/apiHelpers";
 import DeleteConfirmModal from "../components/modals/DeleteConfirmModal";
 import ImportStudentForm from "./admin/forms/ImportStudentForm";
+
+// Tabs Links
+const tabLinks = [
+  {
+    name: "All",
+    url: "/users/students", // The backend resource for 'All' students
+  },
+  {
+    name: "Archives",
+    url: "/users/students/archives", // The backend resource for 'Archived' students
+  },
+];
 
 const ManageStudentsPage = ({ authorizeRole }) => {
   // Loading State
@@ -44,6 +56,7 @@ const ManageStudentsPage = ({ authorizeRole }) => {
   const [isOpenImport, setIsOpenImport] = useState(false);
 
   // Select State
+  const [selectedTab, setSelectedTab] = useState(tabLinks[0]);
   const [selectedStudent, setSelectedStudent] = useState({});
   const [selectedProgramId, setSelectedProgramId] = useState(null);
 
@@ -100,7 +113,7 @@ const ManageStudentsPage = ({ authorizeRole }) => {
         const listOfProgramsResponse = await getRequest({
           url: "/api/v1/programs/lists",
         });
-
+        // console.log(listOfProgramsResponse);
         // Set State
         setListOfPrograms(listOfProgramsResponse);
       } catch (error) {
@@ -334,6 +347,12 @@ const ManageStudentsPage = ({ authorizeRole }) => {
     }
   };
 
+  // Tab Change
+  const handleTabChange = (tab) => {
+    setSelectedTab(tab);
+    navigate(tab.url); // Update the URL dynamically based on the selected tab
+  };
+
   /**
    * A function that handles the File Change
    */
@@ -360,88 +379,122 @@ const ManageStudentsPage = ({ authorizeRole }) => {
         )}
 
         <div className="mt-3">
-          <ManageHeader
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-            addPlaceholder="Add New User"
-            showExportButton={false}
-            isImportOpen={isOpenImport}
-            setIsImportOpen={setIsOpenImport}
-          />
+          <TabGroup>
+            <TabList className="flex gap-4">
+              {tabLinks.map((tabLink, index) => {
+                // ! Do not display Archives if role is not Admin
+                if (tabLink.name === "Archives" && authorizeRole !== "admin") {
+                  return null;
+                }
 
-          <DynamicDataGrid
-            searchPlaceholder={"Search User"}
-            rows={rows}
-            setRows={setRows}
-            columns={columns}
-            url={"/users/students"}
-          />
+                return (
+                  <Tab
+                    key={index}
+                    className={`rounded-full py-1 px-3 text-sm/6 font-semibold focus:outline-none ${
+                      selectedTab.name === tabLink.name
+                        ? "bg-blue-700 text-white" // Active tab style
+                        : "bg-transparent text-blue-700" // Inactive tab style
+                    }`}
+                    onClick={() => setSelectedTab(tabLink)} // Update selected tab on click
+                  >
+                    {tabLink.name}
+                  </Tab>
+                );
+              })}
+            </TabList>
+          </TabGroup>
+          {selectedTab.name === "All" && (
+            <>
+              <ManageHeader
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+                addPlaceholder="Add New User"
+                showExportButton={false}
+                isImportOpen={isOpenImport}
+                setIsImportOpen={setIsOpenImport}
+              />
+              <DynamicDataGrid
+                searchPlaceholder={"Search User"}
+                rows={rows}
+                setRows={setRows}
+                columns={columns}
+                url={selectedTab.url}
+              />
+
+              {/* Modals */}
+              {/* Add Form Modal */}
+              <FormModal
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+                modalTitle="Add Student"
+                onSubmit={addStudent}
+              >
+                <StudentForm
+                  method="post"
+                  studentInfo={formData}
+                  handleStudentInfoChange={handleInputChange}
+                  programs={listOfPrograms}
+                  coordinators={listOfCoordinators}
+                  errors={validationErrors}
+                />
+              </FormModal>
+
+              {/* Modals */}
+              {/* Edit Form Modal */}
+              <FormModal
+                isOpen={isEditOpen}
+                setIsOpen={setEditIsOpen}
+                modalTitle="Edit Student"
+                onSubmit={updateStudent}
+              >
+                <StudentForm
+                  method="put"
+                  studentInfo={formData}
+                  handleStudentInfoChange={handleInputChange}
+                  programs={listOfPrograms}
+                  coordinators={listOfCoordinators}
+                  errors={validationErrors}
+                />
+              </FormModal>
+
+              {/* Delete Form Modal */}
+              <DeleteConfirmModal
+                open={isDeleteOpen}
+                setOpen={setIsDeleteOpen}
+                title={`Delete ${selectedStudent["first_name"]}`}
+                message="Are you sure you want to delete this student?"
+                handleDelete={deleteStudent}
+              />
+
+              {/* Import Form Modal */}
+              <FormModal
+                isOpen={isOpenImport}
+                setIsOpen={setIsOpenImport}
+                modalTitle="Import Students"
+                onSubmit={submitFile}
+              >
+                <ImportStudentForm
+                  file={file}
+                  set={setFile}
+                  status={status}
+                  setStatus={setStatus}
+                  handleFileChange={handleFileChange}
+                  programs={listOfPrograms}
+                  programId={programID}
+                  setProgramId={setProgramID}
+                  withSelection={!(authorizeRole === "chairperson")}
+                />
+              </FormModal>
+            </>
+          )}
+
+          {/*! FOR ADMIN ONLY */}
+          {selectedTab.name === "Archives" && authorizeRole === "admin" && (
+            <>
+              <div>Test</div>
+            </>
+          )}
         </div>
-
-        {/* Modals */}
-        {/* Add Form Modal */}
-        <FormModal
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-          modalTitle="Add Student"
-          onSubmit={addStudent}
-        >
-          <StudentForm
-            method="post"
-            studentInfo={formData}
-            handleStudentInfoChange={handleInputChange}
-            programs={listOfPrograms}
-            coordinators={listOfCoordinators}
-            errors={validationErrors}
-          />
-        </FormModal>
-
-        {/* Modals */}
-        {/* Edit Form Modal */}
-        <FormModal
-          isOpen={isEditOpen}
-          setIsOpen={setEditIsOpen}
-          modalTitle="Edit Student"
-          onSubmit={updateStudent}
-        >
-          <StudentForm
-            method="put"
-            studentInfo={formData}
-            handleStudentInfoChange={handleInputChange}
-            programs={listOfPrograms}
-            coordinators={listOfCoordinators}
-            errors={validationErrors}
-          />
-        </FormModal>
-
-        {/* Delete Form Modal */}
-        <DeleteConfirmModal
-          open={isDeleteOpen}
-          setOpen={setIsDeleteOpen}
-          title={`Delete ${selectedStudent["first_name"]}`}
-          message="Are you sure you want to delete this student?"
-          handleDelete={deleteStudent}
-        />
-
-        {/* Import Form Modal */}
-        <FormModal
-          isOpen={isOpenImport}
-          setIsOpen={setIsOpenImport}
-          modalTitle="Import Students"
-          onSubmit={submitFile}
-        >
-          <ImportStudentForm
-            file={file}
-            set={setFile}
-            status={status}
-            setStatus={setStatus}
-            handleFileChange={handleFileChange}
-            programs={listOfPrograms}
-            programId={programID}
-            setProgramId={setProgramID}
-            withSelection={true}
-          />
-        </FormModal>
       </Page>
     </>
   );

@@ -34,7 +34,7 @@ const ImportStudentForm = ({
             required={requiredFields.programId}
             value={programId}
           >
-            <option value=" ">-Select a Program-</option>
+            <option value="0">-Select a Program-</option>
             {programs.map((program) => {
               return (
                 <option key={program.id} value={program.id}>

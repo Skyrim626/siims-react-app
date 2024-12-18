@@ -12,6 +12,7 @@ import DeanEndorsementLetterRequestsPage from "../../pages/dean/DeanEndorsementL
 import ViewProgramsPage from "../../pages/ViewProgramsPage";
 import ViewCoordinatorsPage from "../../pages/ViewCoordinatorsPage";
 import ManageCompaniesPage from "../../pages/ManageCompaniesPage";
+import ManageStudentsPage from "../../pages/ManageStudentsPage";
 
 // Routes for Dean
 const DeanRoutes = {
@@ -85,6 +86,10 @@ const DeanRoutes = {
     },
     {
       path: "students",
+      element: <ManageStudentsPage authorizeRole={"dean"} />,
+    },
+    {
+      path: "test/students",
       element: <DeanManageStudentsPage />,
       loader: async () => {
         try {
