@@ -9,5 +9,8 @@ export default defineConfig({
   },
   server: {
     port: 3000,
-  }
+  },
+  /* esbuild: {
+    sourcemap: false, // Disable source maps during development
+  }, */
 })

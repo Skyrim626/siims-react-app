@@ -18,7 +18,11 @@ import LoadingScreen from "./components/common/LoadingScreen";
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <AuthProvider>
-      <RouterProvider router={router} fallbackElement={<LoadingScreen />} />
+      <RouterProvider
+        router={router}
+        fallbackElement={<LoadingScreen />}
+        future={{ v7_startTransition: true, v7_partialHydration: true }}
+      />
     </AuthProvider>
     <ToastContainer />
   </React.StrictMode>
