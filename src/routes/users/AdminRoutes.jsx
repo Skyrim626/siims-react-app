@@ -34,6 +34,7 @@ import ViewDeansPage from "../../pages/ViewDeansPage";
 import ViewChairpersonsPage from "../../pages/ViewChairpersonsPage";
 import ViewCoordinatorsPage from "../../pages/ViewCoordinatorsPage";
 import ManageCompaniesPage from "../../pages/ManageCompaniesPage";
+import ManageOsaPage from "../../pages/ManageOsaPage";
 
 // Define routes for the Admin section
 const AdminRoutes = {
@@ -258,7 +259,11 @@ const AdminRoutes = {
           path: "companies",
           element: <ManageCompaniesPage authorizeRole={"admin"} />,
         },
-
+        // OSA
+        {
+          path: "osa",
+          element: <ManageOsaPage />,
+        },
         {
           path: "test/chairpersons", // Route for managing chairpersons
           element: <AdminManageChairpersonsPage />,

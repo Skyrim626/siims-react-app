@@ -38,6 +38,38 @@ const useRequest = ({ setIsOpen, setData, setLoading }) => {
   };
 
   /**
+   * PUT (RESTORE) METHOD
+   */
+  const restoreData = async ({ url, selectedData }) => {
+    // Set loading state to true
+    setLoading(true);
+
+    try {
+      // Make the PUT Method
+      const response = await putRequest({
+        url: `${request_path}${url}`,
+      });
+
+      if (response) {
+        setData((prevData) =>
+          prevData.map((data) =>
+            data.id === selectedData["id"]
+              ? { ...data, ...response.data }
+              : data
+          )
+        );
+
+        setErrors({});
+      }
+    } catch (error) {
+      console.error(error);
+      setErrors(error.response?.data?.errors || "An error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /**
    * PUT METHOD
    */
   const putData = async ({
@@ -120,7 +152,7 @@ const useRequest = ({ setIsOpen, setData, setLoading }) => {
     }
   };
 
-  return { postData, putData, deleteData, errors };
+  return { postData, putData, deleteData, restoreData, errors };
 };
 
 export default useRequest;
