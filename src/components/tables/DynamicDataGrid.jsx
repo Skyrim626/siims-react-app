@@ -62,6 +62,9 @@ const DynamicDataGrid = React.memo(
     // Search Props
     searchPlaceholder = "Search Something",
     allowSearch = true,
+
+    // Checkbox Selection
+    checkboxSelection = true,
   }) => {
     const [totalCount, setTotalCount] = useState(0); // Total count of records
     const [loading, setLoading] = useState(true); // Loading state
@@ -172,7 +175,7 @@ const DynamicDataGrid = React.memo(
             paginationModel={paginationModel} // Current pagination model
             onPaginationModelChange={handlePaginationModelChange} // Pagination change handler
             pageSizeOptions={pageSizeOptions} // Options for per page
-            checkboxSelection
+            checkboxSelection={checkboxSelection}
             getRowClassName={(params) =>
               params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
             }

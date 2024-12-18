@@ -33,6 +33,7 @@ import ViewUsersPage from "../../pages/ViewUsersPage";
 import ViewDeansPage from "../../pages/ViewDeansPage";
 import ViewChairpersonsPage from "../../pages/ViewChairpersonsPage";
 import ViewCoordinatorsPage from "../../pages/ViewCoordinatorsPage";
+import ManageCompaniesPage from "../../pages/ManageCompaniesPage";
 
 // Define routes for the Admin section
 const AdminRoutes = {
@@ -237,17 +238,25 @@ const AdminRoutes = {
           index: true, // Default route for user management
           element: <ViewUsersPage />, // Render the users management page
         },
+        // Deans
         {
           path: "deans", // Route for managing deans
           element: <ViewDeansPage />,
         },
+        // Chairpersons
         {
           path: "chairpersons",
           element: <ViewChairpersonsPage />,
         },
+        // Coordinators
         {
           path: "coordinators",
           element: <ViewCoordinatorsPage authorizeRole={"admin"} />,
+        },
+        // Companies
+        {
+          path: "companies",
+          element: <ManageCompaniesPage authorizeRole={"admin"} />,
         },
 
         {
@@ -329,41 +338,6 @@ const AdminRoutes = {
             },
           ],
         }, */
-
-        {
-          path: "companies", // Route for managing companies
-          element: <AdminManageCompaniesPage />,
-          children: [
-            {
-              path: ":id",
-              element: <AdminManageCompanyOfficesPage />,
-              loader: async ({ params }) => {
-                try {
-                  const { id } = params;
-
-                  console.log(id);
-
-                  const response = await axiosClient.get(
-                    `/api/v1/admin/users/companies/${id}/offices`
-                  );
-
-                  // Fetch the offices
-                  const initial_offices = response.data;
-
-                  // console.log(initial_offices);
-
-                  return initial_offices;
-                } catch (error) {
-                  console.error(
-                    "Error fetching programs and chairpersons: ",
-                    error
-                  );
-                  throw error; // Let the router handle errors
-                }
-              },
-            },
-          ],
-        },
       ],
     },
     {

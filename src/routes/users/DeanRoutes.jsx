@@ -11,6 +11,7 @@ import DeanManageStudentsPage from "../../pages/dean/DeanManageStudentsPage";
 import DeanEndorsementLetterRequestsPage from "../../pages/dean/DeanEndorsementLetterRequestsPage";
 import ViewProgramsPage from "../../pages/ViewProgramsPage";
 import ViewCoordinatorsPage from "../../pages/ViewCoordinatorsPage";
+import ManageCompaniesPage from "../../pages/ManageCompaniesPage";
 
 // Routes for Dean
 const DeanRoutes = {
@@ -129,7 +130,7 @@ const DeanRoutes = {
       children: [
         {
           index: true,
-          element: <DeanManageCompaniesPage />,
+          element: <ManageCompaniesPage authorizeRole={"dean"} />,
         },
         {
           path: ":company_id",

@@ -136,6 +136,7 @@ const ViewUsersPage = () => {
           columns={columns}
           url={"/users"}
           pageSizeOptions={[5, 10, 15, 30, 50]}
+          checkboxSelection={false}
         />
       </div>
     </>
