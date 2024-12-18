@@ -15,9 +15,12 @@ import {
 } from "../utils/columns";
 import StudentForm from "../components/forms/StudentForm";
 import FormModal from "../components/modals/FormModal";
-import { getRequest, postFormDataRequest } from "../api/apiHelpers";
+import { getRequest, postFormDataRequest, putRequest } from "../api/apiHelpers";
 import DeleteConfirmModal from "../components/modals/DeleteConfirmModal";
 import ImportStudentForm from "./admin/forms/ImportStudentForm";
+import { UserCheck } from "lucide-react";
+import AssignConfirmModal from "../components/modals/AssignConfirmModal";
+import AssignStudentForm from "../components/forms/AssignStudentForm";
 
 // Tabs Links
 const tabLinks = [
@@ -54,11 +57,14 @@ const ManageStudentsPage = ({ authorizeRole }) => {
   const [isEditOpen, setEditIsOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isOpenImport, setIsOpenImport] = useState(false);
+  const [isAssignOpen, setIsAssignOpen] = useState(false);
+  const [isAssignConfirmOpen, setIsAssignConfirmOpen] = useState(false);
 
   // Select State
   const [selectedTab, setSelectedTab] = useState(tabLinks[0]);
   const [selectedStudent, setSelectedStudent] = useState({});
   const [selectedProgramId, setSelectedProgramId] = useState(null);
+  const [selectedRows, setSelectedRows] = useState([]); // State for selected rows
 
   // Use the useForm hook to manage form data
   const { formData, handleInputChange, resetForm, setFormValues } = useForm({
@@ -175,6 +181,61 @@ const ManageStudentsPage = ({ authorizeRole }) => {
     // ! Call Function for Admin, Dean, and Chairperson
     fetchListOfCoordinators();
   }, []);
+
+  // Function to handle row selection
+  const handleRowSelection = (ids) => {
+    setSelectedRows(ids); // Update state with selected row IDs
+  };
+
+  // Function to print selected rows
+  const printSelectedRows = () => {
+    const selectedData = rows.filter((row) => selectedRows.includes(row.id));
+    console.log("Selected Rows:", selectedData);
+    alert(JSON.stringify(selectedData, null, 2)); // Show the selected rows in an alert
+  };
+
+  // Function to assign student/s to coordinator
+  const handleAssign = async () => {
+    // Loading State
+    setLoading(true);
+
+    try {
+      // Ensure a coordinator is selected
+      if (!formData.coordinatorID) {
+        alert("Please select a coordinator before confirming.");
+        return;
+      }
+
+      const selectedData = rows.filter((row) => selectedRows.includes(row.id));
+
+      // Extract only the ids from the selectedData and structure them with student_id attribute
+      const selectedIds = selectedData.map((student) => ({
+        student_id: student.id,
+      }));
+      // console.log(selectedIds); // Logs the array with each object containing a student_id
+
+      // Prepare payload
+      const payload = {
+        student_ids: selectedIds,
+        coordinator_id: formData.coordinatorID,
+      };
+
+      const response = await putRequest({
+        url: "/api/v1/users/students/assign-to-coordinator",
+        data: payload,
+      });
+
+      if (response) {
+        // Close Modals
+        setIsAssignConfirmOpen(false);
+        setIsAssignOpen(false);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Function to add new student
   const addStudent = () => {
@@ -413,15 +474,49 @@ const ManageStudentsPage = ({ authorizeRole }) => {
                 isImportOpen={isOpenImport}
                 setIsImportOpen={setIsOpenImport}
               />
+              {/* Assign Button */}
+              {(authorizeRole === "admin" ||
+                authorizeRole === "chairperson") && (
+                <div className="my-3">
+                  <Button
+                    // onClick={() => setIsAssignOpen(!isAssignOpen)}
+                    onClick={() => setIsAssignOpen(!isAssignOpen)}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold ${
+                      selectedRows.length > 0
+                        ? "bg-green-500 text-white hover:bg-green-600 transition"
+                        : "bg-gray-400 text-gray-200 cursor-not-allowed"
+                    }`}
+                  >
+                    <UserCheck className="w-5 h-5" />
+                    Assign Student
+                  </Button>
+                </div>
+              )}
+
               <DynamicDataGrid
                 searchPlaceholder={"Search User"}
                 rows={rows}
                 setRows={setRows}
                 columns={columns}
                 url={selectedTab.url}
+                onSelectionModelChange={handleRowSelection} // Handle selection change
+                getRowId={(row) => row.id} // Define the row ID
               />
-
               {/* Modals */}
+              {/* Assign Modal */}
+              <FormModal
+                isOpen={isAssignOpen}
+                setIsOpen={setIsAssignOpen}
+                modalTitle="Assign Student"
+                onSubmit={() => setIsAssignConfirmOpen(!isAssignConfirmOpen)}
+              >
+                <AssignStudentForm
+                  selectedCoordinatorID={formData.coordinatorID}
+                  handleSelectedCoordinatorID={handleInputChange}
+                  coordinators={listOfCoordinators}
+                />
+              </FormModal>
+
               {/* Add Form Modal */}
               <FormModal
                 isOpen={isOpen}
@@ -438,7 +533,6 @@ const ManageStudentsPage = ({ authorizeRole }) => {
                   errors={validationErrors}
                 />
               </FormModal>
-
               {/* Modals */}
               {/* Edit Form Modal */}
               <FormModal
@@ -456,7 +550,6 @@ const ManageStudentsPage = ({ authorizeRole }) => {
                   errors={validationErrors}
                 />
               </FormModal>
-
               {/* Delete Form Modal */}
               <DeleteConfirmModal
                 open={isDeleteOpen}
@@ -464,6 +557,15 @@ const ManageStudentsPage = ({ authorizeRole }) => {
                 title={`Delete ${selectedStudent["first_name"]}`}
                 message="Are you sure you want to delete this student?"
                 handleDelete={deleteStudent}
+              />
+
+              {/* Assign Form Modal */}
+              <AssignConfirmModal
+                open={isAssignConfirmOpen}
+                setOpen={setIsAssignConfirmOpen}
+                title="Assign Student To A Coordinator"
+                message="Are you sure you want to assign this/these student/s to the selected coordinator? This action can be reviewed but not undone."
+                handleAssign={handleAssign}
               />
 
               {/* Import Form Modal */}

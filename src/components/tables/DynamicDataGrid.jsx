@@ -65,6 +65,12 @@ const DynamicDataGrid = React.memo(
 
     // Checkbox Selection
     checkboxSelection = true,
+
+    // Selection Change
+    onSelectionModelChange,
+
+    // Row ID Definition
+    getRowId,
   }) => {
     const [totalCount, setTotalCount] = useState(0); // Total count of records
     const [loading, setLoading] = useState(true); // Loading state
@@ -225,6 +231,8 @@ const DynamicDataGrid = React.memo(
                 visibility: "visible", // Ensure icon container is visible
               },
             }}
+            onRowSelectionModelChange={onSelectionModelChange}
+            getRowId={getRowId}
           />
         </div>
       </div>
