@@ -24,6 +24,7 @@ import StudentPersonalInsight from "../../pages/student/StudentPersonalInsight";
 import StudentViewEditInsights from "../../pages/student/StudentViewEditInsights";
 import ManageDtrPage from "../../pages/ManageDtrPage";
 import ManageWarPage from "../../pages/ManageWarPage";
+import ViewCompanyProfilePage from "../../pages/profiles/ViewCompanyProfilePage";
 // Routes for Student
 const StudentRoutes = {
   path: "my",
@@ -120,7 +121,10 @@ const StudentRoutes = {
         },
       ],
     },
-
+    {
+      path: "companies/:company_id",
+      element: <ViewCompanyProfilePage authorizeRole={"student"} />,
+    },
     {
       path: "message",
       element: <StudentMessagingPage />,

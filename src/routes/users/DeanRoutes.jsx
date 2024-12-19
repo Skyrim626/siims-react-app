@@ -13,6 +13,7 @@ import ViewProgramsPage from "../../pages/ViewProgramsPage";
 import ViewCoordinatorsPage from "../../pages/ViewCoordinatorsPage";
 import ManageCompaniesPage from "../../pages/ManageCompaniesPage";
 import ManageStudentsPage from "../../pages/ManageStudentsPage";
+import ViewCompanyProfilePage from "../../pages/profiles/ViewCompanyProfilePage";
 
 // Routes for Dean
 const DeanRoutes = {
@@ -137,9 +138,13 @@ const DeanRoutes = {
           index: true,
           element: <ManageCompaniesPage authorizeRole={"dean"} />,
         },
-        {
+        /* {
           path: ":company_id",
           element: <DeanCompanyPage />,
+        }, */
+        {
+          path: ":company_id",
+          element: <ViewCompanyProfilePage authorizeRole={"dean"} />,
         },
       ],
     },

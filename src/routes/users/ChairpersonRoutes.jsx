@@ -15,6 +15,7 @@ import PDFFile from "../../components/letters/PDFFile";
 import ViewCoordinatorsPage from "../../pages/ViewCoordinatorsPage";
 import ManageStudentsPage from "../../pages/ManageStudentsPage";
 import ManageCompaniesPage from "../../pages/ManageCompaniesPage";
+import ViewCompanyProfilePage from "../../pages/profiles/ViewCompanyProfilePage";
 
 // Routes for Chairperson
 const ChairpersonRoutes = {
@@ -118,8 +119,12 @@ const ChairpersonRoutes = {
         },
         {
           path: ":company_id",
-          element: <ChairpersonCompanyPage />,
+          element: <ViewCompanyProfilePage authorizeRole={"chairperson"} />,
         },
+        /* {
+          path: ":company_id",
+          element: <ChairpersonCompanyPage />,
+        }, */
       ],
     },
     {

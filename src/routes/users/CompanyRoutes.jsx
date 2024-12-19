@@ -20,6 +20,7 @@ import CompanyManageInternsPage from "../..//pages/company/CompanyManageInternsP
 import ViewActiveStudentsPage from "../../pages/ViewActiveStudentsPage";
 import ViewDtrPage from "../../pages/ViewDtrPage";
 import ManageSupervisorsPage from "../../pages/ManageSupervisorsPage";
+import ViewCompanyProfilePage from "../../pages/profiles/ViewCompanyProfilePage";
 
 // Routes for Company
 const CompanyRoutes = {
@@ -62,6 +63,10 @@ const CompanyRoutes = {
     },
     {
       path: "profile",
+      element: <ViewCompanyProfilePage authorizeRole={"company"} />,
+    },
+    {
+      path: "test/profile",
       element: <CompanyProfilePage />,
     },
     {

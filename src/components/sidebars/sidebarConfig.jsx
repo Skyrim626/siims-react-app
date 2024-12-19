@@ -433,7 +433,7 @@ const deanSidebarItemsConfig = [
     path: "/auth/dean/companies",
     sublinks: [
       {
-        text: "Company_ID",
+        text: "company_id",
         path: "/auth/dean/companies/:company_id", // Dynamic path
       },
     ],

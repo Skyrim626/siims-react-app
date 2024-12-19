@@ -1,6 +1,6 @@
 import { Button } from "@headlessui/react";
 import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const JobPost = ({ job, handleApplyClick, canApply }) => {
   // Open location and navigation
@@ -18,6 +18,9 @@ const JobPost = ({ job, handleApplyClick, canApply }) => {
       ? `${job.qualifications.substring(0, 20)}...`
       : job.qualifications;
 
+  // console.log(location.pathname);
+  // console.log(job.company_id);
+
   return (
     <div className="group mx-2 mt-8 grid max-w-screen-md grid-cols-12 gap-6 rounded-lg border border-gray-300 bg-white p-6 shadow-sm transition hover:shadow-md sm:mx-auto">
       {/* Company Logo */}
@@ -33,9 +36,11 @@ const JobPost = ({ job, handleApplyClick, canApply }) => {
 
       {/* Job Details */}
       <div className="col-span-10 flex flex-col">
-        <h3 className="text-sm font-medium text-gray-600">
-          {job.company_name}
-        </h3>
+        <Link to={`${location.pathname}/companies/${job.company_id}`}>
+          <h3 className="text-sm font-medium text-gray-600 hover:underline">
+            {job.company_name}
+          </h3>
+        </Link>
         <a
           href="#"
           className="mb-3 text-lg font-semibold text-gray-800 hover:underline sm:text-xl"
