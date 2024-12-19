@@ -37,6 +37,7 @@ import ManageCompaniesPage from "../../pages/ManageCompaniesPage";
 import ManageOsaPage from "../../pages/ManageOsaPage";
 import ManageStudentsPage from "../../pages/ManageStudentsPage";
 import ManageSupervisorsPage from "../../pages/ManageSupervisorsPage";
+import ViewDeanProfilePage from "../../pages/profiles/ViewDeanProfilePage";
 
 // Define routes for the Admin section
 const AdminRoutes = {
@@ -233,6 +234,8 @@ const AdminRoutes = {
         }
       },
     },
+
+    // User Routes
     {
       path: "users", // Base path for user management
       element: <AdminManageUserSelection />, // Render user selection component
@@ -357,9 +360,13 @@ const AdminRoutes = {
         }, */
       ],
     },
+    /**
+     * View Profiles
+     */
+    // Dean Profile Route
     {
-      path: "testing",
-      element: <TestingPage />,
+      path: "users/deans/:deanId",
+      element: <ViewDeanProfilePage authorizeRole={"admin"} />,
     },
     {
       path: "offices", // Route for managing offices
