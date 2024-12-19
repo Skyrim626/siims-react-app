@@ -24,7 +24,12 @@ const StudentProfilePage = () => {
   const [loading, setLoading] = useState(false);
 
   // User Information State
-  const [user, handleUserChange, resetForm, setFormValues] = useForm({
+  const {
+    formData: user,
+    handleInputChange: handleUserChange,
+    resetForm,
+    setFormValues,
+  } = useForm({
     id: 2024301502,
     first_name: "John",
     middle_name: "Doe",
