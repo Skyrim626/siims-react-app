@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import { getRequest } from "../../api/apiHelpers";
-import { MapPin, Mail, Phone } from "lucide-react";
+import { MapPin, Mail, Phone, Eye, Edit, Plus } from "lucide-react";
 import Loader from "../../components/common/Loader";
 import Page from "../../components/common/Page";
 import { getCoverImage, getProfileImage } from "../../utils/imageHelpers";
 import Text from "../../components/common/Text";
 import AddressItem from "../../components/profiles/AddressItem";
+import { Button } from "@headlessui/react";
 
 const ViewCompanyProfilePage = ({ authorizeRole }) => {
   // ! FOR ADMIN, DEAN, CHAIRPERSON, STUDENT
@@ -71,17 +72,39 @@ const ViewCompanyProfilePage = ({ authorizeRole }) => {
       </div>
 
       {/* Profile Information Section */}
-      <div className="flex items-center justify-center w-full">
-        <div className="flex items-center gap-6 bg-white bg-opacity-80 px-6 py-4 rounded-lg shadow-lg w-full">
+      <div className="flex items-center justify-between w-full bg-white shadow-lg">
+        <div className="flex items-center gap-6 bg-opacity-80 px-6 py-4 rounded-lg  w-full">
           <img
             src={getProfileImage(profile.profile_image_url)} // Use external default profile image URL
             alt="Dean Profile"
             className="w-32 h-32 object-cover rounded-full border-4 border-white shadow-md"
           />
           <div className="text-gray-900">
-            <h1 className="text-2xl font-semibold max-w-2xl">{profile.name}</h1>
+            <h1 className="text-xl font-semibold max-w-2xl">{profile.name}</h1>
           </div>
         </div>
+
+        {/* Action Buttons */}
+        {(authorizeRole === "company" || authorizeRole === "admin") && (
+          <div className="flex gap-2 justify-end px-3">
+            {/* <Button className="whitespace-nowrap  flex items-center gap-2 px-4 py-2 border rounded-sm text-gray-700 border-gray-300 hover:bg-gray-100">
+              <Eye size={20} />
+              <Text>Public View</Text>
+            </Button> */}
+            <Link to={`${location.pathname}/edit`}>
+              <Button className="whitespace-nowrap  flex items-center gap-2 px-4 py-2 border rounded-sm text-gray-700 border-gray-300 hover:bg-gray-100">
+                <Edit size={20} />
+                <Text>Edit Profile</Text>
+              </Button>
+            </Link>
+            <Link to="/auth/company/offices/add">
+              <Button className="whitespace-nowrap flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-sm hover:bg-blue-700">
+                <Plus size={20} />
+                <Text>Add Office</Text>
+              </Button>
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* Main Profile Content */}

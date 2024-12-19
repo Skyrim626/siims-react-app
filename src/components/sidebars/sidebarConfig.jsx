@@ -292,9 +292,9 @@ const companySidebarItemsConfig = [
   {
     icon: <User size={20} />,
     text: "Profile",
-    alert: true,
+    alert: false,
     ariaLabel: "Profile",
-    exact: true,
+    exact: false,
     path: "/auth/company/profile",
   },
   {

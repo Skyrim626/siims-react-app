@@ -4,3 +4,7 @@ export const getCoverImage = (coverImageUrl) =>
 
 export const getProfileImage = (profileImageUrl) =>
   profileImageUrl || "https://via.placeholder.com/150/cccccc/ffffff?text=Profile+Image";
+
+export const getLogoImage = (logoImageUrl) =>
+  logoImageUrl || "https://via.placeholder.com/150?text=Company+Logo";
+

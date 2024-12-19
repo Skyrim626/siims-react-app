@@ -4,7 +4,7 @@ import { stripLocation } from "../../utils/strip";
 import { Button, Field, Input, Label, Select } from "@headlessui/react";
 import { postRequest } from "../../api/apiHelpers";
 import { formatDate } from "../../utils/formatDate";
-import { ArrowLeft } from 'lucide-react'; // Import ArrowLeft icon
+import { ArrowLeft } from "lucide-react"; // Import ArrowLeft icon
 
 import ProfileForm from "../../components/student-profiles/ProfileForm";
 import WorkExperienceForm from "../../components/student-profiles/WorkExperienceForm";
