@@ -82,15 +82,15 @@ export default function StudentLayout() {
     //     );
     //   },
     // },
-    {
-      icon: <MessageSquareMore size={20} />,
-      text: "Message",
-      path: "/auth/my/message",
-      active: true,
-      ariaLabel: "Message",
-      alert: true,
-      exact: false,
-    },
+    // {
+    //   icon: <MessageSquareMore size={20} />,
+    //   text: "Message",
+    //   path: "/auth/my/message",
+    //   active: true,
+    //   ariaLabel: "Message",
+    //   alert: true,
+    //   exact: false,
+    // },
     {
       icon: <FileText size={20} />,
       text: "My Reports",
