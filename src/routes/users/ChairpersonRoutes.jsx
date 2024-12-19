@@ -14,6 +14,7 @@ import ChairpersonManageStudentsPage from "../../pages/chairperson/ChairpersonMa
 import PDFFile from "../../components/letters/PDFFile";
 import ViewCoordinatorsPage from "../../pages/ViewCoordinatorsPage";
 import ManageStudentsPage from "../../pages/ManageStudentsPage";
+import ManageCompaniesPage from "../../pages/ManageCompaniesPage";
 
 // Routes for Chairperson
 const ChairpersonRoutes = {
@@ -84,6 +85,10 @@ const ChairpersonRoutes = {
       children: [
         {
           index: true,
+          element: <ManageCompaniesPage />,
+        },
+        {
+          path: "test",
           element: <ChairpersonManageCompaniesPage />,
           loader: async () => {
             try {

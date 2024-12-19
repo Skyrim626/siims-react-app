@@ -494,7 +494,7 @@ const ManageStudentsPage = ({ authorizeRole }) => {
               )}
 
               <DynamicDataGrid
-                searchPlaceholder={"Search User"}
+                searchPlaceholder={"Search Student"}
                 rows={rows}
                 setRows={setRows}
                 columns={columns}

@@ -36,6 +36,7 @@ import ViewCoordinatorsPage from "../../pages/ViewCoordinatorsPage";
 import ManageCompaniesPage from "../../pages/ManageCompaniesPage";
 import ManageOsaPage from "../../pages/ManageOsaPage";
 import ManageStudentsPage from "../../pages/ManageStudentsPage";
+import ManageSupervisorsPage from "../../pages/ManageSupervisorsPage";
 
 // Define routes for the Admin section
 const AdminRoutes = {
@@ -269,6 +270,11 @@ const AdminRoutes = {
         {
           path: "students",
           element: <ManageStudentsPage authorizeRole={"admin"} />,
+        },
+        // SUPERVISORS
+        {
+          path: "supervisors",
+          element: <ManageSupervisorsPage authorizeRole={"admin"} />,
         },
         {
           path: "test/chairpersons", // Route for managing chairpersons

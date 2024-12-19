@@ -5,61 +5,64 @@ import AddressInfoFields from "./fields/AddressInfoFields";
 import Heading from "../common/Heading";
 import FormField from "../common/FormField";
 import { Select } from "@headlessui/react";
+import Text from "../common/Text";
 
 const SupervisorForm = ({
+  role = "",
   isFormModal = true,
   method = "post",
   supervisorInfo = {
     id: "",
     password: "",
-    first_name: "",
-    middle_name: "",
-    last_name: "",
+    firstName: "",
+    middleName: "",
+    lastName: "",
     email: "",
     gender: "",
-    phone_number: "",
+    phoneNumber: "",
     street: "",
     barangay: "",
-    city_municipality: "",
+    cityMunicipality: "",
     province: "",
-    postal_code: "",
-    office_id: "",
+    postalCode: "",
+    officeID: "",
   },
   handleSupervisorInfoChange = () => console.log("Testing"),
-  offices = [],
   handleSubmit = () => console.log("Testing Submit"),
   requiredFields = {
     id: true,
     password: true,
-    first_name: false,
-    middle_name: false,
-    last_name: false,
+    firstName: false,
+    middleName: false,
+    lastName: false,
     email: true,
     gender: false,
-    phone_number: false,
+    phoneNumber: false,
     street: false,
     barangay: false,
-    city_municipality: false,
+    cityMunicipality: false,
     province: false,
-    postal_code: false,
-    office_id: true,
+    postalCode: false,
+    officeID: true,
   },
   displayFields = {
     id: true,
     password: true,
-    first_name: true,
-    middle_name: true,
-    last_name: true,
+    firstName: true,
+    middleName: true,
+    lastName: true,
     email: true,
     gender: true,
-    phone_number: true,
+    phoneNumber: true,
     street: true,
     barangay: true,
-    city_municipality: true,
+    cityMunicipality: true,
     province: true,
-    postal_code: true,
-    office_id: true,
+    postalCode: true,
+    officeID: true,
   },
+  offices = [],
+  errors = {},
 }) => {
   // Method Checker
   const buttonTitle = () => {
@@ -77,58 +80,13 @@ const SupervisorForm = ({
 
   return (
     <>
-      <div>
-        <Heading
-          level={5}
-          color="black"
-          text={"Office Information"}
-          className="border-l-2 rounded-lg border-blue-700 px-3 font-bold text-md"
+      {method !== "put" && (
+        <LoginInfoFields
+          info={supervisorInfo}
+          handleInfoChange={handleSupervisorInfoChange}
+          requiredFields={requiredFields}
         />
-        <div className="flex flex-col">
-          <div className="grid grid-cols-3 gap-2 mt-4">
-            <FormField
-              label={"Office Assign"}
-              name={"office_id"}
-              labelClassName="text-sm text-black font-semibold"
-              required={requiredFields["office_id"]}
-            >
-              <Select
-                name="office_id"
-                className="border data-[hover]:shadow data-[focus]:bg-blue-100 h-full outline-none p-2"
-                aria-label="Select college"
-                onChange={handleSupervisorInfoChange}
-                required={requiredFields["office_id"]}
-                value={supervisorInfo.office_id}
-              >
-                <option value="">-Select an Office-</option>
-                {offices.map((office) => {
-                  return (
-                    <option
-                      key={office.id}
-                      value={office.id}
-                      className={`${
-                        office.supervisor_id &&
-                        "text-blue-700 font-bold cursor-not-allowed"
-                      }`}
-                      disabled={office.supervisor_id}
-                    >
-                      {office.supervisor_id
-                        ? `Occupied | ${office.name}`
-                        : office.name}
-                    </option>
-                  );
-                })}
-              </Select>
-            </FormField>
-          </div>
-        </div>
-      </div>
-
-      <LoginInfoFields
-        info={supervisorInfo}
-        handleInfoChange={handleSupervisorInfoChange}
-        requiredFields={requiredFields}
-      />
+      )}
 
       <PersonalInfoFields
         personalInfo={supervisorInfo}
@@ -140,6 +98,59 @@ const SupervisorForm = ({
         addressInfo={supervisorInfo}
         handleAddressInfoChange={handleSupervisorInfoChange}
       />
+
+      {/* Office Information */}
+      <div>
+        <Heading
+          level={5}
+          color="black"
+          text={"Office Information"}
+          className="border-l-2 rounded-lg border-blue-700 px-3 font-bold text-md"
+        />
+        <div className="flex flex-col">
+          <div className="grid grid-cols-3 gap-2 mt-4">
+            <div>
+              <FormField
+                label={"Office Assign"}
+                name={"officeID"}
+                labelClassName="text-sm text-black font-semibold"
+                required={requiredFields["officeID"]}
+              >
+                <Select
+                  name="officeID"
+                  className="border data-[hover]:shadow data-[focus]:bg-blue-100 h-full outline-none p-2"
+                  aria-label="Select college"
+                  onChange={handleSupervisorInfoChange}
+                  required={requiredFields["officeID"]}
+                  value={supervisorInfo.officeID}
+                >
+                  <option value="">-Select an Office-</option>
+                  {offices.map((office) => {
+                    return (
+                      <option
+                        key={office.id}
+                        value={office.id}
+                        className={`${
+                          office.supervisor_name &&
+                          "text-blue-700 font-bold cursor-not-allowed"
+                        }`}
+                        //  disabled={office.supervisor_name}
+                      >
+                        {office.supervisor_name
+                          ? `${office.name} | Occupied by: ${office.supervisor_name} `
+                          : office.name}
+                      </option>
+                    );
+                  })}
+                </Select>
+              </FormField>
+              {errors.office_id && (
+                <Text className="text-red-500">{errors.office_id[0]}</Text>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 };
