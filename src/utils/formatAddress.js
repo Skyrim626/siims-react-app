@@ -7,7 +7,8 @@ export const getFullAddress = ({
 }) => {
   // Check if all required fields are provided, otherwise return a default message
   if (!street || !barangay || !city || !province || !postalCode) {
-    return "Incomplete address information";
+    // return "Incomplete address information";
+    return "No Address Info";
   }
 
   // Return the full address in a readable format for the Philippines

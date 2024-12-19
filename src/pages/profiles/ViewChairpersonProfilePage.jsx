@@ -9,21 +9,21 @@ import { getCoverImage, getProfileImage } from "../../utils/imageHelpers";
 import Text from "../../components/common/Text";
 import AddressItem from "../../components/profiles/AddressItem";
 
-const ViewDeanProfilePage = () => {
+const ViewChairpersonProfilePage = () => {
   // Params
-  const { deanId } = useParams();
+  const { chairpersonId } = useParams();
 
   // State
   const [loading, setLoading] = useState(false);
   const [profile, setProfile] = useState({});
 
-  // Fetch Dean Profile
+  // Fetch Chairperson Profile
   useEffect(() => {
     const fetchProfile = async () => {
       setLoading(true);
       try {
         const response = await getRequest({
-          url: `/api/v1/profiles/views/deans/${deanId}`,
+          url: `/api/v1/profiles/views/chairpersons/${chairpersonId}`,
         });
         if (response) setProfile(response);
       } catch (error) {
@@ -33,7 +33,7 @@ const ViewDeanProfilePage = () => {
       }
     };
     fetchProfile();
-  }, [deanId]);
+  }, [chairpersonId]);
 
   return (
     <Page className="bg-gray-100 min-h-screen">
@@ -62,11 +62,17 @@ const ViewDeanProfilePage = () => {
               {profile.first_name &&
                 `${profile.first_name} ${profile.last_name}`}
             </h1>
+            <div className="flex flex-col">
+              {/* College */}
+              {/* <Text className="text-sm text-gray-600 font-bold">
+                {profile.college || "No College"}
+              </Text> */}
 
-            <Text className="text-sm text-gray-600 font-bold">
-              Dean of the {profile.college_name || "College of Science"}{" "}
-              {/* Default if college name is missing */}
-            </Text>
+              {/* Program */}
+              <Text className="text-sm text-gray-600 font-bold">
+                Chairperson of the {profile.program || "No Program"}
+              </Text>
+            </div>
           </div>
         </div>
       </div>
@@ -76,6 +82,7 @@ const ViewDeanProfilePage = () => {
         {/* Contact Info */}
         <div className="bg-white p-6 rounded-lg shadow-md mb-6">
           <h2 className="text-xl font-bold mb-4 text-gray-900">Contact</h2>
+
           <AddressItem profile={profile} />
 
           <div className="flex items-center gap-4 text-gray-700 mb-3">
@@ -99,4 +106,4 @@ const ViewDeanProfilePage = () => {
   );
 };
 
-export default ViewDeanProfilePage;
+export default ViewChairpersonProfilePage;
