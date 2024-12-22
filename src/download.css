@@ -1,0 +1,7 @@
+/* Hides the Button during download */
+
+@media print {
+  .download-profile-section {
+    display: none;
+  }
+}

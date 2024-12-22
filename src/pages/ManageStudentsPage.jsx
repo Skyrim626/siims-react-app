@@ -353,7 +353,11 @@ const ManageStudentsPage = ({ authorizeRole }) => {
 
   // Static Columns
   const staticColumns = useMemo(
-    () => getStudentStaticColumns(authorizeRole),
+    () =>
+      getStudentStaticColumns({
+        authorizeRole: authorizeRole,
+        pathname: location.pathname,
+      }),
     [authorizeRole]
   );
 

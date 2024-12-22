@@ -59,28 +59,24 @@ const ChairpersonRoutes = {
     },
     {
       path: "coordinators",
-      element: <ViewCoordinatorsPage authorizeRole={"chairperson"} />,
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: <ViewCoordinatorsPage authorizeRole={"chairperson"} />,
+        },
+        {
+          path: ":user_id",
+          element: (
+            <ViewProfilePage
+              authorizeRole={"chairperson"}
+              viewingUser={"coordinator"}
+            />
+          ),
+        },
+      ],
     },
-    {
-      path: "test/coordinators",
-      element: <ChairpersonViewCoordinatorPage />,
-      loader: async () => {
-        try {
-          const response = await axiosClient.get(
-            "/api/v1/chairperson/coordinators"
-          );
 
-          const coordinators = response.data;
-
-          return { coordinators };
-        } catch (error) {
-          console.error("Error fetching coordinators: ", error);
-          return {
-            coordinators: [],
-          };
-        }
-      },
-    },
     {
       path: "companies",
       element: <Outlet />,

@@ -86,20 +86,23 @@ const adminSidebarItemsConfig = [
         text: "Chairpersons",
         path: "/auth/admin/users/chairpersons",
       },
-
+      {
+        text: "Coordinators",
+        path: "/auth/admin/users/coordinators",
+      },
       {
         text: "Companies",
         path: "/auth/admin/users/companies",
         sublinks: [
-          /* {
-            text: "Test",
-            path: "/auth/admin/users/companies/test",
-          }, */
           {
             text: "company_id",
             path: "/auth/admin/users/companies/:company_id", // Dynamic path
           },
         ],
+      },
+      {
+        text: "Students",
+        path: "/auth/admin/users/students",
       },
       {
         text: "user_id",
@@ -108,6 +111,14 @@ const adminSidebarItemsConfig = [
       {
         text: "user_id",
         path: "/auth/admin/users/chairpersons/:user_id", // Dynamic path
+      },
+      {
+        text: "user_id",
+        path: "/auth/admin/users/coordinators/:user_id", // Dynamic path
+      },
+      {
+        text: "user_id",
+        path: "/auth/admin/users/students/:user_id", // Dynamic path
       },
       {
         text: "user_id",
@@ -203,6 +214,12 @@ const chairpersonSidebarItemsConfig = [
     exact: false,
     active: true,
     path: "/auth/chairperson/coordinators",
+    sublinks: [
+      {
+        text: "user_id",
+        path: "/auth/chairperson/coordinators/:user_id", // Dynamic path
+      },
+    ],
   },
   {
     icon: <User size={20} />,

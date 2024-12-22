@@ -840,13 +840,21 @@ export const getSupervisorActionColumns = (
 };
 
 // Student Static Columns
-export const getStudentStaticColumns = (authorizeRole) => {
+export const getStudentStaticColumns = ({ authorizeRole, pathname }) => {
   const columns = [
     {
       field: "id",
       headerName: "ID",
       width: 150,
       headerClassName: "super-app-theme--header",
+      renderCell: (params) => (
+        <Link
+          to={`${pathname}/${params.row.id}`}
+          className="text-blue-500 hover:underline"
+        >
+          <span>{params.row.id}</span>
+        </Link>
+      ),
     },
 
     {

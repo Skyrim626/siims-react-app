@@ -1,13 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { getRequest } from "../../api/apiHelpers";
 import Page from "../../components/common/Page";
 import { getCoverImage, getProfileImage } from "../../utils/imageHelpers";
 import Loader from "../../components/common/Loader";
 import { Button } from "@headlessui/react";
-import { Edit, Mail, Phone, Plus } from "lucide-react";
+import { Download, Edit, GraduationCap, Mail, Phone, Plus } from "lucide-react";
 import Text from "../../components/common/Text";
 import AddressItem from "../../components/profiles/AddressItem";
+import { getFullAddress } from "../../utils/formatAddress";
+import { formatDateOnly } from "../../utils/formatDate";
+
+import { useReactToPrint } from "react-to-print";
+
+import "../../download.css";
 
 /**
  * Routes for Path of different user to be view
@@ -17,6 +23,7 @@ const USER_TYPE_VIEW = {
   chairperson: "/api/v1/profiles/views/chairpersons",
   coordinator: "/api/v1/profiles/views/coordinators",
   company: "/api/v1/profiles/views/companies",
+  student: "/api/v1/profiles/views/students",
 };
 
 /**
@@ -26,6 +33,13 @@ const USER_TYPE_VIEW = {
  */
 const ViewProfilePage = ({ authorizeRole, viewingUser }) => {
   const { user_id } = useParams();
+
+  // FOR PRINTING PURPOSES
+  const componentRef = useRef(null);
+  const handlePrint = useReactToPrint({
+    documentTitle: "Profile",
+    contentRef: componentRef,
+  });
 
   // Open Navigation
   const navigate = useNavigate();
@@ -37,7 +51,7 @@ const ViewProfilePage = ({ authorizeRole, viewingUser }) => {
   // Emtpy Path
   let profileResourcePath = "";
 
-  // SELECTION TO WHO THE USE IF TO BE VIEWED
+  // SELECTION TO WHO THE USER IS TO BE VIEWED
   switch (viewingUser) {
     case "dean":
       profileResourcePath = `${USER_TYPE_VIEW.dean}/${user_id}`;
@@ -51,6 +65,9 @@ const ViewProfilePage = ({ authorizeRole, viewingUser }) => {
     case "company":
       profileResourcePath = `${USER_TYPE_VIEW.company}/${user_id}`; // ID of the User
       break;
+    case "student":
+      profileResourcePath = `${USER_TYPE_VIEW.student}/${user_id}`;
+      break;
     default:
       // Return back to the last page
       navigate(-1);
@@ -58,60 +75,340 @@ const ViewProfilePage = ({ authorizeRole, viewingUser }) => {
 
   // Render Profile Header
   const renderProfileHeader = () => {
-    if (viewingUser === "company") {
-      return (
-        <h1 className="text-xl font-semibold max-w-2xl">{profile.name}</h1>
-      );
-    }
-
-    if (viewingUser === "dean") {
-      return (
-        <>
-          <h1 className="text-3xl font-semibold">
-            {profile.first_name && `${profile.first_name} ${profile.last_name}`}
-          </h1>
-          <Text className="text-sm text-gray-600 font-bold">
-            Dean of the {profile.college_name || "College of Science"}
-          </Text>
-        </>
-      );
-    }
-
-    if (viewingUser === "coordinator") {
-      return (
-        <>
-          <h1 className="text-3xl font-semibold">
-            {profile.first_name && `${profile.first_name} ${profile.last_name}`}
-          </h1>
-          <div className="flex flex-col">
-            {/* College */}
+    switch (viewingUser) {
+      case "company":
+        return (
+          <h1 className="text-xl font-semibold max-w-2xl">{profile.name}</h1>
+        );
+      case "dean":
+        return (
+          <>
+            <h1 className="text-3xl font-semibold">
+              {profile.first_name &&
+                `${profile.first_name} ${profile.last_name}`}
+            </h1>
             <Text className="text-sm text-gray-600 font-bold">
-              {profile.college_name || "College of Science"}
+              Dean of the {profile.college_name || "College of Science"}
             </Text>
-            {/* Program */}
-            <Text className="text-sm text-gray-600 font-bold">
-              {profile.program || "No Program"}
-            </Text>
+          </>
+        );
+      case "chairperson":
+        return (
+          <>
+            <h1 className="text-3xl font-semibold">
+              {profile.first_name &&
+                `${profile.first_name} ${profile.last_name}`}
+            </h1>
+            <div className="flex flex-col">
+              {/* Program */}
+              <Text className="text-sm text-gray-600 font-bold">
+                {profile.program || "No Program"}
+              </Text>
+            </div>
+          </>
+        );
+      case "coordinator":
+        return (
+          <>
+            <h1 className="text-3xl font-semibold">
+              {profile.first_name &&
+                `${profile.first_name} ${profile.last_name}`}
+            </h1>
+            <div className="flex flex-col">
+              {/* College */}
+              <Text className="text-sm text-gray-600 font-bold">
+                {profile.college_name || "College of Science"}
+              </Text>
+              {/* Program */}
+              <Text className="text-sm text-gray-600 font-bold">
+                {profile.program || "No Program"}
+              </Text>
+            </div>
+          </>
+        );
+      case "student":
+        return (
+          <>
+            <h1 className="text-3xl font-semibold">
+              {`${profile.first_name} ${profile.middle_name} ${profile.last_name}`}
+            </h1>
+          </>
+        );
+      default:
+        // Default fallback
+        return <p>No profile information available for this user.</p>;
+    }
+  };
+
+  // Render main profile content
+  const renderMainProfileContent = () => {
+    switch (viewingUser) {
+      case "student":
+        return (
+          <div className="mt-6 px-6 grid grid-cols-4 gap-7 bg-white py-3">
+            <div>
+              <div className="flex items-start justify-start gap-1">
+                <div>
+                  <GraduationCap size={25} />
+                </div>
+
+                <div className="flex flex-col items-start text-gray-900">
+                  <Text className="text-md font-semibold">
+                    Current Education
+                  </Text>
+
+                  {/* Current Educations */}
+                  <div className="flex flex-col gap-2 mt-2">
+                    {/* College */}
+                    <div className="flex flex-col">
+                      <Text className="text-sm font-bold">College</Text>
+
+                      <Text className="text-sm">
+                        {profile.college || "College of Science"}
+                      </Text>
+                    </div>
+                    {/* Program */}
+                    <div className="flex flex-col">
+                      <Text className="text-sm font-bold">Program</Text>
+
+                      <Text className="text-sm">
+                        {profile.program || "No Program"}
+                      </Text>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/*  Border Line */}
+              <div className="border-b-2 border-b-gray-900 w-full h-1 my-3"></div>
+
+              <div className="flex items-start justify-start gap-1">
+                <div>
+                  <Phone size={25} />
+                </div>
+
+                <div className="flex flex-col items-start text-gray-900">
+                  <Text className="text-md font-semibold">Contact</Text>
+
+                  {/* Contact */}
+                  <div className="flex flex-col gap-2 mt-2">
+                    {/* Email */}
+                    <div className="flex flex-col">
+                      <Text className="text-sm font-bold">Email</Text>
+
+                      <Text className="text-sm">
+                        {profile.email ? (
+                          <a
+                            href={`mailto:${profile.email}`}
+                            className="text-blue-500 hover:underline"
+                          >
+                            {profile.email}
+                          </a>
+                        ) : (
+                          "No email"
+                        )}
+                      </Text>
+                    </div>
+
+                    {/* Phone Number */}
+                    <div className="flex flex-col">
+                      <Text className="text-sm font-bold">Contact no.</Text>
+
+                      <Text className="text-sm">
+                        {profile.phone_number || "No Phone Number"}
+                      </Text>
+                    </div>
+
+                    {/* Address */}
+                    <div className="flex flex-col">
+                      <Text className="text-sm font-bold">Address</Text>
+
+                      <Text className="text-sm">
+                        {getFullAddress({
+                          street: profile.street,
+                          barangay: profile.barangay,
+                          city: profile.city_municipality,
+                          province: profile.province,
+                          postalCode: profile.postal_code,
+                        })}
+                      </Text>
+                    </div>
+
+                    {/* Coordinator Info */}
+                    {/* Only the Admin, Chairperson, Company, and Supervisor can view this */}
+                    {(authorizeRole === "admin" ||
+                      authorizeRole === "dean" ||
+                      authorizeRole === "chairperson" ||
+                      authorizeRole === "company" ||
+                      authorizeRole === "supervisor") && (
+                      <>
+                        <Text className="text-md font-bold mt-5">
+                          Coordinator Info
+                        </Text>
+
+                        {/* Coordinator Name */}
+                        <div className="flex flex-col">
+                          <Text className="text-sm font-bold">Name</Text>
+
+                          <Text className="text-sm">
+                            {profile.coordinator_name || "No Coordinator"}
+                          </Text>
+                        </div>
+
+                        {/* Coordinator Email */}
+                        {profile.coordinator_email && (
+                          <div className="flex flex-col">
+                            <Text className="text-sm font-bold">Email</Text>
+
+                            <Text className="text-sm">
+                              <a
+                                href={`mailto:${profile.coordinator_email}`}
+                                className="text-blue-500 hover:underline"
+                              >
+                                {profile.coordinator_email}
+                              </a>
+                            </Text>
+                          </div>
+                        )}
+
+                        {/* Coordinator Phone Number */}
+                        {profile.coordinator_phone_number && (
+                          <div className="flex flex-col">
+                            <Text className="text-sm font-bold">
+                              Contact No.
+                            </Text>
+
+                            <Text className="text-sm">
+                              {profile.coordinator_phone_number}
+                            </Text>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/*  Border Line */}
+              <div className="border-b-2 border-b-gray-900 w-full h-1 my-3"></div>
+            </div>
+            <div className="col-span-3 flex flex-col gap-10">
+              {/* About Me */}
+              {profile.about_me && (
+                <section className="border-b-2 border-b-gray-900 pb-5">
+                  <div className="flex gap-3 items-center">
+                    {/* Blank BG Space */}
+                    <div className="h-10 w-3/12 bg-gray-900"></div>
+                    <Text className="text-xl font-bold">About Me</Text>
+                  </div>
+
+                  <div className="mt-3 text-justify">
+                    <Text className="text-sm">{profile.about_me}</Text>
+                  </div>
+                </section>
+              )}
+
+              {/* Work Experiences */}
+              {profile.work_experiences &&
+                profile.work_experiences.length > 0 && (
+                  <section className="border-b-2 border-b-gray-900 pb-5">
+                    <div className="flex gap-3 items-center">
+                      {/* Blank BG Space */}
+                      <div className="h-10 w-3/12 bg-gray-900"></div>
+                      <Text className="text-xl font-bold">
+                        Work Experiences
+                      </Text>
+                    </div>
+
+                    <div className="mt-5 flex flex-col gap-5">
+                      {profile.work_experiences.map((workExperience, index) => (
+                        <div key={index} className="flex items-start gap-5">
+                          {/* Dates */}
+                          <div className="flex-shrink-0 w-[17rem] text-sm text-gray-700 whitespace-nowrap font-bold">
+                            {formatDateOnly(workExperience.start_date)} -{" "}
+                            {formatDateOnly(workExperience.end_date)}
+                          </div>
+
+                          {/* Work Experience Content */}
+                          <div className="flex flex-col flex-1">
+                            <Text className="text-sm font-bold">
+                              {workExperience.job_position} -{" "}
+                              {workExperience.company_name}
+                            </Text>
+                            <Text className="text-sm text-gray-600">
+                              {workExperience.full_address}
+                            </Text>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                )}
+
+              {/* Educations */}
+              {profile.educations && profile.educations.length > 0 && (
+                <section className="border-b-2 border-b-gray-900 pb-5">
+                  <div className="flex gap-3 items-center">
+                    {/* Blank BG Space */}
+                    <div className="h-10 w-3/12 bg-gray-900"></div>
+                    <Text className="text-xl font-bold">Educations</Text>
+                  </div>
+
+                  <div className="mt-5 flex flex-col gap-5">
+                    {profile.educations.map((education, index) => (
+                      <div key={index} className="flex items-start gap-5">
+                        {/* Dates */}
+                        <div className="flex-shrink-0 w-[17rem] text-sm text-gray-700 whitespace-nowrap font-bold">
+                          {formatDateOnly(education.start_date)} -{" "}
+                          {formatDateOnly(education.end_date)}
+                        </div>
+
+                        {/* Work Experience Content */}
+                        <div className="flex flex-col flex-1">
+                          <Text className="text-sm font-bold">
+                            {education.school_name}
+                          </Text>
+                          <Text className="text-sm text-gray-600">
+                            {education.full_address}
+                          </Text>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+            </div>
           </div>
-        </>
-      );
-    }
+        );
+      default:
+        /* Main Profile Content */
+        return (
+          <div className="mt-6 px-6">
+            {/* Contact Info */}
+            <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+              <h2 className="text-xl font-bold mb-4 text-gray-900">Contact</h2>
 
-    if (viewingUser === "student") {
-      return (
-        <>
-          <h1 className="text-3xl font-semibold">
-            {profile.first_name && `${profile.first_name} ${profile.last_name}`}
-          </h1>
-          <Text className="text-sm text-gray-600 font-bold">
-            {profile.course || "Undeclared Course"}
-          </Text>
-        </>
-      );
-    }
+              <AddressItem profile={profile} />
 
-    // Default fallback
-    return <p>No profile information available for this user.</p>;
+              <div className="flex items-center gap-4 text-gray-700 mb-3">
+                <Mail size={20} className="text-blue-600" />
+                <Text>
+                  <a
+                    href={`mailto:${profile.email || "dean.email@example.com"}`}
+                    className="text-blue-600 hover:underline"
+                  >
+                    {profile.email || "dean.email@example.com"}
+                  </a>
+                </Text>
+              </div>
+              <div className="flex items-center gap-4 text-gray-700">
+                <Phone size={20} className="text-blue-600" />
+                <Text>{profile.phone || "+63 912 345 6789"}</Text>
+              </div>
+            </div>
+          </div>
+        );
+    }
   };
 
   // Fetch User Profile
@@ -140,7 +437,7 @@ const ViewProfilePage = ({ authorizeRole, viewingUser }) => {
 
     // Call Method
     fetchUserProfile();
-  }, [user_id]);
+  }, [profileResourcePath]);
 
   return (
     <Page className="bg-gray-100 min-h-screen">
@@ -157,65 +454,57 @@ const ViewProfilePage = ({ authorizeRole, viewingUser }) => {
       </div>
 
       {/* Profile Information Section */}
-      <div className="flex items-center justify-between w-full bg-white shadow-lg">
-        <div className="flex items-center gap-6 bg-opacity-80 px-6 py-4 rounded-lg  w-full">
-          <img
-            src={getProfileImage(profile.profile_image_url)} // Use external default profile image URL
-            alt="Dean Profile"
-            className="w-32 h-32 object-cover rounded-full border-4 border-white shadow-md"
-          />
-          <div className="text-gray-900">{renderProfileHeader()}</div>
-        </div>
-
-        {/* Action Buttons: FOR ADMIN ONLY */}
-        {authorizeRole === "admin" && viewingUser === "company" && (
-          <div className="flex gap-2 justify-end px-3">
-            <Link
-              to={`${location.pathname}/edit`}
-              state={{
-                id: profile.id,
-                profile: profile,
-              }}
-            >
-              <Button className="whitespace-nowrap  flex items-center gap-2 px-4 py-2 border rounded-sm text-gray-700 border-gray-300 hover:bg-gray-100">
-                <Edit size={20} />
-                <Text>Edit Profile</Text>
-              </Button>
-            </Link>
-            <Link to="/auth/company/offices/add">
-              <Button className="whitespace-nowrap flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-sm hover:bg-blue-700">
-                <Plus size={20} />
-                <Text>Add Office</Text>
-              </Button>
-            </Link>
+      <div ref={componentRef}>
+        <div className="flex items-center justify-between w-full bg-white shadow-lg">
+          <div className="flex items-center gap-6 bg-opacity-80 px-6 py-4 rounded-lg  w-full">
+            <img
+              src={getProfileImage(profile.profile_image_url)} // Use external default profile image URL
+              alt="Dean Profile"
+              className="w-32 h-32 object-cover rounded-full border-4 border-white shadow-md"
+            />
+            <div className="text-gray-900">{renderProfileHeader()}</div>
           </div>
-        )}
-      </div>
 
-      {/* Main Profile Content */}
-      <div className="mt-6 px-6">
-        {/* Contact Info */}
-        <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-          <h2 className="text-xl font-bold mb-4 text-gray-900">Contact</h2>
-
-          <AddressItem profile={profile} />
-
-          <div className="flex items-center gap-4 text-gray-700 mb-3">
-            <Mail size={20} className="text-blue-600" />
-            <Text>
-              <a
-                href={`mailto:${profile.email || "dean.email@example.com"}`}
-                className="text-blue-600 hover:underline"
+          {/* Action Buttons (Edit Profile, Add Office): FOR ADMIN ONLY */}
+          {authorizeRole === "admin" && viewingUser === "company" && (
+            <div className="flex gap-2 justify-end px-3">
+              <Link
+                to={`${location.pathname}/edit`}
+                state={{
+                  id: profile.id,
+                  profile: profile,
+                }}
               >
-                {profile.email || "dean.email@example.com"}
-              </a>
-            </Text>
-          </div>
-          <div className="flex items-center gap-4 text-gray-700">
-            <Phone size={20} className="text-blue-600" />
-            <Text>{profile.phone || "+63 912 345 6789"}</Text>
-          </div>
+                <Button className="whitespace-nowrap  flex items-center gap-2 px-4 py-2 border rounded-sm text-gray-700 border-gray-300 hover:bg-gray-100">
+                  <Edit size={20} />
+                  <Text>Edit Profile</Text>
+                </Button>
+              </Link>
+              <Link to="/auth/company/offices/add">
+                <Button className="whitespace-nowrap flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-sm hover:bg-blue-700">
+                  <Plus size={20} />
+                  <Text>Add Office</Text>
+                </Button>
+              </Link>
+            </div>
+          )}
+
+          {/* Action Buttons (Export Profile): EVERYONE */}
+          {viewingUser === "student" && (
+            <div className="flex gap-2 justify-end px-3">
+              <Button
+                onClick={() => handlePrint()}
+                className="download-profile-section | whitespace-nowrap  flex items-center gap-2 px-4 py-2 border rounded-sm text-gray-700 border-gray-300 hover:bg-gray-100"
+              >
+                <Download size={20} />
+                <Text>Download Profile</Text>
+              </Button>
+            </div>
+          )}
         </div>
+
+        {/* Render Main Profile Content */}
+        {renderMainProfileContent()}
       </div>
     </Page>
   );

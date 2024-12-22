@@ -298,6 +298,13 @@ const AdminRoutes = {
         <ViewProfilePage authorizeRole={"admin"} viewingUser={"coordinator"} />
       ),
     },
+    // Student View Profile Route
+    {
+      path: "users/students/:user_id",
+      element: (
+        <ViewProfilePage authorizeRole={"admin"} viewingUser={"student"} />
+      ),
+    },
     // Company View Profile Route
     {
       path: "users/companies/:user_id",
@@ -305,6 +312,14 @@ const AdminRoutes = {
         <ViewProfilePage authorizeRole={"admin"} viewingUser={"company"} />
       ),
     },
+
+    /**
+     * End of View Profiles
+     */
+
+    /**
+     * Edit Profiles
+     */
     // Company Edit Profile
     {
       path: "users/companies/:company_id/edit",
