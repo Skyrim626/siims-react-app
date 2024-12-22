@@ -29,6 +29,7 @@ const CompanyAcceptanceLetterPage = () => {
 
   // Loading State
   const [loading, setLoading] = useState(false);
+  const [logoURL, setLogoURL] = useState("");
 
   /**
    * Input States

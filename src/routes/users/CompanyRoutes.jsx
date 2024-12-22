@@ -22,6 +22,7 @@ import ViewDtrPage from "../../pages/ViewDtrPage";
 import ManageSupervisorsPage from "../../pages/ManageSupervisorsPage";
 import ViewCompanyProfilePage from "../../pages/profiles/ViewCompanyProfilePage";
 import EditCompanyProfilePage from "../../pages/profiles/EditCompanyProfilePage";
+import EditProfilePage from "../../pages/profiles/EditProfilePage";
 
 // Routes for Company
 const CompanyRoutes = {
@@ -72,8 +73,12 @@ const CompanyRoutes = {
         },
         {
           path: "edit",
-          element: <EditCompanyProfilePage authorizeRole={"company"} />,
+          element: <EditProfilePage authorizeRole={"company"} />,
         },
+        /*  {
+          path: "edit",
+          element: <EditCompanyProfilePage authorizeRole={"company"} />,
+        }, */
       ],
     },
 

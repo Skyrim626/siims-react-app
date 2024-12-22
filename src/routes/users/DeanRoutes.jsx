@@ -14,6 +14,7 @@ import ViewCoordinatorsPage from "../../pages/ViewCoordinatorsPage";
 import ManageCompaniesPage from "../../pages/ManageCompaniesPage";
 import ManageStudentsPage from "../../pages/ManageStudentsPage";
 import ViewCompanyProfilePage from "../../pages/profiles/ViewCompanyProfilePage";
+import ViewProfilePage from "../../pages/profiles/ViewProfilePage";
 
 // Routes for Dean
 const DeanRoutes = {
@@ -83,49 +84,28 @@ const DeanRoutes = {
     },
     {
       path: "coordinators",
-      element: <ViewCoordinatorsPage authorizeRole={"dean"} />,
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: <ViewCoordinatorsPage authorizeRole={"dean"} />,
+        },
+        {
+          path: ":user_id",
+          element: (
+            <ViewProfilePage
+              authorizeRole={"dean"}
+              viewingUser={"coordinator"}
+            />
+          ),
+        },
+      ],
     },
     {
       path: "students",
       element: <ManageStudentsPage authorizeRole={"dean"} />,
     },
-    {
-      path: "test/students",
-      element: <DeanManageStudentsPage />,
-      loader: async () => {
-        try {
-          /**
-           * Responses
-           */
-          const studentResponse = await axiosClient.get(
-            "/api/v1/users/students/dean"
-          );
-          const programResponse = await axiosClient.get(
-            "/api/v1/programs/dean"
-          );
 
-          /**
-           * Variables
-           */
-          const initial_students = studentResponse.data;
-          const programs = programResponse.data;
-
-          /**
-           * Return
-           */
-          return {
-            initial_students,
-            programs,
-          };
-        } catch (error) {
-          console.log(error);
-          return {
-            programs: [],
-            initial_students: [],
-          };
-        }
-      },
-    },
     {
       path: "programs",
       element: <ViewProgramsPage authorizeRole={"dean"} />,
@@ -143,8 +123,10 @@ const DeanRoutes = {
           element: <DeanCompanyPage />,
         }, */
         {
-          path: ":company_id",
-          element: <ViewCompanyProfilePage authorizeRole={"dean"} />,
+          path: ":user_id",
+          element: (
+            <ViewProfilePage authorizeRole={"dean"} viewingUser={"company"} />
+          ),
         },
       ],
     },

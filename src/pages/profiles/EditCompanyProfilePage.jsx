@@ -1,4 +1,4 @@
-import { Button } from "@headlessui/react";
+import { Button, Field, Input, Label } from "@headlessui/react";
 import React, { useState } from "react";
 import { postFormDataRequest, putFormDataRequest } from "../../api/apiHelpers";
 
@@ -64,22 +64,38 @@ const EditCompanyProfilePage = ({ authorizeRole }) => {
           <div className="grid grid-cols-2 gap-8">
             <div className="items-center mt-8 sm:mt-14 text-[#202142]">
               <div className="flex flex-col items-center w-full mb-2 space-x-0 space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0 sm:mb-6">
-                <div className="w-full">
-                  <label
-                    for="first_name"
+                <Field className="w-full">
+                  <Label
+                    for="firstName"
                     className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white"
                   >
                     Your first name
-                  </label>
-                  <input
+                  </Label>
+                  <Input
                     type="text"
-                    id="first_name"
+                    id="firstName"
                     className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
                     placeholder="Your first name"
                     value="Jane"
                     required
                   />
-                </div>
+                </Field>
+
+                <Field className="w-full">
+                  <Label
+                    for="first_name"
+                    className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white"
+                  >
+                    Your middle name
+                  </Label>
+                  <Input
+                    type="text"
+                    id="middleName"
+                    className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
+                    placeholder="Your first name"
+                    value="Merge"
+                  />
+                </Field>
 
                 <div className="w-full">
                   <label
@@ -99,60 +115,69 @@ const EditCompanyProfilePage = ({ authorizeRole }) => {
                 </div>
               </div>
 
-              <div className="mb-2 sm:mb-6">
-                <label
+              <Field className="mb-2 sm:mb-6">
+                <Label
                   for="email"
                   className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white"
                 >
                   Your email
-                </label>
-                <input
+                </Label>
+                <Input
                   type="email"
                   id="email"
                   className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
                   placeholder="your.email@mail.com"
                   required
                 />
-              </div>
+              </Field>
 
-              <div className="mb-2 sm:mb-6">
-                <label
-                  for="profession"
+              {/* Phone Number */}
+              <Field className="mb-2 sm:mb-6">
+                <Label
+                  for="phoneNumber"
                   className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white"
                 >
-                  Profession
-                </label>
-                <input
+                  Your phone number
+                </Label>
+                <Input
                   type="text"
-                  id="profession"
+                  id="phoneNumber"
                   className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
-                  placeholder="your profession"
+                  placeholder="+631234567890"
                   required
                 />
-              </div>
+              </Field>
 
-              <div className="mb-6">
-                <label
-                  for="message"
+              {/* Gender Selection */}
+              <Field className="mb-2 sm:mb-6">
+                <Label
+                  for="gender"
                   className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white"
                 >
-                  Bio
-                </label>
-                <textarea
-                  id="message"
-                  rows="4"
-                  className="block p-2.5 w-full text-sm text-indigo-900 bg-indigo-50 rounded-lg border border-indigo-300 focus:ring-indigo-500 focus:border-indigo-500 "
-                  placeholder="Write your bio here..."
-                ></textarea>
-              </div>
+                  Select your gender
+                </Label>
+                <select
+                  id="gender"
+                  className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
+                  required
+                >
+                  <option value="" disabled selected>
+                    Choose your gender
+                  </option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="non-binary">Non-binary</option>
+                  <option value="prefer-not-to-say">Prefer not to say</option>
+                </select>
+              </Field>
 
               <div className="flex justify-end">
-                <button
+                <Button
                   type="submit"
-                  className="text-white bg-indigo-700  hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800"
+                  className="text-white bg-blue-500  hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800"
                 >
                   Save
-                </button>
+                </Button>
               </div>
             </div>
             <div>

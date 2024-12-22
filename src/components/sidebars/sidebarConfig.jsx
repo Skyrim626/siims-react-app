@@ -79,22 +79,39 @@ const adminSidebarItemsConfig = [
     path: "/auth/admin/users",
     sublinks: [
       {
+        text: "Deans",
+        path: "/auth/admin/users/deans",
+      },
+      {
         text: "Chairpersons",
         path: "/auth/admin/users/chairpersons",
       },
+
       {
         text: "Companies",
         path: "/auth/admin/users/companies",
         sublinks: [
-          {
+          /* {
             text: "Test",
             path: "/auth/admin/users/companies/test",
-          },
-          /* {
-            text: "Companies ID",
-            path: "/auth/admin/users/companies/:id", // Dynamic path
           }, */
+          {
+            text: "company_id",
+            path: "/auth/admin/users/companies/:company_id", // Dynamic path
+          },
         ],
+      },
+      {
+        text: "user_id",
+        path: "/auth/admin/users/deans/:user_id", // Dynamic path
+      },
+      {
+        text: "user_id",
+        path: "/auth/admin/users/chairpersons/:user_id", // Dynamic path
+      },
+      {
+        text: "user_id",
+        path: "/auth/admin/users/companies/:user_id", // Dynamic path
       },
     ],
   },
@@ -407,6 +424,12 @@ const deanSidebarItemsConfig = [
     ariaLabel: "Coordinators",
     exact: true,
     path: "/auth/dean/coordinators",
+    sublinks: [
+      {
+        text: "User_id",
+        path: "/auth/dean/coordinators/:user_id", // Dynamic path
+      },
+    ],
   },
   {
     icon: <Presentation size={20} />,
@@ -433,8 +456,8 @@ const deanSidebarItemsConfig = [
     path: "/auth/dean/companies",
     sublinks: [
       {
-        text: "company_id",
-        path: "/auth/dean/companies/:company_id", // Dynamic path
+        text: "user_id",
+        path: "/auth/dean/companies/:user_id", // Dynamic path
       },
     ],
   },

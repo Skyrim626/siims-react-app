@@ -26,7 +26,10 @@ const ViewCompanyProfilePage = ({ authorizeRole }) => {
         const response = await getRequest({
           url: `/api/v1/profiles/views/companies/my`,
         });
-        if (response) setProfile(response);
+        if (response) {
+          // console.log(response);
+          setProfile(response);
+        }
       } catch (error) {
         console.error(error);
       } finally {
@@ -91,7 +94,13 @@ const ViewCompanyProfilePage = ({ authorizeRole }) => {
               <Eye size={20} />
               <Text>Public View</Text>
             </Button> */}
-            <Link to={`${location.pathname}/edit`}>
+            <Link
+              to={`${location.pathname}/edit`}
+              state={{
+                id: profile.id,
+                profile: profile,
+              }}
+            >
               <Button className="whitespace-nowrap  flex items-center gap-2 px-4 py-2 border rounded-sm text-gray-700 border-gray-300 hover:bg-gray-100">
                 <Edit size={20} />
                 <Text>Edit Profile</Text>

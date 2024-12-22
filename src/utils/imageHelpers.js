@@ -1,10 +1,14 @@
+// Import images
+import emptyCoverImage from "../assets/images/profiles/empty-cover-image.png";
+import emptyProfileImage from "../assets/images/profiles/empty-profile-image.png";
+import emptyCompanyLogoImage from "../assets/images/profiles/empty-company-logo-image.png";
+
 // Assign default images only if there's no profile data
 export const getCoverImage = (coverImageUrl) =>
-  coverImageUrl || "https://via.placeholder.com/1500x500/cccccc/ffffff?text=Cover+Image";
+  coverImageUrl || emptyCoverImage;
 
 export const getProfileImage = (profileImageUrl) =>
-  profileImageUrl || "https://via.placeholder.com/150/cccccc/ffffff?text=Profile+Image";
+  profileImageUrl || emptyProfileImage;
 
 export const getLogoImage = (logoImageUrl) =>
-  logoImageUrl || "https://via.placeholder.com/150?text=Company+Logo";
-
+  logoImageUrl || emptyCompanyLogoImage;

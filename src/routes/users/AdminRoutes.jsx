@@ -13,17 +13,11 @@ import AdminLayout from "../../components/layouts/AdminLayout"; // Importing the
 // Admin Pages
 import AdminDashboard from "../../pages/admin/AdminDashboard"; // Importing the Admin Dashboard page
 import AdminManageUserSelection from "../../pages/admin/AdminManageUserSelection"; // Importing the user selection management page
-import AdminManageDeansPage from "../../pages/admin/manage-users/deans/AdminManageDeansPage"; // Importing the page to manage deans
-import AdminManageUsersPage from "../../pages/admin/manage-users/AdminManageUsersPage"; // Importing the general user management page
-import AdminManageChairpersonsPage from "../../pages/admin/manage-users/chairpersons/AdminManageChairpersonsPage"; // Importing the page to manage chairpersons
-import AdminManageCompaniesPage from "../../pages/admin/AdminManageCompaniesPage"; // Importing the page to manage companies
 import AdminManageOfficesPage from "../../pages/admin/AdminManageOfficesPage";
 
 import AdminManageCompanyOfficesPage from "../../pages/admin/manage-users/AdminManageCompanyOfficesPage";
 import ChatLayout from "../../components/layouts/ChatLayout";
-import AdminManageStudentsPage from "../../pages/admin/AdminManageStudentsPage";
 import ChatWindow from "../../components/messaging/ChatWindow";
-import TestingPage from "../../pages/TestingPage";
 import AdminViewLogsPage from "../../pages/admin/AdminViewLogsPage";
 import ViewDocumentTypePage from "../../pages/ViewDocumentTypesPage";
 import ViewRolesPage from "../../pages/ViewRolesPage";
@@ -37,9 +31,8 @@ import ManageCompaniesPage from "../../pages/ManageCompaniesPage";
 import ManageOsaPage from "../../pages/ManageOsaPage";
 import ManageStudentsPage from "../../pages/ManageStudentsPage";
 import ManageSupervisorsPage from "../../pages/ManageSupervisorsPage";
-import ViewDeanProfilePage from "../../pages/profiles/ViewDeanProfilePage";
-import ViewChairpersonProfilePage from "../../pages/profiles/ViewChairpersonProfilePage";
-import ViewCompanyProfilePage from "../../pages/profiles/ViewCompanyProfilePage";
+import EditProfilePage from "../../pages/profiles/EditProfilePage";
+import ViewProfilePage from "../../pages/profiles/ViewProfilePage";
 
 // Define routes for the Admin section
 const AdminRoutes = {
@@ -281,104 +274,41 @@ const AdminRoutes = {
           path: "supervisors",
           element: <ManageSupervisorsPage authorizeRole={"admin"} />,
         },
-        {
-          path: "test/chairpersons", // Route for managing chairpersons
-          element: <AdminManageChairpersonsPage />,
-          loader: async () => {
-            try {
-              /**
-               * Responses
-               */
-              const chairpersonResponse = await axiosClient.get(
-                "/api/v1/users/chairpersons"
-              );
-              const programResponse = await axiosClient.get("/api/v1/programs");
-
-              /**
-               * Variables
-               */
-              const chairpersons = chairpersonResponse.data;
-              const programs = programResponse.data;
-
-              /**
-               * Return
-               */
-              return {
-                chairpersons,
-                programs,
-              };
-            } catch (error) {
-              console.log(error);
-              throw error;
-            }
-          },
-        },
-
-        {
-          path: "test/students",
-          element: <AdminManageStudentsPage />,
-          loader: async () => {
-            try {
-              /**
-               * Responses
-               */
-              const studentResponse = await axiosClient.get(
-                "/api/v1/users/students/get-all-students"
-              );
-              const collegeResponse = await axiosClient.get("/api/v1/colleges");
-              const programResponse = await axiosClient.get("/api/v1/programs");
-
-              /**
-               * Variables
-               */
-              const initial_students = studentResponse.data;
-              const colleges = collegeResponse.data;
-              const programs = programResponse.data;
-
-              // console.log(initial_students);
-              /**
-               * Return
-               */
-              return {
-                initial_students,
-                colleges,
-                programs,
-              };
-            } catch (error) {
-              console.log(error);
-              throw error;
-            }
-          },
-        },
-        /*  {
-          path: "students", // Base path for student management
-          element: <AdminManageStudent />, // Render student management page
-          children: [
-            {
-              path: "add", // Route for adding a new student
-              element: <AdminStudent />, // Render add student component
-            },
-          ],
-        }, */
       ],
     },
     /**
      * View Profiles
      */
-    // Dean Profile Route
+    // Dean View Profile Route
     {
-      path: "users/deans/:deanId",
-      element: <ViewDeanProfilePage authorizeRole={"admin"} />,
+      path: "users/deans/:user_id",
+      element: <ViewProfilePage authorizeRole={"admin"} viewingUser={"dean"} />,
     },
-    // Chairperson Profile Route
+    // Chairperson View Profile Route
     {
-      path: "users/chairpersons/:chairpersonId",
-      element: <ViewChairpersonProfilePage authorizeRole={"admin"} />,
+      path: "users/chairpersons/:user_id",
+      element: (
+        <ViewProfilePage authorizeRole={"admin"} viewingUser={"chairperson"} />
+      ),
     },
-    // Company Profile Route
+    // Coordinator View Profile Route
     {
-      path: "users/companies/:company_id",
-      element: <ViewCompanyProfilePage authorizeRole={"admin"} />,
+      path: "users/coordinators/:user_id",
+      element: (
+        <ViewProfilePage authorizeRole={"admin"} viewingUser={"coordinator"} />
+      ),
+    },
+    // Company View Profile Route
+    {
+      path: "users/companies/:user_id",
+      element: (
+        <ViewProfilePage authorizeRole={"admin"} viewingUser={"company"} />
+      ),
+    },
+    // Company Edit Profile
+    {
+      path: "users/companies/:company_id/edit",
+      element: <EditProfilePage authorizeRole={"admin"} />,
     },
     {
       path: "offices", // Route for managing offices

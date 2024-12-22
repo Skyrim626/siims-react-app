@@ -11,7 +11,7 @@ import AddressItem from "../../components/profiles/AddressItem";
 
 const ViewChairpersonProfilePage = () => {
   // Params
-  const { chairpersonId } = useParams();
+  const { chairperson_id } = useParams();
 
   // State
   const [loading, setLoading] = useState(false);
@@ -23,7 +23,7 @@ const ViewChairpersonProfilePage = () => {
       setLoading(true);
       try {
         const response = await getRequest({
-          url: `/api/v1/profiles/views/chairpersons/${chairpersonId}`,
+          url: `/api/v1/profiles/views/chairpersons/${chairperson_id}`,
         });
         if (response) setProfile(response);
       } catch (error) {
@@ -33,7 +33,7 @@ const ViewChairpersonProfilePage = () => {
       }
     };
     fetchProfile();
-  }, [chairpersonId]);
+  }, [chairperson_id]);
 
   return (
     <Page className="bg-gray-100 min-h-screen">
@@ -63,11 +63,6 @@ const ViewChairpersonProfilePage = () => {
                 `${profile.first_name} ${profile.last_name}`}
             </h1>
             <div className="flex flex-col">
-              {/* College */}
-              {/* <Text className="text-sm text-gray-600 font-bold">
-                {profile.college || "No College"}
-              </Text> */}
-
               {/* Program */}
               <Text className="text-sm text-gray-600 font-bold">
                 Chairperson of the {profile.program || "No Program"}

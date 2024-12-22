@@ -16,6 +16,7 @@ import ViewCoordinatorsPage from "../../pages/ViewCoordinatorsPage";
 import ManageStudentsPage from "../../pages/ManageStudentsPage";
 import ManageCompaniesPage from "../../pages/ManageCompaniesPage";
 import ViewCompanyProfilePage from "../../pages/profiles/ViewCompanyProfilePage";
+import ViewProfilePage from "../../pages/profiles/ViewProfilePage";
 
 // Routes for Chairperson
 const ChairpersonRoutes = {
@@ -117,8 +118,15 @@ const ChairpersonRoutes = {
             }
           },
         },
+        // View Company Profile
         {
-          path: ":company_id",
+          path: ":user_id",
+          element: (
+            <ViewProfilePage authorizeRole={"admin"} viewingUser={"company"} />
+          ),
+        },
+        {
+          path: "test/:company_id",
           element: <ViewCompanyProfilePage authorizeRole={"chairperson"} />,
         },
         /* {
