@@ -1,7 +1,10 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-const StudentPersonalInsight = () => {
+const StudentPersonalInsight = ({ authorizeRole }) => {
+  // Params
+  const { application_id } = useParams();
+
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: "",
@@ -11,6 +14,7 @@ const StudentPersonalInsight = () => {
     department: "",
     personalInsights: "",
     attachments: [], // For multiple file uploads
+    application_id: application_id,
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -68,11 +72,13 @@ const StudentPersonalInsight = () => {
     try {
       const notificationResponse = await notifyCoordinator();
       console.log(notificationResponse);
-      alert("Details saved and the coordinator has been notified.");
-      navigate("/auth/my/view-insights", { state: { formData } });
+      // alert("Details saved and the coordinator has been notified.");
+      navigate(`/auth/my/${application_id}/view-insights`, {
+        state: { formData },
+      });
     } catch (error) {
       console.error("Error notifying coordinator:", error);
-      alert("An error occurred while notifying the coordinator.");
+      // alert("An error occurred while notifying the coordinator.");
     } finally {
       setIsSubmitting(false);
     }

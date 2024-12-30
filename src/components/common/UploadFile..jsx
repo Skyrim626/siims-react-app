@@ -3,6 +3,7 @@ import { Upload, FileText, CheckCircle, AlertCircle } from "lucide-react";
 import { Input, Select } from "@headlessui/react";
 
 const UploadFile = ({
+  title = "Upload Endorsement Letter",
   file,
   setFileType,
   status,
@@ -11,9 +12,7 @@ const UploadFile = ({
 }) => {
   return (
     <div className="p-6 w-96 bg-white rounded-lg shadow-md">
-      <h2 className="text-lg font-semibold mb-4 text-gray-700">
-        Upload Endorsement Letter
-      </h2>
+      <h2 className="text-lg font-semibold mb-4 text-gray-700">{title}</h2>
       <div className="mb-4">
         <label
           htmlFor="fileInput"

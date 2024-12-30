@@ -1,6 +1,8 @@
 import { Button } from "@headlessui/react";
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { getProfileImage } from "../../utils/imageHelpers";
+import Text from "../common/Text";
 
 const JobPost = ({ job, handleApplyClick, canApply }) => {
   // Open location and navigation
@@ -27,7 +29,7 @@ const JobPost = ({ job, handleApplyClick, canApply }) => {
       <div className="col-span-2 flex items-start">
         <div className="h-16 w-16 overflow-hidden rounded-lg border border-gray-200">
           <img
-            src="/images/EC25KRDBo-K3w8GexNHSE.png"
+            src={getProfileImage(job.company_profile)}
             alt="company logo"
             className="h-full w-full object-cover"
           />
@@ -41,12 +43,17 @@ const JobPost = ({ job, handleApplyClick, canApply }) => {
             {job.company_name}
           </h3>
         </Link>
-        <a
-          href="#"
-          className="mb-3 text-lg font-semibold text-gray-800 hover:underline sm:text-xl"
-        >
-          {job.title}
-        </a>
+        <div className="mt-1 flex items-start justify-between">
+          <Link
+            to={`${location.pathname}/jobs/${job.id}`}
+            className="mb-1 text-lg font-semibold text-gray-800 hover:underline sm:text-xl"
+          >
+            {job.title}
+          </Link>
+          <p className="mb-3 px-3 py-2 rounded-full text-white font-semibold text-sm bg-gray-900 w-fit">
+            {job.work_type}
+          </p>
+        </div>
         <p className="text-sm text-gray-700">
           {showFullQualification ? job.qualifications : truncatedQualification}{" "}
           <Button

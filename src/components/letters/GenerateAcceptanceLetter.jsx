@@ -96,6 +96,8 @@ const styles = StyleSheet.create({
 });
 
 const GenerateAcceptanceLetter = ({
+  logo,
+  imageHeight = 80,
   signatureImage,
   currentDate = "February 26, 2024",
   applicantFullName = "John Doe",
@@ -104,9 +106,20 @@ const GenerateAcceptanceLetter = ({
   ownerName = "Sample HR Specialist Name",
   position = "HR Specialist",
 }) => {
+  console.log(logo);
+
   return (
     <Document>
       <Page size="A4" style={styles.body}>
+        {/* Header with company logo images */}
+        {logo && (
+          <View style={styles.headerContainer} fixed>
+            <Image
+              src={logo}
+              style={{ ...styles.image1, height: imageHeight }}
+            />
+          </View>
+        )}
         {/* Empty Header */}
         <View style={{ height: 50 }} /> {/* Adjust height for desired space */}
         {/* Date */}

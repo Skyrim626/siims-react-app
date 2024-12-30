@@ -1,4 +1,4 @@
-import { Button, Field, Input, Label } from "@headlessui/react";
+import { Button, Field, Input, Label, Textarea } from "@headlessui/react";
 import React, { useEffect, useState } from "react";
 import {
   postFormDataRequest,
@@ -15,6 +15,8 @@ import {
   getProfileImage,
 } from "../../utils/imageHelpers";
 import ConfirmChangeModal from "../../components/modals/ConfirmChangeModal";
+import WorkExperiencesLists from "./WorkExperiencesLists";
+import ExperienceEducationTabs from "./ExperienceEducationTabs";
 
 // Render Edit Profile Page
 const EditProfilePage = ({ authorizeRole }) => {
@@ -94,6 +96,10 @@ const RenderEditProfilePage = ({
     companyName: profile.name,
     logoURL: profile.logo_url,
     websiteURL: profile.website_url,
+
+    // Student Unique Attributes
+    aboutMe: profile.about_me,
+    dateOfBirth: profile.date_of_birth,
   });
 
   // * For Logo Photo
@@ -252,6 +258,10 @@ const RenderEditProfilePage = ({
       // Company Unique Attributes
       name: formData.companyName,
       website_url: formData.websiteURL,
+
+      // Student Unique Attributes
+      date_of_birth: formData.dateOfBirth,
+      about_me: formData.aboutMe,
     };
 
     try {
@@ -365,6 +375,27 @@ const RenderEditProfilePage = ({
                   />
                 </Field>
               </div>
+
+              {/* About Me */}
+              <Field className="mb-2 sm:mb-6">
+                <Label
+                  htmlFor="aboutMe"
+                  className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white"
+                >
+                  Your about me
+                </Label>
+                <Textarea
+                  type="text"
+                  rows={6}
+                  id="text"
+                  name="aboutMe"
+                  className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
+                  placeholder="Your about me..."
+                  value={formData.aboutMe}
+                  onChange={handleInputChange}
+                  required
+                />
+              </Field>
 
               {/* Email */}
               <Field className="mb-2 sm:mb-6">
@@ -538,6 +569,26 @@ const RenderEditProfilePage = ({
                 </Field>
               </div>
 
+              {/* Date Of Birth */}
+              <Field className="mb-2 sm:mb-6">
+                <Label
+                  htmlFor="dateOfBirth"
+                  className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white"
+                >
+                  Your date of birth
+                </Label>
+                <Input
+                  type="date"
+                  id="dateOfBirth"
+                  name="dateOfBirth"
+                  className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
+                  placeholder="Your city/municipality"
+                  value={formData.dateOfBirth}
+                  onChange={handleInputChange}
+                  required
+                />
+              </Field>
+
               {/* // ! FOR COMPANY AND ADMIN ROLE ONLY */}
               {(authorizeRole === "admin" || authorizeRole === "company") && (
                 <div>
@@ -591,6 +642,9 @@ const RenderEditProfilePage = ({
                   Save
                 </Button>
               </div>
+
+              {/* Work Experience Section */}
+              {authorizeRole === "student" && <ExperienceEducationTabs />}
             </div>
             <div>
               <div className="space-y-10 p-6 bg-gray-100 dark:bg-gray-900">
@@ -693,7 +747,7 @@ const RenderEditProfilePage = ({
         setOpen={setIsCoverModalOpen}
         handleConfirm={handleConfirmAndUploadCoverPhoto} // Upload on confirm
         title="Confirm Cover Change"
-        message="Are you sure you want to change the company cover? This action will immediately upload and update the cover."
+        message="Are you sure you want to change the cover photo? This action will immediately upload and update the cover."
       />
 
       {/* Confirmation Modal (Profile) */}
@@ -702,7 +756,7 @@ const RenderEditProfilePage = ({
         setOpen={setIsProfileModalOpen}
         handleConfirm={handleConfirmAndUploadProfilePhoto} // Upload on confirm
         title="Confirm Profile Change"
-        message="Are you sure you want to change the company profile? This action will immediately upload and update the profile."
+        message="Are you sure you want to change the profile photo? This action will immediately upload and update the profile."
       />
     </main>
   );

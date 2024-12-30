@@ -15,6 +15,9 @@ import ManageCompaniesPage from "../../pages/ManageCompaniesPage";
 import ManageStudentsPage from "../../pages/ManageStudentsPage";
 import ViewCompanyProfilePage from "../../pages/profiles/ViewCompanyProfilePage";
 import ViewProfilePage from "../../pages/profiles/ViewProfilePage";
+import ManageEndorsementLetterApprovalPage from "../../pages/ManageEndorsementLetterApprovalPage";
+import SelfProfile from "../../pages/profiles/SelfProfile";
+import EditProfilePage from "../../pages/profiles/EditProfilePage";
 
 // Routes for Dean
 const DeanRoutes = {
@@ -47,10 +50,12 @@ const DeanRoutes = {
     }
   },
   children: [
+    // Navigate to Dashboard Page
     {
       path: "dashboard",
       element: <Navigate to={"/admin"} />,
     },
+    // Dashboard Page
     {
       index: true,
       element: <DeanDashboardPage />,
@@ -78,10 +83,26 @@ const DeanRoutes = {
         }
       },
     },
+    // Profile Page
     {
       path: "profile",
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: <SelfProfile authorizeRole={"dean"} />,
+        },
+        {
+          path: "edit",
+          element: <EditProfilePage authorizeRole={"dean"} />,
+        },
+      ],
+    },
+    {
+      path: "test/profile",
       element: <DeanProfilePage />,
     },
+    // Coordinators Page
     {
       path: "coordinators",
       element: <Outlet />,
@@ -101,15 +122,29 @@ const DeanRoutes = {
         },
       ],
     },
+    // Students Page
     {
       path: "students",
-      element: <ManageStudentsPage authorizeRole={"dean"} />,
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: <ManageStudentsPage authorizeRole={"dean"} />,
+        },
+        {
+          path: ":user_id",
+          element: (
+            <ViewProfilePage authorizeRole={"dean"} viewingUser={"student"} />
+          ),
+        },
+      ],
     },
-
+    // Programs Page
     {
       path: "programs",
       element: <ViewProgramsPage authorizeRole={"dean"} />,
     },
+    // Companies Page
     {
       path: "companies",
       element: <Outlet />,
@@ -132,6 +167,10 @@ const DeanRoutes = {
     },
     {
       path: "endorsement-letter-requests",
+      element: <ManageEndorsementLetterApprovalPage authorizeRole={"dean"} />,
+    },
+    {
+      path: "test/endorsement-letter-requests",
       element: <DeanEndorsementLetterRequestsPage />,
       loader: async () => {
         try {

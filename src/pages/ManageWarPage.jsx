@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import useForm from "../hooks/useForm";
 import useRequest from "../hooks/useRequest";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@headlessui/react";
 import Loader from "../components/common/Loader";
 import { pdf, PDFDownloadLink } from "@react-pdf/renderer";
@@ -12,10 +12,18 @@ import FormModal from "../components/modals/FormModal";
 import WeeklyEntryForm from "../components/forms/WeeklyEntryForm";
 import DeleteConfirmModal from "../components/modals/DeleteConfirmModal";
 import GenerateWeeklyAccomplishmentReport from "../components/letters/GenerateWeeklyAccomplishmentReport";
+import { getRequest, postFormDataRequest } from "../api/apiHelpers";
+import UploadFile from "../components/common/UploadFile.";
 
 const ManageWarPage = ({ authorizeRole }) => {
+  // Open Navigate
+  const navigate = useNavigate();
+
   // Open Params
   const { applicationId } = useParams();
+
+  // Resources
+  const applicationResource = `/api/v1/applications/${applicationId}`;
 
   // Loading State
   const [loading, setLoading] = useState(false);
@@ -27,6 +35,8 @@ const ManageWarPage = ({ authorizeRole }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isEditOpen, setEditIsOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  // Container State
+  const [application, setApplication] = useState({});
 
   // Select State
   const [
@@ -46,6 +56,10 @@ const ManageWarPage = ({ authorizeRole }) => {
 
   // File Name
   const [fileName, setFileName] = useState("weekly-accomplishment-report.pdf");
+  // Modal State
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  // Select State
+  const [selectedFile, setSelectedFile] = useState(null);
 
   /**
    * Use Request
@@ -60,6 +74,81 @@ const ManageWarPage = ({ authorizeRole }) => {
     setIsOpen: setIsOpen,
     setLoading: setLoading,
   });
+
+  // Fetch application
+  const fetchApplication = async () => {
+    // Set Loading
+    setLoading(true);
+
+    try {
+      const response = await getRequest({
+        url: applicationResource,
+      });
+
+      if (response) {
+        // console.log(response);
+        setApplication(response);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchApplication();
+  }, []);
+
+  // Handle Open Modal
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  // Handle file selection
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
+
+  const closeModal = () => {
+    setSelectedFile(null); // Clear selected file when closing modal
+    setIsModalOpen(false);
+  };
+
+  // Handle file upload
+  const handleSubmitFile = async () => {
+    if (!selectedFile) {
+      showFailedAlert("Please select a file to upload.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("weekly_report", selectedFile);
+
+      // Example API endpoint
+      const response = await postFormDataRequest({
+        url: `/api/v1/reports/${applicationId}/weekly-report/submit`,
+        data: formData,
+      });
+
+      if (response) {
+        // alert("File uploaded successfully!"); // Replace with your preferred notification
+        closeModal();
+      }
+    } catch (error) {
+      console.error("File upload failed:", error);
+    } finally {
+      setLoading(false);
+      navigate(-1, {
+        replace: true,
+      });
+    }
+  };
 
   /**
    * Function that calls the Weekly Report PDF Format
@@ -286,6 +375,16 @@ const ManageWarPage = ({ authorizeRole }) => {
                 )
               }
             </PDFDownloadLink>
+
+            {application.application_status_id === 6 && (
+              <Button
+                type="button"
+                onClick={handleOpenModal}
+                className="text-sm flex items-center justify-center gap-2 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded"
+              >
+                Submit Weekly Report
+              </Button>
+            )}
           </div>
 
           <Button
@@ -345,6 +444,21 @@ const ManageWarPage = ({ authorizeRole }) => {
           message="Are you sure you want to delete this record?"
           handleDelete={deleteUpdateWeeklyEntry}
         />
+
+        {/* Modal for File Upload */}
+        <FormModal
+          isOpen={isModalOpen}
+          setIsOpen={setIsModalOpen}
+          modalTitle="Upload Weekly Report"
+          onSubmit={handleSubmitFile}
+        >
+          <UploadFile
+            title="Upload Weekly Report"
+            file={selectedFile}
+            set={setSelectedFile}
+            handleFileChange={handleFileChange}
+          />
+        </FormModal>
       </div>
     </div>
   );

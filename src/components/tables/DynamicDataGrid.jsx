@@ -71,6 +71,9 @@ const DynamicDataGrid = React.memo(
 
     // Row ID Definition
     getRowId,
+
+    // Requested by
+    requestedBy = "",
   }) => {
     const [totalCount, setTotalCount] = useState(0); // Total count of records
     const [loading, setLoading] = useState(true); // Loading state
@@ -94,6 +97,7 @@ const DynamicDataGrid = React.memo(
             page: paginationModel.page + 1, // Correct API expects page to start at 1
             perPage: paginationModel.pageSize, // Items per page
             search: searchTerm, // Search term
+            requestedBy: requestedBy,
           },
         });
 
@@ -106,7 +110,7 @@ const DynamicDataGrid = React.memo(
       };
 
       fetchData();
-    }, [paginationModel, searchTerm]); // Trigger on changes to paginationModel or searchTerm
+    }, [paginationModel, searchTerm, url]); // Trigger on changes to paginationModel or searchTerm
 
     // Handle pagination model change
     const handlePaginationModelChange = (newPaginationModel) => {
@@ -173,6 +177,7 @@ const DynamicDataGrid = React.memo(
         {/* DataGrid component */}
         <div style={{ height: "100%", width: "100%" }}>
           <StripedDataGrid
+            disableRowSelectionOnClick={true}
             rows={rows}
             columns={columns}
             paginationMode="server" // Enable server-side pagination
@@ -236,6 +241,19 @@ const DynamicDataGrid = React.memo(
           />
         </div>
       </div>
+    );
+  },
+  (prevProps, nextProps) => {
+    // Only re-render if the `url` prop changes
+    // console.log("Prev: ", prevProps);
+    // console.log("Next: ", nextProps);
+
+    return (
+      prevProps.url === nextProps.url && // Compare `url`
+      prevProps.rows === nextProps.rows &&
+      prevProps.setRows === nextProps.setRows &&
+      // Add other props to compare as needed
+      JSON.stringify(prevProps) === JSON.stringify(nextProps)
     );
   }
 );

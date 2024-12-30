@@ -1,6 +1,6 @@
 // Libraries
-import React from 'react'
-import { useLoaderData } from 'react-router-dom' // Hook to load route data
+import React from "react";
+import { useLoaderData } from "react-router-dom"; // Hook to load route data
 
 // Recharts
 import {
@@ -12,15 +12,15 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-} from 'recharts'
+} from "recharts";
 
 /**
  * Components
  */
-import Section from '../../components/common/Section'
-import Heading from '../../components/common/Heading'
-import Page from '../../components/common/Page'
-import Text from '../../components/common/Text'
+import Section from "../../components/common/Section";
+import Heading from "../../components/common/Heading";
+import Page from "../../components/common/Page";
+import Text from "../../components/common/Text";
 
 // Icons from Lucide
 import {
@@ -31,8 +31,8 @@ import {
   UserRoundCheck,
   Layers,
   Layers2,
-} from 'lucide-react'
-import Container from '../../components/dashboards/Container'
+} from "lucide-react";
+import Container from "../../components/dashboards/Container";
 
 /**
  * AdminDashboard Component
@@ -41,15 +41,15 @@ import Container from '../../components/dashboards/Container'
  */
 export default function AdminDashboard() {
   // Load data for the dashboard (e.g., system statistics, user counts)
-  const data = useLoaderData()
+  const data = useLoaderData();
 
   // Prepare the data for the bar chart
   const barChartData = [
-    { name: 'Colleges', value: data.total_colleges },
-    { name: 'Offices', value: data.total_offices },
-    { name: 'Jobs', value: data.total_work_posts },
-    { name: 'Programs', value: data.total_programs },
-  ]
+    { name: "Colleges", value: data.total_colleges },
+    { name: "Offices", value: data.total_offices },
+    { name: "Jobs", value: data.total_work_posts },
+    { name: "Programs", value: data.total_programs },
+  ];
 
   return (
     <Page>
@@ -226,5 +226,5 @@ export default function AdminDashboard() {
         </div>
       </Section>
     </Page>
-  )
+  );
 }

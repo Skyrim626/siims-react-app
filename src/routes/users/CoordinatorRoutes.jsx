@@ -7,11 +7,15 @@ import axiosClient from "../../api/axiosClient";
 import CoordinatorViewStudentsPage from "../../pages/coordinator/CoordinatorViewStudentsPage";
 import CoordinatorViewStudentApplications from "../../pages/coordinator/CoordinatorViewStudentApplications";
 import CoordinatorViewStudentApplication from "../../pages/coordinator/CoordinatorViewStudentApplication";
-import CoordinatorMyStudentProgress from "../../pages/coordinator/CoordinatorMyStudentsReports";
-import CoordinatorMyStudentsReports from "../../pages/coordinator/CoordinatorMyStudentsReports";
 import ViewActiveStudentsPage from "../../pages/ViewActiveStudentsPage";
 import ViewDtrPage from "../../pages/ViewDtrPage";
 import ViewWarPage from "../../pages/ViewWarPage";
+import ManageStudentsPage from "../../pages/ManageStudentsPage";
+import ViewProfilePage from "../../pages/profiles/ViewProfilePage";
+import SelfProfile from "../../pages/profiles/SelfProfile";
+import EditProfilePage from "../../pages/profiles/EditProfilePage";
+import ManageApplicantPage from "../../pages/ManageApplicantPage";
+import ViewReportsPage from "../../pages/ViewReportsPage";
 
 // Routes for Coordinator
 const CoordinatorRoutes = {
@@ -48,10 +52,70 @@ const CoordinatorRoutes = {
   children: [
     {
       path: "dashboard", // Dashboard route that redirects to /osa
-      element: <Navigate to={"/osa"} />,
+      element: <Navigate to={"/coordinator"} />,
+    },
+    {
+      index: true,
+      element: <CoordinatorDashboardPage />,
+    },
+    {
+      path: "profile",
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: <SelfProfile authorizeRole={"coordinator"} />,
+        },
+        {
+          path: "edit",
+          element: <EditProfilePage authorizeRole={"coordinator"} />,
+        },
+      ],
+    },
+
+    {
+      path: "students",
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: <ManageStudentsPage authorizeRole={"coordinator"} />,
+        },
+        {
+          path: "user_id",
+          element: (
+            <ViewProfilePage
+              authorizeRole={"coordinator"}
+              viewingUser={"coordinator"}
+            />
+          ),
+        },
+        {
+          path: "applications/:application_id",
+          element: <ManageApplicantPage authorizeRole={"coordinator"} />,
+        },
+      ],
     },
     {
       path: "my-students-reports",
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: <ViewReportsPage authorizeRole={"coordinator"} />,
+        },
+        {
+          path: ":id/daily-time-records",
+          element: <ViewDtrPage authorizeRole={"coordinator"} />,
+        },
+        {
+          path: ":id/weekly-accomplishment-reports",
+          element: <ViewWarPage authorizeRole={"coordinator"} />,
+        },
+      ],
+    },
+    {
+      path: "test/my-students-reports",
       element: <Outlet />,
       children: [
         {
@@ -69,13 +133,19 @@ const CoordinatorRoutes = {
       ],
     },
 
+    // Students View Profile
     {
-      index: true,
-      element: <CoordinatorDashboardPage />,
+      path: "profiles/:user_id",
+      element: (
+        <ViewProfilePage
+          authorizeRole={"coordinator"}
+          viewingUser={"student"}
+        />
+      ),
     },
 
     {
-      path: "students",
+      path: "test/students",
       element: <Outlet />,
       children: [
         {

@@ -7,11 +7,9 @@ import { Navigate, Outlet } from "react-router-dom";
 import StudentLayout from "../../components/layouts/StudentLayout";
 
 // Student Pages
-import StudentHomePage from "../../pages/student/StudentHomePage";
 import ProtectedRoute from "../handlers/ProtectedRoute";
 import StudentProfilePage from "../../pages/student/StudentProfilePage";
 import StudentRequestEndorsementPage from "../../pages/student/StudentRequestEndorsementPage";
-import StudentManageDtrPage from "../../pages/student/StudentManageDtrPage";
 import StudentViewEvaluationPage from "../../pages/student/StudentViewEvaluationPage";
 import axiosClient from "../../api/axiosClient";
 import StudentReportsPage from "../../pages/student/StudentReportsPage";
@@ -19,12 +17,16 @@ import StudentJobApplicationPage from "../../pages/student/StudentJobApplication
 import StudentEditProfilePage from "../../pages/student/StudentEditProfilePage";
 import StudentMessagingPage from "../../pages/student/StudentMessagingPage";
 import StudentWeeklyAccomplishmentPage from "../../pages/student/StudentWeeklyAccomplishmentPage";
-import StudentViewWorkPost from "../../pages/student/StudentViewWorkPost";
 import StudentPersonalInsight from "../../pages/student/StudentPersonalInsight";
 import StudentViewEditInsights from "../../pages/student/StudentViewEditInsights";
 import ManageDtrPage from "../../pages/ManageDtrPage";
 import ManageWarPage from "../../pages/ManageWarPage";
 import ViewCompanyProfilePage from "../../pages/profiles/ViewCompanyProfilePage";
+import TestingHomePage from "../../pages/student/testing/TestingHomePage";
+import ViewWorkPost from "../../pages/ViewWorkPost";
+import ApplicationPage from "../../pages/ApplicationPage";
+import SelfProfile from "../../pages/profiles/SelfProfile";
+import EditProfilePage from "../../pages/profiles/EditProfilePage";
 // Routes for Student
 const StudentRoutes = {
   path: "my",
@@ -66,49 +68,32 @@ const StudentRoutes = {
     },
     {
       index: true,
-      element: <StudentHomePage />,
+      element: <TestingHomePage />,
     },
+    /* {
+      index: true,
+      element: <StudentHomePage />,
+    }, */
     {
       path: "jobs/:workPostId",
-      element: <StudentViewWorkPost />,
-      loader: async ({ params }) => {
-        try {
-          /**
-           * Params
-           */
-          const { workPostId } = params;
-
-          /**
-           * Responses
-           */
-          const workPostResponse = await axiosClient.get(
-            `/api/v1/work-posts/${workPostId}/details`
-          );
-          const statusResponse = await axiosClient.get(
-            "/api/v1/users/students/get-student-status-id"
-          );
-
-          /**
-           * Variables
-           */
-          const workPost = workPostResponse.data;
-          const status = statusResponse.data;
-
-          // console.log(status);
-          /**
-           * Return
-           */
-          return {
-            workPost,
-            status,
-          };
-        } catch (error) {
-          console.log(error);
-        }
-      },
+      element: <ViewWorkPost authorizeRole={"student"} />,
     },
     {
       path: "profile",
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: <SelfProfile authorizeRole={"student"} />,
+        },
+        {
+          path: "edit",
+          element: <EditProfilePage authorizeRole={"student"} />,
+        },
+      ],
+    },
+    {
+      path: "test/profile",
       element: <Outlet />,
       children: [
         {
@@ -135,6 +120,10 @@ const StudentRoutes = {
     }, */
     {
       path: "applications/:application_id",
+      element: <ApplicationPage />,
+    },
+    {
+      path: "test/applications/:application_id",
       element: <StudentJobApplicationPage />,
       loader: async ({ params }) => {
         try {
@@ -238,12 +227,20 @@ const StudentRoutes = {
       },
     },
     {
-      path: ":applicationId/daily-time-records",
-      element: <ManageDtrPage />,
+      path: ":application_id/daily-time-records",
+      element: <ManageDtrPage authorizeRole={"student"} />,
     },
     {
       path: ":applicationId/weekly-accomplishment-reports",
-      element: <ManageWarPage />,
+      element: <ManageWarPage authorizeRole={"student"} />,
+    },
+    {
+      path: ":application_id/personal-insight",
+      element: <StudentPersonalInsight authorizeRole={"student"} />,
+    },
+    {
+      path: ":application_id/view-insights",
+      element: <StudentViewEditInsights />,
     },
     {
       path: "test/:applicationId/my-weekly-reports",

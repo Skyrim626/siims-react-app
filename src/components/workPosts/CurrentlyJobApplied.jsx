@@ -9,7 +9,7 @@ const CurrentlyJobApplied = ({
   status,
   navigateToJobDetails,
 }) => {
-  console.log(status);
+  //console.log(status);
 
   return (
     <div className="lg:w-3/4 w-full">

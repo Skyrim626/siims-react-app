@@ -13,12 +13,13 @@ import Page from "../components/common/Page";
 
 const ViewWarPage = ({ authorizeRole }) => {
   // Get id from params
-  const { applicationId } = useParams();
+  const { id: applicationId } = useParams();
 
   // Open location
   const location = useLocation();
   // Safely access the row data
-  const { firstName, middleName, lastName } = location.state;
+  // const { firstName, middleName, lastName } = location.state;
+  const { name } = location.state;
 
   // Loading State
   const [loading, setLoading] = useState(false);
@@ -114,10 +115,7 @@ const ViewWarPage = ({ authorizeRole }) => {
             <Heading level={3} text={"Weekly Accomplishment Reports"} />
 
             <Text className="text-md text-blue-950">
-              This is where you view{" "}
-              <span className="font-bold">
-                {getFullName(firstName, middleName, lastName)}
-              </span>{" "}
+              This is where you view <span className="font-bold">{name}</span>{" "}
               weekly accomplishment reports.
             </Text>
           </div>

@@ -7,6 +7,9 @@ import OsaManageApplicantsPage from "../../pages/osa/OsaManageApplicantsPage";
 import OsaManageApplicantApplication from "../../pages/osa/OsaManageApplicantApplication";
 import OSAProfilePage from "../../pages/osa/OsaProfilePage";
 import ViewDocumentTypePage from "../../pages/ViewDocumentTypesPage";
+import ManageApplicantsPage from "../../pages/ManageApplicantsPage";
+import ManageApplicantPage from "../../pages/ManageApplicantPage";
+import ViewProfilePage from "../../pages/profiles/ViewProfilePage";
 
 // Routes for Dean
 const OsaRoutes = {
@@ -54,6 +57,21 @@ const OsaRoutes = {
     },
     {
       path: "applicants",
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: <ManageApplicantsPage authorizeRole={"osa"} />,
+        },
+
+        {
+          path: ":application_id",
+          element: <ManageApplicantPage authorizeRole={"osa"} />,
+        },
+      ],
+    },
+    {
+      path: "test/applicants",
       element: <Outlet />,
       children: [
         {

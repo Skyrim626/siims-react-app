@@ -16,6 +16,7 @@ import OfficeForm from "../../components/forms/OfficeForm";
 import Heading from "../../components/common/Heading";
 import ContentLoader from "../../components/atoms/ContentLoader";
 import Text from "../../components/common/Text";
+import { Button } from "@headlessui/react";
 
 const CompanyEditOfficePage = () => {
   // Fetch office
@@ -44,9 +45,6 @@ const CompanyEditOfficePage = () => {
   // Open Location and naviate
   const location = useLocation();
   const navigate = useNavigate();
-  const strippedPath =
-    stripLocation(location.pathname, `/edit-office/${initial_office.id}`) +
-    `/${initial_office.id}`;
 
   // Update office
   const updateOffice = async (e) => {
@@ -72,7 +70,8 @@ const CompanyEditOfficePage = () => {
         data: payload,
       });
 
-      navigate("/auth/company/offices");
+      // navigate("/auth/company/offices");
+      navigate(-1);
     } catch (error) {
       // Handle and set errors
       if (error.response && error.response.data && error.response.data.errors) {
@@ -90,13 +89,13 @@ const CompanyEditOfficePage = () => {
     <>
       <Page>
         <Section>
-          <Link
-            to={strippedPath}
+          <Button
+            onClick={() => navigate(-1)}
             className="flex items-center text-sm font-bold text-blue-500 hover:underline"
           >
             <ChevronLeft size={20} />
             Go Back
-          </Link>
+          </Button>
         </Section>
 
         <Section>

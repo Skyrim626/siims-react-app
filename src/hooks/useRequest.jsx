@@ -92,7 +92,8 @@ const useRequest = ({ setIsOpen, setData, setLoading }) => {
         data: payload,
       });
 
-      // console.log(response);
+      // console.log(response.data);
+      // console.log("selectedData: ", selectedData);
 
       if (response) {
         setData((prevData) =>

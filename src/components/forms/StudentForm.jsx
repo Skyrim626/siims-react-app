@@ -58,7 +58,7 @@ const StudentForm = ({
 }) => {
   return (
     <>
-      <form className="space-y-3">
+      <div className="space-y-3">
         {method !== "put" && (
           <LoginInfoFields
             info={studentInfo}
@@ -85,7 +85,7 @@ const StudentForm = ({
           <Heading
             level={5}
             color="black"
-            text={"Student Information"}
+            text={"Student Indivation"}
             className="border-l-2 rounded-lg border-blue-700 px-3 font-bold text-md"
           />
 
@@ -209,7 +209,7 @@ const StudentForm = ({
             </div>
           </div>
         </div>
-      </form>
+      </div>
     </>
   );
 };

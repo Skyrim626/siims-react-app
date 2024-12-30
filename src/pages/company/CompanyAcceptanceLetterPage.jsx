@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Page from "../../components/common/Page";
 import Loader from "../../components/common/Loader";
 import GenerateAcceptanceLetter from "../../components/letters/GenerateAcceptanceLetter";
@@ -7,14 +7,14 @@ import { pdf } from "@react-pdf/renderer";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import getFullName from "../../utils/getFullName";
 import SignatureCapture from "../../components/letters/SignatureCanvas";
-import { postFormDataRequest } from "../../api/apiHelpers";
+import { getRequest, postFormDataRequest } from "../../api/apiHelpers";
 
 const CompanyAcceptanceLetterPage = () => {
   // Open Location and Navigate
   const location = useLocation();
   const navigate = useNavigate();
   // Get Params
-  const { id } = useParams();
+  const { application_id: id } = useParams();
 
   // Open Date
   const date = new Date();
@@ -43,26 +43,46 @@ const CompanyAcceptanceLetterPage = () => {
       day: "numeric",
     })
   );
-  const [applicantFullName, setApplicantFullName] = useState(
+  /* const [applicantFullName, setApplicantFullName] = useState(
     getFullName(
       application.first_name,
       application.middle_name,
       application.last_name
     )
-  );
-  const [companyName, setCompanyName] = useState(
-    application.office.company.name
-  );
+  ); */
+  const [applicantFullName, setApplicantFullName] = useState(application.name);
+  const [companyName, setCompanyName] = useState(application.company);
   const [workType, setWorkType] = useState("internship");
-  const [ownerName, setOwnerName] = useState(
-    getFullName(
-      application.office.company.user.first_name,
-      application.office.company.user.middle_name,
-      application.office.company.user.last_name
-    ) || "John Doe"
+  const [ownerName, setOwnerName] = useState("");
+  const [position, setPosition] = useState(
+    application.job_title || "HR Specialist"
   );
-  const [position, setPosition] = useState("HR Specialist");
   const [fileName, setFileName] = useState("acceptance-letter.pdf");
+
+  // Function to fetch logo
+  const fetchLogo = async () => {
+    // Set Loading
+    setLoading(true);
+    try {
+      const response = await getRequest({
+        url: "/api/v1/profiles/views/companies/logo-url",
+      });
+
+      if (response) {
+        // console.log(response);
+        setLogoURL(response);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // Call Method
+    fetchLogo();
+  }, []);
 
   /**
    * Function that calls the Endorsement Letter
@@ -70,6 +90,7 @@ const CompanyAcceptanceLetterPage = () => {
   const callAcceptanceLetter = () => {
     return (
       <GenerateAcceptanceLetter
+        logo={logoURL}
         signatureImage={signatureImage}
         currentDate={currentDate}
         applicantFullName={applicantFullName}

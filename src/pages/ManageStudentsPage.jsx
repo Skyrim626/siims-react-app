@@ -9,28 +9,64 @@ import ManageHeader from "../components/common/ManageHeader";
 import DynamicDataGrid from "../components/tables/DynamicDataGrid";
 import useForm from "../hooks/useForm";
 import { Button, Tab, TabGroup, TabList } from "@headlessui/react";
-import {
-  getStudentActionColumns,
-  getStudentStaticColumns,
-} from "../utils/columns";
 import StudentForm from "../components/forms/StudentForm";
 import FormModal from "../components/modals/FormModal";
 import { getRequest, postFormDataRequest, putRequest } from "../api/apiHelpers";
 import DeleteConfirmModal from "../components/modals/DeleteConfirmModal";
 import ImportStudentForm from "./admin/forms/ImportStudentForm";
-import { UserCheck } from "lucide-react";
+import { HelpCircle, UserCheck } from "lucide-react";
 import AssignConfirmModal from "../components/modals/AssignConfirmModal";
 import AssignStudentForm from "../components/forms/AssignStudentForm";
+import StatusListModal from "../components/modals/StatusListModal";
+import { getStudentStatusColor } from "../utils/statusColor";
+import {
+  getStudentActionColumns,
+  getStudentStaticColumns,
+} from "../utils/columns/studentColumns";
+import ReadyToDeployButton from "../components/tables/ReadyToDeployButton";
+import DeployStudentButton from "../components/tables/DeployStudentButton";
 
 // Tabs Links
 const tabLinks = [
   {
     name: "All",
     url: "/users/students", // The backend resource for 'All' students
+    authorizeRoles: ["admin", "dean", "chairperson", "coordinator"],
   },
   {
-    name: "Archives",
-    url: "/users/students/archives", // The backend resource for 'Archived' students
+    name: "Not Yet Applied",
+    url: "/users/students/not-yet-applied",
+    authorizeRoles: ["admin", "coordinator"],
+  },
+  {
+    name: "Pending Approval",
+    url: "/users/students/pending-approval",
+    authorizeRoles: ["admin", "coordinator"],
+  },
+  {
+    name: "Enrolled",
+    url: "/users/students/enrolled", // The backend resource for 'All' students
+    authorizeRoles: ["admin", "coordinator"],
+  },
+  {
+    name: "Ready For Deployment",
+    url: "/users/students/ready-for-deployment", // The backend resource for 'All' students
+    authorizeRoles: ["admin", "coordinator"],
+  },
+  {
+    name: "Active",
+    url: "/users/students/active", // The backend resource for 'All' students
+    authorizeRoles: ["admin", "coordinator"],
+  },
+  {
+    name: "Completed",
+    url: "/users/students/completed", // The backend resource for 'All' students
+    authorizeRoles: ["admin", "coordinator"],
+  },
+  {
+    name: "Archived",
+    url: "/users/students/archived", // The backend resource for 'Archived' students
+    authorizeRoles: ["admin"],
   },
 ];
 
@@ -41,6 +77,7 @@ const ManageStudentsPage = ({ authorizeRole }) => {
   // Container State for Lists
   const [listOfPrograms, setListOfPrograms] = useState([]);
   const [listOfCoordinators, setListOfCoordinators] = useState([]);
+  const [listOfStudentStatuses, setListofStudentStatuses] = useState([]);
 
   /**
    * File State
@@ -59,9 +96,10 @@ const ManageStudentsPage = ({ authorizeRole }) => {
   const [isOpenImport, setIsOpenImport] = useState(false);
   const [isAssignOpen, setIsAssignOpen] = useState(false);
   const [isAssignConfirmOpen, setIsAssignConfirmOpen] = useState(false);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
 
   // Select State
-  const [selectedTab, setSelectedTab] = useState(tabLinks[0]);
+  const [activeTab, setActiveTab] = useState(tabLinks[0]);
   const [selectedStudent, setSelectedStudent] = useState({});
   const [selectedProgramId, setSelectedProgramId] = useState(null);
   const [selectedRows, setSelectedRows] = useState([]); // State for selected rows
@@ -169,29 +207,50 @@ const ManageStudentsPage = ({ authorizeRole }) => {
       }
     };
 
+    // Fetch the student statuses colors
+    const fetchStudentStatusColor = async () => {
+      // Set Loading State
+      setLoading(true);
+      try {
+        const response = await getRequest({
+          url: "/api/v1/statuses/student-status-lists",
+        });
+
+        if (response) {
+          setListofStudentStatuses(response);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // ! Call to All
+    fetchStudentStatusColor();
+
     // ! Call Function for Admin and Dean Only
     if (authorizeRole === "admin" || authorizeRole === "dean") {
       fetchListOfPrograms();
     }
     // ! Default: For Chairperson
-    else {
+    else if (authorizeRole === "chairperson") {
       fetchCurrentProgramId();
     }
 
     // ! Call Function for Admin, Dean, and Chairperson
-    fetchListOfCoordinators();
+    if (
+      authorizeRole === "admin" ||
+      authorizeRole === "dean" ||
+      authorizeRole === "chairperson"
+    ) {
+      fetchListOfCoordinators();
+    }
   }, []);
 
   // Function to handle row selection
   const handleRowSelection = (ids) => {
     setSelectedRows(ids); // Update state with selected row IDs
-  };
-
-  // Function to print selected rows
-  const printSelectedRows = () => {
-    const selectedData = rows.filter((row) => selectedRows.includes(row.id));
-    console.log("Selected Rows:", selectedData);
-    alert(JSON.stringify(selectedData, null, 2)); // Show the selected rows in an alert
   };
 
   // Function to assign student/s to coordinator
@@ -229,6 +288,39 @@ const ManageStudentsPage = ({ authorizeRole }) => {
         // Close Modals
         setIsAssignConfirmOpen(false);
         setIsAssignOpen(false);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ! FOR COORDINATOR ONLY
+  const handleDeployStudents = async (selectedIds) => {
+    // Set loading state
+    setLoading(true);
+
+    try {
+      const selectedData = rows.filter((row) => selectedRows.includes(row.id));
+      // console.log(selectedData);
+
+      // Extract only the IDs from the selected data
+      const selectedIds = selectedData.map((row) => row.id);
+
+      // Prepare payload containing the selected user IDs
+      const payload = { ids: Array.from(selectedIds) };
+      // Perform PUT request to archive the selected users
+      const response = await putRequest({
+        url: "/api/v1/users/students/mark-ready-for-deployment",
+        data: payload,
+      });
+
+      if (response) {
+        // Update the local students state to remove deleted students
+        setRows((prevStudents) =>
+          prevStudents.filter((student) => !selectedIds.includes(student.id))
+        );
       }
     } catch (error) {
       console.error(error);
@@ -358,18 +450,20 @@ const ManageStudentsPage = ({ authorizeRole }) => {
         authorizeRole: authorizeRole,
         pathname: location.pathname,
       }),
-    [authorizeRole]
+    [authorizeRole, activeTab]
   );
 
   // Action Column
   const actionColumn = useMemo(
     () =>
-      getStudentActionColumns(
+      getStudentActionColumns({
         authorizeRole,
         handleEditModal,
-        handleDeleteModal
-      ),
-    [authorizeRole]
+        handleDeleteModal,
+        activeTab,
+        pathname: location.pathname,
+      }),
+    [authorizeRole, activeTab]
   );
 
   // Render Columns
@@ -412,12 +506,6 @@ const ManageStudentsPage = ({ authorizeRole }) => {
     }
   };
 
-  // Tab Change
-  const handleTabChange = (tab) => {
-    setSelectedTab(tab);
-    navigate(tab.url); // Update the URL dynamically based on the selected tab
-  };
-
   /**
    * A function that handles the File Change
    */
@@ -435,20 +523,38 @@ const ManageStudentsPage = ({ authorizeRole }) => {
         {/* For those roles that is not admin */}
         {authorizeRole !== "admin" && (
           <Section>
-            <Heading level={3} text="Manage Students" />
-            <Text className="text-md text-blue-950">
-              This is where you manage the students.
-            </Text>
+            <div className="flex justify-between items-center">
+              <div>
+                <Heading level={3} text="Manage Students" />
+                <Text className="text-md text-blue-950">
+                  This is where you manage the students.
+                </Text>
+              </div>
+
+              <div>
+                <Button
+                  className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full"
+                  onClick={() => setIsHelpOpen(!isHelpOpen)}
+                >
+                  <HelpCircle size={25} />
+                </Button>
+              </div>
+            </div>
             <hr className="my-3" />
           </Section>
         )}
 
         <div className="mt-3">
           <TabGroup>
-            <TabList className="flex gap-4">
-              {tabLinks.map((tabLink, index) => {
+            <TabList className="flex gap-4 mb-5">
+              {tabLinks.map((tab, index) => {
                 // ! Do not display Archives if role is not Admin
-                if (tabLink.name === "Archives" && authorizeRole !== "admin") {
+                /* if (tab.name === "Archived" && authorizeRole !== "admin") {
+                  return null;
+                } */
+
+                // Check Roles is not included for this
+                if (!tab.authorizeRoles.includes(authorizeRole)) {
                   return null;
                 }
 
@@ -456,151 +562,179 @@ const ManageStudentsPage = ({ authorizeRole }) => {
                   <Tab
                     key={index}
                     className={`rounded-full py-1 px-3 text-sm/6 font-semibold focus:outline-none ${
-                      selectedTab.name === tabLink.name
+                      activeTab.name === tab.name
                         ? "bg-blue-700 text-white" // Active tab style
                         : "bg-transparent text-blue-700" // Inactive tab style
                     }`}
-                    onClick={() => setSelectedTab(tabLink)} // Update selected tab on click
+                    onClick={() => setActiveTab(tab)}
                   >
-                    {tabLink.name}
+                    {tab.name}
                   </Tab>
                 );
               })}
             </TabList>
-          </TabGroup>
-          {selectedTab.name === "All" && (
-            <>
-              <ManageHeader
-                isOpen={isOpen}
-                setIsOpen={setIsOpen}
-                addPlaceholder="Add New User"
-                showExportButton={false}
-                isImportOpen={isOpenImport}
-                setIsImportOpen={setIsOpenImport}
-              />
-              {/* Assign Button */}
-              {(authorizeRole === "admin" ||
-                authorizeRole === "chairperson") && (
-                <div className="my-3">
-                  <Button
-                    // onClick={() => setIsAssignOpen(!isAssignOpen)}
-                    onClick={() => setIsAssignOpen(!isAssignOpen)}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold ${
-                      selectedRows.length > 0
-                        ? "bg-green-500 text-white hover:bg-green-600 transition"
-                        : "bg-gray-400 text-gray-200 cursor-not-allowed"
-                    }`}
-                  >
-                    <UserCheck className="w-5 h-5" />
-                    Assign Student
-                  </Button>
-                </div>
+
+            {activeTab.name === "All" && (
+              <>
+                {(authorizeRole === "admin" ||
+                  authorizeRole === "dean" ||
+                  authorizeRole === "chairperson") && (
+                  <ManageHeader
+                    isOpen={isOpen}
+                    setIsOpen={setIsOpen}
+                    addPlaceholder="Add New User"
+                    showExportButton={false}
+                    isImportOpen={isOpenImport}
+                    setIsImportOpen={setIsOpenImport}
+                  />
+                )}
+                {/* Assign Button */}
+                {(authorizeRole === "admin" ||
+                  authorizeRole === "chairperson") && (
+                  <div className="my-3">
+                    <Button
+                      // onClick={() => setIsAssignOpen(!isAssignOpen)}
+                      onClick={() => setIsAssignOpen(!isAssignOpen)}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold ${
+                        selectedRows.length > 0
+                          ? "bg-green-500 text-white hover:bg-green-600 transition"
+                          : "bg-gray-400 text-gray-200 cursor-not-allowed"
+                      }`}
+                    >
+                      <UserCheck className="w-5 h-5" />
+                      Assign Student
+                    </Button>
+                  </div>
+                )}
+
+                {/* Modals */}
+                {/* Assign Modal */}
+                <FormModal
+                  isOpen={isAssignOpen}
+                  setIsOpen={setIsAssignOpen}
+                  modalTitle="Assign Student"
+                  onSubmit={() => setIsAssignConfirmOpen(!isAssignConfirmOpen)}
+                >
+                  <AssignStudentForm
+                    selectedCoordinatorID={formData.coordinatorID}
+                    handleSelectedCoordinatorID={handleInputChange}
+                    coordinators={listOfCoordinators}
+                  />
+                </FormModal>
+
+                {/* Add Form Modal */}
+                <FormModal
+                  isOpen={isOpen}
+                  setIsOpen={setIsOpen}
+                  modalTitle="Add Student"
+                  onSubmit={addStudent}
+                >
+                  <StudentForm
+                    method="post"
+                    studentInfo={formData}
+                    handleStudentInfoChange={handleInputChange}
+                    programs={listOfPrograms}
+                    coordinators={listOfCoordinators}
+                    errors={validationErrors}
+                  />
+                </FormModal>
+                {/* Modals */}
+                {/* Edit Form Modal */}
+                <FormModal
+                  isOpen={isEditOpen}
+                  setIsOpen={setEditIsOpen}
+                  modalTitle="Edit Student"
+                  onSubmit={updateStudent}
+                >
+                  <StudentForm
+                    method="put"
+                    studentInfo={formData}
+                    handleStudentInfoChange={handleInputChange}
+                    programs={listOfPrograms}
+                    coordinators={listOfCoordinators}
+                    errors={validationErrors}
+                  />
+                </FormModal>
+                {/* Delete Form Modal */}
+                <DeleteConfirmModal
+                  open={isDeleteOpen}
+                  setOpen={setIsDeleteOpen}
+                  title={`Delete ${selectedStudent["first_name"]}`}
+                  message="Are you sure you want to delete this student?"
+                  handleDelete={deleteStudent}
+                />
+
+                {/* Assign Form Modal */}
+                <AssignConfirmModal
+                  open={isAssignConfirmOpen}
+                  setOpen={setIsAssignConfirmOpen}
+                  title="Assign Student To A Coordinator"
+                  message="Are you sure you want to assign this/these student/s to the selected coordinator? This action can be reviewed but not undone."
+                  handleAssign={handleAssign}
+                />
+
+                {/* Import Form Modal */}
+                <FormModal
+                  isOpen={isOpenImport}
+                  setIsOpen={setIsOpenImport}
+                  modalTitle="Import Students"
+                  onSubmit={submitFile}
+                >
+                  <ImportStudentForm
+                    file={file}
+                    set={setFile}
+                    status={status}
+                    setStatus={setStatus}
+                    handleFileChange={handleFileChange}
+                    programs={listOfPrograms}
+                    programId={programID}
+                    setProgramId={setProgramID}
+                    withSelection={!(authorizeRole === "chairperson")}
+                  />
+                </FormModal>
+              </>
+            )}
+
+            {/*! FOR ADMIN ONLY */}
+            {activeTab.name === "Archives" && authorizeRole === "admin" && (
+              <>
+                <div>Test</div>
+              </>
+            )}
+
+            {/* FOR COORDINATOR ONLY */}
+            {activeTab.name === "Ready For Deployment" &&
+              authorizeRole === "coordinator" && (
+                <>
+                  <DeployStudentButton
+                    onClick={() => handleDeployStudents()}
+                    disabled={selectedRows.length === 0}
+                  />
+                </>
               )}
 
-              <DynamicDataGrid
-                searchPlaceholder={"Search Student"}
-                rows={rows}
-                setRows={setRows}
-                columns={columns}
-                url={selectedTab.url}
-                onSelectionModelChange={handleRowSelection} // Handle selection change
-                getRowId={(row) => row.id} // Define the row ID
-              />
-              {/* Modals */}
-              {/* Assign Modal */}
-              <FormModal
-                isOpen={isAssignOpen}
-                setIsOpen={setIsAssignOpen}
-                modalTitle="Assign Student"
-                onSubmit={() => setIsAssignConfirmOpen(!isAssignConfirmOpen)}
-              >
-                <AssignStudentForm
-                  selectedCoordinatorID={formData.coordinatorID}
-                  handleSelectedCoordinatorID={handleInputChange}
-                  coordinators={listOfCoordinators}
-                />
-              </FormModal>
-
-              {/* Add Form Modal */}
-              <FormModal
-                isOpen={isOpen}
-                setIsOpen={setIsOpen}
-                modalTitle="Add Student"
-                onSubmit={addStudent}
-              >
-                <StudentForm
-                  method="post"
-                  studentInfo={formData}
-                  handleStudentInfoChange={handleInputChange}
-                  programs={listOfPrograms}
-                  coordinators={listOfCoordinators}
-                  errors={validationErrors}
-                />
-              </FormModal>
-              {/* Modals */}
-              {/* Edit Form Modal */}
-              <FormModal
-                isOpen={isEditOpen}
-                setIsOpen={setEditIsOpen}
-                modalTitle="Edit Student"
-                onSubmit={updateStudent}
-              >
-                <StudentForm
-                  method="put"
-                  studentInfo={formData}
-                  handleStudentInfoChange={handleInputChange}
-                  programs={listOfPrograms}
-                  coordinators={listOfCoordinators}
-                  errors={validationErrors}
-                />
-              </FormModal>
-              {/* Delete Form Modal */}
-              <DeleteConfirmModal
-                open={isDeleteOpen}
-                setOpen={setIsDeleteOpen}
-                title={`Delete ${selectedStudent["first_name"]}`}
-                message="Are you sure you want to delete this student?"
-                handleDelete={deleteStudent}
-              />
-
-              {/* Assign Form Modal */}
-              <AssignConfirmModal
-                open={isAssignConfirmOpen}
-                setOpen={setIsAssignConfirmOpen}
-                title="Assign Student To A Coordinator"
-                message="Are you sure you want to assign this/these student/s to the selected coordinator? This action can be reviewed but not undone."
-                handleAssign={handleAssign}
-              />
-
-              {/* Import Form Modal */}
-              <FormModal
-                isOpen={isOpenImport}
-                setIsOpen={setIsOpenImport}
-                modalTitle="Import Students"
-                onSubmit={submitFile}
-              >
-                <ImportStudentForm
-                  file={file}
-                  set={setFile}
-                  status={status}
-                  setStatus={setStatus}
-                  handleFileChange={handleFileChange}
-                  programs={listOfPrograms}
-                  programId={programID}
-                  setProgramId={setProgramID}
-                  withSelection={!(authorizeRole === "chairperson")}
-                />
-              </FormModal>
-            </>
-          )}
-
-          {/*! FOR ADMIN ONLY */}
-          {selectedTab.name === "Archives" && authorizeRole === "admin" && (
-            <>
-              <div>Test</div>
-            </>
-          )}
+            <DynamicDataGrid
+              searchPlaceholder={"Search Student"}
+              rows={rows}
+              setRows={setRows}
+              columns={columns}
+              url={activeTab.url} // B  t here it didnt pass the new url
+              onSelectionModelChange={handleRowSelection} // Handle selection change
+              getRowId={(row) => row.id} // Define the row ID
+              requestedBy={"coordinator"}
+            />
+          </TabGroup>
         </div>
+
+        {isHelpOpen && (
+          <StatusListModal
+            title={"Student Status Color Descriptions"}
+            isOpen={isHelpOpen}
+            setIsOpen={setIsHelpOpen}
+            getStatusColor={getStudentStatusColor}
+            statusLists={listOfStudentStatuses}
+          />
+        )}
       </Page>
     </>
   );

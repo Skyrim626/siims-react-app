@@ -17,6 +17,9 @@ import ManageStudentsPage from "../../pages/ManageStudentsPage";
 import ManageCompaniesPage from "../../pages/ManageCompaniesPage";
 import ViewCompanyProfilePage from "../../pages/profiles/ViewCompanyProfilePage";
 import ViewProfilePage from "../../pages/profiles/ViewProfilePage";
+import ManageEndorsementLetterRequestsPage from "../../pages/ManageEndorsementLetterRequestsPage";
+import SelfProfile from "../../pages/profiles/SelfProfile";
+import EditProfilePage from "../../pages/profiles/EditProfilePage";
 
 // Routes for Chairperson
 const ChairpersonRoutes = {
@@ -52,6 +55,20 @@ const ChairpersonRoutes = {
     {
       path: "dashboard",
       element: <Navigate to={"/chairperson"} />,
+    },
+    {
+      path: "profile",
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: <SelfProfile authorizeRole={"chairperson"} />,
+        },
+        {
+          path: "edit",
+          element: <EditProfilePage authorizeRole={"chairperson"} />,
+        },
+      ],
     },
     {
       index: true,
@@ -133,7 +150,22 @@ const ChairpersonRoutes = {
     },
     {
       path: "students",
-      element: <ManageStudentsPage authorizeRole={"chairperson"} />,
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: <ManageStudentsPage authorizeRole={"chairperson"} />,
+        },
+        {
+          path: ":user_id",
+          element: (
+            <ViewProfilePage
+              authorizeRole={"chairperson"}
+              viewingUser={"student"}
+            />
+          ),
+        },
+      ],
     },
     {
       path: "test/students",
@@ -185,6 +217,66 @@ const ChairpersonRoutes = {
     },
     {
       path: "endorsement-requests",
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: (
+            <ManageEndorsementLetterRequestsPage
+              authorizeRole={"chairperson"}
+            />
+          ),
+        },
+        {
+          path: ":endorsementLetterRequestId",
+          element: <Outlet />,
+          children: [
+            {
+              index: true,
+              element: <ChairpersonEndorsementRequestPage />,
+              loader: async ({ params }) => {
+                try {
+                  // console.log(params);
+
+                  // Fetch ID
+                  const { endorsementLetterRequestId } = params;
+
+                  // Fetch Response
+                  const response = await axiosClient.get(
+                    `/api/v1/endorsement-letter-requests/${endorsementLetterRequestId}`
+                  );
+
+                  // console.log(response);
+
+                  /**
+                   * Variable Storage
+                   */
+                  const endorsementLetterRequest = response.data;
+
+                  // console.log(endorsementLetterRequest);
+
+                  return {
+                    endorsementLetterRequest,
+                    endorsementLetterRequestId,
+                  };
+                } catch (error) {
+                  console.log(error);
+                  return {
+                    endorsementLetterRequest: [],
+                  };
+                }
+              },
+            },
+            {
+              path: "generate-endorsement-letter",
+              element: <ChairpersonGenerateEndorsemenLetterPage />,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      path: "test/endorsement-requests",
       element: <Outlet />,
       children: [
         {

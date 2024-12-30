@@ -38,7 +38,7 @@ const StudentJobApplicationPage = () => {
     initial_step_one_documents
   );
 
-  console.log(stepOneDocuments);
+  // console.log(stepOneDocuments);
 
   // Loading State
   const [loading, setLoading] = useState(false);
@@ -375,7 +375,7 @@ const StudentJobApplicationPage = () => {
                               </a>
                               {doc.can_change && (
                                 <label className="flex items-center space-x-2">
-                                  <Input
+                                  <input
                                     type="file"
                                     accept=".pdf,.doc,.docx"
                                     onChange={(e) =>

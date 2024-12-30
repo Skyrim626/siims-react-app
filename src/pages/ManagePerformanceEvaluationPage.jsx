@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Page from "../components/common/Page";
 import Loader from "../components/common/Loader";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { replace, useLocation, useNavigate, useParams } from "react-router-dom";
 import Section from "../components/common/Section";
 import Heading from "../components/common/Heading";
 import Text from "../components/common/Text";
@@ -20,6 +20,9 @@ import { pdf, PDFDownloadLink } from "@react-pdf/renderer";
 import { document } from "postcss";
 import GeneratePerformanceEvaluationReport from "../components/letters/GeneratePerformanceEvaluationReport";
 import { postFormDataRequest } from "../api/apiHelpers";
+import { Modal } from "@mui/material";
+import FormModal from "../components/modals/FormModal";
+import UploadFile from "../components/common/UploadFile.";
 
 // A function that checks if criteria have scores
 const isCriteriaChecked = (criterias, scores) => {
@@ -40,7 +43,7 @@ const isCriteriaChecked = (criterias, scores) => {
 
 const ManagePerformanceEvaluationPage = ({ authorizeRole }) => {
   // Open Params
-  const { applicationId } = useParams();
+  const { id: applicationId } = useParams();
 
   // Loading State
   const [loading, setLoading] = useState(false);
@@ -51,6 +54,8 @@ const ManagePerformanceEvaluationPage = ({ authorizeRole }) => {
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
+  // Select State
+  const [selectedFile, setSelectedFile] = useState(null);
 
   // Safely access the row data
   const {
@@ -117,6 +122,55 @@ const ManagePerformanceEvaluationPage = ({ authorizeRole }) => {
     },
   ];
 
+  // Open and close modal
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+  const closeModal = () => {
+    setSelectedFile(null); // Clear selected file when closing modal
+    setIsModalOpen(false);
+  };
+
+  // Handle file selection
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
+
+  // Handle file upload
+  const handleSubmitFile = async () => {
+    if (!selectedFile) {
+      showFailedAlert("Please select a file to upload.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("performance_report", selectedFile);
+
+      // Example API endpoint
+      const response = await postFormDataRequest({
+        url: `/api/v1/reports/${applicationId}/performance-evaluation/submit`,
+        data: formData,
+      });
+
+      if (response) {
+        // alert("File uploaded successfully!"); // Replace with your preferred notification
+        closeModal();
+      }
+    } catch (error) {
+      console.error("File upload failed:", error);
+    } finally {
+      setLoading(false);
+      navigate(-1, {
+        replace: true,
+      });
+    }
+  };
+
   // Handles Score Change
   const handleScoreChange = (criterionIndex, itemIndex, score) => {
     const key = `${criterionIndex}-${itemIndex}`;
@@ -142,59 +196,6 @@ const ManagePerformanceEvaluationPage = ({ authorizeRole }) => {
     else rating = 5.0;
 
     setEquivalentRating(rating);
-  };
-
-  // Function that submits the performance evaluation
-  const handleSubmit = async () => {
-    // Set Loading
-    setLoading(true);
-
-    try {
-      // Check if all criteria have scores
-      const totalCriteriaItems = criterias.reduce(
-        (count, criterion) => count + criterion.items.length,
-        0
-      );
-
-      if (Object.keys(scores).length < totalCriteriaItems) {
-        // alert("");
-        showFailedAlert("Please score all criteria before submitting.");
-        return;
-      }
-
-      // If validation passes, notify the coordinator
-      // console.log("Coordinator notified");
-
-      // Generate the PDF as a Blob using react-pdf
-      const pdfBlob = await pdf(callPerformanceEvaluationReport()).toBlob();
-
-      // Create a File from the Blob
-      // Create a File from the Blob
-      const pdfFile = new File([pdfBlob], fileName, {
-        type: "application/pdf",
-      });
-
-      // Create FormData and append the file
-      const formData = new FormData();
-      formData.append("performance_report", pdfFile);
-
-      // POST the form data to your endpoint
-      const response = await postFormDataRequest({
-        url: `/api/v1/reports/${applicationId}/performance-evaluation/submit`,
-        data: formData,
-      });
-
-      if (response) {
-        navigate(-1); // Navigate back upon success
-      }
-
-      // Open modal on successful submission
-      setIsModalOpen(true);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
   };
 
   // Function that calls the Performance Evaluation
@@ -491,32 +492,27 @@ const ManagePerformanceEvaluationPage = ({ authorizeRole }) => {
           <Button
             type="button"
             className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-            onClick={handleSubmit} // Add your submit function here
+            onClick={handleOpenModal}
           >
-            Submit Evaluation
+            Upload Evaluation
           </Button>
-
-          {/* Modal Component */}
-          {isModalOpen && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-              <div className="bg-white rounded-lg shadow-lg p-6 text-center flex flex-col">
-                <h2 className="text-lg font-bold mb-4">
-                  Submission Successful
-                </h2>
-                <Text className="text-gray-600 mb-6">
-                  The performance evaluation has been submitted.
-                </Text>
-                <Button
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                  onClick={() => setIsModalOpen(!isModalOpen)}
-                >
-                  Okay
-                </Button>
-              </div>
-            </div>
-          )}
         </div>
       </form>
+
+      {/* Modal for File Upload */}
+      <FormModal
+        isOpen={isModalOpen}
+        setIsOpen={setIsModalOpen}
+        modalTitle="Upload Performance Report"
+        onSubmit={handleSubmitFile}
+      >
+        <UploadFile
+          title="Upload Performance Report"
+          file={selectedFile}
+          set={setSelectedFile}
+          handleFileChange={handleFileChange}
+        />
+      </FormModal>
     </Page>
   );
 };

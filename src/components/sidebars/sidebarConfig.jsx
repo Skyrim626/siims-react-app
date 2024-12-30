@@ -18,6 +18,7 @@ import {
   NotebookPen,
   ContactRound,
   FileCheck,
+  NotepadText,
 } from "lucide-react";
 
 // Configuration for sidebar items for Admin
@@ -127,23 +128,6 @@ const adminSidebarItemsConfig = [
     ],
   },
 
-  /* {
-    icon: <Building size={20} />,
-    text: "Offices",
-    alert: true,
-    ariaLabel: "Offices",
-    exact: false,
-    path: "/auth/admin/offices",
-  }, */
-
-  /* {
-    icon: <MessageCircle size={20} />,
-    text: "Messaging",
-    alert: true,
-    ariaLabel: "Messaging",
-    exact: false,
-    path: "/auth/admin/messaging",
-  }, */
   { isDivider: true, role: "all" },
   {
     icon: <Logs size={20} />,
@@ -167,6 +151,20 @@ const coordinatorSidebarItemsConfig = [
     path: "/auth/coordinator",
   },
   {
+    icon: <User size={20} />,
+    text: "Profile",
+    alert: false,
+    ariaLabel: "Profile",
+    exact: false,
+    path: "/auth/coordinator/profile",
+    sublinks: [
+      {
+        text: "Edit",
+        path: "/auth/coordinator/profile/edit", // Dynamic path
+      },
+    ],
+  },
+  {
     icon: <Users size={20} />,
     text: "Students",
     alert: true,
@@ -184,15 +182,6 @@ const coordinatorSidebarItemsConfig = [
     active: false,
     path: "/auth/coordinator/my-students-reports",
   },
-  {
-    icon: <UserPen size={20} />,
-    text: "My Profile",
-    alert: true,
-    ariaLabel: "My Profile",
-    exact: true,
-    active: true,
-    path: "/auth/coordinator/profile",
-  },
 ];
 
 // Configuration for sidebar items for Chairperson
@@ -205,6 +194,20 @@ const chairpersonSidebarItemsConfig = [
     exact: true,
     active: true,
     path: "/auth/chairperson",
+  },
+  {
+    icon: <User size={20} />,
+    text: "Profile",
+    alert: false,
+    ariaLabel: "Profile",
+    exact: false,
+    path: "/auth/chairperson/profile",
+    sublinks: [
+      {
+        text: "Edit",
+        path: "/auth/chairperson/profile/edit", // Dynamic path
+      },
+    ],
   },
   {
     icon: <UserRoundCheck size={20} />,
@@ -229,6 +232,12 @@ const chairpersonSidebarItemsConfig = [
     exact: false,
     active: true,
     path: "/auth/chairperson/students",
+    sublinks: [
+      {
+        text: "User_id",
+        path: "/auth/chairperson/students/:user_id", // Dynamic path
+      },
+    ],
   },
 
   {
@@ -268,13 +277,35 @@ const supervisorSidebarItemsConfig = [
     path: "/auth/supervisor",
   },
   {
+    icon: <User size={20} />,
+    text: "Profile",
+    alert: false,
+    ariaLabel: "Profile",
+    exact: false,
+    path: "/auth/supervisor/profile",
+    sublinks: [
+      {
+        text: "Edit",
+        path: "/auth/supervisor/profile/edit", // Dynamic path
+      },
+    ],
+  },
+  /* {
+    icon: <Users size={20} />,
+    text: "Interns",
+    alert: true,
+    ariaLabel: "Interns",
+    exact: true, // Add an `exact` property for exact path matching
+    path: "/auth/supervisor/interns",
+  }, */
+  /* {
     icon: <Users size={20} />,
     text: "Applicants",
     alert: true,
     ariaLabel: "Applicants",
     exact: true, // Add an `exact` property for exact path matching
     path: "/auth/supervisor/applicants",
-  },
+  }, */
 
   /*  {
     icon: <Briefcase size={20} />,
@@ -295,21 +326,47 @@ const supervisorSidebarItemsConfig = [
     ],
   }, */
   {
+    icon: <NotepadText size={20} />,
+    text: "Reports",
+    alert: false,
+    ariaLabel: "Reports",
+    exact: false, // Add an `exact` property for exact path matching
+    path: "/auth/supervisor/reports",
+    sublinks: [
+      /* {
+        text: "ID",
+        path: "/auth/supervisor/reports/:id", // Dynamic path
+      }, */
+      {
+        text: "Daily Time Records",
+        path: "/auth/supervisor/reports/:id/daily-time-records", // Dynamic path
+      },
+      {
+        text: "Weekly Reports",
+        path: "/auth/supervisor/reports/:id/weekly-accomplishment-reports", // Dynamic path
+      },
+      {
+        text: "Performance Evaluation",
+        path: "/auth/supervisor/reports/:id/performance-evaluation", // Dynamic path
+      },
+    ],
+  },
+  /* {
     icon: <ClipboardCheck size={20} />,
     text: "Evaluation",
     alert: true,
     ariaLabel: "Evaluation",
     exact: true, // Add an `exact` property for exact path matching
     path: "/auth/supervisor/performance-evaluation",
-  },
-  {
+  }, */
+  /* {
     icon: <ContactRound size={20} />,
     text: "Trainees",
     alert: false,
     ariaLabel: "Trainees",
     exact: false, // Add an `exact` property for exact path matching
     path: "/auth/supervisor/trainees",
-  },
+  }, */
 ];
 
 // Configuration for sidebar items for Company
@@ -332,22 +389,6 @@ const companySidebarItemsConfig = [
     path: "/auth/company/profile",
   },
   {
-    icon: <Briefcase size={20} />,
-    text: "Manage Jobs",
-    alert: true,
-    ariaLabel: "Manage Jobs",
-    exact: false, // Add an `exact` property for exact path matching
-    path: "/auth/company/work-posts",
-  },
-  {
-    icon: <ContactRound size={20} />,
-    text: "Manage Interns",
-    alert: true,
-    ariaLabel: "Manage Interns",
-    exact: false,
-    path: "/auth/company/interns",
-  },
-  {
     icon: <Building size={20} />,
     text: "Offices",
     alert: true,
@@ -360,6 +401,14 @@ const companySidebarItemsConfig = [
         path: "/auth/company/offices/add", // Dynamic path
       },
     ],
+  },
+  {
+    icon: <Briefcase size={20} />,
+    text: "Manage Jobs",
+    alert: true,
+    ariaLabel: "Manage Jobs",
+    exact: false, // Add an `exact` property for exact path matching
+    path: "/auth/company/work-posts",
   },
   {
     icon: <Users size={20} />,
@@ -376,7 +425,33 @@ const companySidebarItemsConfig = [
     ariaLabel: "Applicants",
     exact: false,
     path: "/auth/company/applicants",
+    sublinks: [
+      {
+        text: "application_id",
+        path: "/auth/company/applicants/:application_id", // Dynamic path
+      },
+      {
+        text: "Generate Acceptance Letter",
+        path: "/auth/company/applicants/:application_id/generate-acceptance", // Dynamic path
+      },
+    ],
   },
+  {
+    icon: <NotebookPen size={20} />,
+    text: "Reports",
+    alert: true,
+    ariaLabel: "Reports",
+    exact: false,
+    path: "/auth/company/reports",
+  },
+  /* {
+    icon: <ContactRound size={20} />,
+    text: "Manage Interns",
+    alert: true,
+    ariaLabel: "Manage Interns",
+    exact: false,
+    path: "/auth/company/interns",
+  }, */
 ];
 
 // Configuration for sidebar items for OSA
@@ -429,10 +504,16 @@ const deanSidebarItemsConfig = [
   {
     icon: <User size={20} />,
     text: "Profile",
-    alert: true,
+    alert: false,
     ariaLabel: "Profile",
-    exact: true,
+    exact: false,
     path: "/auth/dean/profile",
+    sublinks: [
+      {
+        text: "Edit",
+        path: "/auth/dean/profile/edit", // Dynamic path
+      },
+    ],
   },
   {
     icon: <UserPen />,
@@ -463,6 +544,12 @@ const deanSidebarItemsConfig = [
     ariaLabel: "Students",
     exact: false,
     path: "/auth/dean/students",
+    sublinks: [
+      {
+        text: "user_id",
+        path: "/auth/dean/students/:user_id", // Dynamic path
+      },
+    ],
   },
   {
     icon: <Building size={20} />,

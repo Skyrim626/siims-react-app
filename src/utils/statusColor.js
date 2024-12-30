@@ -80,6 +80,42 @@ export const getStatusBgColor = (status) => {
   }
 };
 
+// Function to map endorsement letter request statuses to text color and background color
+export const getEndorsementStatusColor = (status) => {
+  switch (status) {
+    case "Pending":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-yellow-500", // Yellow background (waiting for chairperson's review)
+      };
+    case "Pending Approval":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-orange-500", // Orange background (waiting for Dean's decision)
+      };
+    case "Approved":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-green-500", // Green background (approved by Dean)
+      };
+    case "Rejected":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-red-500", // Red background (rejected by Dean)
+      };
+    case "Draft":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-gray-500", // Gray background (still in draft by Chairperson)
+      };
+    default:
+      return {
+        textColor: "text-black", // Black text for default case
+        backgroundColor: "bg-gray-200", // Light gray background for default
+      };
+  }
+};
+
 
 // Function to map daily time record statuses to text color and background color
 export const getTimeRecordStatusColor = (status) => {
@@ -142,6 +178,7 @@ export const getTimeRecordStatusColor = (status) => {
   }
 };
 
+
 // Function to map student status to text color and background color
 export const getStudentStatusColor = (status) => {
   switch (status) {
@@ -169,6 +206,11 @@ export const getStudentStatusColor = (status) => {
       return {
         textColor: "text-white", // White text
         backgroundColor: "bg-teal-500", // Teal background (completed)
+      };
+    case "Ready For Deployment":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-indigo-500", // Indigo background (ready for deployment)
       };
     case "Dropped Out":
       return {
@@ -198,3 +240,104 @@ export const getStudentStatusColor = (status) => {
   }
 };
 
+
+
+// Function to map application status to text color and background color
+export const getApplicationStatusColor = (status) => {
+  switch (status) {
+    case "Pending":
+      return {
+        textColor: "text-black", // Black text
+        backgroundColor: "bg-gray-300", // Light gray background (pending)
+      };
+    case "Under Review":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-yellow-500", // Yellow background (under review)
+      };
+    case "Rejected":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-red-500", // Red background (rejected)
+      };
+    case "Approved":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-green-500", // Green background (approved)
+      };
+    case "Withdrawn":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-orange-500", // Orange background (withdrawn)
+      };
+    case "OJT Completed":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-teal-500", // Teal background (OJT completed)
+      };
+    case "Immersion Completed":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-blue-500", // Blue background (immersion completed)
+      };
+    case "Expired":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-purple-500", // Purple background (expired)
+      };
+    case "Ready For Deployment":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-indigo-500", // Indigo background (ready for deployment)
+      };
+    default:
+      return {
+        textColor: "text-black", // Black text for default case
+        backgroundColor: "bg-gray-200", // Light gray background for unknown status
+      };
+  }
+};
+
+
+// Function to map document status to text color and background color
+export const getDocumentStatusColor = (status) => {
+
+
+  switch (status) {
+    case "Pending":
+      return {
+        textColor: "text-black", // Black text
+        backgroundColor: "bg-gray-300", // Light gray background
+      };
+    case "Submitted":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-blue-500", // Blue background
+      };
+    case "Under Review":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-yellow-500", // Yellow background
+      };
+    case "Approved":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-green-500", // Green background
+      };
+    case "Rejected":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-red-500", // Red background
+      };
+    case "Resubmitted":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-purple-500", // Purple background
+      };
+    default:
+      return {
+        textColor: "text-black", // Black text for default case
+        backgroundColor: "bg-gray-200", // Light gray background for unknown status
+      };
+  }
+};

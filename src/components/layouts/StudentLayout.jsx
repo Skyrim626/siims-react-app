@@ -1,27 +1,7 @@
 import React from "react";
 import Navbar from "../organisms/Navbar";
 import { NavLink, Outlet, useLoaderData, useLocation } from "react-router-dom";
-import {
-  Bell,
-  Box,
-  Calendar,
-  Handshake,
-  HelpCircle,
-  Home,
-  MessageCircle,
-  MessageSquareMore,
-  Search,
-  CircleUserRound,
-  Users,
-  School,
-  Briefcase,
-  FilePlus,
-  FileText,
-} from "lucide-react";
-import NavItem from "../atoms/NavItem";
-import profilePhoto from "../../assets/images/company/company-profile-photo.jpg";
-import Text from "../common/Text";
-import SidebarLayout from "./SidebarLayout";
+import { Home, CircleUserRound, FileText } from "lucide-react";
 
 // Layout for Student Pages
 export default function StudentLayout() {
@@ -52,45 +32,6 @@ export default function StudentLayout() {
       alert: true,
       exact: false,
     },
-    /*  {
-      icon: <FilePlus size={20} />,
-      text: "My Applications",
-      path: "/auth/my/my-applications",
-      active: true,
-      ariaLabel: "My Applications",
-      alert: true,
-      exact: false,
-      hidden: () => {
-        // Hides this briefcase if the student is now at status_id 9 or status_id 10
-        return auth["status_id"] === 10;
-      },
-    }, */
-    // {
-    //   icon: <Briefcase size={20} />,
-    //   text: "Jobs",
-    //   path: "/auth/my/jobs",
-    //   active: true,
-    //   ariaLabel: "Jobs",
-    //   alert: true,
-    //   exact: false,
-    //   hidden: () => {
-    //     // Hides this briefcase if the student is now at status_id 9 or status_id 10
-    //     return (
-    //       auth["status_id"] === 9 ||
-    //       auth["status_id"] === 12 ||
-    //       auth["status_id"] === 10
-    //     );
-    //   },
-    // },
-    // {
-    //   icon: <MessageSquareMore size={20} />,
-    //   text: "Message",
-    //   path: "/auth/my/message",
-    //   active: true,
-    //   ariaLabel: "Message",
-    //   alert: true,
-    //   exact: false,
-    // },
     {
       icon: <FileText size={20} />,
       text: "My Reports",
@@ -101,7 +42,7 @@ export default function StudentLayout() {
       exact: false,
       hidden: () => {
         // Shows the My Reports if the student is now at status_id 10
-        return auth["status_id"] !== 12;
+        return auth["student_status_id"] !== 12;
       },
     },
   ];

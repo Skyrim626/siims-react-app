@@ -23,6 +23,13 @@ import ManageSupervisorsPage from "../../pages/ManageSupervisorsPage";
 import ViewCompanyProfilePage from "../../pages/profiles/ViewCompanyProfilePage";
 import EditCompanyProfilePage from "../../pages/profiles/EditCompanyProfilePage";
 import EditProfilePage from "../../pages/profiles/EditProfilePage";
+import ManageOfficesPage from "../../pages/ManageOfficesPage";
+import ManageApplicantsPage from "../../pages/ManageApplicantsPage";
+import ViewProfilePage from "../../pages/profiles/ViewProfilePage";
+import ManageInternsPage from "../..//pages/company/CompanyManageInternsPage";
+import ManageApplicantPage from "../../pages/ManageApplicantPage";
+import ViewReportsPage from "../../pages/ViewReportsPage";
+import ViewWarPage from "../../pages/ViewWarPage";
 
 // Routes for Company
 const CompanyRoutes = {
@@ -75,6 +82,7 @@ const CompanyRoutes = {
           path: "edit",
           element: <EditProfilePage authorizeRole={"company"} />,
         },
+
         /*  {
           path: "edit",
           element: <EditCompanyProfilePage authorizeRole={"company"} />,
@@ -86,6 +94,7 @@ const CompanyRoutes = {
       path: "test/profile",
       element: <CompanyProfilePage />,
     },
+    // Interns
     {
       path: "interns",
       element: <Outlet />,
@@ -100,7 +109,7 @@ const CompanyRoutes = {
         },
       ],
     },
-
+    // Work Posts
     {
       path: "work-posts",
       element: <Outlet />,
@@ -198,41 +207,14 @@ const CompanyRoutes = {
         },
       ],
     },
+    // Offices
     {
       path: "offices",
       element: <Outlet />,
       children: [
         {
           index: true,
-          element: <CompanyManageOfficesPage />,
-          loader: async () => {
-            const response = await axiosClient.get("/api/v1/company/offices");
-
-            // console.log(response.data);
-
-            const initial_offices = response.data;
-
-            return initial_offices;
-          },
-        },
-        {
-          path: "add",
-          element: <CompanyAddOfficePage />,
-        },
-        {
-          path: "edit-office/:id",
-          element: <CompanyEditOfficePage />,
-          loader: async ({ params }) => {
-            const { id } = params;
-            const response = await axiosClient.get(
-              `/api/v1/company/offices/${id}`
-            );
-
-            const { initial_office, office_types } = response.data;
-            // console.log(initial_office);
-
-            return { initial_office, office_types };
-          },
+          element: <ManageOfficesPage authorizeRole={"company"} />,
         },
         {
           path: ":id",
@@ -261,21 +243,130 @@ const CompanyRoutes = {
           },
         },
         {
-          path: ":id/add-job",
-          element: <CompanyAddJobPage />,
+          path: "add",
+          element: <CompanyAddOfficePage />,
+        },
+        {
+          path: "edit-office/:id",
+          element: <CompanyEditOfficePage />,
+          loader: async ({ params }) => {
+            const { id } = params;
+            const response = await axiosClient.get(
+              `/api/v1/company/offices/${id}`
+            );
+
+            const { initial_office, office_types } = response.data;
+            // console.log(initial_office);
+
+            return { initial_office, office_types };
+          },
         },
       ],
     },
+    // Supervisors
     {
       path: "supervisors",
       element: <ManageSupervisorsPage authorizeRole={"company"} />,
     },
     {
+      path: "reports",
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: <ViewReportsPage authorizeRole={"company"} />,
+        },
+        {
+          path: ":id/daily-time-records",
+          element: <ViewDtrPage authorizeRole={"company"} />,
+        },
+        {
+          path: ":id/weekly-accomplishment-reports",
+          element: <ViewWarPage authorizeRole={"company"} />,
+        },
+      ],
+    },
+    // Test Supervisors
+    {
       path: "test/supervisors",
       element: <CompanyManageSupervisorsPage />,
     },
+    // Applicants
     {
       path: "applicants",
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: <ManageApplicantsPage authorizeRole={"company"} />,
+        },
+        // Applicant ID
+        {
+          path: ":application_id",
+          element: <Outlet />,
+          children: [
+            {
+              index: true,
+              element: <ManageApplicantPage authorizeRole={"company"} />,
+            },
+            {
+              path: "generate-acceptance",
+              element: <CompanyAcceptanceLetterPage />,
+            },
+          ],
+        },
+        //  Test Applicants ID
+        {
+          path: "test/:id",
+          element: <Outlet />,
+          children: [
+            {
+              index: true,
+              element: <CompanyManageApplicantPage />,
+              loader: async ({ params }) => {
+                try {
+                  /**
+                   * Params
+                   */
+                  const { id } = params;
+
+                  /**
+                   * Response
+                   */
+                  const response = await axiosClient.get(
+                    `/api/v1/company/applicants/${id}`
+                  );
+
+                  /**
+                   * Variables
+                   */
+                  const { application, statuses } = response.data;
+
+                  // console.log(application);
+                  // console.log(statuses);
+
+                  // console.log(applicant);
+
+                  return { application, statuses };
+                } catch (error) {
+                  console.log(error);
+                  return {
+                    application: [],
+                  };
+                }
+              },
+            },
+            {
+              path: "generate-acceptance",
+              element: <CompanyAcceptanceLetterPage />,
+            },
+          ],
+        },
+      ],
+    },
+    // Test Applicants
+    {
+      path: "test/applicants",
       element: <Outlet />,
       children: [
         {
@@ -363,6 +454,13 @@ const CompanyRoutes = {
           ],
         },
       ],
+    },
+    // Students View Profile
+    {
+      path: "profiles/:user_id",
+      element: (
+        <ViewProfilePage authorizeRole={"company"} viewingUser={"student"} />
+      ),
     },
   ],
 };

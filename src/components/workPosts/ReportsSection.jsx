@@ -1,7 +1,11 @@
 import { Button } from "@headlessui/react";
 import React from "react";
 
-const ReportsSection = ({ navigateToDtr, navigateToWeekly }) => {
+const ReportsSection = ({
+  navigateToDtr,
+  navigateToWeekly,
+  navigateToInsights,
+}) => {
   return (
     <div className="bg-white shadow-md rounded-lg p-6 mb-6">
       <h2 className="text-xl font-semibold mb-4">Reports</h2>
@@ -18,7 +22,10 @@ const ReportsSection = ({ navigateToDtr, navigateToWeekly }) => {
         >
           Manage Weekly Reports
         </Button>
-        <Button className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600">
+        <Button
+          onClick={navigateToInsights}
+          className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600"
+        >
           Personal Insights
         </Button>
       </div>

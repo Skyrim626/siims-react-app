@@ -16,6 +16,10 @@ import ViewActiveStudentsPage from "../../pages/ViewActiveStudentsPage";
 import ViewDtrPage from "../../pages/ViewDtrPage";
 import ViewWarPage from "../../pages/ViewWarPage";
 import ManagePerformanceEvaluationPage from "../../pages/ManagePerformanceEvaluationPage";
+import SelfProfile from "../../pages/profiles/SelfProfile";
+import EditProfilePage from "../../pages/profiles/EditProfilePage";
+import ViewReportsPage from "../../pages/ViewReportsPage";
+import ViewProfilePage from "../../pages/profiles/ViewProfilePage";
 
 // Routes for Supervisor
 const SupervisorRoutes = {
@@ -53,6 +57,20 @@ const SupervisorRoutes = {
       element: <Navigate to={"/supervisor"} />,
     },
     {
+      path: "profile",
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: <SelfProfile authorizeRole={"supervisor"} />,
+        },
+        {
+          path: "edit",
+          element: <EditProfilePage authorizeRole={"supervisor"} />,
+        },
+      ],
+    },
+    {
       path: "performance-evaluation",
       element: <SupervisorEvaluationPage />,
       loader: async () => {
@@ -80,6 +98,30 @@ const SupervisorRoutes = {
           console.log(error);
         }
       },
+    },
+    {
+      path: "reports",
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: <ViewReportsPage authorizeRole={"supervisor"} />,
+        },
+        {
+          path: ":id/daily-time-records",
+          element: <ViewDtrPage authorizeRole={"supervisor"} />,
+        },
+        {
+          path: ":id/weekly-accomplishment-reports",
+          element: <ViewWarPage authorizeRole={"supervisor"} />,
+        },
+        {
+          path: ":id/performance-evaluation",
+          element: (
+            <ManagePerformanceEvaluationPage authorizeRole={"supervisor"} />
+          ),
+        },
+      ],
     },
     {
       path: "trainees",
@@ -266,6 +308,14 @@ const SupervisorRoutes = {
           },
         },
       ],
+    },
+
+    // Students View Profile
+    {
+      path: "profiles/:user_id",
+      element: (
+        <ViewProfilePage authorizeRole={"supervisor"} viewingUser={"student"} />
+      ),
     },
 
     {

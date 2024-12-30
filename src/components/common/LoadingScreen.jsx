@@ -1,6 +1,9 @@
 import React from "react";
 import { CircleLoader } from "react-spinners";
 
+/**
+ * Loading Screen.
+ */
 export default function LoadingScreen() {
   return (
     <>

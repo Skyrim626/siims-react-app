@@ -88,6 +88,9 @@ export const AuthProvider = ({ children }) => {
         window.location.href = "/login";
       })
       .catch((error) => {
+        console.error("Logout failed:", error);
+
+        // Optionally handle errors, e.g., display a toast notification
         throw error;
       });
   };

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { getRequest } from "../api/apiHelpers";
-import { replace, useNavigate } from "react-router-dom";
+import { getRequest, postFormDataRequest } from "../api/apiHelpers";
+import { replace, useNavigate, useParams } from "react-router-dom";
 import Loader from "../components/common/Loader";
 import DynamicDataGrid from "../components/tables/DynamicDataGrid";
 import { Button } from "@headlessui/react";
@@ -14,8 +14,21 @@ import { getTimeRecordStatusColor } from "../utils/statusColor";
 import DeleteConfirmModal from "../components/modals/DeleteConfirmModal";
 import GenerateDailyTimeRecord from "../components/letters/GenerateDailyTimeRecord";
 import { pdf, PDFDownloadLink } from "@react-pdf/renderer";
+import {
+  getTimeRecordActionColumns,
+  getTimeRecordStaticColumns,
+} from "../utils/columns/timeRecordColumns";
+import UploadFile from "../components/common/UploadFile.";
 
 const ManageDtrPage = ({ authorizeRole }) => {
+  // Params
+  const { application_id } = useParams();
+  // console.log(application_id);
+
+  // Resources
+  const timeRecordResource = `/reports/${application_id}/daily-time-records?requestedBy=${authorizeRole}`;
+  const applicationResource = `/api/v1/applications/${application_id}`;
+
   // Navigation
   const navigate = useNavigate();
 
@@ -29,9 +42,10 @@ const ManageDtrPage = ({ authorizeRole }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isEditOpen, setEditIsOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-
   // Select State
   const [selectedDailyTimeRecord, setSelectedDailyTimeRecord] = useState({});
+  // Container State
+  const [application, setApplication] = useState({});
 
   // Use the useForm hook to manage form data
   const { formData, handleInputChange, resetForm, setFormValues } = useForm({
@@ -43,6 +57,10 @@ const ManageDtrPage = ({ authorizeRole }) => {
 
   // File Name
   const [fileName, setFileName] = useState("daily-time-record.pdf");
+  // Modal State
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  // Select State
+  const [selectedFile, setSelectedFile] = useState(null);
 
   /**
    * Use Request
@@ -57,6 +75,31 @@ const ManageDtrPage = ({ authorizeRole }) => {
     setIsOpen: setIsOpen,
     setLoading: setLoading,
   });
+
+  // Fetch application
+  const fetchApplication = async () => {
+    // Set Loading
+    setLoading(true);
+
+    try {
+      const response = await getRequest({
+        url: applicationResource,
+      });
+
+      if (response) {
+        // console.log(response);
+        setApplication(response);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchApplication();
+  }, []);
 
   /**
    * Function that calls the Time Record Letter
@@ -137,6 +180,56 @@ const ManageDtrPage = ({ authorizeRole }) => {
     setEditIsOpen(true);
   };
 
+  // Handle Open Modal
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setSelectedFile(null); // Clear selected file when closing modal
+    setIsModalOpen(false);
+  };
+
+  // Handle file selection
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
+
+  // Handle file upload
+  const handleSubmitFile = async () => {
+    if (!selectedFile) {
+      showFailedAlert("Please select a file to upload.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("daily_time_record", selectedFile);
+
+      // Example API endpoint
+      const response = await postFormDataRequest({
+        url: `/api/v1/reports/${application_id}/daily-time-record/submit`,
+        data: formData,
+      });
+
+      if (response) {
+        // alert("File uploaded successfully!"); // Replace with your preferred notification
+        closeModal();
+      }
+    } catch (error) {
+      console.error("File upload failed:", error);
+    } finally {
+      setLoading(false);
+      navigate(-1, {
+        replace: true,
+      });
+    }
+  };
+
   /**
    * Function that deletes a daily time record
    */
@@ -160,125 +253,17 @@ const ManageDtrPage = ({ authorizeRole }) => {
     setIsDeleteOpen(true);
   };
 
-  /**
-   * Use Effect
-   */
-  useEffect(() => {
-    // ! Call this method to check Student Status ID (Allowed: Student)
-    const fetchStudentStatusId = async () => {
-      // Set Loading State
-      setLoading(true);
-
-      try {
-        const studentStatusIdResponse = await getRequest({
-          url: "/api/v1/users/students/get-student-status-id",
-        });
-
-        /**
-         * * Check if the student status ID is applicable to access this page
-         * * Returns the student back to the home page if the student status id did not meet the condition.
-         */
-        if (![4, 12].includes(studentStatusIdResponse)) {
-          navigate("/auth/my", {
-            replace: true,
-          });
-        }
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    // ! Call fetchStudentStatusId (Allowed: Student)
-    fetchStudentStatusId();
-  }, []);
-
   // Static Columns
-  const staticColumns = useMemo(() => {
-    const columns = [
-      {
-        field: "id",
-        headerName: "ID",
-        width: 90,
-        headerClassName: "super-app-theme--header",
-      },
-      {
-        field: "date",
-        headerName: "Date",
-        width: 150,
-        headerClassName: "super-app-theme--header",
-      },
-      {
-        field: "time_in",
-        headerName: "Time In",
-        width: 150,
-        headerClassName: "super-app-theme--header",
-      },
-      {
-        field: "time_out",
-        headerName: "Time Out",
-        width: 150,
-        headerClassName: "super-app-theme--header",
-      },
-      {
-        field: "hours_received",
-        headerName: "Hours Received",
-        width: 150,
-        headerClassName: "super-app-theme--header",
-      },
-      {
-        field: "status_name",
-        headerName: "Status",
-        width: 150,
-        headerClassName: "super-app-theme--header",
-        renderCell: (params) => {
-          const { textColor, backgroundColor } = getTimeRecordStatusColor(
-            params.value
-          );
-
-          return (
-            <div
-              className={`${textColor} ${backgroundColor} flex items-center justify-center rounded-full`}
-            >
-              {params.value}
-            </div>
-          );
-        },
-      },
-    ];
-
-    return columns;
-  }, [authorizeRole]);
+  const staticColumns = useMemo(() => getTimeRecordStaticColumns(), []);
 
   // Action Column
   const actionColumn = useMemo(
-    () => ({
-      field: "actions",
-      headerName: "Actions",
-      width: 200,
-      headerClassName: "super-app-theme--header",
-      renderCell: (params) => (
-        <div className="flex space-x-2 items-center justify-center">
-          <Button
-            className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded"
-            onClick={() => handleEditModal(params.row)}
-          >
-            Edit
-          </Button>
-
-          <Button
-            className="bg-red-500 hover:bg-red-600 text-white py-1 px-4 rounded"
-            onClick={() => handleDeleteModal(params.row)}
-          >
-            Delete
-          </Button>
-        </div>
-      ),
-      sortable: false, // Prevent sorting for the actions column
-      filterable: false, // Prevent filtering for the actions column
-    }),
-    [authorizeRole]
+    () =>
+      getTimeRecordActionColumns({
+        handleEditModal,
+        handleDeleteModal,
+      }),
+    []
   );
 
   const columns = useMemo(
@@ -324,6 +309,16 @@ const ManageDtrPage = ({ authorizeRole }) => {
                 )
               }
             </PDFDownloadLink>
+
+            {application.application_status_id === 6 && (
+              <Button
+                type="button"
+                onClick={handleOpenModal}
+                className="text-sm flex items-center justify-center gap-2 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded"
+              >
+                Submit DTR
+              </Button>
+            )}
           </div>
 
           <Button
@@ -341,7 +336,8 @@ const ManageDtrPage = ({ authorizeRole }) => {
           rows={rows}
           setRows={setRows}
           columns={columns}
-          url={"/daily-time-records/latest"}
+          // url={"/daily-time-records/latest"}
+          url={timeRecordResource}
         />
 
         {/* Modals */}
@@ -384,6 +380,21 @@ const ManageDtrPage = ({ authorizeRole }) => {
           handleDelete={deleteDailyTimeRecord}
         />
       </div>
+
+      {/* Modal for File Upload */}
+      <FormModal
+        isOpen={isModalOpen}
+        setIsOpen={setIsModalOpen}
+        modalTitle="Upload Daily Time Record Report"
+        onSubmit={handleSubmitFile}
+      >
+        <UploadFile
+          title="Upload Daily Time Record Report"
+          file={selectedFile}
+          set={setSelectedFile}
+          handleFileChange={handleFileChange}
+        />
+      </FormModal>
     </div>
   );
 };
