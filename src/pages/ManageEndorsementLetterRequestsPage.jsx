@@ -30,6 +30,10 @@ const tabLinks = [
     name: "Approved",
     url: "/endorsement-letter-requests/approved",
   },
+  {
+    name: "Withdrawn",
+    url: "/endorsement-letter-requests/withdrawn",
+  },
 ];
 
 const ManageEndorsementLetterRequestsPage = ({ authorizeRole }) => {

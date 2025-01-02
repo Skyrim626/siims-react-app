@@ -73,7 +73,7 @@ const EndorsementRequestForm = ({
           htmlFor="studentIds"
           className="block text-gray-800 font-medium mb-2"
         >
-          Student IDs (Comma separated)
+          Other Student IDs (Comma separated)
         </label>
         <Input
           id="studentIds"

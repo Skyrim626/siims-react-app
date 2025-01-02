@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { getRequest } from "../../api/apiHelpers";
+import { getRequest, putRequest } from "../../api/apiHelpers";
 import { Button } from "@headlessui/react";
 import { getProfileImage } from "../../utils/imageHelpers";
 import { useLocation, useNavigate } from "react-router-dom";
+import DeleteConfirmModal from "../modals/DeleteConfirmModal";
 
 const CurrentApplication = () => {
   // Open location and navigation
@@ -11,6 +12,7 @@ const CurrentApplication = () => {
 
   const [loading, setLoading] = useState(true);
   const [application, setApplication] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
 
   // Fetch the latest application
   const fetchLatestApplication = async () => {
@@ -34,9 +36,26 @@ const CurrentApplication = () => {
     fetchLatestApplication();
   }, []);
 
-  const handleWithdrawClick = () => {
-    console.log("Withdraw button clicked");
+  const handleWithdrawClick = async () => {
+    // onsole.log("Withdraw button clicked");
     // Add withdrawal logic here
+
+    // Set Loading State
+    setLoading(true);
+
+    try {
+      const response = await putRequest({
+        url: `/api/v1/applications/${application.id}/withdraw`,
+      });
+
+      if (response) {
+        // window.location.reload();
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Navigate to Application Page
@@ -122,7 +141,7 @@ const CurrentApplication = () => {
             View Applications
           </Button>
           <Button
-            onClick={handleWithdrawClick}
+            onClick={() => setIsModalOpen(true)}
             className={`${
               application.application_status_id !== 1
                 ? "bg-gray-600 cursor-not-allowed"
@@ -134,6 +153,14 @@ const CurrentApplication = () => {
           </Button>
         </div>
       </div>
+
+      <DeleteConfirmModal
+        open={isModalOpen}
+        setOpen={setIsModalOpen}
+        title="Withdraw Application"
+        message=" Are you sure you want to withdraw from this application?"
+        handleDelete={handleWithdrawClick}
+      />
     </div>
   );
 };

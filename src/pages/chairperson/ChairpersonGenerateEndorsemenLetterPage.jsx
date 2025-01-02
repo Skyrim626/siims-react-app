@@ -537,12 +537,12 @@ const ChairpersonGenerateEndorsemenLetterPage = () => {
             }
           </PDFDownloadLink>
 
-          {/* <Button
+          <Button
             onClick={() => setIsOpenSignatureModal(!isOpenSignatureModal)}
             className="px-6 py-2 bg-green-600 text-white font-semibold rounded-md shadow hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
           >
             Add Signature
-          </Button> */}
+          </Button>
 
           <Button
             onClick={viewPdf}
@@ -560,13 +560,13 @@ const ChairpersonGenerateEndorsemenLetterPage = () => {
             {errors["pdf_file"] && <Text>The pdf file is required</Text>}
           </div>
 
-          {/* {isOpenSignatureModal && (
+          {isOpenSignatureModal && (
             <SignatureCapture
               setSignatureImage={setSignatureImage}
               isOpen={isOpenSignatureModal}
               setIsOpenSignatureModal={setIsOpenSignatureModal}
             />
-          )} */}
+          )}
         </div>
       </div>
     </>

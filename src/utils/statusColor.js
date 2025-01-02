@@ -98,6 +98,11 @@ export const getEndorsementStatusColor = (status) => {
         textColor: "text-white", // White text
         backgroundColor: "bg-green-500", // Green background (approved by Dean)
       };
+      case "Withdrawn":
+        return {
+          textColor: "text-white", // White text
+          backgroundColor: "bg-gray-500", // Gray background (indicates withdrawal)
+        };
     case "Rejected":
       return {
         textColor: "text-white", // White text

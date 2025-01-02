@@ -143,7 +143,6 @@ const ManageApplicantPage = ({ authorizeRole }) => {
             Personal details and application.
           </p>
         </div>
-
         <div className="mt-6 border-t border-gray-400">
           <dl className="divide-y divide-gray-400">
             <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -170,48 +169,53 @@ const ManageApplicantPage = ({ authorizeRole }) => {
             </div>
           </dl>
         </div>
-
         {applicant.documents && applicant.documents.length > 0 && (
           <DocumentTable
             applicationID={application_id}
             authorizeRole={authorizeRole}
           />
         )}
-
         {/* Action Section */}
-        {
-          // Allow actions if the application status is 1 (Pending)
+        {/* Check if the application status is not 5 (Withdrawn) */}
+        {applicant.status_id !== 5 &&
+          /* Allow actions if the application status is 1 (Pending) */
+          // ! FOR COMPANY ONLY
           applicant.status_id === 1 && (
             <div className="flex justify-center mt-8 space-x-4">
               {/* Upload Button */}
-              <Button
-                onClick={handleOpenModal}
-                className="bg-blue-500 text-white py-2 px-6 rounded border border-blue-600 text-lg font-semibold hover:bg-blue-600 hover:border-blue-700 transition-all"
-              >
-                Upload Document
-              </Button>
+              {!(authorizeRole === "osa") && (
+                <Button
+                  onClick={handleOpenModal}
+                  className="bg-blue-500 text-white py-2 px-6 rounded border border-blue-600 text-lg font-semibold hover:bg-blue-600 hover:border-blue-700 transition-all"
+                >
+                  Upload Document
+                </Button>
+              )}
 
               {/* Generate Acceptance Letter Button */}
-              <Link
-                to={`${location.pathname}/generate-acceptance`}
-                state={{
-                  application: applicant,
-                }}
-                className="bg-blue-500 text-white py-2 px-6 rounded border border-blue-600 text-lg font-semibold hover:bg-blue-600 hover:border-blue-700 transition-all"
-              >
-                Generate Acceptance Letter
-              </Link>
+              {!(authorizeRole === "osa") && (
+                <Link
+                  to={`${location.pathname}/generate-acceptance`}
+                  state={{
+                    application: applicant,
+                  }}
+                  className="bg-blue-500 text-white py-2 px-6 rounded border border-blue-600 text-lg font-semibold hover:bg-blue-600 hover:border-blue-700 transition-all"
+                >
+                  Generate Acceptance Letter
+                </Link>
+              )}
 
               {/* Approve Button */}
-              <Button
-                onClick={() => handleApprove(applicant.id)}
-                className={`bg-blue-500 text-white border border-blue-600 hover:bg-blue-600 hover:border-blue-700 py-2 px-6 rounded text-lg font-semibold transition-all`}
-              >
-                Approve
-              </Button>
+              {!(authorizeRole === "osa") && (
+                <Button
+                  onClick={() => handleApprove(applicant.id)}
+                  className={`bg-blue-500 text-white border border-blue-600 hover:bg-blue-600 hover:border-blue-700 py-2 px-6 rounded text-lg font-semibold transition-all`}
+                >
+                  Approve
+                </Button>
+              )}
             </div>
-          )
-        }
+          )}
       </div>
 
       {/* Modal for File Upload */}
