@@ -5,8 +5,10 @@ import AddressInfoFields from "./fields/AddressInfoFields";
 import Heading from "../common/Heading";
 import FormField from "../common/FormField";
 import { Input, Select } from "@headlessui/react";
+import Text from "../common/Text";
 
 const StudentForm = ({
+  authorizeRole,
   method = "post",
   studentInfo = {
     id: "",
@@ -144,35 +146,37 @@ const StudentForm = ({
             {/* Program and Coordinator Assign */}
             <div className="grid grid-cols-2 gap-2 mt-4">
               {/* Student Program Assign */}
-              <div>
-                <FormField
-                  label={"Program Assign"}
-                  name={"programID"}
-                  labelClassName="text-sm text-black font-semibold"
-                  required={requiredFields["programID"]}
-                >
-                  <Select
-                    name="programID"
-                    className="border data-[hover]:shadow data-[focus]:bg-blue-100 h-full outline-none p-2"
-                    aria-label="Select program"
-                    onChange={handleStudentInfoChange}
-                    value={studentInfo.programID}
+              {!(authorizeRole === "chairperson") && (
+                <div>
+                  <FormField
+                    label={"Program Assign"}
+                    name={"programID"}
+                    labelClassName="text-sm text-black font-semibold"
                     required={requiredFields["programID"]}
                   >
-                    <option value="">-Select a Program-</option>
-                    {programs.map((program) => {
-                      return (
-                        <option key={program.id} value={program.id}>
-                          {program.name}
-                        </option>
-                      );
-                    })}
-                  </Select>
-                </FormField>
-                {errors.program_id && (
-                  <Text className="text-red-500">{errors.program_id[0]}</Text>
-                )}
-              </div>
+                    <Select
+                      name="programID"
+                      className="border data-[hover]:shadow data-[focus]:bg-blue-100 h-full outline-none p-2"
+                      aria-label="Select program"
+                      onChange={handleStudentInfoChange}
+                      value={studentInfo.programID}
+                      required={requiredFields["programID"]}
+                    >
+                      <option value="">-Select a Program-</option>
+                      {programs.map((program) => {
+                        return (
+                          <option key={program.id} value={program.id}>
+                            {program.name}
+                          </option>
+                        );
+                      })}
+                    </Select>
+                  </FormField>
+                  {errors.program_id && (
+                    <Text className="text-red-500">{errors.program_id[0]}</Text>
+                  )}
+                </div>
+              )}
 
               {/* Student Coordinator Assign */}
               <div>

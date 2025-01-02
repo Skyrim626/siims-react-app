@@ -101,7 +101,6 @@ const ManageStudentsPage = ({ authorizeRole }) => {
   // Select State
   const [activeTab, setActiveTab] = useState(tabLinks[0]);
   const [selectedStudent, setSelectedStudent] = useState({});
-  const [selectedProgramId, setSelectedProgramId] = useState(null);
   const [selectedRows, setSelectedRows] = useState([]); // State for selected rows
 
   // Use the useForm hook to manage form data
@@ -197,8 +196,14 @@ const ManageStudentsPage = ({ authorizeRole }) => {
           url: "/api/v1/users/chairpersons/current-program-id",
         });
 
+        // console.log("Current Progrma: ", currentProgramResponse);
+
         if (currentProgramResponse) {
-          setSelectedProgramId(currentProgramResponse);
+          setProgramID(currentProgramResponse);
+          setFormValues({
+            ...formData, // Ensure this has all fields
+            programID: currentProgramResponse, // Update programID only
+          });
         }
       } catch (error) {
         console.log(error);
@@ -331,6 +336,8 @@ const ManageStudentsPage = ({ authorizeRole }) => {
 
   // Function to add new student
   const addStudent = () => {
+    console.log("Form Data: ", formData);
+
     // POST METHOD
     postData({
       url: "/users/students",
@@ -487,12 +494,15 @@ const ManageStudentsPage = ({ authorizeRole }) => {
     try {
       // Set Loading
       setLoading(true);
+      console.log(`/api/v1/users/students/${programID}/upload-students`);
 
       // Assuming your backend has an endpoint for file upload
       const response = await postFormDataRequest({
         url: `/api/v1/users/students/${programID}/upload-students`,
         data: formData,
       });
+
+      // selectedProgramId
 
       setIsOpenImport(false);
       setStatus("success");
@@ -636,6 +646,7 @@ const ManageStudentsPage = ({ authorizeRole }) => {
                     programs={listOfPrograms}
                     coordinators={listOfCoordinators}
                     errors={validationErrors}
+                    authorizeRole={authorizeRole}
                   />
                 </FormModal>
                 {/* Modals */}
