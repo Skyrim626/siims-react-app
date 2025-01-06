@@ -16,6 +16,7 @@ import ContentLoader from "../../components/atoms/ContentLoader";
 import { getRequest, postRequest } from "../../api/apiHelpers";
 import useForm from "../../hooks/useForm";
 import useHandleSubmit from "../../hooks/useHandleSubmit";
+import Loader from "../../components/common/Loader";
 
 const CompanyAddWorkPostPage = () => {
   // Fetch offices and work_types
@@ -25,6 +26,9 @@ const CompanyAddWorkPostPage = () => {
   const location = useLocation();
   const strippedPath = stripLocation(location.pathname, "/add");
   const navigate = useNavigate();
+
+  // Loading State
+  const [loading, setLoading] = useState(false);
 
   // Input State
   const [officeId, setOfficeId] = useState(null);
@@ -54,6 +58,9 @@ const CompanyAddWorkPostPage = () => {
   const addWorkPost = async (e) => {
     e.preventDefault(); // Prevent page refresh
 
+    // Set Loading State
+    setLoading(true);
+
     try {
       const payload = {
         office_id: officeId,
@@ -71,14 +78,15 @@ const CompanyAddWorkPostPage = () => {
       // console.log(payload);
 
       // Make POST Request
-      /* const response = await postRequest({
+      const response = await postRequest({
         url: "/api/v1/company/work-posts",
         data: payload,
-      }); */
+      });
 
       // Redirect after success
       if (response) {
-        navigate(strippedPath); // Redirect to strippedPath
+        setLoading(false);
+        navigate(-1); // Redirect to strippedPath
       }
     } catch (error) {
       // Handle and set errors
@@ -91,12 +99,16 @@ const CompanyAddWorkPostPage = () => {
           general: "An unexpected error occurred. Please try again.",
         });
       }
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <>
       <Page>
+        <Loader loading={loading} />
+
         <Section>
           <Link
             to={strippedPath}

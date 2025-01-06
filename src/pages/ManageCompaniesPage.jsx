@@ -133,7 +133,7 @@ const ManageCompaniesPage = ({ authorizeRole }) => {
       middleName: row.middle_name,
       lastName: row.last_name,
       email: row.email,
-      gender: row.gender.toLowerCase(),
+      gender: row.gender ? row.gender.toLowerCase() : row.gender,
       phoneNumber: row.phone_number,
       street: row.street,
       barangay: row.barangay,

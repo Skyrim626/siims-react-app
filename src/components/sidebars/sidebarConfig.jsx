@@ -39,7 +39,7 @@ const adminSidebarItemsConfig = [
     exact: true,
     path: "/auth/admin/document-types",
   },
-  {
+  /* {
     icon: <ClipboardList />,
     text: "Roles",
     alert: true,
@@ -52,7 +52,7 @@ const adminSidebarItemsConfig = [
         path: "/auth/admin//user-roles",
       },
     ],
-  },
+  }, */
 
   {
     icon: <Building size={20} />,

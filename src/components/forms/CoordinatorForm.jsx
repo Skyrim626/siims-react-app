@@ -9,6 +9,7 @@ import PersonalInfoFields from "./fields/PersonalInfoFields";
 import AddressInfoFields from "./fields/AddressInfoFields";
 
 const CoordinatorForm = ({
+  authorizeRole,
   method = "post",
   coordinatorInfo = {
     id: "",
@@ -72,48 +73,50 @@ const CoordinatorForm = ({
           errors={errors}
         />
 
-        <div>
-          <Heading
-            level={5}
-            color="black"
-            text={"Coordinator Information"}
-            className="border-l-2 rounded-lg border-blue-700 px-3 font-bold text-md"
-          />
-          <div className="flex flex-col">
-            <div className="grid grid-cols-3 gap-2 mt-4">
-              {/* Coordinator Program Assign */}
-              <div>
-                <FormField
-                  label={"Program Assign"}
-                  name={"programId"}
-                  labelClassName="text-sm text-black font-semibold"
-                  required={requiredFields["program_id"]}
-                >
-                  <Select
-                    name="programId"
-                    className="border data-[hover]:shadow data-[focus]:bg-blue-100 h-full outline-none p-2"
-                    aria-label="Select program"
-                    onChange={handleCoordinatorInfoChange}
-                    value={coordinatorInfo.programId}
+        {!(authorizeRole === "chairperson") && (
+          <div>
+            <Heading
+              level={5}
+              color="black"
+              text={"Coordinator Information"}
+              className="border-l-2 rounded-lg border-blue-700 px-3 font-bold text-md"
+            />
+            <div className="flex flex-col">
+              <div className="grid grid-cols-3 gap-2 mt-4">
+                {/* Coordinator Program Assign */}
+                <div>
+                  <FormField
+                    label={"Program Assign"}
+                    name={"programId"}
+                    labelClassName="text-sm text-black font-semibold"
                     required={requiredFields["program_id"]}
                   >
-                    <option value="">-Select a Program-</option>
-                    {programs.map((program) => {
-                      return (
-                        <option key={program.id} value={program.id}>
-                          {program.name}
-                        </option>
-                      );
-                    })}
-                  </Select>
-                </FormField>
-                {errors.program_id && (
-                  <Text className="text-red-500">{errors.program_id[0]}</Text>
-                )}
+                    <Select
+                      name="programId"
+                      className="border data-[hover]:shadow data-[focus]:bg-blue-100 h-full outline-none p-2"
+                      aria-label="Select program"
+                      onChange={handleCoordinatorInfoChange}
+                      value={coordinatorInfo.programId}
+                      required={requiredFields["program_id"]}
+                    >
+                      <option value="">-Select a Program-</option>
+                      {programs.map((program) => {
+                        return (
+                          <option key={program.id} value={program.id}>
+                            {program.name}
+                          </option>
+                        );
+                      })}
+                    </Select>
+                  </FormField>
+                  {errors.program_id && (
+                    <Text className="text-red-500">{errors.program_id[0]}</Text>
+                  )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </form>
 
       {/*  <div>

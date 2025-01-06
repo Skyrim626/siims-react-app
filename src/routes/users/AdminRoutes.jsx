@@ -167,10 +167,10 @@ const AdminRoutes = {
         },
       ],
     },
-    {
+    /* {
       path: "roles", // Route for managing user roles
       element: <ViewRolesPage />,
-    },
+    }, */
     {
       path: "colleges", // Route for managing colleges
       element: <ViewCollegesPage />,

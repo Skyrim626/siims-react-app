@@ -14,6 +14,7 @@ import WorkPostForm from "../../components/forms/WorkPostForm";
 import { stripLocation } from "../../utils/strip";
 import ContentLoader from "../../components/atoms/ContentLoader";
 import { getRequest, postRequest, putRequest } from "../../api/apiHelpers";
+import { Button } from "@headlessui/react";
 
 const CompanyEditWorkPostPage = () => {
   // Fetch offices and work_types
@@ -21,7 +22,7 @@ const CompanyEditWorkPostPage = () => {
 
   // console.log(work_post);
 
-  // Open Location
+  // Open Location and navigate
   const location = useLocation();
   const strippedPath = stripLocation(location.pathname, "/edit/2");
   const navigate = useNavigate();
@@ -85,13 +86,13 @@ const CompanyEditWorkPostPage = () => {
     <>
       <Page>
         <Section>
-          <Link
-            to={strippedPath}
+          <Button
+            onClick={() => navigate(-1)}
             className="flex items-center text-sm font-bold text-blue-500 hover:underline"
           >
             <ChevronLeft size={20} />
             Go Back
-          </Link>
+          </Button>
         </Section>
 
         <Section>

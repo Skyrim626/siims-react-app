@@ -578,31 +578,33 @@ export const getCoordinatorActionColumns = ({
   handleEditModal,
   handleDeleteModal,
 }) => {
-  return {
-    field: "actions",
-    headerName: "Actions",
-    width: 200,
-    headerClassName: "super-app-theme--header",
-    renderCell: (params) => (
-      <div className="flex space-x-2 items-center justify-center">
-        <Button
-          className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded"
-          onClick={() => handleEditModal(params.row)}
-        >
-          Edit
-        </Button>
+  return authorizeRole === "admin"
+    ? {
+        field: "actions",
+        headerName: "Actions",
+        width: 200,
+        headerClassName: "super-app-theme--header",
+        renderCell: (params) => (
+          <div className="flex space-x-2 items-center justify-center">
+            <Button
+              className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded"
+              onClick={() => handleEditModal(params.row)}
+            >
+              Edit
+            </Button>
 
-        <Button
-          className="bg-red-500 hover:bg-red-600 text-white py-1 px-4 rounded"
-          onClick={() => handleDeleteModal(params.row)}
-        >
-          Delete
-        </Button>
-      </div>
-    ),
-    sortable: false, // Prevent sorting for the actions column
-    filterable: false, // Prevent filtering for the actions column
-  };
+            <Button
+              className="bg-red-500 hover:bg-red-600 text-white py-1 px-4 rounded"
+              onClick={() => handleDeleteModal(params.row)}
+            >
+              Delete
+            </Button>
+          </div>
+        ),
+        sortable: false, // Prevent sorting for the actions column
+        filterable: false, // Prevent filtering for the actions column
+      }
+    : {};
 };
 
 // Company Static Columns

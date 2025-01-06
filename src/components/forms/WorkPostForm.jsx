@@ -246,7 +246,7 @@ const WorkPostForm = ({
           </Field>
 
           {/* Skills Required */}
-          {displayFields.skills && (
+          {displayFields.skills && displayFields.closed && (
             <Field className="mb-4">
               <Label
                 htmlFor="skills"
@@ -263,7 +263,7 @@ const WorkPostForm = ({
                 onChange={handleSkillChange}
               >
                 <option value="">-Select Skills-</option>
-                {/* Example skills options */}
+
                 <option value="JavaScript">JavaScript</option>
                 <option value="Python">Python</option>
                 <option value="React">React</option>

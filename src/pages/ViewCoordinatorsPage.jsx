@@ -202,9 +202,9 @@ const ViewCoordinatorsPage = ({ authorizeRole }) => {
   const actionColumn = useMemo(
     () =>
       getCoordinatorActionColumns({
-        authorizeRole: authorizeRole,
         handleEditModal: handleEditModal,
         handleDeleteModal: handleDeleteModal,
+        authorizeRole: authorizeRole,
       }),
     []
   );
@@ -250,8 +250,18 @@ const ViewCoordinatorsPage = ({ authorizeRole }) => {
           url: "/api/v1/users/chairpersons/current-program-id",
         });
 
+        /* console.log({
+          ...formData,
+          programId: currentProgramResponse,
+        }); */
+
         if (currentProgramResponse) {
           setSelectedProgramId(currentProgramResponse);
+
+          setFormValues({
+            ...formData,
+            programId: currentProgramResponse,
+          });
         }
       } catch (error) {
         console.log(error);
@@ -451,6 +461,7 @@ const ViewCoordinatorsPage = ({ authorizeRole }) => {
               handleCoordinatorInfoChange={handleInputChange}
               programs={listOfPrograms}
               errors={validationErrors}
+              authorizeRole={authorizeRole}
             />
           </FormModal>
 

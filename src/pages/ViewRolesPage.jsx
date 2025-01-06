@@ -17,6 +17,9 @@ const ViewRolesPage = () => {
   // Row State
   const [rows, setRows] = useState([]);
 
+  // Loading State
+  const [loading, setLoading] = useState(false);
+
   // Modal State
   const [isOpen, setIsOpen] = useState(false);
 
@@ -28,13 +31,10 @@ const ViewRolesPage = () => {
   /**
    * Use Request
    */
-  const {
-    errors: validationErrors,
-    postData,
-    loading,
-  } = useRequest({
+  const { errors: validationErrors, postData } = useRequest({
     setData: setRows,
     setIsOpen: setIsOpen,
+    setLoading: setLoading,
   });
 
   /**

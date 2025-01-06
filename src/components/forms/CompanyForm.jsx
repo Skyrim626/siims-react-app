@@ -32,7 +32,7 @@ const CompanyForm = ({
   requiredFields = {
     id: true,
     password: true,
-    firstName: true,
+    first_name: true,
     middleName: false,
     lastName: false,
     phoneNumber: true,

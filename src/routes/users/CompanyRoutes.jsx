@@ -30,6 +30,7 @@ import ManageInternsPage from "../..//pages/company/CompanyManageInternsPage";
 import ManageApplicantPage from "../../pages/ManageApplicantPage";
 import ViewReportsPage from "../../pages/ViewReportsPage";
 import ViewWarPage from "../../pages/ViewWarPage";
+import ManageWorkPostsPage from "../../pages/ManageWorkPostsPage";
 
 // Routes for Company
 const CompanyRoutes = {
@@ -109,9 +110,87 @@ const CompanyRoutes = {
         },
       ],
     },
-    // Work Posts
     {
       path: "work-posts",
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: <ManageWorkPostsPage authorizeRole={"company"} />,
+        },
+        {
+          path: "edit/:id",
+          element: <CompanyEditWorkPostPage />,
+          loader: async ({ params }) => {
+            try {
+              const { id } = params;
+
+              // console.log(id);
+              // Get work post and work types response
+              const workPostResponse = await axiosClient(
+                `/api/v1/company/work-posts/${id}`
+              );
+              const workTypesResponse = await axiosClient("/api/v1/work-types");
+
+              const work_post = workPostResponse.data;
+              const work_types = workTypesResponse.data;
+
+              // console.log(work_post);
+              // console.log(work_types);
+
+              return { work_post, work_types };
+            } catch (error) {
+              console.error(
+                "Error fetching programs and chairpersons: ",
+                error
+              );
+              throw error; // Let the router handle errors
+            }
+          },
+        },
+        {
+          path: "add",
+          element: <CompanyAddWorkPostPage />,
+          loader: async () => {
+            try {
+              /**
+               * Responses
+               */
+              // Get work_types and offices
+              const officesResponse = await axiosClient.get(
+                "/api/v1/company/offices"
+              );
+              const workTypesResponse = await axiosClient.get(
+                "/api/v1/work-types"
+              );
+
+              /**
+               * Variables
+               */
+              // console.log(officesResponse.data);
+              const offices = officesResponse.data;
+              const work_types = workTypesResponse.data;
+
+              // console.log(offices);
+              // console.log(work_types);
+              /**
+               * Return
+               */
+              return { offices, work_types };
+            } catch (error) {
+              console.error("Error fetching offices and work types: ", error);
+              return {
+                offices: [],
+                work_types: [],
+              };
+            }
+          },
+        },
+      ],
+    },
+    // Work Posts
+    {
+      path: "test/work-posts",
       element: <Outlet />,
       children: [
         {

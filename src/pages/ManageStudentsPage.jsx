@@ -23,7 +23,6 @@ import {
   getStudentActionColumns,
   getStudentStaticColumns,
 } from "../utils/columns/studentColumns";
-import ReadyToDeployButton from "../components/tables/ReadyToDeployButton";
 import DeployStudentButton from "../components/tables/DeployStudentButton";
 
 // Tabs Links
@@ -409,7 +408,7 @@ const ManageStudentsPage = ({ authorizeRole }) => {
       middleName: row.middle_name,
       lastName: row.last_name,
       email: row.email,
-      gender: row.gender.toLowerCase(),
+      gender: row.gender ? row.gender.toLowerCase() : row.gender,
       phoneNumber: row.phone_number,
       street: row.street,
       barangay: row.barangay,
@@ -732,7 +731,7 @@ const ManageStudentsPage = ({ authorizeRole }) => {
               url={activeTab.url} // B  t here it didnt pass the new url
               onSelectionModelChange={handleRowSelection} // Handle selection change
               getRowId={(row) => row.id} // Define the row ID
-              requestedBy={"coordinator"}
+              requestedBy={authorizeRole}
             />
           </TabGroup>
         </div>

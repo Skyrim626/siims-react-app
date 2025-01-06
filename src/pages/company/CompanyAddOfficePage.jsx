@@ -11,12 +11,16 @@ import { ChevronLeft } from "lucide-react";
 import { stripLocation } from "../../utils/strip";
 import ContentLoader from "../../components/atoms/ContentLoader";
 import { Button } from "@headlessui/react";
+import Loader from "../../components/common/Loader";
 
 const CompanyAddOfficePage = () => {
   // Open Location and navigate
   const location = useLocation();
   const navigate = useNavigate();
   const strippedPath = stripLocation(location.pathname, "/add");
+
+  // Loading State
+  const [loading, setLoading] = useState(false);
 
   // Fetch State
   const [officeTypes, setOfficeTypes] = useState([]);
@@ -65,22 +69,34 @@ const CompanyAddOfficePage = () => {
 
   // Handle Submit Form
   const handleSubmit = async () => {
+    // Set Loading
+    setLoading(true);
+
     try {
       const payload = officeInfo;
 
-      await postRequest({
+      const response = await postRequest({
         url: "/api/v1/company/offices",
         data: payload,
       });
 
+      if (response) {
+        setLoading(false);
+        navigate(-1);
+      }
+
       resetOfficeInfo(); // Reset form after successful submission
     } catch (error) {
       console.error("Error submitting form:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <>
+      <Loader loading={loading} />
+
       {officeTypes.length > 0 ? (
         <Page>
           <Section>
