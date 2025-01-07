@@ -8,6 +8,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import getFullName from "../../utils/getFullName";
 import SignatureCapture from "../../components/letters/SignatureCanvas";
 import { getRequest, postFormDataRequest } from "../../api/apiHelpers";
+import logo from "../../assets/images/company/Logo-Reduced-Border-1.png";
 
 const CompanyAcceptanceLetterPage = () => {
   // Open Location and Navigate
@@ -90,7 +91,7 @@ const CompanyAcceptanceLetterPage = () => {
   const callAcceptanceLetter = () => {
     return (
       <GenerateAcceptanceLetter
-        logo={logoURL}
+        logo={logo}
         signatureImage={signatureImage}
         currentDate={currentDate}
         applicantFullName={applicantFullName}

@@ -166,8 +166,9 @@ const GenerateAcceptanceLetter = ({
             <Image src={signatureImage} style={styles.signature} />
           )}
 
-          <Text style={styles.text}>{ownerName}</Text>
+          <Text style={styles.boldText}>{ownerName}</Text>
           <Text style={styles.text}>{position}</Text>
+          <Text style={styles.text}>{companyName}</Text>
         </View>
       </Page>
     </Document>
