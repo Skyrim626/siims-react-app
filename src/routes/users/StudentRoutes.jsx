@@ -27,7 +27,7 @@ import ViewWorkPost from "../../pages/ViewWorkPost";
 import ApplicationPage from "../../pages/ApplicationPage";
 import SelfProfile from "../../pages/profiles/SelfProfile";
 import EditProfilePage from "../../pages/profiles/EditProfilePage";
-import DocumentsRemotePage from "../../pages/remotes/DocumentsRemotePage";
+import DocumentsTrackingRemotePage from "../../pages/remotes/DocumentsTrackingRemotePage";
 // Routes for Student
 const StudentRoutes = {
   path: "my",
@@ -95,7 +95,7 @@ const StudentRoutes = {
     },
     {
       path: "documents",
-      element: <DocumentsRemotePage authorizeRole={"student"} />,
+      element: <DocumentsTrackingRemotePage authorizeRole={"student"} />,
     },
     {
       path: "test/profile",

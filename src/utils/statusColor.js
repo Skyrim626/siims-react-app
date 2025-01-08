@@ -311,8 +311,8 @@ export const getDocumentStatusColor = (status) => {
   switch (status) {
     case "Pending":
       return {
-        textColor: "text-black", // Black text
-        backgroundColor: "bg-gray-300", // Light gray background
+        textColor: "text-white", // Black text
+        backgroundColor: "bg-orange-500", // Light gray background
       };
     case "Submitted":
       return {
