@@ -49,12 +49,13 @@ const CurrentApplication = () => {
       });
 
       if (response) {
-        // window.location.reload();
+        window.location.reload();
       }
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
+      setIsModalOpen(false);
     }
   };
 

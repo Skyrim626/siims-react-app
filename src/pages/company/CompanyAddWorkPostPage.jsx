@@ -12,10 +12,7 @@ import Heading from "../../components/common/Heading";
 import Text from "../../components/common/Text";
 import WorkPostForm from "../../components/forms/WorkPostForm";
 import { stripLocation } from "../../utils/strip";
-import ContentLoader from "../../components/atoms/ContentLoader";
-import { getRequest, postRequest } from "../../api/apiHelpers";
-import useForm from "../../hooks/useForm";
-import useHandleSubmit from "../../hooks/useHandleSubmit";
+import { postRequest } from "../../api/apiHelpers";
 import Loader from "../../components/common/Loader";
 
 const CompanyAddWorkPostPage = () => {
@@ -33,7 +30,7 @@ const CompanyAddWorkPostPage = () => {
   // Input State
   const [officeId, setOfficeId] = useState(null);
   const [workTypeId, setWorkTypeId] = useState(null);
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState("Intern");
   const [responsibilities, setResponsibilities] = useState("");
   const [qualifications, setQualifications] = useState("");
   const [startDate, setStartDate] = useState("");

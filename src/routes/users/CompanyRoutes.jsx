@@ -7,7 +7,6 @@ import CompanyProfilePage from "../../pages/company/CompanyProfilePage";
 import CompanyAddOfficePage from "../../pages/company/CompanyAddOfficePage";
 import CompanyOfficePage from "../../pages/company/CompanyOfficePage";
 import CompanyEditOfficePage from "../../pages/company/CompanyEditOfficePage";
-import CompanyAddJobPage from "../../pages/company/CompanyAddJobPage";
 import CompanyManageSupervisorsPage from "../../pages/company/CompanyManageSupervisorsPage";
 import axiosClient from "../../api/axiosClient";
 import CompanyManageWorkPostsPage from "../../pages/company/CompanyManageWorkPostsPage";
@@ -16,7 +15,6 @@ import CompanyEditWorkPostPage from "../../pages/company/CompanyEditWorkPostPage
 import CompanyManageApplicantsPage from "../../pages/company/CompanyManageApplicantsPage";
 import CompanyAcceptanceLetterPage from "../../pages/company/CompanyAcceptanceLetterPage";
 import CompanyManageApplicantPage from "../../pages/company/CompanyManageApplicantPage";
-import CompanyManageInternsPage from "../..//pages/company/CompanyManageInternsPage";
 import ViewActiveStudentsPage from "../../pages/ViewActiveStudentsPage";
 import ViewDtrPage from "../../pages/ViewDtrPage";
 import ManageSupervisorsPage from "../../pages/ManageSupervisorsPage";

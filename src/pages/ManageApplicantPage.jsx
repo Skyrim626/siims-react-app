@@ -25,6 +25,7 @@ const ManageApplicantPage = ({ authorizeRole }) => {
   const [loading, setLoading] = useState(false);
   // Container state
   const [applicant, setApplicant] = useState({});
+  const [applicationStatusID, setApplicationStatusID] = useState(0);
   // Modal State
   const [isOpenImport, setIsOpenImport] = useState(false);
   // Status State
@@ -45,6 +46,7 @@ const ManageApplicantPage = ({ authorizeRole }) => {
       if (response) {
         // console.log(response);
         setApplicant(response);
+        setApplicationStatusID(response.status_id);
       }
     } catch (error) {
       console.error(error);
@@ -173,6 +175,7 @@ const ManageApplicantPage = ({ authorizeRole }) => {
           <DocumentTable
             applicationID={application_id}
             authorizeRole={authorizeRole}
+            applicationStatusID={applicationStatusID}
           />
         )}
         {/* Action Section */}

@@ -15,7 +15,11 @@ import StatusListModal from "../modals/StatusListModal";
 import ConfirmChangeModal from "../modals/ConfirmChangeModal";
 import useRequest from "../../hooks/useRequest";
 
-const DocumentTable = ({ applicationID, authorizeRole }) => {
+const DocumentTable = ({
+  applicationID,
+  authorizeRole,
+  applicationStatusID,
+}) => {
   // Backend Resource
   const documentsResource = `/api/v1/applications/${applicationID}/documents?requestedBy=${authorizeRole}`;
   // console.log(documentsResource);
@@ -163,13 +167,15 @@ const DocumentTable = ({ applicationID, authorizeRole }) => {
                     {doc.status}
                   </td>
                   <td className="text-center border border-gray-200 p-3 text-sm text-gray-800">
-                    <a
-                      href={doc.file_path}
-                      target="_blank"
-                      className="underline text-blue-500 hover:text-blue-600"
-                    >
-                      View File
-                    </a>
+                    {doc.file_path && (
+                      <a
+                        href={doc.file_path}
+                        target="_blank"
+                        className="underline text-blue-500 hover:text-blue-600"
+                      >
+                        View File
+                      </a>
+                    )}
                   </td>
                   <td className="border border-gray-200 p-3 text-sm text-gray-800">
                     {formatDateOnly(doc.created_at)}
@@ -177,7 +183,8 @@ const DocumentTable = ({ applicationID, authorizeRole }) => {
                   <td className="border border-gray-200 p-3 text-sm text-gray-800">
                     {formatDateOnly(doc.updated_at)}
                   </td>
-                  {doc.can_update && (
+
+                  {applicationStatusID !== 5 && doc.can_update && (
                     <td className="text-center border border-gray-200 p-3 text-sm text-gray-800">
                       <select
                         value={documentStatuses[doc.id] || ""}
