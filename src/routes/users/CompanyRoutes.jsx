@@ -32,6 +32,7 @@ import ViewReportsPage from "../../pages/ViewReportsPage";
 import ViewWarPage from "../../pages/ViewWarPage";
 import ManageWorkPostsPage from "../../pages/ManageWorkPostsPage";
 import CompanyHomePageTesting from "../../pages/company/CompanyHomePageTesting";
+import HomeRemotePage from "../../pages/remotes/HomeRemotePage";
 
 // Routes for Company
 const CompanyRoutes = {
@@ -74,7 +75,7 @@ const CompanyRoutes = {
     }, */
     {
       index: true,
-      element: <CompanyHomePageTesting />,
+      element: <HomeRemotePage authorizeRole={"company"} />,
     },
     {
       path: "profile",
