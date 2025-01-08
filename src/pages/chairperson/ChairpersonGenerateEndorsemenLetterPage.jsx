@@ -242,7 +242,7 @@ const ChairpersonGenerateEndorsemenLetterPage = () => {
             value={greetingMessage}
             onChange={(e) => setGreetingMessage(e.target.value)}
             className="w-full px-4 py-2 border rounded-md shadow focus:ring focus:outline-none"
-            placeholder="Enter Date"
+            placeholder="Dear Mr.Lim"
           />
         </Field>
 
@@ -256,7 +256,7 @@ const ChairpersonGenerateEndorsemenLetterPage = () => {
               value={ownerName}
               onChange={(e) => setOwnerName(e.target.value)}
               className="w-full px-4 py-2 border rounded-md shadow focus:ring focus:outline-none"
-              placeholder="Enter Date"
+              placeholder="Enter Recipient"
             />
           </Field>
           <Field className="mb-6">
@@ -268,7 +268,7 @@ const ChairpersonGenerateEndorsemenLetterPage = () => {
               value={position}
               onChange={(e) => setPosition(e.target.value)}
               className="w-full px-4 py-2 border rounded-md shadow focus:ring focus:outline-none"
-              placeholder="e.g.(HR Specialist, Manager, Supervisor, Regional Director)"
+              placeholder="Intern"
             />
           </Field>
         </div>
@@ -282,7 +282,7 @@ const ChairpersonGenerateEndorsemenLetterPage = () => {
             value={companyName}
             onChange={(e) => setCompanyName(e.target.value)}
             className="w-full px-4 py-2 border rounded-md shadow focus:ring focus:outline-none"
-            placeholder="Enter recipient (e.g., Dear Dr. Smith)"
+            placeholder="Company XYZ"
           />
         </Field>
 
@@ -295,7 +295,7 @@ const ChairpersonGenerateEndorsemenLetterPage = () => {
             value={fullAddress}
             onChange={(e) => setFullAddress(e.target.value)}
             className="w-full px-4 py-2 border rounded-md shadow focus:ring focus:outline-none"
-            placeholder="Enter recipient (e.g., Dear Dr. Smith)"
+            placeholder="Street,Barangay,Province,City,Postal-Code"
           />
         </Field>
 
@@ -307,9 +307,9 @@ const ChairpersonGenerateEndorsemenLetterPage = () => {
             <Input
               type="text"
               value={chairpersonFullName}
-              onChange={(e) => sEtChairpersonFullName(e.target.value)}
+              onChange={(e) => setChairpersonFullName(e.target.value)}
               className="w-full px-4 py-2 border rounded-md shadow focus:ring focus:outline-none"
-              placeholder="Enter recipient (e.g., Dear Dr. Smith)"
+              placeholder="Engr. Jay Noel Rojo"
             />
           </Field>
           <Field className="mb-6">
@@ -336,7 +336,7 @@ const ChairpersonGenerateEndorsemenLetterPage = () => {
               value={ojtCoordinatorFullName}
               onChange={(e) => setOjtCoordinatorFullName(e.target.value)}
               className="w-full px-4 py-2 border rounded-md shadow focus:ring focus:outline-none"
-              placeholder="Enter recipient (e.g., Dear Dr. Smith)"
+              placeholder="Enter coordinator name (e.g., Dr. Smith)"
             />
           </Field>
           <Field className="mb-6">

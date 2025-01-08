@@ -20,6 +20,7 @@ import ViewProfilePage from "../../pages/profiles/ViewProfilePage";
 import ManageEndorsementLetterRequestsPage from "../../pages/ManageEndorsementLetterRequestsPage";
 import SelfProfile from "../../pages/profiles/SelfProfile";
 import EditProfilePage from "../../pages/profiles/EditProfilePage";
+import ManualCreateEndorsementLetterPage from "../../pages/ManualCreateEndorsementLetterPage";
 
 // Routes for Chairperson
 const ChairpersonRoutes = {
@@ -214,6 +215,10 @@ const ChairpersonRoutes = {
     {
       path: "test",
       element: <PDFFile />,
+    },
+    {
+      path: "manual-create-endorsement-letter",
+      element: <ManualCreateEndorsementLetterPage />,
     },
     {
       path: "endorsement-requests",

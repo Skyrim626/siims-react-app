@@ -101,6 +101,7 @@ const styles = StyleSheet.create({
 });
 
 const GenerateEndorsementLetter = ({
+  isAutomatic = true,
   imageHeight = 80,
   signatureImage,
   currentDate = "February 21, 2024",
@@ -199,29 +200,45 @@ const GenerateEndorsementLetter = ({
               <TD>Email</TD>
               <TD>Contact Numbers</TD>
             </TH>
-            <TR>
-              <TD>{mainStudent.id}</TD>
-              <TD>
-                {getFullName(
-                  mainStudent.first_name,
-                  mainStudent.middle_name,
-                  mainStudent.last_name
-                )}
-              </TD>
-              <TD>{mainStudent.email}</TD>
-              <TD>{mainStudent.phone_number}</TD>
-            </TR>
-            {otherStudents.length > 0 &&
-              otherStudents.map((otherStudent) => {
-                return (
-                  <TR>
-                    <TD>{otherStudent.student_id}</TD>
-                    <TD>{otherStudent.full_name}</TD>
-                    <TD>{otherStudent.email}</TD>
-                    <TD>{otherStudent.phone_number}</TD>
-                  </TR>
-                );
-              })}
+
+            {isAutomatic && (
+              <TR>
+                <TD>{mainStudent.id}</TD>
+                <TD>
+                  {getFullName(
+                    mainStudent.first_name,
+                    mainStudent.middle_name,
+                    mainStudent.last_name
+                  )}
+                </TD>
+                <TD>{mainStudent.email}</TD>
+                <TD>{mainStudent.phone_number}</TD>
+              </TR>
+            )}
+
+            {isAutomatic
+              ? otherStudents.length > 0 &&
+                otherStudents.map((otherStudent) => {
+                  return (
+                    <TR>
+                      <TD>{otherStudent.student_id}</TD>
+                      <TD>{otherStudent.full_name}</TD>
+                      <TD>{otherStudent.email}</TD>
+                      <TD>{otherStudent.phone_number}</TD>
+                    </TR>
+                  );
+                })
+              : otherStudents.length > 0 &&
+                otherStudents.map((otherStudent) => {
+                  return (
+                    <TR>
+                      <TD>{otherStudent.id}</TD>
+                      <TD>{otherStudent.fullName}</TD>
+                      <TD>{otherStudent.email}</TD>
+                      <TD>{otherStudent.phoneNumber}</TD>
+                    </TR>
+                  );
+                })}
           </Table>
         </View>
 

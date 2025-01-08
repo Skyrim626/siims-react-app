@@ -31,6 +31,7 @@ import ManageApplicantPage from "../../pages/ManageApplicantPage";
 import ViewReportsPage from "../../pages/ViewReportsPage";
 import ViewWarPage from "../../pages/ViewWarPage";
 import ManageWorkPostsPage from "../../pages/ManageWorkPostsPage";
+import CompanyHomePageTesting from "../../pages/company/CompanyHomePageTesting";
 
 // Routes for Company
 const CompanyRoutes = {
@@ -67,9 +68,13 @@ const CompanyRoutes = {
       path: "home",
       element: <Navigate to={"/company"} />,
     },
-    {
+    /* {
       index: true,
       element: <CompanyHomePage />,
+    }, */
+    {
+      index: true,
+      element: <CompanyHomePageTesting />,
     },
     {
       path: "profile",

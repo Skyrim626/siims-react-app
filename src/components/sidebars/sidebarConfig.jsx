@@ -19,6 +19,7 @@ import {
   ContactRound,
   FileCheck,
   NotepadText,
+  ScrollText,
 } from "lucide-react";
 
 // Configuration for sidebar items for Admin
@@ -263,6 +264,15 @@ const chairpersonSidebarItemsConfig = [
     exact: false,
     active: true,
     path: "/auth/chairperson/endorsement-requests",
+  },
+  {
+    icon: <ScrollText size={20} />,
+    text: "Manual Endorsement Letter",
+    alert: true,
+    ariaLabel: "Manual Endorsement Letter",
+    exact: false,
+    active: true,
+    path: "/auth/chairperson/manual-create-endorsement-letter",
   },
 ];
 
