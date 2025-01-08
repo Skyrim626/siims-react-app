@@ -7,7 +7,6 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
-import { Button, Dialog } from "@headlessui/react";
 import { getRequest, postRequest, putRequest } from "../../../api/apiHelpers";
 import Text from "../../../components/common/Text";
 import Loader from "../../../components/common/Loader";

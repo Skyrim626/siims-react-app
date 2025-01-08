@@ -1,16 +1,49 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../organisms/Navbar";
 import { NavLink, Outlet, useLoaderData, useLocation } from "react-router-dom";
-import { Home, CircleUserRound, FileText } from "lucide-react";
+import { Home, CircleUserRound, FileText, File } from "lucide-react";
+import Loader from "../common/Loader";
+import { getRequest } from "../../api/apiHelpers";
 
 // Layout for Student Pages
 export default function StudentLayout() {
   // Fetch auth student
-  const { auth } = useLoaderData();
+  // const { auth } = useLoaderData();
 
-  // console.log(auth);
+  // Initialize loading and error
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState(false);
 
-  const location = useLocation(); // Open Use Location
+  // Container State
+  const [auth, setAuth] = useState({});
+
+  const fetchAuth = async () => {
+    // Set Loading State
+    setLoading(true);
+
+    try {
+      // Initialize response
+      const response = await getRequest({
+        url: "/api/v1/student/auth",
+      });
+
+      // console.log(response);
+
+      if (response) {
+        setAuth(response);
+      }
+    } catch (error) {
+      console.error(error);
+      setErrors(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Use Effect
+  useEffect(() => {
+    fetchAuth();
+  }, []);
 
   // Customize Student Navigation Links
   const studentLinks = [
@@ -32,7 +65,21 @@ export default function StudentLayout() {
       alert: true,
       exact: false,
     },
+
     {
+      icon: <File size={20} />,
+      text: "Documents",
+      ariaLabel: "Documents",
+      path: "/auth/my/documents",
+      active: true,
+      alert: true,
+      exact: false,
+      hidden: () => {
+        return auth["latest_application"] ? false : true;
+      },
+    },
+
+    /* {
       icon: <FileText size={20} />,
       text: "My Reports",
       path: "/auth/my/my-reports",
@@ -44,8 +91,17 @@ export default function StudentLayout() {
         // Shows the My Reports if the student is now at status_id 10
         return auth["student_status_id"] !== 12;
       },
-    },
+    }, */
   ];
+
+  // Return if loading
+  if (loading) {
+    return <Loader loading={loading} />;
+  }
+
+  if (errors) {
+    return <p>Error... Something is wrong.</p>;
+  }
 
   return (
     <>

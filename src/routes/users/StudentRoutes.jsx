@@ -27,6 +27,7 @@ import ViewWorkPost from "../../pages/ViewWorkPost";
 import ApplicationPage from "../../pages/ApplicationPage";
 import SelfProfile from "../../pages/profiles/SelfProfile";
 import EditProfilePage from "../../pages/profiles/EditProfilePage";
+import DocumentsRemotePage from "../../pages/remotes/DocumentsRemotePage";
 // Routes for Student
 const StudentRoutes = {
   path: "my",
@@ -40,20 +41,20 @@ const StudentRoutes = {
       /**
        * Response
        */
-      const response = await axiosClient.get("/api/v1/student/auth");
+      // const response = await axiosClient.get("/api/v1/student/auth");
       const userResponse = await axiosClient.get("/api/v1/user-roles");
 
       /**
        * Variables
        */
-      const auth = response.data;
+      // const auth = response.data;
       const userRoles = userResponse.data;
 
       /**
        * Return
        */
       return {
-        auth,
+        // auth,
         userRoles,
       };
     } catch (error) {
@@ -91,6 +92,10 @@ const StudentRoutes = {
           element: <EditProfilePage authorizeRole={"student"} />,
         },
       ],
+    },
+    {
+      path: "documents",
+      element: <DocumentsRemotePage authorizeRole={"student"} />,
     },
     {
       path: "test/profile",
