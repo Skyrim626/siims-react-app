@@ -28,6 +28,7 @@ import ApplicationPage from "../../pages/ApplicationPage";
 import SelfProfile from "../../pages/profiles/SelfProfile";
 import EditProfilePage from "../../pages/profiles/EditProfilePage";
 import DocumentsTrackingRemotePage from "../../pages/remotes/DocumentsTrackingRemotePage";
+import EndorsementsRemotePage from "../../pages/remotes/EndorsementsRemotePage";
 // Routes for Student
 const StudentRoutes = {
   path: "my",
@@ -294,6 +295,10 @@ const StudentRoutes = {
     {
       path: "view-insights",
       element: <StudentViewEditInsights />,
+    },
+    {
+      path: "endorsements",
+      element: <EndorsementsRemotePage authorizeRole={"student"} />,
     },
   ],
 };

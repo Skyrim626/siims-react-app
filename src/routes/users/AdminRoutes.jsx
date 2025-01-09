@@ -19,7 +19,6 @@ import AdminManageCompanyOfficesPage from "../../pages/admin/manage-users/AdminM
 import ChatLayout from "../../components/layouts/ChatLayout";
 import ChatWindow from "../../components/messaging/ChatWindow";
 import AdminViewLogsPage from "../../pages/admin/AdminViewLogsPage";
-import ViewDocumentTypePage from "../../pages/ViewDocumentTypesPage";
 import ViewRolesPage from "../../pages/ViewRolesPage";
 import ViewCollegesPage from "../../pages/ViewCollegesPage";
 import ViewProgramsPage from "../../pages/ViewProgramsPage";
@@ -33,6 +32,8 @@ import ManageStudentsPage from "../../pages/ManageStudentsPage";
 import ManageSupervisorsPage from "../../pages/ManageSupervisorsPage";
 import EditProfilePage from "../../pages/profiles/EditProfilePage";
 import ViewProfilePage from "../../pages/profiles/ViewProfilePage";
+import Chamber from "../../pages/_testing/Chamber";
+import ManageDocumentTypePage from "../../pages/ManageDocumentTypesPage";
 
 // Define routes for the Admin section
 const AdminRoutes = {
@@ -97,7 +98,7 @@ const AdminRoutes = {
     },
     {
       path: "document-types",
-      element: <ViewDocumentTypePage authorizeRole={"admin"} />,
+      element: <ManageDocumentTypePage authorizeRole={"admin"} />,
     },
     {
       path: "messaging",
@@ -329,7 +330,7 @@ const AdminRoutes = {
       path: "offices", // Route for managing offices
       element: <AdminManageOfficesPage />,
     },
-
+    // Logs
     {
       path: "logs", // Route for viewing logs
       element: <AdminViewLogsPage />,
@@ -359,6 +360,11 @@ const AdminRoutes = {
           return { logs: [] };
         }
       },
+    },
+    // Testing Chamber
+    {
+      path: "chamber",
+      element: <Chamber />,
     },
   ],
 };

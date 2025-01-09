@@ -88,67 +88,75 @@ const CurrentApplication = () => {
     );
   }
 
+  const isWithdrawDisabled = application.application_status_id !== 1;
+
   return (
     <div className="lg:w-3/4 w-full mx-auto">
-      <h2 className="text-3xl font-semibold mb-8 text-gray-900 text-center">
-        Your Current Application
+      <h2 className="text-3xl font-semibold mb-6 text-gray-800 text-center">
+        Current Application
       </h2>
-      <div className="bg-white shadow-xl rounded-xl p-6 border border-gray-300 relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-500"></div>
-        <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6">
-          {/* Job Details */}
-          <div className="flex-1">
-            <h3 className="text-2xl font-bold text-gray-800 mb-3">
+      <div className="bg-white shadow-lg rounded-lg p-6 border border-gray-300">
+        {/* Header Section */}
+        <div className="flex justify-between items-start mb-6">
+          <div>
+            <h3 className="text-2xl font-bold text-gray-900">
               {application.title}
             </h3>
-            <p className="text-gray-700 mb-2">
-              <strong>Company:</strong> {application.company}
-            </p>
-            <p className="text-gray-700 mb-2">
-              <strong>Office:</strong> {application.office}
-            </p>
-            <p className="text-gray-700 mb-2">
-              <strong>Duration:</strong> {application.work_duration}
-            </p>
-            <p className="text-gray-700">
-              <strong>Applied Date:</strong> {application.applied_date}
-            </p>
+            <p className="text-gray-500 mt-1">{application.company}</p>
           </div>
-
-          {/* Profile Placeholder */}
-          <div className="w-full lg:w-1/4 flex justify-center lg:justify-end">
-            <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200">
-              <img
-                src={getProfileImage(application.profile_url)}
-                alt="Profile"
-                className="w-full h-full object-cover"
-              />
-            </div>
+          <div className="w-16 h-16 rounded-full overflow-hidden border border-gray-200">
+            <img
+              src={getProfileImage(application.profile_url)}
+              alt="Company Logo"
+              className="w-full h-full object-cover"
+            />
           </div>
         </div>
 
-        {/* Action Buttons */}
+        {/* Details Section */}
+        <div className="border-t border-b border-gray-200 py-4 space-y-3">
+          <div className="flex justify-between items-center">
+            <span className="text-gray-600">Office</span>
+            <span className="text-gray-900 font-medium">
+              {application.office}
+            </span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-gray-600">Duration</span>
+            <span className="text-gray-900 font-medium">
+              {application.work_duration}
+            </span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-gray-600">Applied Date</span>
+            <span className="text-gray-900 font-medium">
+              {application.applied_date}
+            </span>
+          </div>
+        </div>
+
+        {/* Footer Section */}
         <div className="mt-6 flex flex-wrap gap-4">
           <Button
             onClick={navigateToJobDetails}
-            className="flex-1 lg:flex-none bg-blue-600 text-white px-5 py-2 rounded-lg shadow-md hover:bg-blue-700 transition-all duration-200"
+            className="flex-1 lg:flex-none bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition"
           >
             View Job Details
           </Button>
           <Button
             onClick={navigateToApplication}
-            className="flex-1 lg:flex-none bg-blue-600 text-white px-5 py-2 rounded-lg shadow-md hover:bg-blue-700 transition-all duration-200"
+            className="flex-1 lg:flex-none bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 transition"
           >
-            View Applications
+            View Application
           </Button>
           <Button
             onClick={() => setIsModalOpen(true)}
             className={`${
-              application.application_status_id !== 1
-                ? "bg-gray-600 cursor-not-allowed"
+              isWithdrawDisabled
+                ? "bg-gray-400 cursor-not-allowed"
                 : "bg-red-600 hover:bg-red-700"
-            } flex-1 lg:flex-none  text-white px-5 py-2 rounded-lg shadow-md  transition-all duration-200`}
-            disabled={application.application_status_id !== 1}
+            } flex-1 lg:flex-none text-white py-2 px-4 rounded-md transition`}
+            disabled={isWithdrawDisabled}
           >
             Withdraw
           </Button>
@@ -159,7 +167,7 @@ const CurrentApplication = () => {
         open={isModalOpen}
         setOpen={setIsModalOpen}
         title="Withdraw Application"
-        message=" Are you sure you want to withdraw from this application?"
+        message="Are you sure you want to withdraw this application?"
         handleDelete={handleWithdrawClick}
       />
     </div>

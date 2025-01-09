@@ -43,6 +43,8 @@ export const getDocumentTypeActionColumns = ({
   handleEditModal,
   handleDeleteModal,
   authorizeRole,
+  activeTab,
+  restoreDocumentType,
 }) => {
   return {
     field: "actions",
@@ -51,20 +53,33 @@ export const getDocumentTypeActionColumns = ({
     headerClassName: "super-app-theme--header",
     renderCell: (params) => (
       <div className="flex space-x-2 items-center justify-center">
-        <Button
-          className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded"
-          onClick={() => handleEditModal(params.row)}
-        >
-          Edit
-        </Button>
+        {activeTab.name === "All" && (
+          <>
+            <Button
+              className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded"
+              onClick={() => handleEditModal(params.row)}
+            >
+              Edit
+            </Button>
 
-        {/* Delete is only allowed for Admin */}
-        {authorizeRole === "admin" && (
+            {/* Delete is only allowed for Admin */}
+            {authorizeRole === "admin" && (
+              <Button
+                className="bg-red-500 hover:bg-red-600 text-white py-1 px-4 rounded"
+                onClick={() => handleDeleteModal(params.row)}
+              >
+                Delete
+              </Button>
+            )}
+          </>
+        )}
+
+        {activeTab.name === "Archived" && (
           <Button
-            className="bg-red-500 hover:bg-red-600 text-white py-1 px-4 rounded"
-            onClick={() => handleDeleteModal(params.row)}
+            className="bg-green-500 hover:bg-green-600 text-white py-1 px-4 rounded"
+            onClick={() => restoreDocumentType(params.row.id)}
           >
-            Delete
+            Restore
           </Button>
         )}
       </div>

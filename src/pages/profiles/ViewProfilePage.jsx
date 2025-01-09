@@ -118,7 +118,7 @@ const ViewProfilePage = ({ authorizeRole, viewingUser }) => {
             <div className="flex flex-col">
               {/* College */}
               <Text className="text-sm text-gray-600 font-bold">
-                {profile.college_name || "College of Science"}
+                {profile.college || "College of Science"}
               </Text>
               {/* Program */}
               <Text className="text-sm text-gray-600 font-bold">

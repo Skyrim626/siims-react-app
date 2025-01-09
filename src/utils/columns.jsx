@@ -639,7 +639,6 @@ export const getCompanyStaticColumns = ({ authorizeRole, pathname }) => {
         <a
           href={params.value}
           target="_blank"
-          rel="noopener noreferrer"
           className="text-blue-500 underline"
         >
           {params.value}

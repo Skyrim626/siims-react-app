@@ -67,6 +67,15 @@ export default function StudentLayout() {
     },
 
     {
+      icon: <FileText size={20} />,
+      text: "Endorsements",
+      alert: true,
+      ariaLabel: "Endorsements",
+      exact: true,
+      path: "/auth/my/endorsements",
+    },
+
+    {
       icon: <File size={20} />,
       text: "Documents",
       ariaLabel: "Documents",

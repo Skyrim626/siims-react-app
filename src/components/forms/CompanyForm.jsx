@@ -110,7 +110,7 @@ const CompanyForm = ({
               {/* Website URL Field */}
               <div>
                 <FormField
-                  label={"Website URL"}
+                  label={"Website URL (https://your-website)"}
                   name={"websiteURL"}
                   labelClassName="text-sm text-black font-semibold"
                   required={requiredFields["websiteURL"]}

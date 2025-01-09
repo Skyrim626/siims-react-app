@@ -99,7 +99,7 @@ const JobPost = ({ job, handleApplyClick, canApply }) => {
         </div>
 
         {/* Skills */}
-        <div className="mt-4">
+        {/* <div className="mt-4">
           <h4 className="text-sm font-semibold text-gray-800">
             Skills Required:
           </h4>
@@ -120,7 +120,7 @@ const JobPost = ({ job, handleApplyClick, canApply }) => {
               </span>
             )}
           </div>
-        </div>
+        </div> */}
 
         {/* Actions */}
         <div className="mt-6 flex space-x-4">

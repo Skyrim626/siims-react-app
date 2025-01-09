@@ -24,6 +24,7 @@ import {
   getStudentStaticColumns,
 } from "../utils/columns/studentColumns";
 import DeployStudentButton from "../components/tables/DeployStudentButton";
+import CoordinatorManageStudentsSettings from "../components/settings/CoordinatorManageStudentsSettings";
 
 // Tabs Links
 const tabLinks = [
@@ -551,6 +552,11 @@ const ManageStudentsPage = ({ authorizeRole }) => {
             </div>
             <hr className="my-3" />
           </Section>
+        )}
+
+        {/* FOR COORDINATORS ONLY */}
+        {authorizeRole === "coordinator" && (
+          <CoordinatorManageStudentsSettings />
         )}
 
         <div className="mt-3">

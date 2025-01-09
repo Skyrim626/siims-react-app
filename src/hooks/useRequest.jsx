@@ -78,6 +78,7 @@ const useRequest = ({ setIsOpen, setData, setLoading }) => {
     selectedData,
     setIsOpen,
     resetForm,
+    id,
   }) => {
     // Set loading state to true
     setLoading(true);
@@ -95,7 +96,9 @@ const useRequest = ({ setIsOpen, setData, setLoading }) => {
       // console.log(response.data);
       // console.log("selectedData: ", selectedData);
 
-      if (response) {
+      if (response["type"] && response["type"] === "restore") {
+        setData((prevData) => prevData.filter((data) => data.id !== id));
+      } else {
         setData((prevData) =>
           prevData.map((data) =>
             data.id === selectedData["id"]

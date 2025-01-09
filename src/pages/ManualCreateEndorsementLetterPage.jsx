@@ -36,7 +36,7 @@ const ManualCreateEndorsementLetterPage = () => {
   const [ojtCoordinatorFullName, setOjtCoordinatorFullName] = useState("");
   const [workType, setWorkType] = useState("Intern");
 
-  const [deanFullName, setDeanFullName] = useState("");
+  const [deanFullName, setDeanFullName] = useState("Dr. Junar A. Landicho");
   const [deanOfficeNumber, setDeanOfficeNumber] = useState("088-857-1739");
   const [ojtCoordinatorMail, setOjtCoordinatorMail] = useState("");
   const [localNumber, setLocalNumber] = useState("1153");

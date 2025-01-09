@@ -10,17 +10,36 @@ import DocumentTypeForm from "../components/forms/DocumentTypeForm";
 import useForm from "../hooks/useForm";
 import useRequest from "../hooks/useRequest";
 import Loader from "../components/common/Loader";
-import { Button } from "@headlessui/react";
+import { Button, Tab, TabGroup, TabList } from "@headlessui/react";
 import DeleteConfirmModal from "../components/modals/DeleteConfirmModal";
 import {
   getDocumentTypeActionColumns,
   getDocumentTypeStaticColumns,
 } from "../utils/columns/documentTypeColumns";
+import {
+  GET_API_ROUTE_PATH,
+  POST_API_ROUTE_PATH,
+  PUT_API_ROUTE_PATH,
+} from "../api/resources";
+
+// Tabs Links
+const tabLinks = [
+  {
+    name: "All",
+    url: GET_API_ROUTE_PATH.document_types, // The backend resource for 'All' students
+    authorizeRoles: ["admin", "osa"],
+  },
+  {
+    name: "Archived",
+    url: `${GET_API_ROUTE_PATH.document_types}?status=archived`, // The backend resource for 'All' students
+    authorizeRoles: ["admin", "osa"],
+  },
+];
 
 /**
  * Role Allowed: Admin, OSA
  */
-const ViewDocumentTypePage = ({ authorizeRole }) => {
+const ManageDocumentTypePage = ({ authorizeRole }) => {
   // Loading State
   const [loading, setLoading] = useState(false);
 
@@ -31,6 +50,9 @@ const ViewDocumentTypePage = ({ authorizeRole }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
+  // Tab State
+  const [activeTab, setActiveTab] = useState(tabLinks[0]);
 
   // Select State
   const [selectedDocumentType, setSelectedDocumentType] = useState({});
@@ -55,6 +77,19 @@ const ViewDocumentTypePage = ({ authorizeRole }) => {
   });
 
   /**
+   * Function that restore a deleted document type
+   */
+  const restoreDocumentType = (id) => {
+    // console.log(id);
+
+    // UPDATE METHOD
+    putData({
+      url: `${PUT_API_ROUTE_PATH.document_types}/${id}/restore`,
+      id: id,
+    });
+  };
+
+  /**
    * Function that adds a new document type
    */
   const addDocumentType = () => {
@@ -65,7 +100,7 @@ const ViewDocumentTypePage = ({ authorizeRole }) => {
 
     // POST METHOD
     postData({
-      url: "/document-types",
+      url: POST_API_ROUTE_PATH.document_types,
       payload: payload,
       resetForm: resetForm,
     });
@@ -138,8 +173,10 @@ const ViewDocumentTypePage = ({ authorizeRole }) => {
         handleEditModal: handleEditModal,
         handleDeleteModal: handleDeleteModal,
         authorizeRole: authorizeRole,
+        activeTab: activeTab,
+        restoreDocumentType: restoreDocumentType,
       }),
-    []
+    [activeTab]
   );
 
   const columns = useMemo(
@@ -159,21 +196,51 @@ const ViewDocumentTypePage = ({ authorizeRole }) => {
         <hr className="my-3" />
       </Section>
 
-      <ManageHeader
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        addPlaceholder="Add New Document Type"
-        showExportButton={false}
-        showImportButton={false}
-      />
+      <div className="mt-3">
+        <TabGroup>
+          <TabList className="flex gap-4 mb-5">
+            {tabLinks.map((tab, index) => {
+              if (!tab.authorizeRoles.includes(authorizeRole)) {
+                return null;
+              }
 
-      <DynamicDataGrid
-        searchPlaceholder={"Search Roles"}
-        rows={rows}
-        setRows={setRows}
-        columns={columns}
-        url={"/document-types"}
-      />
+              return (
+                <Tab
+                  key={index}
+                  className={`rounded-full py-1 px-3 text-sm/6 font-semibold focus:outline-none ${
+                    activeTab.name === tab.name
+                      ? "bg-blue-700 text-white" // Active tab style
+                      : "bg-transparent text-blue-700" // Inactive tab style
+                  }`}
+                  onClick={() => setActiveTab(tab)}
+                >
+                  {tab.name}
+                </Tab>
+              );
+            })}
+          </TabList>
+
+          {activeTab.name === "All" && (
+            <ManageHeader
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
+              addPlaceholder="Add New Document Type"
+              showExportButton={false}
+              showImportButton={false}
+            />
+          )}
+
+          <DynamicDataGrid
+            searchPlaceholder={"Search Roles"}
+            rows={rows}
+            setRows={setRows}
+            columns={columns}
+            url={activeTab.url}
+            requestedBy={authorizeRole}
+            checkboxSelection={false}
+          />
+        </TabGroup>
+      </div>
 
       {/* Modals */}
       <FormModal
@@ -214,4 +281,4 @@ const ViewDocumentTypePage = ({ authorizeRole }) => {
   );
 };
 
-export default ViewDocumentTypePage;
+export default ManageDocumentTypePage;

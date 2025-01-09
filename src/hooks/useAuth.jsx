@@ -1,5 +1,5 @@
 // Libraries
-import React, { createContext, useContext, useMemo } from "react";
+import React, { createContext, useContext, useMemo, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 
 // Custom Hooks
@@ -7,6 +7,7 @@ import useLocalStorage from "./useLocalStorage";
 
 // Services
 import axiosClient from "../api/axiosClient";
+import Loader from "../components/common/Loader";
 
 // Create Auth Context
 const AuthContext = createContext({
@@ -22,6 +23,9 @@ const AuthContext = createContext({
 
 // Auth Provider Component
 export const AuthProvider = ({ children }) => {
+  // Loading State
+  const [loading, setLoading] = useState(false);
+
   // User State
   const [user, setUser] = useLocalStorage("user", null);
   const [roles, setRoles] = useLocalStorage("roles", null);
@@ -75,24 +79,32 @@ export const AuthProvider = ({ children }) => {
 
   // Function to log out the authenticated user
   const logout = async () => {
-    await axiosClient
-      .post("/api/v1/auth/logout")
-      .then((response) => {
-        // console.log("Successful Log Out");
+    // Set Loading State
+    setLoading(true);
+    try {
+      await axiosClient
+        .post("/api/v1/auth/logout")
+        .then((response) => {
+          // console.log("Successful Log Out");
 
-        // Remove Local Storages
-        localStorage.removeItem("ACCESS_TOKEN");
-        localStorage.removeItem("user");
-        localStorage.removeItem("roles");
+          // Remove Local Storages
+          localStorage.removeItem("ACCESS_TOKEN");
+          localStorage.removeItem("user");
+          localStorage.removeItem("roles");
 
-        window.location.href = "/login";
-      })
-      .catch((error) => {
-        console.error("Logout failed:", error);
+          window.location.href = "/login";
+        })
+        .catch((error) => {
+          console.error("Logout failed:", error);
 
-        // Optionally handle errors, e.g., display a toast notification
-        throw error;
-      });
+          // Optionally handle errors, e.g., display a toast notification
+          throw error;
+        });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Use Memo
@@ -107,7 +119,12 @@ export const AuthProvider = ({ children }) => {
     [token]
   );
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <>
+      <Loader loading={loading} />
+      <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+    </>
+  );
 };
 
 // Exporting useAuth
