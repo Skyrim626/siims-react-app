@@ -81,6 +81,16 @@ const CoordinatorRoutes = {
           index: true,
           element: <ManageStudentsPage authorizeRole={"coordinator"} />,
         },
+        // Student View Profile Route
+        {
+          path: ":user_id",
+          element: (
+            <ViewProfilePage
+              authorizeRole={"coordinator"}
+              viewingUser={"student"}
+            />
+          ),
+        },
         {
           path: "user_id",
           element: (

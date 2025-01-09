@@ -15,12 +15,16 @@ import { stripLocation } from "../../utils/strip";
 import ContentLoader from "../../components/atoms/ContentLoader";
 import { getRequest, postRequest, putRequest } from "../../api/apiHelpers";
 import { Button } from "@headlessui/react";
+import Loader from "../../components/common/Loader";
 
 const CompanyEditWorkPostPage = () => {
   // Fetch offices and work_types
   const { work_post, work_types } = useLoaderData();
 
   // console.log(work_post);
+
+  // Loading State
+  const [loading, setLoading] = useState(false);
 
   // Open Location and navigate
   const location = useLocation();
@@ -47,6 +51,9 @@ const CompanyEditWorkPostPage = () => {
   const updateWorkPost = async (e) => {
     e.preventDefault(); // Prevent page refresh
 
+    // Set Loading
+    setLoading(true);
+
     try {
       const payload = {
         work_type_id: workTypeId,
@@ -67,7 +74,13 @@ const CompanyEditWorkPostPage = () => {
         data: payload,
       });
 
-      navigate(strippedPath);
+      // console.log(response);
+
+      if (response) {
+        navigate(-1);
+      }
+
+      // navigate(strippedPath);
     } catch (error) {
       // Handle and set errors
       if (error.response && error.response.data && error.response.data.errors) {
@@ -79,12 +92,16 @@ const CompanyEditWorkPostPage = () => {
           general: "An unexpected error occurred. Please try again.",
         });
       }
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <>
       <Page>
+        <Loader loading={loading} />
+
         <Section>
           <Button
             onClick={() => navigate(-1)}

@@ -24,13 +24,15 @@ import EditProfilePage from "../../pages/profiles/EditProfilePage";
 import ManageOfficesPage from "../../pages/ManageOfficesPage";
 import ManageApplicantsPage from "../../pages/ManageApplicantsPage";
 import ViewProfilePage from "../../pages/profiles/ViewProfilePage";
-import ManageInternsPage from "../..//pages/company/CompanyManageInternsPage";
+
 import ManageApplicantPage from "../../pages/ManageApplicantPage";
 import ViewReportsPage from "../../pages/ViewReportsPage";
 import ViewWarPage from "../../pages/ViewWarPage";
 import ManageWorkPostsPage from "../../pages/ManageWorkPostsPage";
-import CompanyHomePageTesting from "../../pages/company/CompanyHomePageTesting";
+
 import HomeRemotePage from "../../pages/remotes/HomeRemotePage";
+
+import WorkPostsRemotePage from "../../pages/remotes/WorkPostsRemotePage";
 
 // Routes for Company
 const CompanyRoutes = {
@@ -152,8 +154,15 @@ const CompanyRoutes = {
             }
           },
         },
+
         {
           path: "add",
+          element: (
+            <WorkPostsRemotePage authorizeRole={"company"} method={"add"} />
+          ),
+        },
+        {
+          path: "test/add",
           element: <CompanyAddWorkPostPage />,
           loader: async () => {
             try {

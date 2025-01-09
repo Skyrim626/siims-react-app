@@ -159,7 +159,7 @@ const WorkPostForm = ({
                 }}
                 required={requiredFields.workTypeId}
               >
-                <option value=" ">-Select Work Type-</option>
+                <option value="null">-Select Work Type-</option>
                 {workTypes.map((workTypes) => (
                   <option key={workTypes.id} value={workTypes.id}>
                     {workTypes.name}
@@ -215,7 +215,7 @@ const WorkPostForm = ({
                 setResponsibilities(e.target.value);
               }}
               required={requiredFields.responsibilities}
-              rows={3}
+              rows={7}
             />
           </Field>
 
@@ -241,7 +241,7 @@ const WorkPostForm = ({
                 setQualifications(e.target.value);
               }}
               required={requiredFields.qualifications}
-              rows={3}
+              rows={7}
             />
           </Field>
 
