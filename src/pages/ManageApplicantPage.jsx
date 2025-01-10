@@ -44,7 +44,7 @@ const ManageApplicantPage = ({ authorizeRole }) => {
       });
 
       if (response) {
-        // console.log(response);
+        console.log(response);
         setApplicant(response);
         setApplicationStatusID(response.status_id);
       }
@@ -153,6 +153,28 @@ const ManageApplicantPage = ({ authorizeRole }) => {
                 {applicant.name}
               </dd>
             </div>
+
+            {authorizeRole === "coordinator" && (
+              <>
+                <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                  <dt className="text-sm/6 font-medium text-gray-900">
+                    Company
+                  </dt>
+                  <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
+                    {applicant.company}
+                  </dd>
+                </div>
+                <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                  <dt className="text-sm/6 font-medium text-gray-900">
+                    Office
+                  </dt>
+                  <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
+                    {applicant.office}
+                  </dd>
+                </div>
+              </>
+            )}
+
             <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
               <dt className="text-sm/6 font-medium text-gray-900">
                 Application for
@@ -186,7 +208,9 @@ const ManageApplicantPage = ({ authorizeRole }) => {
           applicant.status_id === 1 && (
             <div className="flex justify-center mt-8 space-x-4">
               {/* Upload Button */}
-              {!(authorizeRole === "osa") && (
+              {!(
+                authorizeRole === "osa" || authorizeRole === "coordinator"
+              ) && (
                 <Button
                   onClick={handleOpenModal}
                   className="bg-blue-500 text-white py-2 px-6 rounded border border-blue-600 text-lg font-semibold hover:bg-blue-600 hover:border-blue-700 transition-all"
@@ -196,7 +220,9 @@ const ManageApplicantPage = ({ authorizeRole }) => {
               )}
 
               {/* Generate Acceptance Letter Button */}
-              {!(authorizeRole === "osa") && (
+              {!(
+                authorizeRole === "osa" || authorizeRole === "coordinator"
+              ) && (
                 <Link
                   to={`${location.pathname}/generate-acceptance`}
                   state={{
@@ -209,7 +235,9 @@ const ManageApplicantPage = ({ authorizeRole }) => {
               )}
 
               {/* Approve Button */}
-              {!(authorizeRole === "osa") && (
+              {!(
+                authorizeRole === "osa" || authorizeRole === "coordinator"
+              ) && (
                 <Button
                   onClick={() => handleApprove(applicant.id)}
                   className={`bg-blue-500 text-white border border-blue-600 hover:bg-blue-600 hover:border-blue-700 py-2 px-6 rounded text-lg font-semibold transition-all`}

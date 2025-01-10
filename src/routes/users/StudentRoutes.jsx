@@ -9,7 +9,7 @@ import StudentLayout from "../../components/layouts/StudentLayout";
 // Student Pages
 import ProtectedRoute from "../handlers/ProtectedRoute";
 import StudentProfilePage from "../../pages/student/StudentProfilePage";
-import StudentRequestEndorsementPage from "../../pages/student/StudentRequestEndorsementPage";
+
 import StudentViewEvaluationPage from "../../pages/student/StudentViewEvaluationPage";
 import axiosClient from "../../api/axiosClient";
 import StudentReportsPage from "../../pages/student/StudentReportsPage";
@@ -196,10 +196,10 @@ const StudentRoutes = {
         }
       },
     },
-    {
+    /* {
       path: "apply/:job_id/request-endorsement",
       element: <StudentRequestEndorsementPage />,
-    },
+    }, */
 
     {
       path: "my-reports",

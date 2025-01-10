@@ -26,6 +26,9 @@ const StepOneBaseContent = ({
   // Error State
   const [errors, setErrors] = useState({});
 
+  // Container State
+  const [endorsement, setEndorsement] = useState({});
+
   /**
    * Endorsement Request Form
    *
@@ -217,7 +220,7 @@ const StepOneBaseContent = ({
         </div>
 
         {/* Request Endorsement Button */}
-        <div className="flex justify-start mt-4">
+        <div className="flex flex-col justify-start mt-4 items-start">
           <Button
             onClick={openEndorsementForm}
             className={`px-6 py-2 rounded-lg text-white font-medium ${
@@ -235,6 +238,10 @@ const StepOneBaseContent = ({
           >
             Request Endorsement
           </Button>
+
+          {/* <span className="text-green-600 mt-2">
+            Already requested an endorsement letter
+          </span> */}
         </div>
 
         {application.endorsement && (

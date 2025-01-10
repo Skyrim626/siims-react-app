@@ -159,7 +159,7 @@ const ChairpersonGenerateEndorsemenLetterPage = () => {
         )
       : "No Name"
   );
-  const [position, setPosition] = useState("No Position");
+  const [position, setPosition] = useState("HR Specialist");
   const [companyName, setCompanyName] = useState(company_details.name);
   const [fullAddress, setFullAddress] = useState(
     getFullAddress({
@@ -205,11 +205,11 @@ const ChairpersonGenerateEndorsemenLetterPage = () => {
     ).toUpperCase()}`
   );
   const [deanFullName, setDeanFullName] = useState(
-    getFullName(
+    `Dr. ${getFullName(
       dean_details.first_name,
       dean_details.middle_name,
       dean_details.last_name
-    ).toUpperCase()
+    ).toUpperCase()}`
   );
 
   // File Name
@@ -268,7 +268,7 @@ const ChairpersonGenerateEndorsemenLetterPage = () => {
               value={position}
               onChange={(e) => setPosition(e.target.value)}
               className="w-full px-4 py-2 border rounded-md shadow focus:ring focus:outline-none"
-              placeholder="Intern"
+              placeholder="HR Specialist"
             />
           </Field>
         </div>
@@ -531,7 +531,7 @@ const ChairpersonGenerateEndorsemenLetterPage = () => {
                 </Button>
               ) : (
                 <Button className="px-6 py-2 bg-green-600 text-white font-semibold rounded-md shadow hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
-                  Download Signed Document
+                  Download Document
                 </Button>
               )
             }

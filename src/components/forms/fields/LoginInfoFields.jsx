@@ -65,7 +65,7 @@ const LoginInfoFields = ({
                   onChange={handleInfoChange}
                   placeholder="ID"
                   value={info.id}
-                  readOnly
+                  // readOnly
                 />
                 {allowGenerateId && (
                   <Button

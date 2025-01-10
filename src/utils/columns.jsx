@@ -18,6 +18,18 @@ export const getEndorsementRequestsStaticColumns = ({
       headerName: "ID",
       width: 150,
       headerClassName: "super-app-theme--header",
+      renderCell: (params) => {
+        return activeTab.name === "Pending" ? (
+          <Link
+            to={`${pathname}/${params.row.id}`}
+            className="text-blue-500 underline"
+          >
+            <span>{params.row.id}</span>
+          </Link>
+        ) : (
+          <span>{params.row.id}</span>
+        );
+      },
     },
     {
       field: "name",

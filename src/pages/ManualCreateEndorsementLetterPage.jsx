@@ -3,6 +3,7 @@ import { pdf, PDFDownloadLink } from "@react-pdf/renderer";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import GenerateEndorsementLetter from "../components/letters/GenerateEndorsementLetter";
+import SignatureCapture from "../components/letters/SignatureCanvas";
 
 const ManualCreateEndorsementLetterPage = () => {
   // Open Navigate
@@ -24,7 +25,7 @@ const ManualCreateEndorsementLetterPage = () => {
   // Set the default date to the current date in the desired format
   const [greetingMessage, setGreetingMessage] = useState("");
   const [ownerName, setOwnerName] = useState("");
-  const [position, setPosition] = useState("");
+  const [position, setPosition] = useState("HR Specialist");
   const [companyName, setCompanyName] = useState("");
   const [fullAddress, setFullAddress] = useState("");
   const [program, setProgram] = useState(
@@ -34,7 +35,7 @@ const ManualCreateEndorsementLetterPage = () => {
     "College of Information Technology and Computing"
   );
   const [ojtCoordinatorFullName, setOjtCoordinatorFullName] = useState("");
-  const [workType, setWorkType] = useState("Intern");
+  const [workType, setWorkType] = useState("HR Specialist");
 
   const [deanFullName, setDeanFullName] = useState("Dr. Junar A. Landicho");
   const [deanOfficeNumber, setDeanOfficeNumber] = useState("088-857-1739");
@@ -179,7 +180,7 @@ const ManualCreateEndorsementLetterPage = () => {
             value={position}
             onChange={(e) => setPosition(e.target.value)}
             className="w-full px-4 py-2 border rounded-md shadow focus:ring focus:outline-none"
-            placeholder="Intern"
+            placeholder="Recipient Position"
           />
         </Field>
       </div>
@@ -442,6 +443,14 @@ const ManualCreateEndorsementLetterPage = () => {
           View PDF
         </Button>
       </div>
+
+      {isOpenSignatureModal && (
+        <SignatureCapture
+          setSignatureImage={setSignatureImage}
+          isOpen={isOpenSignatureModal}
+          setIsOpenSignatureModal={setIsOpenSignatureModal}
+        />
+      )}
     </div>
   );
 };

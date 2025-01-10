@@ -148,6 +148,9 @@ const DocumentTable = ({
             <th className="border border-gray-200 p-3 text-left text-sm font-medium text-gray-700">
               Action
             </th>
+            <th className="border border-gray-200 p-3 text-left text-sm font-medium text-gray-700">
+              Remarks
+            </th>
           </tr>
         </thead>
         <tbody>

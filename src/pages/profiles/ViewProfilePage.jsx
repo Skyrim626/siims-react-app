@@ -274,6 +274,8 @@ const ViewProfilePage = ({ authorizeRole, viewingUser }) => {
     const fetchUserProfile = async () => {
       setLoading(true);
 
+      console.log(profileResourcePath);
+
       try {
         const response = await getRequest({
           url: profileResourcePath,

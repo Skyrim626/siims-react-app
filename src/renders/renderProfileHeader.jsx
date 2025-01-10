@@ -21,7 +21,7 @@ export const renderSelfProfileHeader = ({ authorizeRole, profile }) => {
             {profile.first_name} {profile.middle_name} {profile.last_name}
           </h1>
           <Text className="text-sm text-gray-600 font-bold">
-            Dean of the {profile.college || "College of Science"}
+            Chairperson of the {profile.college || "College of Science"}
           </Text>
         </>
       );
