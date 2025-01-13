@@ -21,6 +21,7 @@ import {
   POST_API_ROUTE_PATH,
   PUT_API_ROUTE_PATH,
 } from "../api/resources";
+import CustomTabList from "../components/tabs/CustomTabList";
 
 // Tabs Links
 const tabLinks = [
@@ -198,27 +199,12 @@ const ManageDocumentTypePage = ({ authorizeRole }) => {
 
       <div className="mt-3">
         <TabGroup>
-          <TabList className="flex gap-4 mb-5">
-            {tabLinks.map((tab, index) => {
-              if (!tab.authorizeRoles.includes(authorizeRole)) {
-                return null;
-              }
-
-              return (
-                <Tab
-                  key={index}
-                  className={`rounded-full py-1 px-3 text-sm/6 font-semibold focus:outline-none ${
-                    activeTab.name === tab.name
-                      ? "bg-blue-700 text-white" // Active tab style
-                      : "bg-transparent text-blue-700" // Inactive tab style
-                  }`}
-                  onClick={() => setActiveTab(tab)}
-                >
-                  {tab.name}
-                </Tab>
-              );
-            })}
-          </TabList>
+          <CustomTabList
+            authorizeRole={authorizeRole}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            tabLinks={tabLinks}
+          />
 
           {activeTab.name === "All" && (
             <ManageHeader

@@ -43,10 +43,12 @@ const tabLinks = [
     url: "/applicants/withdrawn",
     authorizeRoles: ["osa", "coordinator", "company"],
   },
-  /* {
+  {
     name: "Rejected",
     url: "/applicants/rejected",
+    authorizeRoles: ["company"],
   },
+  /* 
   {
     name: "Withdrawn",
     url: "/applicants/withdrawn",

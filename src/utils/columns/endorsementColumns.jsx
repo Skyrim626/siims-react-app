@@ -32,6 +32,21 @@ export const getEndorsementStaticColumns = () => {
       headerName: "File",
       width: 300,
       headerClassName: "super-app-theme--header",
+      renderCell: (params) => {
+        console.log(params);
+
+        return (
+          <div>
+            <a
+              href={params.row.file_path}
+              target="_blank"
+              className="text-blue-500 hover:text-blue-700 underline"
+            >
+              {params.row.file_path}
+            </a>
+          </div>
+        );
+      },
     },
     {
       field: "remarks",

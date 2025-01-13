@@ -114,7 +114,9 @@ const TestingHomePage = () => {
           })}
 
           {studentStatusID &&
-            (studentStatusID === 2 || studentStatusID === 3) && (
+            (studentStatusID === 2 ||
+              studentStatusID === 3 ||
+              studentStatusID === 4) && (
               <CurrentApplication studentStatusID={studentStatusID} />
             )}
 

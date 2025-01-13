@@ -4,6 +4,7 @@ export const GET_API_ROUTE_PATH = {
   import_students_assign: "/api/v1/users/students/import-students-assign",
   work_types: "/api/v1/work-types",
   company_offices: '/api/v1/v2/offices/get-company-offices',
+  sections: '/api/v1/sections',
 };
 
 // POST API ROUTE PATH

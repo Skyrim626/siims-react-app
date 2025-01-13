@@ -34,6 +34,7 @@ import EditProfilePage from "../../pages/profiles/EditProfilePage";
 import ViewProfilePage from "../../pages/profiles/ViewProfilePage";
 import Chamber from "../../pages/_testing/Chamber";
 import ManageDocumentTypePage from "../../pages/ManageDocumentTypesPage";
+import ManageSectionsPage from "../../pages/ManageSectionsPage";
 
 // Define routes for the Admin section
 const AdminRoutes = {
@@ -95,6 +96,10 @@ const AdminRoutes = {
           console.log(error);
         }
       },
+    },
+    {
+      path: "sections",
+      element: <ManageSectionsPage authorizeRole={"admin"} />,
     },
     {
       path: "document-types",

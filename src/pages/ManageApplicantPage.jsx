@@ -110,6 +110,27 @@ const ManageApplicantPage = ({ authorizeRole }) => {
     }
   };
 
+  // Handle Reject
+  const handleReject = async (application_id) => {
+    setLoading(true);
+
+    // Reject Instantly
+    try {
+      // READY PUT METHOD
+      const response = await putRequest({
+        url: `api/v1/applications/${application_id}/mark-as-rejected`,
+      });
+
+      if (response) {
+        navigate(location.pathname, { replace: true });
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Handle Approve
   const handleApprove = async (application_id) => {
     setLoading(true);
@@ -243,6 +264,18 @@ const ManageApplicantPage = ({ authorizeRole }) => {
                   className={`bg-blue-500 text-white border border-blue-600 hover:bg-blue-600 hover:border-blue-700 py-2 px-6 rounded text-lg font-semibold transition-all`}
                 >
                   Approve
+                </Button>
+              )}
+
+              {/* Reject Button */}
+              {!(
+                authorizeRole === "osa" || authorizeRole === "coordinator"
+              ) && (
+                <Button
+                  onClick={() => handleReject(applicant.id)}
+                  className={`bg-red-500 text-white border border-red-600 hover:bg-red-600 hover:border-red-700 py-2 px-6 rounded text-lg font-semibold transition-all`}
+                >
+                  Reject
                 </Button>
               )}
             </div>
