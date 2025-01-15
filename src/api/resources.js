@@ -37,6 +37,11 @@ export const GET_API_ROUTE_PATH = {
    */
   deans: "/users/v2/deans",
 
+   /**
+   * Endpoint for retrieving chairpersons.
+   */
+   chairpersons: "/users/v2/chairpersons",
+
   /**
    * Endpoint for retrieving company offices.
    */
@@ -81,5 +86,10 @@ export const PUT_API_ROUTE_PATH = {
   /**
    * Endpoint for updating existing deans.
    */
-  deans: "/users/v2/deans"
+  deans: "/users/v2/deans",
+
+  /**
+   * Endpoint for updating existing chairpersons.
+   */
+  chairpersons: "/users/v2/chairpersons"
 };

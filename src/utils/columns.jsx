@@ -295,7 +295,7 @@ export const getDeanActionColumns = (handleEditModal, handleDeleteModal) => {
 };
 
 // Chairperson Static Columns
-export const getChairpersonStaticColumns = ({ pathname }) => {
+export const getChairpersonStaticColumns = ({ pathname, selectedStatus }) => {
   const columns = [
     {
       field: "id",
@@ -407,22 +407,29 @@ export const getChairpersonStaticColumns = ({ pathname }) => {
       width: 300,
       headerClassName: "super-app-theme--header",
     },
-    {
-      field: "deleted_at",
-      headerName: "Deleted At",
-      width: 300,
-      headerClassName: "super-app-theme--header",
-    },
+
+    ...(selectedStatus === "archived"
+      ? [
+          {
+            field: "deleted_at",
+            headerName: "Deleted At",
+            width: 300,
+            headerClassName: "super-app-theme--header",
+          },
+        ]
+      : []),
   ];
 
   return columns;
 };
 
 // Chairperson Action Columns
-export const getChairpersonActionColumns = (
+export const getChairpersonActionColumns = ({
   handleEditModal,
-  handleDeleteModal
-) => {
+  handleDeleteModal,
+  selectedStatus,
+  handleRestore,
+}) => {
   return {
     field: "actions",
     headerName: "Actions",
@@ -430,19 +437,32 @@ export const getChairpersonActionColumns = (
     headerClassName: "super-app-theme--header",
     renderCell: (params) => (
       <div className="flex space-x-2 items-center justify-center">
-        <Button
-          className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded"
-          onClick={() => handleEditModal(params.row)}
-        >
-          Edit
-        </Button>
+        {selectedStatus === "archived" && (
+          <Button
+            className="bg-green-500 hover:bg-green-600 text-white py-1 px-4 rounded"
+            onClick={() => handleRestore(params.row.id)}
+          >
+            Restore
+          </Button>
+        )}
 
-        <Button
-          className="bg-red-500 hover:bg-red-600 text-white py-1 px-4 rounded"
-          onClick={() => handleDeleteModal(params.row)}
-        >
-          Delete
-        </Button>
+        {selectedStatus === "all" && (
+          <>
+            <Button
+              className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded"
+              onClick={() => handleEditModal(params.row)}
+            >
+              Edit
+            </Button>
+
+            <Button
+              className="bg-red-500 hover:bg-red-600 text-white py-1 px-4 rounded"
+              onClick={() => handleDeleteModal(params.row)}
+            >
+              Delete
+            </Button>
+          </>
+        )}
       </div>
     ),
     sortable: false, // Prevent sorting for the actions column

@@ -8,28 +8,21 @@ import LoginInfoFields from "./fields/LoginInfoFields";
 import PersonalInfoFields from "./fields/PersonalInfoFields";
 import AddressInfoFields from "./fields/AddressInfoFields";
 import Text from "../common/Text";
+import { loginInfo } from "../../formDefaults/loginInfo";
+import { personalInfo } from "../../formDefaults/personalInfo";
+import { addressInfo } from "../../formDefaults/addressInfo";
 
 const ChairpersonForm = ({
   method = "post",
   chairpersonInfo = {
-    id: "",
-    password: "",
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    email: "",
-    gender: "",
-    phoneNumber: "",
-    street: "",
-    barangay: "",
-    cityMunicipality: "",
-    province: "",
-    postalCode: "",
-    programId: "",
-    allowCoordinator: false,
+    ...loginInfo,
+    ...personalInfo,
+    ...addressInfo,
+    program_id: "",
+    allow_coordinator: false,
   },
   handleChairpersonInfoChange,
-  handleSubmit = () => console.log("Testing"),
+
   requiredFields = {
     id: true,
     password: true,
@@ -90,8 +83,8 @@ const ChairpersonForm = ({
                 <div className="flex items-center space-x-3">
                   <Input
                     type="checkbox"
-                    name="allowCoordinator"
-                    checked={chairpersonInfo.allowCoordinator}
+                    name="allow_coordinator"
+                    checked={chairpersonInfo.allow_coordinator}
                     onChange={handleChairpersonInfoChange}
                     className="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                   />
@@ -102,16 +95,16 @@ const ChairpersonForm = ({
                 <div>
                   <FormField
                     label={"Program Assign"}
-                    name={"programId"}
+                    name={"program_id"}
                     labelClassName="text-sm text-black font-semibold"
                     required={requiredFields["program_id"]}
                   >
                     <Select
-                      name="programId"
+                      name="program_id"
                       className="border data-[hover]:shadow data-[focus]:bg-blue-100 h-full outline-none p-2"
                       aria-label="Select program"
                       onChange={handleChairpersonInfoChange}
-                      value={chairpersonInfo.programId}
+                      value={chairpersonInfo.program_id}
                       required={requiredFields["program_id"]}
                     >
                       <option value="">-Select a Program-</option>

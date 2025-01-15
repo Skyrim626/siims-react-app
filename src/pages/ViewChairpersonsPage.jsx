@@ -13,6 +13,11 @@ import {
   getChairpersonActionColumns,
   getChairpersonStaticColumns,
 } from "../utils/columns";
+import { loginInfo } from "../formDefaults/loginInfo";
+import { personalInfo } from "../formDefaults/personalInfo";
+import { addressInfo } from "../formDefaults/addressInfo";
+import { GET_API_ROUTE_PATH, PUT_API_ROUTE_PATH } from "../api/resources";
+import StatusDropdown from "../components/dropdowns/StatusDropdown";
 
 const ViewChairpersonsPage = () => {
   // Loading State
@@ -29,26 +34,44 @@ const ViewChairpersonsPage = () => {
   const [isEditOpen, setEditIsOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
-  // Select State
+  /**
+   *
+   *
+   *
+   * URL State
+   *
+   *
+   */
+  const [dataGridUrl, setDataGridUrl] = useState(
+    GET_API_ROUTE_PATH.chairpersons
+  );
+
+  /**
+   *
+   *
+   * Select State
+   *
+   *
+   *
+   */
+  const [selectedStatus, setSelectedStatus] = useState("all");
   const [selectedChairperson, setSelectedChairperson] = useState({});
+
+  useEffect(() => {
+    setDataGridUrl(
+      selectedStatus === "archived"
+        ? `${GET_API_ROUTE_PATH.chairpersons}?status=archived`
+        : GET_API_ROUTE_PATH.chairpersons
+    );
+  }, [selectedStatus]);
 
   // Use the useForm hook to manage form data
   const { formData, handleInputChange, resetForm, setFormValues } = useForm({
-    id: "",
-    password: "",
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    email: "",
-    gender: "",
-    phoneNumber: "",
-    street: "",
-    barangay: "",
-    cityMunicipality: "",
-    province: "",
-    postalCode: "",
-    programId: "",
-    allowCoordinator: false,
+    ...loginInfo,
+    ...personalInfo,
+    ...addressInfo,
+    program_id: "",
+    allow_coordinator: false,
   });
 
   /**
@@ -74,23 +97,7 @@ const ViewChairpersonsPage = () => {
     // POST METHOD
     postData({
       url: "/users/chairpersons",
-      payload: {
-        id: formData.id,
-        password: formData.password,
-        first_name: formData.firstName,
-        middle_name: formData.middleName,
-        last_name: formData.lastName,
-        email: formData.email,
-        gender: formData.gender,
-        phone_number: formData.phoneNumber,
-        street: formData.street,
-        barangay: formData.barangay,
-        city_municipality: formData.cityMunicipality,
-        province: formData.province,
-        postal_code: formData.postalCode,
-        program_id: formData.programId,
-        allow_coordinator: formData.allowCoordinator,
-      },
+      payload: formData,
       resetForm: resetForm,
     });
   };
@@ -102,19 +109,7 @@ const ViewChairpersonsPage = () => {
     // PUT METHOD
     putData({
       url: `/users/chairpersons/${selectedChairperson["id"]}`,
-      payload: {
-        first_name: formData.firstName,
-        middle_name: formData.middleName,
-        last_name: formData.lastName,
-        email: formData.email,
-        gender: formData.gender,
-        phone_number: formData.phoneNumber,
-        street: formData.street,
-        barangay: formData.barangay,
-        city_municipality: formData.cityMunicipality,
-        province: formData.province,
-        postal_code: formData.postalCode,
-      },
+      payload: formData,
       selectedData: selectedChairperson,
       setIsOpen: setEditIsOpen,
       resetForm: resetForm,
@@ -132,17 +127,8 @@ const ViewChairpersonsPage = () => {
 
     // Set Form Values
     setFormValues({
-      firstName: row.first_name,
-      middleName: row.middle_name,
-      lastName: row.last_name,
-      email: row.email,
+      ...row,
       gender: row.gender.toLowerCase(),
-      phoneNumber: row.phone_number,
-      street: row.street,
-      barangay: row.barangay,
-      cityMunicipality: row.city_municipality,
-      province: row.province,
-      postalCode: row.postal_code,
     });
 
     // Open Edit Modal
@@ -162,6 +148,19 @@ const ViewChairpersonsPage = () => {
   };
 
   /**
+   * Function that restore a deleted chairperson type
+   */
+  const restoreChairperson = (id) => {
+    // console.log(id);
+
+    // UPDATE METHOD
+    putData({
+      url: `${PUT_API_ROUTE_PATH.chairpersons}/${id}/restore`,
+      id: id,
+    });
+  };
+
+  /**
    * Function that opens a modal for delete
    */
   const handleDeleteModal = (row) => {
@@ -177,14 +176,21 @@ const ViewChairpersonsPage = () => {
     () =>
       getChairpersonStaticColumns({
         pathname: location.pathname,
+        selectedStatus: selectedStatus,
       }),
-    []
+    [selectedStatus]
   );
 
   // Action Column
   const actionColumn = useMemo(
-    () => getChairpersonActionColumns(handleEditModal, handleDeleteModal),
-    []
+    () =>
+      getChairpersonActionColumns({
+        handleEditModal,
+        handleDeleteModal,
+        selectedStatus,
+        handleRestore: restoreChairperson,
+      }),
+    [selectedStatus]
   );
 
   const columns = useMemo(
@@ -225,20 +231,27 @@ const ViewChairpersonsPage = () => {
     <>
       <Loader loading={loading} />
       <div className="mt-3">
-        <ManageHeader
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-          addPlaceholder="Add New Chairperson"
-          showExportButton={false}
-          showImportButton={false}
-        />
+        <div className="flex items-center justify-between">
+          <StatusDropdown
+            selectedStatus={selectedStatus}
+            setSelectedStatus={setSelectedStatus}
+          />
+
+          <ManageHeader
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            addPlaceholder="Add New Chairperson"
+            showExportButton={false}
+            showImportButton={false}
+          />
+        </div>
 
         <DynamicDataGrid
           searchPlaceholder={"Search Chairperson"}
           rows={rows}
           setRows={setRows}
           columns={columns}
-          url={"/users/chairpersons"}
+          url={dataGridUrl}
         />
 
         {/* Modals */}
