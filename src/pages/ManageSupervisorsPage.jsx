@@ -6,16 +6,21 @@ import Heading from "../components/common/Heading";
 import Text from "../components/common/Text";
 import ManageHeader from "../components/common/ManageHeader";
 import DynamicDataGrid from "../components/tables/DynamicDataGrid";
-import {
-  getSupervisorActionColumns,
-  getSupervisorStaticColumns,
-} from "../utils/columns";
 import FormModal from "../components/modals/FormModal";
 import SupervisorForm from "../components/forms/SupervisorForm";
 import useForm from "../hooks/useForm";
 import { getRequest } from "../api/apiHelpers";
 import useRequest from "../hooks/useRequest";
 import DeleteConfirmModal from "../components/modals/DeleteConfirmModal";
+import { loginInfo } from "../formDefaults/loginInfo";
+import { personalInfo } from "../formDefaults/personalInfo";
+import { addressInfo } from "../formDefaults/addressInfo";
+import { GET_API_ROUTE_PATH, PUT_API_ROUTE_PATH } from "../api/resources";
+import StatusDropdown from "../components/dropdowns/StatusDropdown";
+import {
+  getSupervisorActionColumns,
+  getSupervisorStaticColumns,
+} from "../utils/columns/supervisorColumns";
 
 const ManageSupervisorsPage = ({ authorizeRole }) => {
   // Loading State
@@ -26,28 +31,54 @@ const ManageSupervisorsPage = ({ authorizeRole }) => {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   // Lists State
   const [listOfOffices, setListOfOffices] = useState([]);
-  // Select State
-  const [selectedSupervisor, setSelectedSupervisor] = useState({});
-  // Row State
+
+  /**
+   *
+   *
+   * Row State
+   *
+   *
+   *
+   */
   const [rows, setRows] = useState([]);
+  /**
+   *
+   *
+   *
+   * URL State
+   *
+   *
+   */
+  const [dataGridUrl, setDataGridUrl] = useState(
+    GET_API_ROUTE_PATH.supervisors
+  );
+
+  /**
+   *
+   *
+   * Select State
+   *
+   *
+   *
+   */
+  const [selectedStatus, setSelectedStatus] = useState("all");
+  const [selectedSupervisor, setSelectedSupervisor] = useState({});
+
+  useEffect(() => {
+    setDataGridUrl(
+      selectedStatus === "archived"
+        ? `${GET_API_ROUTE_PATH.supervisors}?status=archived`
+        : GET_API_ROUTE_PATH.supervisors
+    );
+  }, [selectedStatus]);
+
   // Use the useForm hook to manage form data
   const { formData, handleInputChange, resetForm, setFormValues } = useForm({
-    id: "",
-    password: "",
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    email: "",
-    gender: "",
-    phoneNumber: "",
-    street: "",
-    barangay: "",
-    cityMunicipality: "",
-    province: "",
-    postalCode: "",
-
+    ...loginInfo,
+    ...personalInfo,
+    ...addressInfo,
     // Supervisor unique fields
-    officeID: "",
+    office_id: "",
   });
 
   /**
@@ -89,30 +120,27 @@ const ManageSupervisorsPage = ({ authorizeRole }) => {
     getListOfOffices();
   }, []);
 
+  /**
+   * Function that restore a deleted supervisor type
+   */
+  const restoreSupervisor = (id) => {
+    // console.log(id);
+
+    // UPDATE METHOD
+    putData({
+      url: `${PUT_API_ROUTE_PATH.supervisors}/${id}/restore`,
+      id: id,
+    });
+  };
+
   // Function that adds new supervisor
   const addSupervisor = () => {
-    console.log(formData);
+    // console.log(formData);
 
     // POST METHOD
     postData({
       url: "/users/supervisors",
-      payload: {
-        id: formData.id,
-        password: formData.password,
-        first_name: formData.firstName,
-        middle_name: formData.middleName,
-        last_name: formData.lastName,
-        email: formData.email,
-        gender: formData.gender,
-        phone_number: formData.phoneNumber,
-        street: formData.street,
-        barangay: formData.barangay,
-        city_municipality: formData.cityMunicipality,
-        province: formData.province,
-        postal_code: formData.postalCode,
-
-        office_id: formData.officeID,
-      },
+      payload: formData,
       resetForm: resetForm,
     });
   };
@@ -124,21 +152,7 @@ const ManageSupervisorsPage = ({ authorizeRole }) => {
     // PUT METHOD
     putData({
       url: `/users/supervisors/${selectedSupervisor["id"]}`,
-      payload: {
-        first_name: formData.firstName,
-        middle_name: formData.middleName,
-        last_name: formData.lastName,
-        email: formData.email,
-        gender: formData.gender,
-        phone_number: formData.phoneNumber,
-        street: formData.street,
-        barangay: formData.barangay,
-        city_municipality: formData.cityMunicipality,
-        province: formData.province,
-        postal_code: formData.postalCode,
-
-        office_id: formData.officeID,
-      },
+      payload: formData,
       selectedData: selectedSupervisor,
       setIsOpen: setEditIsOpen,
       resetForm: resetForm,
@@ -156,20 +170,8 @@ const ManageSupervisorsPage = ({ authorizeRole }) => {
 
     // Set Form Values
     setFormValues({
-      firstName: row.first_name,
-      middleName: row.middle_name,
-      lastName: row.last_name,
-      email: row.email,
+      ...row,
       gender: row.gender.toLowerCase(),
-      phoneNumber: row.phone_number,
-      street: row.street,
-      barangay: row.barangay,
-      cityMunicipality: row.city_municipality,
-      province: row.province,
-      postalCode: row.postal_code,
-
-      // Supervisor Unique Field
-      officeID: row.office_id,
     });
 
     // Open Edit Modal
@@ -201,19 +203,21 @@ const ManageSupervisorsPage = ({ authorizeRole }) => {
 
   // Static Columns
   const staticColumns = useMemo(
-    () => getSupervisorStaticColumns(authorizeRole),
-    [authorizeRole]
+    () => getSupervisorStaticColumns({ authorizeRole, selectedStatus }),
+    [authorizeRole, selectedStatus]
   );
 
   // Action Column
   const actionColumn = useMemo(
     () =>
-      getSupervisorActionColumns(
+      getSupervisorActionColumns({
         authorizeRole,
         handleEditModal,
-        handleDeleteModal
-      ),
-    [authorizeRole]
+        handleDeleteModal,
+        selectedStatus,
+        restoreSupervisor,
+      }),
+    [authorizeRole, selectedStatus]
   );
 
   // Render Columns
@@ -238,20 +242,27 @@ const ManageSupervisorsPage = ({ authorizeRole }) => {
       )}
 
       <div className="mt-3">
-        <ManageHeader
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-          addPlaceholder="Add New Supervisor"
-          showExportButton={false}
-          showImportButton={false}
-        />
+        <div className="flex items-center justify-between">
+          <StatusDropdown
+            selectedStatus={selectedStatus}
+            setSelectedStatus={setSelectedStatus}
+          />
+          <ManageHeader
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            addPlaceholder="Add New Supervisor"
+            showExportButton={false}
+            showImportButton={false}
+          />
+        </div>
 
         <DynamicDataGrid
           searchPlaceholder={"Search Supervisor"}
           rows={rows}
           setRows={setRows}
           columns={columns}
-          url={"/users/supervisors"}
+          url={dataGridUrl}
+          requestedBy={authorizeRole}
         />
 
         {/* Add Form Modal */}

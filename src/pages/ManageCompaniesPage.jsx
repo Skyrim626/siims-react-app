@@ -1,6 +1,6 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Page from "../components/common/Page";
-import { Button } from "@headlessui/react";
+import { Button, Select } from "@headlessui/react";
 import Loader from "../components/common/Loader";
 import ManageHeader from "../components/common/ManageHeader";
 import DynamicDataGrid from "../components/tables/DynamicDataGrid";
@@ -12,10 +12,15 @@ import CompanyForm from "../components/forms/CompanyForm";
 import Section from "../components/common/Section";
 import Heading from "../components/common/Heading";
 import Text from "../components/common/Text";
+import { personalInfo } from "../formDefaults/personalInfo";
+import { GET_API_ROUTE_PATH, PUT_API_ROUTE_PATH } from "../api/resources";
+import { companyInfo } from "../formDefaults/companyInfo";
+import { loginInfo } from "../formDefaults/loginInfo";
+import { addressInfo } from "../formDefaults/addressInfo";
 import {
   getCompanyActionColumns,
   getCompanyStaticColumns,
-} from "../utils/columns";
+} from "../utils/columns/companiesColumns";
 
 const ManageCompaniesPage = ({ authorizeRole }) => {
   // Loading State
@@ -24,33 +29,57 @@ const ManageCompaniesPage = ({ authorizeRole }) => {
   // Row State
   const [rows, setRows] = useState([]);
 
-  // Modal State
+  /**
+   *
+   *
+   *
+   * URL State
+   *
+   *
+   */
+  const [dataGridUrl, setDataGridUrl] = useState("/users/companies");
+
+  /**
+   *
+   *
+   * Modal State
+   *
+   *
+   *
+   */
   const [isOpen, setIsOpen] = useState(false);
   const [isEditOpen, setEditIsOpen] = useState(false);
+
+  /**
+   * ! ONLY: ADMIN CAN DO THIS STATE
+   */
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
-  // Select State
+  /**
+   *
+   *
+   * Select State
+   *
+   *
+   *
+   */
+  const [selectedStatus, setSelectedStatus] = useState("all");
   const [selectedCompany, setSelectedCompany] = useState({});
+
+  useEffect(() => {
+    setDataGridUrl(
+      selectedStatus === "archived"
+        ? `${GET_API_ROUTE_PATH.companies}?status=archived`
+        : GET_API_ROUTE_PATH.companies
+    );
+  }, [selectedStatus]);
 
   // Use the useForm hook to manage form data
   const { formData, handleInputChange, resetForm, setFormValues } = useForm({
-    id: "",
-    password: "",
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    email: "",
-    gender: "",
-    phoneNumber: "",
-    street: "",
-    barangay: "",
-    cityMunicipality: "",
-    province: "",
-    postalCode: "",
-
-    // Company unique fields
-    companyName: "",
-    websiteURL: "",
+    ...loginInfo,
+    ...personalInfo,
+    ...addressInfo,
+    ...companyInfo,
   });
 
   /**
@@ -72,23 +101,7 @@ const ManageCompaniesPage = ({ authorizeRole }) => {
     // POST METHOD
     postData({
       url: "/users/companies",
-      payload: {
-        id: formData.id,
-        password: formData.password,
-        first_name: formData.firstName,
-        middle_name: formData.middleName,
-        last_name: formData.lastName,
-        email: formData.email,
-        gender: formData.gender,
-        phone_number: formData.phoneNumber,
-        street: formData.street,
-        barangay: formData.barangay,
-        city_municipality: formData.cityMunicipality,
-        province: formData.province,
-        postal_code: formData.postalCode,
-        name: formData.companyName,
-        website_url: formData.websiteURL,
-      },
+      payload: formData,
       resetForm: resetForm,
     });
   };
@@ -97,24 +110,23 @@ const ManageCompaniesPage = ({ authorizeRole }) => {
   const updateCompany = () => {
     putData({
       url: `/users/companies/${selectedCompany["id"]}`,
-      payload: {
-        first_name: formData.firstName,
-        middle_name: formData.middleName,
-        last_name: formData.lastName,
-        email: formData.email,
-        gender: formData.gender,
-        phone_number: formData.phoneNumber,
-        street: formData.street,
-        barangay: formData.barangay,
-        city_municipality: formData.cityMunicipality,
-        province: formData.province,
-        postal_code: formData.postalCode,
-        name: formData.companyName,
-        website_url: formData.websiteURL,
-      },
+      payload: formData,
       selectedData: selectedCompany,
       setIsOpen: setEditIsOpen,
       resetForm: resetForm,
+    });
+  };
+
+  /**
+   * Function that restore a deleted company type
+   */
+  const restoreCompany = (id) => {
+    // console.log(id);
+
+    // UPDATE METHOD
+    putData({
+      url: `${PUT_API_ROUTE_PATH.companies}/${id}/restore`,
+      id: id,
     });
   };
 
@@ -125,23 +137,11 @@ const ManageCompaniesPage = ({ authorizeRole }) => {
     // Set Select State
     setSelectedCompany(row);
 
-    // console.log(row);
-
     // Set Form Values
     setFormValues({
-      firstName: row.first_name,
-      middleName: row.middle_name,
-      lastName: row.last_name,
-      email: row.email,
+      ...row,
+      name: row.company_name,
       gender: row.gender ? row.gender.toLowerCase() : row.gender,
-      phoneNumber: row.phone_number,
-      street: row.street,
-      barangay: row.barangay,
-      cityMunicipality: row.city_municipality,
-      province: row.province,
-      postalCode: row.postal_code,
-      companyName: row.company_name,
-      websiteURL: row.website_url,
     });
 
     // Open Edit Modal
@@ -152,9 +152,11 @@ const ManageCompaniesPage = ({ authorizeRole }) => {
    * Function that deletes a company
    */
   const deleteCompany = () => {
+    // console.log(selectedCompany);
+
     // DELETE METHOD
     deleteData({
-      url: `/users/companies/${selectedCompany["id"]}`,
+      url: `/users/v2/companies/${selectedCompany["id"]}`,
       id: selectedCompany["id"],
       setIsDeleteOpen: setIsDeleteOpen,
     });
@@ -175,21 +177,22 @@ const ManageCompaniesPage = ({ authorizeRole }) => {
   const staticColumns = useMemo(
     () =>
       getCompanyStaticColumns({
-        authorizeRole: authorizeRole,
         pathname: location.pathname,
+        selectedStatus: selectedStatus,
       }),
-    [authorizeRole]
+    [authorizeRole, selectedStatus]
   );
 
   // Action Column
   const actionColumn = useMemo(
     () =>
       getCompanyActionColumns(
-        authorizeRole,
+        selectedStatus,
         handleEditModal,
-        handleDeleteModal
+        handleDeleteModal,
+        restoreCompany
       ),
-    [authorizeRole]
+    [authorizeRole, selectedStatus]
   );
 
   // Render Columns
@@ -215,20 +218,32 @@ const ManageCompaniesPage = ({ authorizeRole }) => {
         )}
 
         <div className="mt-3">
-          <ManageHeader
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-            addPlaceholder="Add New Company"
-            showExportButton={false}
-            showImportButton={false}
-          />
+          <div className="flex items-center justify-between">
+            <Select
+              value={selectedStatus}
+              onChange={(e) => setSelectedStatus(e.target.value)}
+              className="font-bold bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            >
+              <option value="all">All</option>
+              <option value="archived">Archived</option>
+            </Select>
+
+            <ManageHeader
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
+              addPlaceholder="Add New Company"
+              showExportButton={false}
+              showImportButton={false}
+            />
+          </div>
 
           <DynamicDataGrid
             searchPlaceholder={"Search Company"}
             rows={rows}
             setRows={setRows}
             columns={columns}
-            url={"/users/companies"}
+            url={dataGridUrl}
+            checkboxSelection={false}
           />
 
           {/* Modals */}
@@ -241,8 +256,9 @@ const ManageCompaniesPage = ({ authorizeRole }) => {
           >
             <CompanyForm
               method="post"
-              companyInfo={formData}
+              formData={formData}
               handleCompanyInfoChange={handleInputChange}
+              errors={validationErrors}
             />
           </FormModal>
 
@@ -255,8 +271,9 @@ const ManageCompaniesPage = ({ authorizeRole }) => {
           >
             <CompanyForm
               method="put"
-              companyInfo={formData}
+              formData={formData}
               handleCompanyInfoChange={handleInputChange}
+              errors={validationErrors}
             />
           </FormModal>
 

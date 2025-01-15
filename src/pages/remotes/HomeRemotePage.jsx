@@ -3,6 +3,7 @@ import NotFoundPage from "../NotFoundPage";
 import CompanyHomePageTesting from "../company/CompanyHomePageTesting";
 import Loader from "../../components/common/Loader";
 import { getRequest } from "../../api/apiHelpers";
+import CoordinatorDashboardPage from "../dashboards/CoordinatorDashboardPage";
 
 const HomeRemotePage = ({ authorizeRole }) => {
   // Loading State
@@ -50,6 +51,8 @@ const HomeRemotePage = ({ authorizeRole }) => {
    */
   if (authorizeRole === "company") {
     return <CompanyHomePageTesting details={details} />;
+  } else if (authorizeRole === "coordinator") {
+    return <CoordinatorDashboardPage />;
   }
 
   // Return 404 not found

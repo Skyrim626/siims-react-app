@@ -158,12 +158,12 @@ const GenerateEndorsementLetter = ({
 
         {/* Greeting and Letter Body */}
         <View style={styles.paragraph}>
-          <Text>{greetingMessage}</Text>
+          <Text>{greetingMessage},</Text>
           <Text>
             I hope this message finds you well and in good spirits. I am writing
             to express my sincerest gratitude for taking the time to read this
             request on behalf of the{" "}
-            <Text style={styles.boldText}>{college}</Text> at the{" "}
+            <Text style={styles.boldText}>{college} (CITC)</Text> at the{" "}
             <Text style={styles.boldText}>
               University of Science and Technology of Southern Philippines
               (USTP)
@@ -175,11 +175,11 @@ const GenerateEndorsementLetter = ({
         <View style={styles.paragraph}>
           <Text>
             As you may be aware, the fourth-year students of our{" "}
-            <Text style={styles.boldText}>{program}</Text> program are currently
-            in their final semester of their course. As part of their graduation
-            requirements, they must complete a mandatory{" "}
+            <Text style={styles.boldText}>{program} (BSIT)</Text> program are
+            currently in their final semester of their course. As part of their
+            graduation requirements, they must complete a mandatory{" "}
             <Text style={styles.italicText}>On-the-Job Training (OJT)</Text>{" "}
-            program, with a duration of{" "}
+            program, with a duration of 486 hours between February and May 2025.
             <Text style={styles.italicText}>{hourDuration}</Text> between
             {startingMonth} and {endingMonth} {targetYear}.
           </Text>
@@ -188,13 +188,18 @@ const GenerateEndorsementLetter = ({
         <View style={styles.paragraph}>
           <Text>
             In light of this, I would like to respectfully request your
-            consideration in accepting the following student as intern/trainee
-            in your company:
+            consideration in accepting the following student as interns/trainees
+            in your company, to with:
           </Text>
         </View>
         <View style={styles.paragraph}>
-          <Table>
-            <TH style={styles.boldText}>
+          <Table tdStyle={{ padding: "2px" }}>
+            <TH
+              style={{
+                ...styles.boldText,
+                fontSize: 11,
+              }}
+            >
               <TD>Student ID</TD>
               <TD>Name of Students</TD>
               <TD>Email</TD>
@@ -202,7 +207,11 @@ const GenerateEndorsementLetter = ({
             </TH>
 
             {isAutomatic && (
-              <TR>
+              <TR
+                style={{
+                  fontSize: 11,
+                }}
+              >
                 <TD>{mainStudent.id}</TD>
                 <TD>
                   {getFullName(
@@ -220,7 +229,7 @@ const GenerateEndorsementLetter = ({
               ? otherStudents.length > 0 &&
                 otherStudents.map((otherStudent) => {
                   return (
-                    <TR>
+                    <TR key={otherStudent.student_id}>
                       <TD>{otherStudent.student_id}</TD>
                       <TD>{otherStudent.full_name}</TD>
                       <TD>{otherStudent.email}</TD>
@@ -229,9 +238,9 @@ const GenerateEndorsementLetter = ({
                   );
                 })
               : otherStudents.length > 0 &&
-                otherStudents.map((otherStudent) => {
+                otherStudents.map((otherStudent, index) => {
                   return (
-                    <TR>
+                    <TR key={otherStudent.id}>
                       <TD>{otherStudent.id}</TD>
                       <TD>{otherStudent.fullName}</TD>
                       <TD>{otherStudent.email}</TD>
@@ -257,7 +266,8 @@ const GenerateEndorsementLetter = ({
           <Text>
             To ensure that our students' {workType} program runs smoothly, we
             kindly request your acknowledgement of this email and confirmation
-            of receipt within the next 5 business days.
+            of receipt within the next{" "}
+            <Text style={styles.boldText}>5 business days.</Text>
           </Text>
         </View>
 

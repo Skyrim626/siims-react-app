@@ -6,60 +6,53 @@ import Heading from "../common/Heading";
 import FormField from "../common/FormField";
 import { Select } from "@headlessui/react";
 import Text from "../common/Text";
+import { loginInfo } from "../../formDefaults/loginInfo";
+import { personalInfo } from "../../formDefaults/personalInfo";
+import { addressInfo } from "../../formDefaults/addressInfo";
 
 const SupervisorForm = ({
   role = "",
   isFormModal = true,
   method = "post",
   supervisorInfo = {
-    id: "",
-    password: "",
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    email: "",
-    gender: "",
-    phoneNumber: "",
-    street: "",
-    barangay: "",
-    cityMunicipality: "",
-    province: "",
-    postalCode: "",
-    officeID: "",
+    ...loginInfo,
+    ...personalInfo,
+    ...addressInfo,
+    office_id: "",
   },
   handleSupervisorInfoChange = () => console.log("Testing"),
   handleSubmit = () => console.log("Testing Submit"),
   requiredFields = {
     id: true,
     password: true,
-    firstName: false,
-    middleName: false,
-    lastName: false,
+    first_name: false,
+    middle_name: false,
+    last_name: false,
     email: true,
     gender: false,
-    phoneNumber: false,
+    phone_number: false,
     street: false,
     barangay: false,
-    cityMunicipality: false,
+    city_municipality: false,
     province: false,
-    postalCode: false,
-    officeID: true,
+    postal_code: false,
+    office_id: true,
   },
   displayFields = {
     id: true,
     password: true,
-    firstName: true,
-    middleName: true,
-    lastName: true,
+    first_name: true,
+    middle_name: true,
+    last_name: true,
     email: true,
     gender: true,
-    phoneNumber: true,
+    phone_number: true,
     street: true,
     barangay: true,
-    cityMunicipality: true,
+    city_municipality: true,
     province: true,
-    postalCode: true,
-    officeID: true,
+    postal_code: true,
+    office_id: true,
   },
   offices = [],
   errors = {},
@@ -112,17 +105,17 @@ const SupervisorForm = ({
             <div>
               <FormField
                 label={"Office Assign"}
-                name={"officeID"}
+                name={"office_id"}
                 labelClassName="text-sm text-black font-semibold"
-                required={requiredFields["officeID"]}
+                required={requiredFields["office_id"]}
               >
                 <Select
-                  name="officeID"
+                  name="office_id"
                   className="border data-[hover]:shadow data-[focus]:bg-blue-100 h-full outline-none p-2"
                   aria-label="Select college"
                   onChange={handleSupervisorInfoChange}
-                  required={requiredFields["officeID"]}
-                  value={supervisorInfo.officeID}
+                  required={requiredFields["office_id"]}
+                  value={supervisorInfo.office_id}
                 >
                   <option value="">-Select an Office-</option>
                   {offices.map((office) => {

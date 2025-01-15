@@ -6,26 +6,19 @@ import Heading from "../common/Heading";
 import FormField from "../common/FormField";
 import { Button, Select } from "@headlessui/react";
 import Text from "../common/Text";
+import { loginInfo } from "../../formDefaults/loginInfo";
+import { personalInfo } from "../../formDefaults/personalInfo";
+import { addressInfo } from "../../formDefaults/addressInfo";
 
 const DeanForm = ({
   colleges = [],
   method = "post",
-  userRole = "",
+
   deanInfo = {
-    id: "",
-    password: "",
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    email: "",
-    gender: "",
-    phoneNumber: "",
-    street: "",
-    barangay: "",
-    cityMunicipality: "",
-    province: "",
-    postalCode: "",
-    collegeId: "",
+    ...loginInfo,
+    ...personalInfo,
+    ...addressInfo,
+    college_id: "",
   },
   handleDeanInfoChange,
   handleSubmit = () => console.log("Testing"),
@@ -84,16 +77,16 @@ const DeanForm = ({
               <div>
                 <FormField
                   label={"College"}
-                  name={"collegeId"}
+                  name={"college_id"}
                   labelClassName="text-sm text-black font-semibold"
                   required={requiredFields["college_id"]}
                 >
                   <Select
-                    name="collegeId"
+                    name="college_id"
                     className="border data-[hover]:shadow data-[focus]:bg-blue-100 h-full outline-none p-2"
                     aria-label="Select college"
                     onChange={handleDeanInfoChange}
-                    value={deanInfo.collegeId}
+                    value={deanInfo.college_id}
                     required={requiredFields["college_id"]}
                   >
                     <option value="">-Select a College-</option>

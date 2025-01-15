@@ -4,14 +4,11 @@ import { Input, Select } from "@headlessui/react";
 import FormField from "../../common/FormField";
 import Text from "../../common/Text";
 
+import { personalInfo as defaultPersonalInfo } from "../../../formDefaults/personalInfo";
+
 const PersonalInfoFields = ({
   personalInfo = {
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    email: "",
-    gender: "",
-    phoneNumber: "",
+    ...defaultPersonalInfo,
   },
   handlePersonalInfoChange,
   requiredFields = {
@@ -41,17 +38,17 @@ const PersonalInfoFields = ({
             <div>
               <FormField
                 label={"First Name"}
-                name={"firstName"}
+                name={"first_name"}
                 labelClassName="text-sm text-black font-semibold"
                 required={requiredFields["first_name"]}
               >
                 <Input
                   type="text"
                   className="outline-none text-black rounded-sm p-2 text-sm"
-                  name="firstName"
+                  name="first_name"
                   onChange={handlePersonalInfoChange}
                   placeholder="First name"
-                  value={personalInfo.firstName}
+                  value={personalInfo.first_name}
                   required={requiredFields["first_name"]}
                 />
               </FormField>
@@ -64,17 +61,17 @@ const PersonalInfoFields = ({
             <div>
               <FormField
                 label={"Middle Name"}
-                name={"middleName"}
+                name={"middle_name"}
                 labelClassName="text-sm text-black font-semibold"
                 required={requiredFields["middle_name"]}
               >
                 <Input
                   type="text"
                   className="outline-none text-black rounded-sm p-2 text-sm"
-                  name="middleName"
+                  name="middle_name"
                   onChange={handlePersonalInfoChange}
                   placeholder="Middle name"
-                  value={personalInfo.middleName}
+                  value={personalInfo.middle_name}
                   required={requiredFields["middle_name"]}
                 />
               </FormField>
@@ -87,17 +84,17 @@ const PersonalInfoFields = ({
             <div>
               <FormField
                 label={"Last Name"}
-                name={"lastName"}
+                name={"last_name"}
                 labelClassName="text-sm text-black font-semibold"
                 required={requiredFields["last_name"]}
               >
                 <Input
                   type="text"
                   className="outline-none text-black rounded-sm p-2 text-sm"
-                  name="lastName"
+                  name="last_name"
                   onChange={handlePersonalInfoChange}
                   placeholder="Last name"
-                  value={personalInfo.lastName}
+                  value={personalInfo.last_name}
                   required={requiredFields["last_name"]}
                 />
               </FormField>
@@ -160,17 +157,17 @@ const PersonalInfoFields = ({
             <div>
               <FormField
                 label={"Phone Number"}
-                name={"phoneNumber"}
+                name={"phone_number"}
                 labelClassName="text-sm text-black font-semibold"
                 required={requiredFields["phone_number"]}
               >
                 <Input
                   type="text"
                   className="outline-none text-black rounded-sm p-2 text-sm"
-                  name="phoneNumber"
+                  name="phone_number"
                   onChange={handlePersonalInfoChange}
                   placeholder="Phone Number"
-                  value={personalInfo.phoneNumber}
+                  value={personalInfo.phone_number}
                   required={requiredFields["phone_number"]}
                 />
               </FormField>

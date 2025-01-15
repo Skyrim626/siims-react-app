@@ -4,6 +4,8 @@ import FormField from "../../common/FormField";
 import { Input } from "@headlessui/react";
 import Text from "../../common/Text";
 
+import { addressInfo as defaultAddressInfo } from "../../../formDefaults/addressInfo";
+
 /**
  * Fields:
  * - Street
@@ -17,11 +19,7 @@ import Text from "../../common/Text";
  */
 const AddressInfoFields = ({
   addressInfo = {
-    street: "",
-    barangay: "",
-    city_municipality: "",
-    province: "",
-    postal_code: "",
+    ...defaultAddressInfo,
   },
   handleAddressInfoChange,
   requiredFields = {
@@ -94,17 +92,17 @@ const AddressInfoFields = ({
           <div>
             <FormField
               label={"City/Municipality"}
-              name={"cityMunicipality"}
+              name={"city_municipality"}
               labelClassName="text-sm text-black font-semibold"
               required={requiredFields["city_municipality"]}
             >
               <Input
                 type="text"
                 className="outline-none text-black rounded-sm p-2 text-sm"
-                name="cityMunicipality"
+                name="city_municipality"
                 onChange={handleAddressInfoChange}
                 placeholder="City/Municipality"
-                value={addressInfo.cityMunicipality}
+                value={addressInfo.city_municipality}
               />
             </FormField>
             {errors.city_municipality && (
@@ -140,17 +138,17 @@ const AddressInfoFields = ({
           <div>
             <FormField
               label={"Postal Code"}
-              name={"postalCode"}
+              name={"postal_code"}
               labelClassName="text-sm text-black font-semibold"
               required={requiredFields["postal_code"]}
             >
               <Input
                 type="text"
                 className="outline-none text-black rounded-sm p-2 text-sm"
-                name="postalCode"
+                name="postal_code"
                 onChange={handleAddressInfoChange}
                 placeholder="Phone Number"
-                value={addressInfo.postalCode}
+                value={addressInfo.postal_code}
               />
             </FormField>
             {errors.postal_code && (

@@ -21,6 +21,7 @@ import ManageEndorsementLetterRequestsPage from "../../pages/ManageEndorsementLe
 import SelfProfile from "../../pages/profiles/SelfProfile";
 import EditProfilePage from "../../pages/profiles/EditProfilePage";
 import ManualCreateEndorsementLetterPage from "../../pages/ManualCreateEndorsementLetterPage";
+import ViewEndorsementRequestPage from "../../pages/endorsements/ViewEndorsementRequestPage";
 
 // Routes for Chairperson
 const ChairpersonRoutes = {
@@ -231,6 +232,10 @@ const ChairpersonRoutes = {
               authorizeRole={"chairperson"}
             />
           ),
+        },
+        {
+          path: "view/:endorsementLetterRequestId",
+          element: <ViewEndorsementRequestPage authorizeRole={"chairperson"} />,
         },
         {
           path: ":endorsementLetterRequestId",

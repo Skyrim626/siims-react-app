@@ -1,7 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom";
 import CoordinatorLayout from "../../components/layouts/CoordinatorLayout";
 import ProtectedRoute from "../handlers/ProtectedRoute";
-import CoordinatorDashboardPage from "../../pages/coordinator/CoordinatorDashboardPage";
 import CoordinatorProfilePage from "../../pages/coordinator/CoordinatorProfilePage";
 import axiosClient from "../../api/axiosClient";
 import CoordinatorViewStudentsPage from "../../pages/coordinator/CoordinatorViewStudentsPage";
@@ -16,6 +15,8 @@ import SelfProfile from "../../pages/profiles/SelfProfile";
 import EditProfilePage from "../../pages/profiles/EditProfilePage";
 import ManageApplicantPage from "../../pages/ManageApplicantPage";
 import ViewReportsPage from "../../pages/ViewReportsPage";
+import CoordinatorDashboardPage from "../../pages/dashboards/CoordinatorDashboardPage";
+import HomeRemotePage from "../../pages/remotes/HomeRemotePage";
 
 // Routes for Coordinator
 const CoordinatorRoutes = {
@@ -56,7 +57,7 @@ const CoordinatorRoutes = {
     },
     {
       index: true,
-      element: <CoordinatorDashboardPage />,
+      element: <HomeRemotePage authorizeRole={"coordinator"} />,
     },
     {
       path: "profile",
