@@ -15,8 +15,8 @@ import SelfProfile from "../../pages/profiles/SelfProfile";
 import EditProfilePage from "../../pages/profiles/EditProfilePage";
 import ManageApplicantPage from "../../pages/ManageApplicantPage";
 import ViewReportsPage from "../../pages/ViewReportsPage";
-import CoordinatorDashboardPage from "../../pages/dashboards/CoordinatorDashboardPage";
 import HomeRemotePage from "../../pages/remotes/HomeRemotePage";
+import ManageSectionsPage from "../../pages/sections/ManageSectionsPage";
 
 // Routes for Coordinator
 const CoordinatorRoutes = {
@@ -73,7 +73,10 @@ const CoordinatorRoutes = {
         },
       ],
     },
-
+    {
+      path: "sections",
+      element: <ManageSectionsPage authorizeRole={"coordinator"} />,
+    },
     {
       path: "students",
       element: <Outlet />,

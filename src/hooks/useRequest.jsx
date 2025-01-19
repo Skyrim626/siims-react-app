@@ -9,7 +9,7 @@ const useRequest = ({ setIsOpen, setData, setLoading }) => {
   /**
    * POST METHOD
    */
-  const postData = async ({ url, payload, resetForm }) => {
+  const postData = async ({ url, payload, resetForm, params = {} }) => {
     // Set loading state to true
     setLoading(true);
 
@@ -18,6 +18,7 @@ const useRequest = ({ setIsOpen, setData, setLoading }) => {
       const response = await postRequest({
         data: payload,
         url: `${request_path}${url}`,
+        params: params,
       });
 
       if (response) {
@@ -79,6 +80,7 @@ const useRequest = ({ setIsOpen, setData, setLoading }) => {
     setIsOpen,
     resetForm,
     id,
+    params = {},
   }) => {
     // Set loading state to true
     setLoading(true);
@@ -91,6 +93,7 @@ const useRequest = ({ setIsOpen, setData, setLoading }) => {
       const response = await putRequest({
         url: `${request_path}${url}`,
         data: payload,
+        params: params,
       });
 
       // console.log(response.data);

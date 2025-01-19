@@ -21,6 +21,20 @@ axiosClient.interceptors.request.use((config) => {
     Authorization: `Bearer ${JSON.parse(localStorage.getItem("ACCESS_TOKEN"))}`,
   };
 
+  // Handle Content-Type based on payload type
+  if (config.data instanceof FormData) {
+    // If sending FormData, don't set Content-Type manually (let Axios handle it)
+    delete config.headers['Content-Type'];
+
+    console.log(config.headers);
+  } else if (config.data) {
+    // If sending JSON, set Content-Type to application/json
+    config.headers['Content-Type'] = 'application/json';
+
+    // console.log(config.headers);
+  }
+
+
   // console.log(config);
   return config;
 });

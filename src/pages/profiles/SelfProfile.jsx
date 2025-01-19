@@ -78,7 +78,7 @@ const SelfProfile = ({ authorizeRole }) => {
       {/* Profile Information Section */}
       <div ref={componentRef}>
         <div className="flex items-center justify-between w-full bg-white shadow-lg">
-          <div className="flex items-center gap-6 bg-opacity-80 px-6 py-4 rounded-lg  w-full">
+          <div className="flex items-center gap-6 bg-opacity-80 px-6 py-4 rounded-lg">
             <img
               src={getProfileImage(profile.profile_image_url)} // Use external default profile image URL
               alt={`${authorizeRole} Profile`}

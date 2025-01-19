@@ -6,30 +6,22 @@ import Heading from "../common/Heading";
 import FormField from "../common/FormField";
 import { Input, Select } from "@headlessui/react";
 import Text from "../common/Text";
+import { loginInfo } from "../../formDefaults/loginInfo";
+import { addressInfo } from "../../formDefaults/addressInfo";
 
 const StudentForm = ({
   authorizeRole,
   method = "post",
   studentInfo = {
-    id: "",
-    password: "",
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    email: "",
-    gender: "",
-    phoneNumber: "",
-    street: "",
-    barangay: "",
-    cityMunicipality: "",
-    province: "",
-    postalCode: "",
+    ...loginInfo,
+    ...personalInfo,
+    ...addressInfo,
 
     // Student unique fields
     age: "",
-    dateOfBirth: "",
-    programID: "",
-    coordinatorID: "",
+    date_of_birth: "",
+    program_id: "",
+    coordinator_id: "",
   },
   handleStudentInfoChange,
   requiredFields = {
@@ -41,18 +33,18 @@ const StudentForm = ({
     phone_number: false,
     email: true,
     gender: false,
-    phoneNumber: false,
+    phone_numbers: false,
     street: false,
     barangay: false,
-    cityMunicipality: false,
+    city_municipality: false,
     province: false,
-    postalCode: false,
+    postal_code: false,
 
     // Student unique fields
     age: false,
-    dateOfBirth: false,
-    programID: true,
-    coordinatorID: false,
+    date_of_birth: false,
+    program_id: true,
+    coordinator_id: false,
   },
   programs = [],
   coordinators = [],
@@ -98,18 +90,18 @@ const StudentForm = ({
               <div>
                 <FormField
                   label={"Date of Birth"}
-                  name={"dateOfBirth"}
+                  name={"date_of_birth"}
                   labelClassName="text-sm text-black font-semibold"
-                  required={requiredFields["dateOfBirth"]}
+                  required={requiredFields["date_of_birth"]}
                 >
                   <Input
                     type="date"
                     className="outline-none text-black rounded-sm p-2 text-sm"
-                    name="dateOfBirth"
+                    name="date_of_birth"
                     onChange={handleStudentInfoChange}
                     placeholder="Date of Birth"
-                    value={studentInfo.dateOfBirth}
-                    required={requiredFields["dateOfBirth"]}
+                    value={studentInfo.date_of_birth}
+                    required={requiredFields["date_of_birth"]}
                   />
                 </FormField>
                 {errors.date_of_birth && (
@@ -150,17 +142,17 @@ const StudentForm = ({
                 <div>
                   <FormField
                     label={"Program Assign"}
-                    name={"programID"}
+                    name={"program_id"}
                     labelClassName="text-sm text-black font-semibold"
-                    required={requiredFields["programID"]}
+                    required={requiredFields["program_id"]}
                   >
                     <Select
-                      name="programID"
+                      name="program_id"
                       className="border data-[hover]:shadow data-[focus]:bg-blue-100 h-full outline-none p-2"
                       aria-label="Select program"
                       onChange={handleStudentInfoChange}
-                      value={studentInfo.programID}
-                      required={requiredFields["programID"]}
+                      value={studentInfo.program_id}
+                      required={requiredFields["program_id"]}
                     >
                       <option value="">-Select a Program-</option>
                       {programs.map((program) => {
@@ -182,17 +174,17 @@ const StudentForm = ({
               <div>
                 <FormField
                   label={"Coordinator Assign"}
-                  name={"coordinatorID"}
+                  name={"coordinator_id"}
                   labelClassName="text-sm text-black font-semibold"
-                  required={requiredFields["coordinatorID"]}
+                  required={requiredFields["coordinator_id"]}
                 >
                   <Select
-                    name="coordinatorID"
+                    name="coordinator_id"
                     className="border data-[hover]:shadow data-[focus]:bg-blue-100 h-full outline-none p-2"
                     aria-label="Select coordinator"
                     onChange={handleStudentInfoChange}
-                    value={studentInfo.coordinatorID}
-                    required={requiredFields["coordinatorID"]}
+                    value={studentInfo.coordinator_id}
+                    required={requiredFields["coordinator_id"]}
                   >
                     <option value="">-Select a Coordinator-</option>
                     {coordinators.map((coordinator) => {

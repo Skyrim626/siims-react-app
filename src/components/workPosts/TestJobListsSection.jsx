@@ -97,8 +97,12 @@ const TestJobListsSection = () => {
       /* const response = await postRequest({
           url: `/api/v1/student/jobs/${selectedWorkPostId}/apply`,
         }); */
-      const response = await postRequest({
+      /* const response = await postRequest({
         url: `/api/v1/applications/${selectedWorkPostId}/apply`,
+      }); */
+
+      const response = await postRequest({
+        url: `/api/v1/applications/${selectedWorkPostId}`,
       });
 
       setIsModalOpen(false);

@@ -21,6 +21,7 @@ import {
   NotepadText,
   ScrollText,
   FilePlus,
+  Section,
 } from "lucide-react";
 
 // Configuration for sidebar items for Admin
@@ -173,6 +174,15 @@ const coordinatorSidebarItemsConfig = [
         path: "/auth/coordinator/profile/edit", // Dynamic path
       },
     ],
+  },
+  {
+    icon: <Section size={20} />,
+    text: "Sections",
+    alert: true,
+    ariaLabel: "Sections",
+    exact: false,
+    active: false,
+    path: "/auth/coordinator/sections",
   },
   {
     icon: <Users size={20} />,

@@ -236,7 +236,7 @@ const ManageApplicantPage = ({ authorizeRole }) => {
                   onClick={handleOpenModal}
                   className="bg-blue-500 text-white py-2 px-6 rounded border border-blue-600 text-lg font-semibold hover:bg-blue-600 hover:border-blue-700 transition-all"
                 >
-                  Upload Document
+                  Upload Acceptance Letter
                 </Button>
               )}
 
@@ -290,6 +290,7 @@ const ManageApplicantPage = ({ authorizeRole }) => {
         onSubmit={submitFile}
       >
         <UploadFile
+          title="Upload Acceptance Letter"
           file={file}
           set={setFile}
           handleFileChange={handleFileChange}

@@ -12,6 +12,9 @@ const StudentDocumentTrackingPage = () => {
 
   // Container State
   const [documents, setDocuments] = useState([]);
+
+  const [reports, setReports] = useState([]);
+
   // const [totalApplications, setTotalApplications] = useState(0);
 
   // Fetch documents
@@ -23,7 +26,9 @@ const StudentDocumentTrackingPage = () => {
       });
 
       if (response) {
+        console.log(response);
         setDocuments(response.documents);
+        setReports(response.reports);
         // setTotalApplications(response.total_applications);
       }
     } catch (error) {
@@ -113,6 +118,61 @@ const StudentDocumentTrackingPage = () => {
           </div>
         ) : (
           <p className="text-gray-500 mt-4">No documents found.</p>
+        )}
+
+        {reports.length > 0 ? (
+          <div className="overflow-x-auto">
+            <table className="table-fixed w-full border-collapse border border-gray-300 mt-4">
+              <thead className="bg-gray-200">
+                <tr>
+                  <th className="border border-gray-300 px-4 py-2 text-left w-[5%]">
+                    #
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-left w-[30%]">
+                    Report Type
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-left w-[30%]">
+                    File
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-left w-[20%]">
+                    Created At
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {reports.map((doc, index) => {
+                  return (
+                    <tr
+                      key={doc.id}
+                      className={index % 2 === 0 ? "bg-white" : "bg-gray-100"}
+                    >
+                      <td className="border border-gray-300 px-4 py-2 text-center">
+                        {index + 1}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {doc.name}
+                      </td>
+                      <td className="overflow-hidden border border-gray-300 px-4 py-2">
+                        <a
+                          className="text-blue-500 hover:text-blue-600 underline"
+                          href={doc.file_path}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {doc.file_path}
+                        </a>
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {doc.created_at}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p className="text-gray-500 mt-4">No reports found.</p>
         )}
       </Section>
     </>

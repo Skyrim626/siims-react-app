@@ -7,25 +7,18 @@ import { Select } from "@headlessui/react";
 import LoginInfoFields from "./fields/LoginInfoFields";
 import PersonalInfoFields from "./fields/PersonalInfoFields";
 import AddressInfoFields from "./fields/AddressInfoFields";
+import { loginInfo } from "../../formDefaults/loginInfo";
+import { personalInfo } from "../../formDefaults/personalInfo";
+import { addressInfo } from "../../formDefaults/addressInfo";
 
 const CoordinatorForm = ({
   authorizeRole,
   method = "post",
   coordinatorInfo = {
-    id: "",
-    password: "",
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    email: "",
-    gender: "",
-    phoneNumber: "",
-    street: "",
-    barangay: "",
-    cityMunicipality: "",
-    province: "",
-    postalCode: "",
-    programId: "",
+    ...loginInfo,
+    ...personalInfo,
+    ...addressInfo,
+    program_id: "",
   },
   handleCoordinatorInfoChange,
   requiredFields = {
@@ -34,15 +27,14 @@ const CoordinatorForm = ({
     first_name: true,
     middle_name: false,
     last_name: false,
-    phone_number: false,
     email: true,
     gender: false,
-    phoneNumber: false,
+    phone_number: false,
     street: false,
     barangay: false,
-    cityMunicipality: false,
+    city_municipality: false,
     province: false,
-    postalCode: false,
+    postal_code: false,
     program_id: true,
   },
   programs = [],
@@ -50,7 +42,7 @@ const CoordinatorForm = ({
 }) => {
   return (
     <>
-      <form className="space-y-3">
+      <div className="space-y-3">
         {method !== "put" && (
           <LoginInfoFields
             info={coordinatorInfo}
@@ -87,16 +79,16 @@ const CoordinatorForm = ({
                 <div>
                   <FormField
                     label={"Program Assign"}
-                    name={"programId"}
+                    name={"program_id"}
                     labelClassName="text-sm text-black font-semibold"
                     required={requiredFields["program_id"]}
                   >
                     <Select
-                      name="programId"
+                      name="program_id"
                       className="border data-[hover]:shadow data-[focus]:bg-blue-100 h-full outline-none p-2"
                       aria-label="Select program"
                       onChange={handleCoordinatorInfoChange}
-                      value={coordinatorInfo.programId}
+                      value={coordinatorInfo.program_id}
                       required={requiredFields["program_id"]}
                     >
                       <option value="">-Select a Program-</option>
@@ -117,7 +109,7 @@ const CoordinatorForm = ({
             </div>
           </div>
         )}
-      </form>
+      </div>
 
       {/*  <div>
       <div className="flex flex-col space-y-3">
@@ -132,7 +124,7 @@ const CoordinatorForm = ({
           middleName={middleName}
           lastName={lastName}
           email={email}
-          phoneNumber={phoneNumber}
+          phone_number={phone_number}
           setFirstName={setFirstName}
           setMiddleName={setMiddleName}
           setLastName={setLastName}
@@ -152,19 +144,19 @@ const CoordinatorForm = ({
           <div className="mt-4">
             <FormField
               label={"Coordinator Assign"}
-              name={"programId"}
+              name={"program_id"}
               labelClassName="text-sm text-black font-semibold"
-              required={requiredFields["programId"]}
+              required={requiredFields["program_id"]}
             >
               <Select
                 typeof="text"
                 className="outline-none text-black rounded-sm p-2 text-sm"
-                name="programId"
+                name="program_id"
                 onChange={(e) => {
                   setProgramId(e.target.value);
                 }}
-                value={programId}
-                required={requiredFields["programId"]}
+                value={program_id}
+                required={requiredFields["program_id"]}
               >
                 <option value="">-Program Assign-</option>
                 {programs.map((program) => {

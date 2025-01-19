@@ -28,13 +28,16 @@ import ViewChairpersonsPage from "../../pages/ViewChairpersonsPage";
 import ViewCoordinatorsPage from "../../pages/ViewCoordinatorsPage";
 import ManageCompaniesPage from "../../pages/ManageCompaniesPage";
 import ManageOsaPage from "../../pages/ManageOsaPage";
-import ManageStudentsPage from "../../pages/ManageStudentsPage";
 import ManageSupervisorsPage from "../../pages/ManageSupervisorsPage";
 import EditProfilePage from "../../pages/profiles/EditProfilePage";
 import ViewProfilePage from "../../pages/profiles/ViewProfilePage";
 import Chamber from "../../pages/_testing/Chamber";
 import ManageDocumentTypePage from "../../pages/ManageDocumentTypesPage";
 import ManageSectionsPage from "../../pages/ManageSectionsPage";
+import ManageStudentsPage from "../../pages/ManageStudentsPage";
+import HomeRemotePage from "../../pages/remotes/HomeRemotePage";
+import TestingPage from "../../pages/TestingPage";
+// import ManageStudentsPage from "../../pages/__v2/ManageStudentsPage";
 
 // Define routes for the Admin section
 const AdminRoutes = {
@@ -73,30 +76,10 @@ const AdminRoutes = {
       element: <Navigate to={"/admin"} />,
     },
     {
-      index: true, // Default route for the admin section
-      element: <AdminDashboard />, // Render the Admin Dashboard component
-      loader: async () => {
-        try {
-          /**
-           * Response
-           */
-          const response = await axiosClient.get("/api/v1/dashboards"); // Fetch dashboard data from API
-
-          /**
-           * Variables
-           */
-
-          const data = response.data;
-
-          /**
-           * Return
-           */
-          return data; // Return fetched data for the loader
-        } catch (error) {
-          console.log(error);
-        }
-      },
+      index: true,
+      element: <HomeRemotePage authorizeRole={"admin"} />,
     },
+
     {
       path: "sections",
       element: <ManageSectionsPage authorizeRole={"admin"} />,
@@ -275,6 +258,10 @@ const AdminRoutes = {
           path: "students",
           element: <ManageStudentsPage authorizeRole={"admin"} />,
         },
+        /* {
+          path: "students",
+          element: <ManageStudentsPage authorizeRole={"admin"} />,
+        }, */
         // SUPERVISORS
         {
           path: "supervisors",
@@ -370,6 +357,10 @@ const AdminRoutes = {
     {
       path: "chamber",
       element: <Chamber />,
+    },
+    {
+      path: "testing",
+      element: <TestingPage />,
     },
   ],
 };

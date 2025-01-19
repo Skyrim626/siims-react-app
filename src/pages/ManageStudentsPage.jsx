@@ -25,6 +25,9 @@ import {
 } from "../utils/columns/studentColumns";
 import DeployStudentButton from "../components/tables/DeployStudentButton";
 import CoordinatorManageStudentsSettings from "../components/settings/CoordinatorManageStudentsSettings";
+import { loginInfo } from "../formDefaults/loginInfo";
+import { personalInfo } from "../formDefaults/personalInfo";
+import { addressInfo } from "../formDefaults/addressInfo";
 
 // Tabs Links
 const tabLinks = [
@@ -84,7 +87,7 @@ const ManageStudentsPage = ({ authorizeRole }) => {
    */
   const [file, setFile] = useState(null);
   const [status, setStatus] = useState(""); // 'success' or 'error
-  const [programID, setProgramID] = useState(null);
+  const [program_id, setProgramID] = useState(null);
 
   // Row State
   const [rows, setRows] = useState([]);
@@ -105,25 +108,15 @@ const ManageStudentsPage = ({ authorizeRole }) => {
 
   // Use the useForm hook to manage form data
   const { formData, handleInputChange, resetForm, setFormValues } = useForm({
-    id: "",
-    password: "",
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    email: "",
-    gender: "",
-    phoneNumber: "",
-    street: "",
-    barangay: "",
-    cityMunicipality: "",
-    province: "",
-    postalCode: "",
+    ...loginInfo,
+    ...personalInfo,
+    ...addressInfo,
 
     // Student unique fields
     age: "",
-    dateOfBirth: "",
-    programID: "",
-    coordinatorID: "",
+    date_of_birth: "",
+    program_id: "",
+    coordinator_id: "",
   });
 
   /**
@@ -202,7 +195,7 @@ const ManageStudentsPage = ({ authorizeRole }) => {
           setProgramID(currentProgramResponse);
           setFormValues({
             ...formData, // Ensure this has all fields
-            programID: currentProgramResponse, // Update programID only
+            program_id: currentProgramResponse, // Update program_id only
           });
         }
       } catch (error) {
@@ -265,7 +258,7 @@ const ManageStudentsPage = ({ authorizeRole }) => {
 
     try {
       // Ensure a coordinator is selected
-      if (!formData.coordinatorID) {
+      if (!formData.coordinator_id) {
         alert("Please select a coordinator before confirming.");
         return;
       }
@@ -281,7 +274,7 @@ const ManageStudentsPage = ({ authorizeRole }) => {
       // Prepare payload
       const payload = {
         student_ids: selectedIds,
-        coordinator_id: formData.coordinatorID,
+        coordinator_id: formData.coordinator_id,
       };
 
       const response = await putRequest({
@@ -341,26 +334,7 @@ const ManageStudentsPage = ({ authorizeRole }) => {
     // POST METHOD
     postData({
       url: "/users/students",
-      payload: {
-        id: formData.id,
-        password: formData.password,
-        first_name: formData.firstName,
-        middle_name: formData.middleName,
-        last_name: formData.lastName,
-        email: formData.email,
-        gender: formData.gender,
-        phone_number: formData.phoneNumber,
-        street: formData.street,
-        barangay: formData.barangay,
-        city_municipality: formData.cityMunicipality,
-        province: formData.province,
-        postal_code: formData.postalCode,
-
-        program_id: formData.programID,
-        coordinator_Id: formData.coordinatorID,
-        date_of_birth: formData.dateOfBirth,
-        age: formData.age,
-      },
+      payload: formData,
       resetForm: resetForm,
     });
   };
@@ -370,24 +344,7 @@ const ManageStudentsPage = ({ authorizeRole }) => {
     // PUT METHOD
     putData({
       url: `/users/students/${selectedStudent["id"]}`,
-      payload: {
-        first_name: formData.firstName,
-        middle_name: formData.middleName,
-        last_name: formData.lastName,
-        email: formData.email,
-        gender: formData.gender,
-        phone_number: formData.phoneNumber,
-        street: formData.street,
-        barangay: formData.barangay,
-        city_municipality: formData.cityMunicipality,
-        province: formData.province,
-        postal_code: formData.postalCode,
-
-        program_id: formData.programID,
-        coordinator_Id: formData.coordinatorID,
-        date_of_birth: formData.dateOfBirth,
-        age: formData.age,
-      },
+      payload: formData,
       selectedData: selectedStudent,
       setIsOpen: setEditIsOpen,
       resetForm: resetForm,
@@ -405,22 +362,8 @@ const ManageStudentsPage = ({ authorizeRole }) => {
 
     // Set Form Values
     setFormValues({
-      firstName: row.first_name,
-      middleName: row.middle_name,
-      lastName: row.last_name,
-      email: row.email,
+      ...row,
       gender: row.gender ? row.gender.toLowerCase() : row.gender,
-      phoneNumber: row.phone_number,
-      street: row.street,
-      barangay: row.barangay,
-      cityMunicipality: row.city_municipality,
-      province: row.province,
-      postalCode: row.postal_code,
-
-      programID: row.program_id,
-      coordinatorID: row.coordinator_Id,
-      dateOfBirth: row.date_of_birth,
-      age: row.age,
     });
 
     // Open Edit Modal
@@ -494,11 +437,11 @@ const ManageStudentsPage = ({ authorizeRole }) => {
     try {
       // Set Loading
       setLoading(true);
-      console.log(`/api/v1/users/students/${programID}/upload-students`);
+      console.log(`/api/v1/users/students/${program_id}/upload-students`);
 
       // Assuming your backend has an endpoint for file upload
       const response = await postFormDataRequest({
-        url: `/api/v1/users/students/${programID}/upload-students`,
+        url: `/api/v1/users/students/${program_id}/upload-students`,
         data: formData,
       });
 
@@ -631,7 +574,7 @@ const ManageStudentsPage = ({ authorizeRole }) => {
                   onSubmit={() => setIsAssignConfirmOpen(!isAssignConfirmOpen)}
                 >
                   <AssignStudentForm
-                    selectedCoordinatorID={formData.coordinatorID}
+                    selectedCoordinatorID={formData.coordinator_id}
                     handleSelectedCoordinatorID={handleInputChange}
                     coordinators={listOfCoordinators}
                   />
@@ -703,7 +646,7 @@ const ManageStudentsPage = ({ authorizeRole }) => {
                     setStatus={setStatus}
                     handleFileChange={handleFileChange}
                     programs={listOfPrograms}
-                    programId={programID}
+                    programId={program_id}
                     setProgramId={setProgramID}
                     withSelection={!(authorizeRole === "chairperson")}
                   />

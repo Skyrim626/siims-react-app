@@ -23,8 +23,12 @@ const SearchCompanyModal = ({
     // console.log(company);
 
     setCompanyName(company.name);
-    setOwnerName(company.fullName);
-    setGreetingMessage(`Dear ${company.fullName}`);
+
+    if (company.fullName) {
+      setOwnerName(company.fullName);
+      setGreetingMessage(`Dear ${company.fullName}`);
+    }
+
     setFullAddress(company.fullAddress);
 
     toggleModal();

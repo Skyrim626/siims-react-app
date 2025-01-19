@@ -6,10 +6,11 @@ const useForm = (initialState) => {
 
   // Function to handle input changes in the form
   const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value, type, checked, files } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: type === "checkbox" ? checked : value,
+      [name]: type === "file" ? files[0] : value,
     }));
   };
 

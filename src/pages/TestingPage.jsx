@@ -1,24 +1,25 @@
 import React, { useState } from "react";
 import Loader from "../components/common/Loader";
+import { Button } from "@headlessui/react";
+import Modal from "../components/modals/Modal";
 
 const TestingPage = () => {
   const [loading, setLoading] = useState(false);
 
-  const simulateRequest = () => {
-    setLoading(true);
-
-    // Simulate a network request or some processing
-    setTimeout(() => {
-      setLoading(false);
-    }, 3000); // Simulate a 3 second delay
-  };
+  const [open, setOpen] = useState(false);
 
   return (
     <div>
-      <button onClick={simulateRequest}>Send Request</button>
+      <Button onClick={() => setOpen(!open)}>Open</Button>
 
-      {/* Loader component */}
-      <Loader loading={loading} />
+      <Modal isOpen={open} setIsOpen={setOpen}>
+        <p>
+          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptatem,
+          necessitatibus odio! Enim consectetur delectus deserunt autem quia?
+          Sunt veniam at tempora sed eligendi, error voluptas ratione assumenda
+          deleniti nam nihil!
+        </p>
+      </Modal>
     </div>
   );
 };

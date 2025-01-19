@@ -6,7 +6,7 @@ import { getRequest, postFormDataRequest } from "../api/apiHelpers";
 import StepOneBaseContent from "../components/applications/StepOneBaseContent";
 import StepTwoBaseContent from "../components/applications/StepTwoBaseContent";
 
-const ApplicationPage = () => {
+const ApplicationPage = ({ authorizeRole }) => {
   // Params
   const { application_id } = useParams();
 
@@ -39,9 +39,14 @@ const ApplicationPage = () => {
     try {
       const response = await getRequest({
         url: `/api/v1/applications/${application_id}`,
+        params: {
+          requestedBy: authorizeRole,
+        },
       });
 
       if (response) {
+        // console.log(response);
+
         setApplication(response);
       }
     } catch (error) {
@@ -150,9 +155,12 @@ const ApplicationPage = () => {
     setCurrentStep((prevStep) => Math.max(prevStep - 1, 1));
   };
 
+  if (loading) {
+    return <Loader loading={loading} />;
+  }
+
   return (
     <Page>
-      <Loader loading={loading} />
       <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-md">
         <h1 className="text-3xl font-bold mb-6 text-gray-800">
           Apply for {application.job_title}

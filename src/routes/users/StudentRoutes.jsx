@@ -126,7 +126,7 @@ const StudentRoutes = {
     }, */
     {
       path: "applications/:application_id",
-      element: <ApplicationPage />,
+      element: <ApplicationPage authorizeRole={"student"} />,
     },
     {
       path: "test/applications/:application_id",

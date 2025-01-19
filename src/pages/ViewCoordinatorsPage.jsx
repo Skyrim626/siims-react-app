@@ -14,11 +14,21 @@ import Page from "../components/common/Page";
 import Section from "../components/common/Section";
 import Heading from "../components/common/Heading";
 import Text from "../components/common/Text";
+import { useLocation } from "react-router-dom";
+import {
+  DELETE_API_ROUTE_PATH,
+  GET_API_ROUTE_PATH,
+  POST_API_ROUTE_PATH,
+  PUT_API_ROUTE_PATH,
+} from "../api/resources";
+import StatusDropdown from "../components/dropdowns/StatusDropdown";
+import { loginInfo } from "../formDefaults/loginInfo";
+import { personalInfo } from "../formDefaults/personalInfo";
+import { addressInfo } from "../formDefaults/addressInfo";
 import {
   getCoordinatorActionColumns,
   getCoordinatorStaticColumns,
-} from "../utils/columns";
-import { useLocation } from "react-router-dom";
+} from "../utils/columns/coordinatorColumns";
 
 const ViewCoordinatorsPage = ({ authorizeRole }) => {
   // Open location
@@ -45,26 +55,44 @@ const ViewCoordinatorsPage = ({ authorizeRole }) => {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isOpenImport, setIsOpenImport] = useState(false);
 
-  // Select State
+  /**
+   *
+   *
+   *
+   * URL State
+   *
+   *
+   */
+  const [dataGridUrl, setDataGridUrl] = useState(
+    GET_API_ROUTE_PATH.coordinators
+  );
+
+  /**
+   *
+   *
+   * Select State
+   *
+   *
+   *
+   */
+  const [selectedStatus, setSelectedStatus] = useState("all");
   const [selectedCoordinator, setSelectedCoordinator] = useState({});
   const [selectedProgramId, setSelectedProgramId] = useState(null);
 
+  useEffect(() => {
+    setDataGridUrl(
+      selectedStatus === "archived"
+        ? `${GET_API_ROUTE_PATH.coordinators}?status=archived`
+        : GET_API_ROUTE_PATH.coordinators
+    );
+  }, [selectedStatus]);
+
   // Use the useForm hook to manage form data
   const { formData, handleInputChange, resetForm, setFormValues } = useForm({
-    id: "",
-    password: "",
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    email: "",
-    gender: "",
-    phoneNumber: "",
-    street: "",
-    barangay: "",
-    cityMunicipality: "",
-    province: "",
-    postalCode: "",
-    programId: "",
+    ...loginInfo,
+    ...personalInfo,
+    ...addressInfo,
+    program_id: "",
   });
 
   /**
@@ -87,26 +115,29 @@ const ViewCoordinatorsPage = ({ authorizeRole }) => {
   const addCoordinator = () => {
     // console.log(formData);
 
+    // console.log(formData);
+
     // POST METHOD
     postData({
-      url: "/users/coordinators",
-      payload: {
-        id: formData.id,
-        password: formData.password,
-        first_name: formData.firstName,
-        middle_name: formData.middleName,
-        last_name: formData.lastName,
-        email: formData.email,
-        gender: formData.gender,
-        phone_number: formData.phoneNumber,
-        street: formData.street,
-        barangay: formData.barangay,
-        city_municipality: formData.cityMunicipality,
-        province: formData.province,
-        postal_code: formData.postalCode,
-        program_id: formData.programId,
-      },
+      url: POST_API_ROUTE_PATH.coordinators,
+      payload: formData,
       resetForm: resetForm,
+      params: {
+        requestedBy: authorizeRole,
+      },
+    });
+  };
+
+  /**
+   * Function that restore a deleted coordinator type
+   */
+  const restoreCoordinator = (id) => {
+    // console.log(id);
+
+    // UPDATE METHOD
+    putData({
+      url: `${PUT_API_ROUTE_PATH.coordinators}/${id}/restore`,
+      id: id,
     });
   };
 
@@ -116,24 +147,14 @@ const ViewCoordinatorsPage = ({ authorizeRole }) => {
   const updateCoordinator = () => {
     // PUT METHOD
     putData({
-      url: `/users/coordinators/${selectedCoordinator["id"]}`,
-      payload: {
-        first_name: formData.firstName,
-        middle_name: formData.middleName,
-        last_name: formData.lastName,
-        email: formData.email,
-        gender: formData.gender,
-        phone_number: formData.phoneNumber,
-        street: formData.street,
-        barangay: formData.barangay,
-        city_municipality: formData.cityMunicipality,
-        province: formData.province,
-        postal_code: formData.postalCode,
-        program_id: formData.programId,
-      },
+      url: `${PUT_API_ROUTE_PATH.coordinators}/${selectedCoordinator["id"]}`,
+      payload: formData,
       selectedData: selectedCoordinator,
       setIsOpen: setEditIsOpen,
       resetForm: resetForm,
+      params: {
+        requestedBy: authorizeRole,
+      },
     });
   };
 
@@ -148,20 +169,9 @@ const ViewCoordinatorsPage = ({ authorizeRole }) => {
 
     // Set Form Values
     setFormValues({
-      firstName: row.first_name,
-      middleName: row.middle_name,
-      lastName: row.last_name,
-      email: row.email,
+      ...row,
       gender: row.gender.toLowerCase(),
-      phoneNumber: row.phone_number,
-      street: row.street,
-      barangay: row.barangay,
-      cityMunicipality: row.city_municipality,
-      province: row.province,
-      postalCode: row.postal_code,
-      programId: row.program_id,
     });
-
     // Open Edit Modal
     setEditIsOpen(true);
   };
@@ -172,7 +182,7 @@ const ViewCoordinatorsPage = ({ authorizeRole }) => {
   const deleteCoordinator = () => {
     // DELETE METHOD
     deleteData({
-      url: `/users/coordinators/${selectedCoordinator["id"]}`,
+      url: `${DELETE_API_ROUTE_PATH.coordinators}/${selectedCoordinator["id"]}`,
       id: selectedCoordinator["id"],
       setIsDeleteOpen: setIsDeleteOpen,
     });
@@ -194,8 +204,9 @@ const ViewCoordinatorsPage = ({ authorizeRole }) => {
     () =>
       getCoordinatorStaticColumns({
         pathname: location.pathname,
+        selectedStatus: selectedStatus,
       }),
-    []
+    [selectedStatus]
   );
 
   // Action Column
@@ -204,9 +215,11 @@ const ViewCoordinatorsPage = ({ authorizeRole }) => {
       getCoordinatorActionColumns({
         handleEditModal: handleEditModal,
         handleDeleteModal: handleDeleteModal,
+        handleRestore: restoreCoordinator,
         authorizeRole: authorizeRole,
+        selectedStatus: selectedStatus,
       }),
-    []
+    [selectedStatus]
   );
 
   const columns = useMemo(
@@ -332,22 +345,29 @@ const ViewCoordinatorsPage = ({ authorizeRole }) => {
         <Loader loading={loading} />
 
         <div className="mt-3">
-          <ManageHeader
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-            addPlaceholder="Add New Coordinator"
-            showExportButton={false}
-            showImportButton={true}
-            isImportOpen={isOpenImport}
-            setIsImportOpen={setIsOpenImport}
-          />
+          <div className="flex items-center justify-between">
+            <StatusDropdown
+              selectedStatus={selectedStatus}
+              setSelectedStatus={setSelectedStatus}
+            />
+            <ManageHeader
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
+              addPlaceholder="Add New Coordinator"
+              showExportButton={false}
+              showImportButton={true}
+              isImportOpen={isOpenImport}
+              setIsImportOpen={setIsOpenImport}
+            />
+          </div>
 
           <DynamicDataGrid
             searchPlaceholder={"Search Coordinator"}
             rows={rows}
             setRows={setRows}
             columns={columns}
-            url={"/users/coordinators"}
+            url={dataGridUrl}
+            requestedBy={authorizeRole}
           />
 
           {/* Modals */}

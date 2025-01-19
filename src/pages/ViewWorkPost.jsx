@@ -87,7 +87,7 @@ const ViewWorkPost = ({ authorizeRole }) => {
       }); */
 
       const response = await postRequest({
-        url: `/api/v1/applications/${workPost.id}/apply`,
+        url: `/api/v1/applications/${workPost.id}`,
       });
 
       toggleModal(); // Close Modal

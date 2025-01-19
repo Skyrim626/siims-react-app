@@ -37,7 +37,7 @@ const ManualCreateEndorsementLetterPage = () => {
 
   // Set the default date to the current date in the desired format
   const [requestedID, setRequestedID] = useState("");
-  const [greetingMessage, setGreetingMessage] = useState("Dear, Mr John Doe");
+  const [greetingMessage, setGreetingMessage] = useState("Dear Mr John Doe,");
   const [ownerName, setOwnerName] = useState("");
   const [position, setPosition] = useState("HR Specialist");
   const [companyName, setCompanyName] = useState("");
@@ -89,6 +89,11 @@ const ManualCreateEndorsementLetterPage = () => {
     if (newStudent.id && newStudent.fullName && newStudent.email) {
       setStudents((prevStudents) => [...prevStudents, newStudent]);
       setNewStudent({ id: "", fullName: "", email: "", phoneNumber: "" }); // Clear input fields
+    }
+
+    if (requestedID === "") {
+      // const lastStudent = students[students.length - 1]; // Select the last student
+      setRequestedID(newStudent.id);
     }
   };
 
@@ -164,7 +169,15 @@ const ManualCreateEndorsementLetterPage = () => {
       });
 
       if (response) {
-        navigate(-1);
+        // navigate(-1);
+
+        setOwnerName("");
+        setCompanyName("");
+        setFullAddress("");
+        setOjtCoordinatorFullName("");
+        setOjtCoordinatorMail("");
+        setRequestedID("");
+        setStudents([]);
       }
     } catch (error) {
       console.error(error);

@@ -5,7 +5,13 @@ import React, { createContext, useState } from "react";
 import companyLogo from "../../assets/images/logo.svg";
 
 // Icons
-import { ChevronFirst, ChevronLast, LogOut, MoreVertical } from "lucide-react";
+import {
+  ChevronFirst,
+  ChevronLast,
+  LogOut,
+  MoreVertical,
+  UserCog,
+} from "lucide-react";
 
 /**
  * Components
@@ -13,9 +19,9 @@ import { ChevronFirst, ChevronLast, LogOut, MoreVertical } from "lucide-react";
 // Headless UI Components
 import { Button } from "@headlessui/react";
 
-// Custom Hooks
-import { useAuth } from "../../hooks/useAuth";
 import Text from "../common/Text";
+import { useAuth } from "../../hooks/useAuth";
+import { NavLink } from "react-router-dom";
 
 // Create and Export Contexts
 // * Purpose: To provide the current state of sidebar expansion to child components
@@ -50,8 +56,10 @@ export default function Sidebar({
   // Manage the sidebar's expanded/collapsed state
   const [expanded, setExpanded] = useState(true);
 
+  // console.log(roles);
+
   // Auth logout
-  const { logout } = useAuth();
+  const { logout, roles } = useAuth();
 
   return (
     <aside className="h-screen">
@@ -82,8 +90,28 @@ export default function Sidebar({
         </div>
 
         <SidebarContext.Provider value={{ expanded }}>
-          <ul className="flex-1 px-3">{children}</ul>
+          <ul className="flex-1 px-3">
+            {children}
+
+            {roles.length > 1 && (
+              <NavLink
+                to={"/auth"}
+                className={`mt-10 relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group hover:bg-blue-700 text-gray-50`}
+              >
+                <UserCog size={20} />
+
+                <Text
+                  className={`overflow-hidden transition-all ${
+                    expanded ? "w-52 ml-3" : "w-0"
+                  }`}
+                >
+                  Switch Role
+                </Text>
+              </NavLink>
+            )}
+          </ul>
         </SidebarContext.Provider>
+
         <div className="border-t flex p-3">
           <div className="rounded-sm h-full bg-blue-300 flex items-center justify-center px-2">
             <Text className="font-bold tracking-wider">JD</Text>
@@ -97,6 +125,7 @@ export default function Sidebar({
               <h4 className="font-semibold">{name}</h4>
               <span className="text-xs">{email}</span>
             </div>
+
             <Button onClick={logout} className="" type="submit">
               <LogOut
                 className="transition text-white cursor-pointer hover:text-blue-500"

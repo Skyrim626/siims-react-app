@@ -17,7 +17,7 @@ export default function SidebarLayout({
   sidebarItemsConfig = [],
 }) {
   // Get user
-  const { user } = useAuth();
+  const { user, roles } = useAuth();
   // Open use location
   const location = useLocation();
 

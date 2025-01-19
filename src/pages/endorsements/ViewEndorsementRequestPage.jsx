@@ -90,7 +90,8 @@ const ViewEndorsementRequestPage = ({ authorizeRole }) => {
               Requested By
             </h2>
             <p className="text-gray-600 font-bold">
-              {endorsementLetterRequest.name}
+              {endorsementLetterRequest.name} (
+              {endorsementLetterRequest.student_id})
             </p>
           </div>
           <div>

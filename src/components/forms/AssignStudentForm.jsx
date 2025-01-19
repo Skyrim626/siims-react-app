@@ -6,6 +6,7 @@ const AssignStudentForm = ({
   selectedCoordinatorID = "",
   handleSelectedCoordinatorID,
   coordinators = [],
+  disabled = false,
 }) => {
   return (
     <div className="space-y-4">

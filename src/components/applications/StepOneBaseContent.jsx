@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getStatusBgColor, getStatusColor } from "../../utils/statusColor";
 import toFilePath from "../../utils/baseURL";
 import { Button, Field, Input, Label } from "@headlessui/react";
@@ -6,7 +6,7 @@ import { ChevronRight } from "lucide-react";
 import EndorsementRequestForm from "../forms/EndorsementRequestForm";
 import FormModal from "../modals/FormModal";
 import Text from "../common/Text";
-import { postRequest } from "../../api/apiHelpers";
+import { getRequest, postRequest } from "../../api/apiHelpers";
 import Loader from "../common/Loader";
 
 const StepOneBaseContent = ({
@@ -26,13 +26,13 @@ const StepOneBaseContent = ({
   // Error State
   const [errors, setErrors] = useState({});
 
-  // Container State
-  const [endorsement, setEndorsement] = useState({});
+  // console.log(application);
 
   /**
    * Endorsement Request Form
    *
    */
+  const [endorsement, setEndorsement] = useState({});
   const [description, setDescription] = useState("");
   const [studentIds, setStudentIds] = useState("");
 
@@ -49,6 +49,26 @@ const StepOneBaseContent = ({
   // Handle description change
   const handleDescriptionChange = (e) => {
     setDescription(e.target.value);
+  };
+
+  const fetchEndorsement = async () => {
+    // Set Loading
+    setLoading(true);
+
+    try {
+      const response = await getRequest({
+        url: `/api/v1/work-posts/${application.work_post_id}/endorsement`,
+      });
+
+      if (response) {
+        // console.log(response);
+        setEndorsement(response);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Function that submits endorsement request
@@ -72,11 +92,13 @@ const StepOneBaseContent = ({
       // Prepare the payload with multiple student IDs
       const payload = {
         application_id: application.id,
-        // work_post_id: initial_application.work_post_id, // Dynamic data
+        work_post_id: application.work_post_id, // Dynamic data
         requested_by_id: application.student_id, // Dynamic user ID
         description: description,
         student_ids: filteredStudentIds, // Process comma-separated student IDs
       };
+
+      // console.log(payload);
 
       // Make POST request
       const response = await postRequest({
@@ -110,10 +132,16 @@ const StepOneBaseContent = ({
     }
   };
 
+  useEffect(() => {
+    fetchEndorsement();
+  }, []);
+
+  if (loading) {
+    return <Loader loading={loading} />;
+  }
+
   return (
     <>
-      <Loader loading={loading} />
-
       {/* Open - Endorsement Form Component */}
       <FormModal
         isOpen={isOpen}
@@ -224,14 +252,14 @@ const StepOneBaseContent = ({
           <Button
             onClick={openEndorsementForm}
             className={`px-6 py-2 rounded-lg text-white font-medium ${
-              application.endorsement ||
+              endorsement ||
               [10, 11, 12].includes(status) ||
               isClickedButtonRequest
                 ? "bg-gray-500 cursor-not-allowed"
                 : "bg-indigo-500 hover:bg-indigo-600"
             }`}
             disabled={
-              application.endorsement ||
+              endorsement ||
               [10, 11, 12].includes(status) ||
               isClickedButtonRequest
             }
@@ -244,14 +272,12 @@ const StepOneBaseContent = ({
           </span> */}
         </div>
 
-        {application.endorsement && (
+        {endorsement && (
           <div className="flex flex-col">
-            {application.endorsement.endorsement_file ? (
-              application.endorsement.status_id === 2 ? (
+            {endorsement.endorsement_file ? (
+              endorsement.status_id === 2 ? (
                 <a
-                  href={`${toFilePath(
-                    application.endorsement.endorsement_file
-                  )}`}
+                  href={`${toFilePath(endorsement.endorsement_file)}`}
                   target="_blank"
                   className="underline text-blue-500 hover:text-blue-600"
                 >

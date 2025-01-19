@@ -10,12 +10,22 @@ export const GET_API_ROUTE_PATH = {
   /**
    * Endpoint for fetching all document types.
    */
-  document_types: "/v2/document-types",
+  document_types: "/document-types",
 
   /**
    * Endpoint for importing and assigning students.
    */
   import_students_assign: "/api/v1/users/students/import-students-assign",
+
+  /**
+   * Endpoint for students.
+   */
+  students: '/users/students',
+
+  /**
+   * Endpoint for importing and assigning sections.
+   */
+  sections: "/api/v1/sections",
 
   /**
    * Endpoint for retrieving work types.
@@ -42,6 +52,11 @@ export const GET_API_ROUTE_PATH = {
    */
    chairpersons: "/users/v2/chairpersons",
 
+   /**
+   * Endpoint for retrieving coordinators.
+   */
+   coordinators:"/users/v2/coordinators",
+
   /**
    * Endpoint for retrieving company offices.
    */
@@ -53,12 +68,30 @@ export const GET_API_ROUTE_PATH = {
   sections: '/api/v1/sections',
 };
 
+// DELETE API Route Paths
+export const DELETE_API_ROUTE_PATH = {
+  /**
+   * Endpoint for creating new coordinators.
+   */
+  coordinators: "/users/v2/coordinators",
+}
+
 // POST API Route Paths
 export const POST_API_ROUTE_PATH = {
   /**
    * Endpoint for creating new document types.
    */
-  document_types: "/v2/document-types",
+  document_types: "/document-types",
+
+  /**
+   * Endpoint for creating new coordinators.
+   */
+  coordinators: "/users/v2/coordinators",
+
+  /**
+   * Endpoint for importing and assigning sections.
+   */
+  sections: "/sections",
 };
 
 // PUT API Route Paths
@@ -66,7 +99,12 @@ export const PUT_API_ROUTE_PATH = {
   /**
    * Endpoint for updating existing document types.
    */
-  document_types: "/v2/document-types",
+  document_types: "/document-types",
+
+  /**
+   * Endpoint for updating new coordinators.
+   */
+  coordinators: "/users/v2/coordinators",
 
   /**
    * Endpoint for importing and assigning students with updates.

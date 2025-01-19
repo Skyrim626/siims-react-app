@@ -91,6 +91,9 @@ const DynamicDataGrid = React.memo(
       // Fetch data whenever page, pageSize, or searchTerm changes
       const fetchData = async () => {
         setLoading(true);
+
+        console.log(`/api/v1${url}`);
+
         const response = await getRequest({
           url: `/api/v1${url}`,
           params: {
@@ -103,6 +106,8 @@ const DynamicDataGrid = React.memo(
 
         // Assuming the response structure contains 'data' and 'meta'
         if (response && response.data) {
+          // console.log(response.data);
+
           setRows(response.data);
           setTotalCount(response.meta.total); // Update the total count for pagination
         }

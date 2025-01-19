@@ -53,6 +53,7 @@ export const getRequest = async ({ url, data, params = {} }) => {
 
 // For Post Request
 export const postRequest = async ({ url, data = {}, params = {} }) => {
+
   try {
     // Fetch the CSRF cookie
     await axiosClient.get("/sanctum/csrf-cookie", {

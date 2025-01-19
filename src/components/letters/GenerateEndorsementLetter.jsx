@@ -122,7 +122,7 @@ const GenerateEndorsementLetter = ({
     last_name: "Sanchez",
   },
   otherStudents = [],
-  workType = "internship",
+  jobType = "internship",
   deanOfficeNumber = "088-857-1739",
   localNumber = "1153",
   ojtCoordinatorFullName = "John Doe",
@@ -180,8 +180,6 @@ const GenerateEndorsementLetter = ({
             graduation requirements, they must complete a mandatory{" "}
             <Text style={styles.italicText}>On-the-Job Training (OJT)</Text>{" "}
             program, with a duration of 486 hours between February and May 2025.
-            <Text style={styles.italicText}>{hourDuration}</Text> between
-            {startingMonth} and {endingMonth} {targetYear}.
           </Text>
         </View>
 
@@ -264,7 +262,7 @@ const GenerateEndorsementLetter = ({
 
         <View style={styles.paragraph}>
           <Text>
-            To ensure that our students' {workType} program runs smoothly, we
+            To ensure that our students' {jobType} program runs smoothly, we
             kindly request your acknowledgement of this email and confirmation
             of receipt within the next{" "}
             <Text style={styles.boldText}>5 business days.</Text>
@@ -304,7 +302,7 @@ const GenerateEndorsementLetter = ({
               {ojtCoordinatorMail}
             </Link>{" "}
             to help with monitoring of our{" "}
-            {workType === "internship" ? "interns" : "immersionist"}.
+            {jobType === "internship" ? "internship" : "immersionist"}.
           </Text>
         </View>
 

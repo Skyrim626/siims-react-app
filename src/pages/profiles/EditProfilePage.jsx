@@ -15,8 +15,8 @@ import {
   getProfileImage,
 } from "../../utils/imageHelpers";
 import ConfirmChangeModal from "../../components/modals/ConfirmChangeModal";
-import WorkExperiencesLists from "./WorkExperiencesLists";
-import ExperienceEducationTabs from "./ExperienceEducationTabs";
+import ExperienceEducationCertificateTabs from "./ExperienceEducationCertificateTabs";
+import RoleBasedView from "../../components/common/RoleBasedView";
 
 // Render Edit Profile Page
 const EditProfilePage = ({ authorizeRole }) => {
@@ -644,7 +644,9 @@ const RenderEditProfilePage = ({
               </div>
 
               {/* Work Experience Section */}
-              {authorizeRole === "student" && <ExperienceEducationTabs />}
+              <RoleBasedView authorizeRole={authorizeRole} roles={["student"]}>
+                <ExperienceEducationCertificateTabs />
+              </RoleBasedView>
             </div>
             <div>
               <div className="space-y-10 p-6 bg-gray-100 dark:bg-gray-900">
