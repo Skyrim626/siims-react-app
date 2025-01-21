@@ -1,9 +1,14 @@
 import { Link } from "react-router-dom";
 import { getStudentStatusColor } from "../statusColor";
 import { Button } from "@headlessui/react";
+import RoleBasedView from "../../components/common/RoleBasedView";
 
 // Student Static Columns
-export const getStudentStaticColumns = ({ authorizeRole, pathname }) => {
+export const getStudentStaticColumns = ({
+  authorizeRole,
+  handleStudentContentModal,
+  pathname,
+}) => {
   const columns = [
     {
       field: "id",
@@ -11,12 +16,37 @@ export const getStudentStaticColumns = ({ authorizeRole, pathname }) => {
       width: 150,
       headerClassName: "super-app-theme--header",
       renderCell: (params) => (
-        <Link
-          to={`${pathname}/${params.row.id}`}
-          className="text-blue-500 hover:underline"
-        >
-          <span>{params.row.id}</span>
-        </Link>
+        <>
+          {/* Coordinator */}
+          <RoleBasedView roles={["coordinator"]} authorizeRole={authorizeRole}>
+            <Button
+              onClick={() => handleStudentContentModal(params.row)}
+              className="text-blue-500 hover:underline"
+            >
+              {params.row.id}
+            </Button>
+          </RoleBasedView>
+
+          {/* All */}
+          <RoleBasedView
+            roles={[
+              "admin",
+              "dean",
+              "chairperson",
+              "osa",
+              "company",
+              "supervisor",
+            ]}
+            authorizeRole={authorizeRole}
+          >
+            <Link
+              to={`${pathname}/${params.row.id}`}
+              className="text-blue-500 hover:underline"
+            >
+              <span>{params.row.id}</span>
+            </Link>
+          </RoleBasedView>
+        </>
       ),
     },
 

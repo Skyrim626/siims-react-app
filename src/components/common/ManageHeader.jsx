@@ -10,10 +10,13 @@ const ManageHeader = ({
   setIsOpen,
   showExportButton = true,
   showImportButton = true,
+  showVerifyButton = false,
   showAddButton = true,
   showAllButtons = true,
   isImportOpen = false,
   setIsImportOpen = () => {},
+  isVerifyOpen,
+  setIsVerifyOpen,
 }) => {
   return (
     <div className={`flex justify-end items-center ${className}`}>
@@ -26,6 +29,19 @@ const ManageHeader = ({
                 <Text>Export</Text>
               </Button>
             )}
+
+            {showVerifyButton && (
+              <Button
+                onClick={() => {
+                  setIsVerifyOpen(!isVerifyOpen);
+                }}
+                className="transition text-sm px-3 py-1 font-bold flex items-center justify-center gap-2 border-2 rounded-lg border-blue-950 hover:bg-blue-950 hover:text-white"
+              >
+                <FileDown size={15} />
+                <Text>Verify Student</Text>
+              </Button>
+            )}
+
             {showImportButton && (
               <Button
                 onClick={() => {

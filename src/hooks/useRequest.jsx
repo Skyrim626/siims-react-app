@@ -13,6 +13,8 @@ const useRequest = ({ setIsOpen, setData, setLoading }) => {
     // Set loading state to true
     setLoading(true);
 
+    // console.log(url);
+
     try {
       // Make the POST request
       const response = await postRequest({

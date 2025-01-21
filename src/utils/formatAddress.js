@@ -6,13 +6,20 @@ export const getFullAddress = ({
   postalCode
 }) => {
   // Check if all required fields are provided, otherwise return a default message
-  if (!street || !barangay || !city || !province || !postalCode) {
-    // return "Incomplete address information";
-    return "No Address Info";
-  }
 
-  // Return the full address in a readable format for the Philippines
-  return `${street}, Barangay ${barangay}, ${city}, ${province}, ${postalCode}, Philippines`;
+
+  // Ensure all inputs are strings to avoid errors with trim()
+  const cleanStreet = (street || "").trim();
+  const cleanBarangay = (barangay || "").trim();
+  const cleanCity = (city || "").trim();
+  const cleanProvince = (province || "").trim();
+  const cleanPostalCode = (postalCode || "").trim();
+
+    // Combine address
+  const fullAddress = [cleanStreet, cleanBarangay, cleanCity, cleanProvince, cleanPostalCode].filter(address => address).join(', ');
+
+  // Return the full address
+  return fullAddress;
 };
 
 // Example usage:

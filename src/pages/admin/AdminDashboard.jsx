@@ -32,7 +32,7 @@ import {
   Layers,
   Layers2,
 } from "lucide-react";
-import Container from "../../components/dashboards/Container";
+import Container from "../../containers/Dashboards/components/Container";
 
 /**
  * AdminDashboard Component

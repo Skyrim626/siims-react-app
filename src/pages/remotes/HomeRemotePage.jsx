@@ -7,7 +7,7 @@ import Section from "../../components/common/Section";
 import Heading from "../../components/common/Heading";
 import Text from "../../components/common/Text";
 import Calendar from "react-calendar/dist/cjs/Calendar.js";
-import Container from "../../components/dashboards/Container";
+import Container from "../../containers/Dashboards/components/Container";
 import {
   Building2,
   BuildingIcon,

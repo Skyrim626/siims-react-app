@@ -8,7 +8,7 @@ import OsaManageApplicantApplication from "../../pages/osa/OsaManageApplicantApp
 import OSAProfilePage from "../../pages/osa/OsaProfilePage";
 import ManageApplicantsPage from "../../pages/ManageApplicantsPage";
 import ManageApplicantPage from "../../pages/ManageApplicantPage";
-import ManageDocumentTypePage from "../../pages/ManageDocumentTypesPage";
+import DocumentTypeContainer from "../../containers/DocumentTypes/DocumentTypeContainer";
 
 // Routes for Dean
 const OsaRoutes = {
@@ -135,7 +135,7 @@ const OsaRoutes = {
     },
     {
       path: "document-types",
-      element: <ManageDocumentTypePage authorizeRole={"osa"} />,
+      element: <DocumentTypeContainer authorizeRole={"osa"} />,
     },
   ],
 };

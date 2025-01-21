@@ -28,6 +28,9 @@ import CoordinatorManageStudentsSettings from "../components/settings/Coordinato
 import { loginInfo } from "../formDefaults/loginInfo";
 import { personalInfo } from "../formDefaults/personalInfo";
 import { addressInfo } from "../formDefaults/addressInfo";
+import RoleBasedView from "../components/common/RoleBasedView";
+import StudentContentModal from "../components/modals/StudentContentModal";
+import VerifyStudentForm from "../components/forms/VerifyStudentForm";
 
 // Tabs Links
 const tabLinks = [
@@ -86,6 +89,7 @@ const ManageStudentsPage = ({ authorizeRole }) => {
    * File State
    */
   const [file, setFile] = useState(null);
+  const [fileVerify, setFileVerify] = useState(null);
   const [status, setStatus] = useState(""); // 'success' or 'error
   const [program_id, setProgramID] = useState(null);
 
@@ -100,6 +104,9 @@ const ManageStudentsPage = ({ authorizeRole }) => {
   const [isAssignOpen, setIsAssignOpen] = useState(false);
   const [isAssignConfirmOpen, setIsAssignConfirmOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [isVerifyOpen, setIsVerifyOpen] = useState(false);
+
+  const [isContentOpen, setIsContentOpen] = useState(false);
 
   // Select State
   const [activeTab, setActiveTab] = useState(tabLinks[0]);
@@ -393,12 +400,17 @@ const ManageStudentsPage = ({ authorizeRole }) => {
     setIsDeleteOpen(true);
   };
 
+  const handleStudentContentModal = (row) => {
+    setIsContentOpen(true);
+    setSelectedStudent(row);
+  };
   // Static Columns
   const staticColumns = useMemo(
     () =>
       getStudentStaticColumns({
         authorizeRole: authorizeRole,
         pathname: location.pathname,
+        handleStudentContentModal: handleStudentContentModal,
       }),
     [authorizeRole, activeTab]
   );
@@ -421,6 +433,42 @@ const ManageStudentsPage = ({ authorizeRole }) => {
     () => [...staticColumns, actionColumn],
     [staticColumns, actionColumn]
   );
+
+  // Submit Verify File
+  const submitVerifyFile = async (event) => {
+    event.preventDefault();
+
+    if (!fileVerify) {
+      setStatus("error");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", fileVerify);
+
+    try {
+      // Set Loading
+      setLoading(true);
+
+      // console.log(`/api/v1/users/students/verify`);
+
+      // Assuming your backend has an endpoint for file upload
+      const response = await postFormDataRequest({
+        url: `/api/v1/users/students/verify`,
+        data: formData,
+      });
+
+      if (response) {
+        setIsVerifyOpen(false);
+        setStatus("success");
+      }
+    } catch (error) {
+      console.error(error);
+      setStatus("error");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Submit File
   const submitFile = async (event) => {
@@ -466,6 +514,12 @@ const ManageStudentsPage = ({ authorizeRole }) => {
     const selectedFile = event.target.files[0];
     setFile(selectedFile);
     setStatus(""); // Reset status on file selection
+  };
+
+  const handleFileVerifyChange = (event) => {
+    const selectedFile = event.target.files[0];
+    setFileVerify(selectedFile);
+    setStatus("");
   };
 
   return (
@@ -544,6 +598,9 @@ const ManageStudentsPage = ({ authorizeRole }) => {
                     showExportButton={false}
                     isImportOpen={isOpenImport}
                     setIsImportOpen={setIsOpenImport}
+                    isVerifyOpen={isVerifyOpen}
+                    setIsVerifyOpen={setIsVerifyOpen}
+                    showVerifyButton={authorizeRole === "admin"}
                   />
                 )}
                 {/* Assign Button */}
@@ -566,6 +623,20 @@ const ManageStudentsPage = ({ authorizeRole }) => {
                 )}
 
                 {/* Modals */}
+                <RoleBasedView
+                  roles={["coordinator"]}
+                  authorizeRole={authorizeRole}
+                >
+                  {isContentOpen && (
+                    <StudentContentModal
+                      open={isContentOpen}
+                      setOpen={setIsContentOpen}
+                      student={selectedStudent}
+                      location={location.pathname}
+                    />
+                  )}
+                </RoleBasedView>
+
                 {/* Assign Modal */}
                 <FormModal
                   isOpen={isAssignOpen}
@@ -649,6 +720,22 @@ const ManageStudentsPage = ({ authorizeRole }) => {
                     programId={program_id}
                     setProgramId={setProgramID}
                     withSelection={!(authorizeRole === "chairperson")}
+                  />
+                </FormModal>
+
+                {/* Import Verify Form Modal */}
+                <FormModal
+                  isOpen={isVerifyOpen}
+                  setIsOpen={setIsVerifyOpen}
+                  modalTitle="Verify Students"
+                  onSubmit={submitVerifyFile}
+                >
+                  <VerifyStudentForm
+                    file={fileVerify}
+                    setFileType={setFileVerify}
+                    status={status}
+                    setStatus={setStatus}
+                    handleFileChange={handleFileVerifyChange}
                   />
                 </FormModal>
               </>

@@ -133,9 +133,9 @@ export const renderSelfMainProfileContent = ({ authorizeRole, profile }) => {
       );
     case "student":
       return (
-        <div className="mt-6 px-6 grid grid-cols-4 gap-7 bg-white py-3">
+        <div className="mt-6 px-6 flex flex-col gap-7 bg-white py-3">
           {/* Side Profile Info of Student */}
-          <div className="no-page-break">
+          <div className="col-span-3 no-page-break">
             <StudentSideProfileInfo profile={profile} />
           </div>
 

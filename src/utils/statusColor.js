@@ -108,6 +108,11 @@ export const getEndorsementStatusColor = (status) => {
         textColor: "text-white", // White text
         backgroundColor: "bg-red-500", // Red background (rejected by Dean)
       };
+    case "Walk-In":
+      return {
+        textColor: "text-white", // White text
+        backgroundColor: "bg-blue-500", // Blue background (represents action/attention)
+      };
     case "Draft":
       return {
         textColor: "text-white", // White text

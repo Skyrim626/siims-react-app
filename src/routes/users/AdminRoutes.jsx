@@ -32,12 +32,11 @@ import ManageSupervisorsPage from "../../pages/ManageSupervisorsPage";
 import EditProfilePage from "../../pages/profiles/EditProfilePage";
 import ViewProfilePage from "../../pages/profiles/ViewProfilePage";
 import Chamber from "../../pages/_testing/Chamber";
-import ManageDocumentTypePage from "../../pages/ManageDocumentTypesPage";
 import ManageSectionsPage from "../../pages/ManageSectionsPage";
 import ManageStudentsPage from "../../pages/ManageStudentsPage";
-import HomeRemotePage from "../../pages/remotes/HomeRemotePage";
-import TestingPage from "../../pages/TestingPage";
-// import ManageStudentsPage from "../../pages/__v2/ManageStudentsPage";
+import DashboardContainer from "../../containers/Dashboards/DashboardContainer";
+import DocumentTypeContainer from "../../containers/DocumentTypes/DocumentTypeContainer";
+import GenerateEndorsementLetterRemote from "../../containers/Endorsements/remotes/GenerateEndorsementLetterRemote";
 
 // Define routes for the Admin section
 const AdminRoutes = {
@@ -77,16 +76,16 @@ const AdminRoutes = {
     },
     {
       index: true,
-      element: <HomeRemotePage authorizeRole={"admin"} />,
+      element: <DashboardContainer authorizeRole={"admin"} />,
+    },
+    {
+      path: "document-types",
+      element: <DocumentTypeContainer authorizeRole={"admin"} />,
     },
 
     {
       path: "sections",
       element: <ManageSectionsPage authorizeRole={"admin"} />,
-    },
-    {
-      path: "document-types",
-      element: <ManageDocumentTypePage authorizeRole={"admin"} />,
     },
     {
       path: "messaging",
@@ -322,6 +321,10 @@ const AdminRoutes = {
       path: "offices", // Route for managing offices
       element: <AdminManageOfficesPage />,
     },
+    {
+      path: "manual-create-endorsement-letter",
+      element: <GenerateEndorsementLetterRemote type={"manual"} />,
+    },
     // Logs
     {
       path: "logs", // Route for viewing logs
@@ -357,10 +360,6 @@ const AdminRoutes = {
     {
       path: "chamber",
       element: <Chamber />,
-    },
-    {
-      path: "testing",
-      element: <TestingPage />,
     },
   ],
 };

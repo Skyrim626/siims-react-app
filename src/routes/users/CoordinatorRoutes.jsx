@@ -17,6 +17,8 @@ import ManageApplicantPage from "../../pages/ManageApplicantPage";
 import ViewReportsPage from "../../pages/ViewReportsPage";
 import HomeRemotePage from "../../pages/remotes/HomeRemotePage";
 import ManageSectionsPage from "../../pages/sections/ManageSectionsPage";
+import TestingPage from "../../pages/TestingPage";
+import SectionContainer from "../../containers/Section/SectionContainer";
 
 // Routes for Coordinator
 const CoordinatorRoutes = {
@@ -76,6 +78,10 @@ const CoordinatorRoutes = {
     {
       path: "sections",
       element: <ManageSectionsPage authorizeRole={"coordinator"} />,
+    },
+    {
+      path: "test/sections",
+      element: <SectionContainer authorizeRole={"coordinator"} />,
     },
     {
       path: "students",
@@ -235,6 +241,10 @@ const CoordinatorRoutes = {
           ],
         },
       ],
+    },
+    {
+      path: "testing",
+      element: <TestingPage />,
     },
     {
       path: "profile",

@@ -3,9 +3,6 @@ import ChairpersonLayout from "../../components/layouts/ChairpersonLayout";
 import ProtectedRoute from "../handlers/ProtectedRoute";
 import ChairpersonDashboardPage from "../../pages/chairperson/ChairpersonDashboardPage";
 import ChairpersonManageCompaniesPage from "../../pages/chairperson/ChairpersonManageCompaniesPage";
-import ChairpersonCompanyPage from "../../pages/chairperson/ChairpersonCompanyPage";
-
-import ChairpersonViewCoordinatorPage from "../../pages/chairperson/ChairpersonViewCoordinatorPage";
 import axiosClient from "../../api/axiosClient";
 import ChairpersonGenerateEndorsemenLetterPage from "../../pages/chairperson/ChairpersonGenerateEndorsemenLetterPage";
 import ChairpersonEndorsementRequestsPage from "../../pages/chairperson/ChairpersonEndorsementRequestsPage";
@@ -22,6 +19,9 @@ import SelfProfile from "../../pages/profiles/SelfProfile";
 import EditProfilePage from "../../pages/profiles/EditProfilePage";
 import ManualCreateEndorsementLetterPage from "../../pages/ManualCreateEndorsementLetterPage";
 import ViewEndorsementRequestPage from "../../pages/endorsements/ViewEndorsementRequestPage";
+import GenerateEndorsementLetterRemote from "../../containers/Endorsements/remotes/GenerateEndorsementLetterRemote";
+import EndorsementLetterRequestsContainer from "../../containers/Endorsements/EndorsementLetterRequestsContainer";
+import EndorsementLetterRequestContainer from "../../containers/Endorsements/EndorsementLetterRequestContainer";
 
 // Routes for Chairperson
 const ChairpersonRoutes = {
@@ -218,11 +218,31 @@ const ChairpersonRoutes = {
       element: <PDFFile />,
     },
     {
-      path: "manual-create-endorsement-letter",
+      path: "test/manual-create-endorsement-letter",
       element: <ManualCreateEndorsementLetterPage />,
     },
     {
+      path: "manual-create-endorsement-letter",
+      element: <GenerateEndorsementLetterRemote type={"manual"} />,
+    },
+    {
       path: "endorsement-requests",
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: (
+            <EndorsementLetterRequestsContainer authorizeRole={"chairperson"} />
+          ),
+        },
+        {
+          path: ":endorsementLetterRequestID",
+          element: <EndorsementLetterRequestContainer />,
+        },
+      ],
+    },
+    {
+      path: "test/endorsement-requests",
       element: <Outlet />,
       children: [
         {

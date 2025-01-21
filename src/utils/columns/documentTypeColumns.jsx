@@ -45,6 +45,7 @@ export const getDocumentTypeActionColumns = ({
   authorizeRole,
   activeTab,
   restoreDocumentType,
+  selectedStatus,
 }) => {
   return {
     field: "actions",

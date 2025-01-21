@@ -1,10 +1,7 @@
 import {
-  BookCopy,
   Building,
-  ClipboardList,
   LayoutDashboard,
   Logs,
-  MessageCircle,
   User,
   Presentation,
   File,
@@ -137,6 +134,15 @@ const adminSidebarItemsConfig = [
         path: "/auth/admin/users/companies/:user_id", // Dynamic path
       },
     ],
+  },
+  {
+    icon: <ScrollText size={20} />,
+    text: "Manual Endorsement Letter",
+    alert: true,
+    ariaLabel: "Manual Endorsement Letter",
+    exact: false,
+    active: true,
+    path: "/auth/admin/manual-create-endorsement-letter",
   },
 
   { isDivider: true, role: "all" },
