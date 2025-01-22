@@ -2,15 +2,6 @@ import React from "react";
 import LatestApplicationDetails from "./details/LatestApplicationDetails";
 
 const ReportContent = ({ latestApplication }) => {
-  // Sample data for demonstration
-  const latest_Application = {
-    company: "company",
-    office: "Headquarters",
-    supervisor: "Jane Doe",
-    work_post_title: "Frontend Developer",
-    work_post_type: "Full-Time",
-  };
-
   const reports = [
     {
       id: 1,

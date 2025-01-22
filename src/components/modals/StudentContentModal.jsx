@@ -6,6 +6,7 @@ import { Button } from "@headlessui/react";
 import Modal from "./Modal";
 import getFullName from "../../utils/getFullName";
 import { getFullAddress } from "../../utils/formatAddress";
+import CertificatesContent from "./contents/CertificatesContent";
 
 const StudentContentModal = ({ open, setOpen, student, location }) => {
   const [activeTab, setActiveTab] = useState("Profile"); // State to track the active tab
@@ -63,6 +64,9 @@ const StudentContentModal = ({ open, setOpen, student, location }) => {
         );
       case "Reports":
         return <ReportContent latestApplication={student.latest_application} />;
+      case "Certificates":
+        return <CertificatesContent certificates={student.certificates} />;
+
       default:
         return <p>Content not found.</p>;
     }
@@ -78,7 +82,7 @@ const StudentContentModal = ({ open, setOpen, student, location }) => {
       <div className="flex flex-col">
         {/* Tabs */}
         <div className="flex border-b mb-4">
-          {["Profile", "Applications", "Reports"].map((tab) => (
+          {["Profile", "Applications", "Reports", "Certificates"].map((tab) => (
             <Button
               key={tab}
               className={`px-4 py-2 focus:outline-none ${

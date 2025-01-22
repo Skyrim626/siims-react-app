@@ -11,12 +11,12 @@ const initialState = {
   greeting_message: "Dear Mr John Doe",
   company_name: "XYZ Company",
   company_address: "Street, Barangay, Province, City, Postal Code",
-  recipient_name: "John Doe",
+  recipient_name: "JOHN DOE",
   recipient_position: "HR Specialist",
   program: "Bachelor of Science in Information Technology",
   college: "College of Information Technology and Computing",
-  dean_full_name: "Dr. Junar A. Landicho",
-  chairperson_full_name: "Engr. Jay Noel Rojo",
+  dean_full_name: "DR. JUNAR A. LANDICHO",
+  chairperson_full_name: "ENGR. JAY NOEL ROJO",
   ojt_coordinator_full_name: "",
   ojt_coordinator_email: "",
   dean_office_number: "088-857-1739",
@@ -59,7 +59,7 @@ const endorsementLetterSlice  = createSlice({
       state.ojt_coordinator_full_name = "";
       state.ojt_coordinator_email = "";
       state.students=[];
-
+      
       // Keep these fields intact
       state.current_date = new Date().toLocaleDateString("en-US", {
         year: "numeric",

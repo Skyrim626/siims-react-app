@@ -92,7 +92,7 @@ const DynamicDataGrid = React.memo(
       const fetchData = async () => {
         setLoading(true);
 
-        console.log(`/api/v1${url}`);
+        // console.log(`/api/v1${url}`);
 
         const response = await getRequest({
           url: `/api/v1${url}`,

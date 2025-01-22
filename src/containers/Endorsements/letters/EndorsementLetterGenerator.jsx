@@ -126,7 +126,9 @@ const EndorsementLetterGenerator = ({ imageHeight = 80, formData }) => {
 
         {/* Contact Information */}
         <View style={styles.contactContainer}>
-          <Text style={styles.boldText}>{formData.recipient_name}</Text>
+          <Text style={styles.boldText}>
+            {formData.recipient_name.toUpperCase()}
+          </Text>
           <Text style={styles.text}>{formData.recipient_position}</Text>
           <Text style={styles.text}>{formData.company_name}</Text>
           <Text style={styles.text}>{formData.company_address}</Text>
@@ -280,19 +282,23 @@ const EndorsementLetterGenerator = ({ imageHeight = 80, formData }) => {
         {/* Signature Area */}
         <View style={styles.paragraph}>
           <Text style={styles.boldText}>
-            {formData.ojt_coordinator_full_name}
+            {formData.ojt_coordinator_full_name.toUpperCase()}
           </Text>
           <Text>OJT Coordinator, IT</Text>
         </View>
 
         <View style={styles.paragraph}>
-          <Text style={styles.boldText}>{formData.chairperson_full_name}</Text>
+          <Text style={styles.boldText}>
+            {formData.chairperson_full_name.toUpperCase()}
+          </Text>
           <Text>Head, IT Department</Text>
         </View>
 
         <View style={styles.paragraph}>
           <Text>Noted by.</Text>
-          <Text style={styles.boldText}>{formData.dean_full_name}</Text>
+          <Text style={styles.boldText}>
+            {formData.dean_full_name.toUpperCase()}
+          </Text>
           <Text>Dean, {collegeAcronym}</Text>
         </View>
       </Page>

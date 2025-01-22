@@ -29,6 +29,7 @@ import SelfProfile from "../../pages/profiles/SelfProfile";
 import EditProfilePage from "../../pages/profiles/EditProfilePage";
 import DocumentsTrackingRemotePage from "../../pages/remotes/DocumentsTrackingRemotePage";
 import EndorsementsRemotePage from "../../pages/remotes/EndorsementsRemotePage";
+import ProfileContainer from "../../containers/Profiles/ProfileContainer";
 // Routes for Student
 const StudentRoutes = {
   path: "my",
@@ -95,10 +96,14 @@ const StudentRoutes = {
       ],
     },
     {
+      path: "test/profile",
+      element: <ProfileContainer authorizeRole={"student"} method={"self"} />,
+    },
+    {
       path: "documents",
       element: <DocumentsTrackingRemotePage authorizeRole={"student"} />,
     },
-    {
+    /* {
       path: "test/profile",
       element: <Outlet />,
       children: [
@@ -111,7 +116,7 @@ const StudentRoutes = {
           element: <StudentEditProfilePage />,
         },
       ],
-    },
+    }, */
     {
       path: "companies/:company_id",
       element: <ViewCompanyProfilePage authorizeRole={"student"} />,
