@@ -37,6 +37,7 @@ import ManageStudentsPage from "../../pages/ManageStudentsPage";
 import DashboardContainer from "../../containers/Dashboards/DashboardContainer";
 import DocumentTypeContainer from "../../containers/DocumentTypes/DocumentTypeContainer";
 import GenerateEndorsementLetterRemote from "../../containers/Endorsements/remotes/GenerateEndorsementLetterRemote";
+import StudentContainer from "../../containers/Students/StudentContainer";
 
 // Define routes for the Admin section
 const AdminRoutes = {
@@ -256,6 +257,10 @@ const AdminRoutes = {
         {
           path: "students",
           element: <ManageStudentsPage authorizeRole={"admin"} />,
+        },
+        {
+          path: "test/students",
+          element: <StudentContainer authorizeRole={"admin"} />,
         },
         /* {
           path: "students",

@@ -79,7 +79,7 @@ const StudentForm = ({
           <Heading
             level={5}
             color="black"
-            text={"Student Indivation"}
+            text={"Student Information"}
             className="border-l-2 rounded-lg border-blue-700 px-3 font-bold text-md"
           />
 

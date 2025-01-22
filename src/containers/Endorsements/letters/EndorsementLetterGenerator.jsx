@@ -274,7 +274,7 @@ const EndorsementLetterGenerator = ({ imageHeight = 80, formData }) => {
         </View>
 
         <View style={styles.paragraph}>
-          <Text>Best regards,</Text>
+          <Text>Respectfully,</Text>
         </View>
 
         {/* Signature Area */}
@@ -282,13 +282,12 @@ const EndorsementLetterGenerator = ({ imageHeight = 80, formData }) => {
           <Text style={styles.boldText}>
             {formData.ojt_coordinator_full_name}
           </Text>
-          <Text>SIPP Coordinator, {programAcronym}</Text>
+          <Text>OJT Coordinator, IT</Text>
         </View>
 
         <View style={styles.paragraph}>
-          <Text>Noted by.</Text>
           <Text style={styles.boldText}>{formData.chairperson_full_name}</Text>
-          <Text>Head, {programAcronym} Department</Text>
+          <Text>Head, IT Department</Text>
         </View>
 
         <View style={styles.paragraph}>
