@@ -128,6 +128,7 @@ const SelfProfile = ({ authorizeRole }) => {
             </div>
           </div>
         </div>
+
         {/* Render Main Profile Content */}
         {renderSelfMainProfileContent({
           authorizeRole,

@@ -31,14 +31,14 @@ const adminSidebarItemsConfig = [
     exact: true, // Add an `exact` property for exact path matching
     path: "/auth/admin",
   },
-  /* {
+  {
     icon: <FilePlus size={20} />,
     text: "Manage Sections",
     alert: true,
     ariaLabel: "Manage Sections",
     exact: true,
     path: "/auth/admin/sections",
-  }, */
+  },
   {
     icon: <File size={20} />,
     text: "Document Types",

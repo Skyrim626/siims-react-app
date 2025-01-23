@@ -6,6 +6,8 @@ import NotFoundPage from "../../pages/NotFoundPage";
 import Loader from "../../components/common/Loader";
 import SelfProfilePresenter from "./SelfProfilePresenter";
 import { useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setProfileValues } from "./_redux/profileSlice";
 
 const ProfileContainer = ({ authorizeRole, method }) => {
   /**
@@ -39,7 +41,18 @@ const ProfileContainer = ({ authorizeRole, method }) => {
    *
    */
   const [loading, setLoading] = useState(false);
-  const [profile, setProfile] = useState({});
+
+  /**
+   *
+   *
+   *
+   * REDUX
+   *
+   *
+   */
+  const dispatch = useDispatch();
+  const profile = useSelector((state) => state.profile);
+  // const [profile, setProfile] = useState({});
 
   /**
    *
@@ -49,10 +62,6 @@ const ProfileContainer = ({ authorizeRole, method }) => {
    *
    *
    */
-
-  useEffect(() => {
-    fetchProfile();
-  }, []);
 
   const fetchProfile = async () => {
     // Set Loading State
@@ -64,31 +73,37 @@ const ProfileContainer = ({ authorizeRole, method }) => {
         status: method,
       });
 
-      console.log(response);
-      setProfile(response);
+      if (response) {
+        setLoading(false);
+        console.log(response);
+        dispatch(setProfileValues(response));
+        // setProfile(response);
+      }
     } catch (error) {
       console.error(error);
-    } finally {
-      setLoading(false);
     }
   };
 
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
   // Check Loading
-  if (loading) {
+  if (loading || !profile) {
     return <Loader loading={loading} />;
   }
+
+  // console.log(profile);
 
   // For Self
   if (method === "self") {
     return (
       <SelfProfilePresenter
         authorizeRole={authorizeRole}
-        cover_image_url={profile.cover_image_url}
-        first_name={profile.first_name}
-        middle_name={profile.middle_name}
-        last_name={profile.last_name}
-        profile_image_url={profile.profile_image_url}
         location={location}
+        handlePrint={handlePrint}
+        profile={profile}
+        componentRef={componentRef}
       />
     );
   }

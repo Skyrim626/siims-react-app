@@ -136,7 +136,14 @@ const EndorsementLetterGenerator = ({ imageHeight = 80, formData }) => {
 
         {/* Greeting and Letter Body */}
         <View style={styles.paragraph}>
-          <Text>{formData.greeting_message},</Text>
+          <Text
+            style={{
+              marginBottom: "5px",
+            }}
+          >
+            {formData.greeting_message},
+          </Text>
+
           <Text>
             I hope this message finds you well and in good spirits. I am writing
             to express my sincerest gratitude for taking the time to read this

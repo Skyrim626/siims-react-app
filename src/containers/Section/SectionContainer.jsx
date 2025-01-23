@@ -6,17 +6,46 @@ const SectionContainer = ({ authorizeRole }) => {
   /**
    *
    *
-   * Loading State
+   * LOADING STATE
    *
    *
    */
   const [loading, setLoading] = useState(false);
 
-  // Row State
+  /**
+   *
+   * ROW STATE
+   *
+   *
+   */
   const [rows, setRows] = useState([]);
 
-  // Modal State
+  /**
+   *
+   *
+   * MODAL STATE
+   *
+   *
+   */
   const [isOpen, setIsOpen] = useState(false);
+
+  /**
+   *
+   *
+   * SELECT STATE
+   *
+   *
+   */
+  const [selectedSection, setSelectedSection] = useState(0);
+
+  /**
+   *
+   *
+   * LIST STATE
+   *
+   *
+   */
+  const [sections, setSections] = useState([]);
 
   // Check loading
   if (loading) {

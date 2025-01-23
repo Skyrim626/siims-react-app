@@ -20,6 +20,7 @@ export const getProfile = async ({ authorizeRole, status }) => {
 
     // Check response
     if (response) {
+      console.log(response);
       return response;
     }
   } catch (error) {

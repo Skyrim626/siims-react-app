@@ -1,0 +1,28 @@
+@media print {
+  /* Ensure proper page breaks */
+  .page-break {
+    page-break-before: always; /* Force a new page before this element */
+  }
+
+  .no-page-break {
+    page-break-inside: avoid; /* Avoid breaking inside this element */
+  }
+
+  /* General styles for printing */
+  body {
+    font-size: 12px;
+    color: #000;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Hide non-essential elements for printing */
+  .download-profile-section,
+  .edit-button,
+  .no-print {
+    display: none !important;
+  }
+}

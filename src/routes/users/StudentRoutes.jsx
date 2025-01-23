@@ -82,7 +82,7 @@ const StudentRoutes = {
       element: <ViewWorkPost authorizeRole={"student"} />,
     },
     {
-      path: "profile",
+      path: "test/profile",
       element: <Outlet />,
       children: [
         {
@@ -96,8 +96,18 @@ const StudentRoutes = {
       ],
     },
     {
-      path: "test/profile",
+      path: "profile",
       element: <ProfileContainer authorizeRole={"student"} method={"self"} />,
+      children: [
+        {
+          index: true,
+          element: <SelfProfile authorizeRole={"student"} />,
+        },
+        {
+          path: "edit",
+          element: <EditProfilePage authorizeRole={"student"} />,
+        },
+      ],
     },
     {
       path: "documents",
