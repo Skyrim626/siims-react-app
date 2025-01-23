@@ -19,9 +19,9 @@ import SelfProfile from "../../pages/profiles/SelfProfile";
 import EditProfilePage from "../../pages/profiles/EditProfilePage";
 import ManualCreateEndorsementLetterPage from "../../pages/ManualCreateEndorsementLetterPage";
 import ViewEndorsementRequestPage from "../../pages/endorsements/ViewEndorsementRequestPage";
-import GenerateEndorsementLetterRemote from "../../containers/Endorsements/remotes/GenerateEndorsementLetterRemote";
 import EndorsementLetterRequestsContainer from "../../containers/Endorsements/EndorsementLetterRequestsContainer";
 import EndorsementLetterRequestContainer from "../../containers/Endorsements/EndorsementLetterRequestContainer";
+import GenerateEndorsementLetterIndex from "../../containers/Endorsements/GenerateEndorsementLetterIndex";
 
 // Routes for Chairperson
 const ChairpersonRoutes = {
@@ -223,7 +223,12 @@ const ChairpersonRoutes = {
     },
     {
       path: "manual-create-endorsement-letter",
-      element: <GenerateEndorsementLetterRemote type={"manual"} />,
+      element: (
+        <GenerateEndorsementLetterIndex
+          authorizeRole={"chairperson"}
+          type={"manual"}
+        />
+      ),
     },
     {
       path: "endorsement-requests",

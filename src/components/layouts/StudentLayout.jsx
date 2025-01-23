@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../organisms/Navbar";
 import { NavLink, Outlet, useLoaderData, useLocation } from "react-router-dom";
-import { Home, CircleUserRound, FileText, File } from "lucide-react";
+import { Home, CircleUserRound, FileText, File, FileClock } from "lucide-react";
 import Loader from "../common/Loader";
 import { getRequest } from "../../api/apiHelpers";
 
@@ -74,6 +74,15 @@ export default function StudentLayout() {
       exact: true,
       path: "/auth/my/endorsements",
     },
+
+    /* {
+      icon: <FileClock size={20} />,
+      text: "Request Endorsement",
+      alert: true,
+      ariaLabel: "Endorsement",
+      exact: true,
+      path: "/auth/my/manual-request-endorsements",
+    }, */
 
     {
       icon: <File size={20} />,

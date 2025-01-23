@@ -16,6 +16,7 @@ const ManualCreateEndorsementLetterContainer = ({
   type = "manual",
   callEndorsementLetter,
   viewPdf,
+  authorizeRole,
 }) => {
   /**
    *
@@ -176,6 +177,7 @@ const ManualCreateEndorsementLetterContainer = ({
 
   return (
     <ManualCreateEndorsementLetterPresenter
+      authorizeRole={authorizeRole}
       loading={loading}
       formData={formData}
       handleInputChange={handleInputChange}

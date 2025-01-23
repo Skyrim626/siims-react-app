@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import NotFoundPage from "../../../pages/NotFoundPage";
-import ManualCreateEndorsementLetterContainer from "../ManualCreateEndorsementLetterContainer";
-import EndorsementLetterGenerator from "../letters/EndorsementLetterGenerator";
+import NotFoundPage from "../../pages/NotFoundPage";
+import ManualCreateEndorsementLetterContainer from "./ManualCreateEndorsementLetterContainer";
+import EndorsementLetterGenerator from "./letters/EndorsementLetterGenerator";
 import { pdf } from "@react-pdf/renderer";
 
-const GenerateEndorsementLetterRemote = ({ type }) => {
+const GenerateEndorsementLetterIndex = ({ authorizeRole, type }) => {
   /**
    *
    * Function that calls the endorsement Letter
@@ -40,6 +40,7 @@ const GenerateEndorsementLetterRemote = ({ type }) => {
       <ManualCreateEndorsementLetterContainer
         callEndorsementLetter={callEndorsementLetter}
         viewPdf={viewPdf}
+        authorizeRole={authorizeRole}
       />
     );
   }
@@ -47,4 +48,4 @@ const GenerateEndorsementLetterRemote = ({ type }) => {
   return <NotFoundPage />;
 };
 
-export default GenerateEndorsementLetterRemote;
+export default GenerateEndorsementLetterIndex;

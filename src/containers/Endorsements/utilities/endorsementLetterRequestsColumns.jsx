@@ -148,7 +148,7 @@ export const getEndorsementRequestsActionColumns = ({
         <div className="flex space-x-2 items-center justify-center">
           <Link
             to={`${pathname}/endorsement-requests/${rowId}`}
-            className="text-blue-500 underline"
+            className="text-blue-500 underline hidden"
           >
             View
           </Link>

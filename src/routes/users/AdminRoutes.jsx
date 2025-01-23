@@ -36,9 +36,9 @@ import ManageSectionsPage from "../../pages/ManageSectionsPage";
 import ManageStudentsPage from "../../pages/ManageStudentsPage";
 import DashboardContainer from "../../containers/Dashboards/DashboardContainer";
 import DocumentTypeContainer from "../../containers/DocumentTypes/DocumentTypeContainer";
-import GenerateEndorsementLetterRemote from "../../containers/Endorsements/remotes/GenerateEndorsementLetterRemote";
 import StudentContainer from "../../containers/Students/StudentContainer";
 import SectionContainer from "../../containers/Section/SectionContainer";
+import GenerateEndorsementLetterIndex from "../../containers/Endorsements/GenerateEndorsementLetterIndex";
 
 // Define routes for the Admin section
 const AdminRoutes = {
@@ -333,7 +333,12 @@ const AdminRoutes = {
     },
     {
       path: "manual-create-endorsement-letter",
-      element: <GenerateEndorsementLetterRemote type={"manual"} />,
+      element: (
+        <GenerateEndorsementLetterIndex
+          authorizeRole={"admin"}
+          type={"manual"}
+        />
+      ),
     },
     // Logs
     {

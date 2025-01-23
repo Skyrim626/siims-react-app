@@ -6,8 +6,10 @@ import SearchCompanyModalContainer from "./components/modals/SearchCompanyModalC
 import SearchCoordinatorModalContainer from "./components/modals/SearchCoordinatorModalContainer";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import Loader from "../../components/common/Loader";
+import RoleBasedView from "../../components/common/RoleBasedView";
 
 const ManualCreateEndorsementLetterPresenter = ({
+  authorizeRole,
   loading,
   type = "manual",
 
@@ -410,22 +412,29 @@ const ManualCreateEndorsementLetterPresenter = ({
         )}
 
         <div className="flex justify-end space-x-5">
-          <PDFDownloadLink
-            document={callEndorsementLetter(formData)}
-            fileName={formData.file_name}
+          <RoleBasedView
+            roles={["admin", "chairperson", "student"]}
+            authorizeRole={authorizeRole}
           >
-            {({ loading }) =>
-              loading ? (
-                <Button className="px-6 py-2 bg-gray-600 text-white font-semibold rounded-md shadow hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 cursor-not-allowed">
-                  Loading Document...
-                </Button>
-              ) : (
-                <Button className="px-6 py-2 bg-green-600 text-white font-semibold rounded-md shadow hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
-                  Download Signed Document
-                </Button>
-              )
-            }
-          </PDFDownloadLink>
+            <div className="hidden">
+              <PDFDownloadLink
+                document={callEndorsementLetter(formData)}
+                fileName={formData.file_name}
+              >
+                {({ loading }) =>
+                  loading ? (
+                    <Button className="px-6 py-2 bg-gray-600 text-white font-semibold rounded-md shadow hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 cursor-not-allowed">
+                      Loading Document...
+                    </Button>
+                  ) : (
+                    <Button className="px-6 py-2 bg-green-600 text-white font-semibold rounded-md shadow hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+                      Download Signed Document
+                    </Button>
+                  )
+                }
+              </PDFDownloadLink>
+            </div>
+          </RoleBasedView>
 
           {/* <Button
             onClick={() => setIsOpenSignatureModal(!isOpenSignatureModal)}
@@ -433,29 +442,44 @@ const ManualCreateEndorsementLetterPresenter = ({
           >
             Add Signature
           </Button> */}
-
-          <Button
-            onClick={() => viewPdf(formData)}
-            className="px-6 py-2 bg-green-600 text-white font-semibold rounded-md shadow hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+          {/* <RoleBasedView
+            roles={["admin", "chairperson"]}
+            authorizeRole={authorizeRole}
           >
-            View PDF
-          </Button>
+            <Button
+              onClick={() => viewPdf(formData)}
+              className="px-6 py-2 bg-green-600 text-white font-semibold rounded-md shadow hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+            >
+              View PDF
+            </Button>
+          </RoleBasedView> */}
 
-          <Button
-            onClick={handlePrintAndSend}
-            className={`text-white px-4 py-2 rounded-md shadow ${
-              formData.ojt_coordinator_full_name === "" &&
-              formData.students.length === 0
-                ? "bg-gray-500 cursor-not-allowed"
-                : "bg-blue-500 hover:bg-blue-600"
-            }`}
-            disabled={
-              formData.ojt_coordinator_full_name === "" &&
-              formData.students.length === 0
-            }
+          <RoleBasedView
+            roles={["admin", "chairperson"]}
+            authorizeRole={authorizeRole}
           >
-            Print and Send
-          </Button>
+            <Button
+              onClick={handlePrintAndSend}
+              className={`text-white px-4 py-2 rounded-md shadow ${
+                formData.ojt_coordinator_full_name === "" &&
+                formData.students.length === 0
+                  ? "bg-gray-500 cursor-not-allowed"
+                  : "bg-blue-500 hover:bg-blue-600"
+              }`}
+              disabled={
+                formData.ojt_coordinator_full_name === "" &&
+                formData.students.length === 0
+              }
+            >
+              Send and Print
+            </Button>
+          </RoleBasedView>
+
+          <RoleBasedView roles={["student"]} authorizeRole={authorizeRole}>
+            <Button className="px-6 py-2 rounded-md bg-blue-500 hover:bg-blue-600 text-white font-semibold">
+              Send
+            </Button>
+          </RoleBasedView>
         </div>
       </div>
     </div>

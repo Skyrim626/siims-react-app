@@ -30,6 +30,7 @@ import EditProfilePage from "../../pages/profiles/EditProfilePage";
 import DocumentsTrackingRemotePage from "../../pages/remotes/DocumentsTrackingRemotePage";
 import EndorsementsRemotePage from "../../pages/remotes/EndorsementsRemotePage";
 import ProfileContainer from "../../containers/Profiles/ProfileContainer";
+import GenerateEndorsementLetterIndex from "../../containers/Endorsements/GenerateEndorsementLetterIndex";
 // Routes for Student
 const StudentRoutes = {
   path: "my",
@@ -315,6 +316,15 @@ const StudentRoutes = {
       path: "endorsements",
       element: <EndorsementsRemotePage authorizeRole={"student"} />,
     },
+    /* {
+      path: "manual-request-endorsements",
+      element: (
+        <GenerateEndorsementLetterIndex
+          type={"manual"}
+          authorizeRole={"student"}
+        />
+      ),
+    }, */
   ],
 };
 
