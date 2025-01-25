@@ -190,6 +190,7 @@ const coordinatorSidebarItemsConfig = [
     active: false,
     path: "/auth/coordinator/sections",
   },
+
   {
     icon: <Users size={20} />,
     text: "Students",

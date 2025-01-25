@@ -31,6 +31,7 @@ import DocumentsTrackingRemotePage from "../../pages/remotes/DocumentsTrackingRe
 import EndorsementsRemotePage from "../../pages/remotes/EndorsementsRemotePage";
 import ProfileContainer from "../../containers/Profiles/ProfileContainer";
 import GenerateEndorsementLetterIndex from "../../containers/Endorsements/GenerateEndorsementLetterIndex";
+import ReportsContainer from "../../containers/Reports/ReportsContainer";
 // Routes for Student
 const StudentRoutes = {
   path: "my",
@@ -212,6 +213,7 @@ const StudentRoutes = {
         }
       },
     },
+
     /* {
       path: "apply/:job_id/request-endorsement",
       element: <StudentRequestEndorsementPage />,
@@ -297,6 +299,11 @@ const StudentRoutes = {
           console.log(error);
         }
       },
+    },
+
+    {
+      path: "reports",
+      element: <ReportsContainer authorizeRole={"student"} />,
     },
 
     {

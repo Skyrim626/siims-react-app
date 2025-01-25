@@ -66,14 +66,23 @@ export default function StudentLayout() {
       exact: false,
     },
 
-    {
+    /* {
       icon: <FileText size={20} />,
       text: "Endorsements",
       alert: true,
       ariaLabel: "Endorsements",
       exact: true,
       path: "/auth/my/endorsements",
-    },
+    }, */
+
+    /* {
+      icon: <FileText size={20} />,
+      text: "Reports",
+      alert: true,
+      ariaLabel: "Reports",
+      exact: true,
+      path: "/auth/my/reports",
+    }, */
 
     /* {
       icon: <FileClock size={20} />,

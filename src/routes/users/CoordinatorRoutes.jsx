@@ -77,10 +77,6 @@ const CoordinatorRoutes = {
     },
     {
       path: "sections",
-      element: <ManageSectionsPage authorizeRole={"coordinator"} />,
-    },
-    {
-      path: "test/sections",
       element: <SectionContainer authorizeRole={"coordinator"} />,
     },
     {

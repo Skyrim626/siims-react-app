@@ -85,10 +85,10 @@ const AdminRoutes = {
       element: <DocumentTypeContainer authorizeRole={"admin"} />,
     },
 
-    {
+    /* {
       path: "test/sections",
       element: <ManageSectionsPage authorizeRole={"admin"} />,
-    },
+    }, */
     {
       path: "sections",
       element: <SectionContainer authorizeRole={"admin"} />,

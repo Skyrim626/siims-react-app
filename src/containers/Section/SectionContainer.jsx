@@ -1,7 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Loader from "../../components/common/Loader";
 import SectionPresenter from "./SectionPresenter";
 import { getSection } from "./Api";
+import {
+  getStudentActionColumns,
+  getStudentStaticColumns,
+} from "./utilities/studentColumns";
 
 const SectionContainer = ({ authorizeRole }) => {
   /**
@@ -38,7 +42,7 @@ const SectionContainer = ({ authorizeRole }) => {
    *
    *
    */
-  const [selectedSection, setSelectedSection] = useState({ id: 0 });
+  const [selectedSection, setSelectedSection] = useState({ id: null });
 
   /**
    *
@@ -82,6 +86,8 @@ const SectionContainer = ({ authorizeRole }) => {
     // Set Loading
     setLoading(true);
 
+    // console.log(authorizeRole);
+
     try {
       const response = await getSection({
         authorizeRole: authorizeRole,
@@ -90,6 +96,7 @@ const SectionContainer = ({ authorizeRole }) => {
 
       if (response) {
         // console.log(response);
+        setSelectedSection(response[0] || { id: null, name: "All" });
         setSections(response);
       }
     } catch (error) {
@@ -99,10 +106,34 @@ const SectionContainer = ({ authorizeRole }) => {
     }
   };
 
-  // Check loading
-  /* if (loading) {
-    return <Loader loading={loading} />;
-  } */
+  /**
+   *
+   * COLUMNS
+   *
+   */
+  // Static Columns
+  const staticColumns = useMemo(
+    () =>
+      getStudentStaticColumns({
+        authorizeRole: authorizeRole,
+      }),
+    [authorizeRole]
+  );
+
+  // Action Column
+  const actionColumn = useMemo(
+    () =>
+      getStudentActionColumns({
+        authorizeRole,
+      }),
+    [authorizeRole]
+  );
+
+  // Render Columns
+  const columns = useMemo(
+    () => [...staticColumns, actionColumn],
+    [staticColumns, actionColumn]
+  );
 
   return (
     <div>
@@ -119,6 +150,9 @@ const SectionContainer = ({ authorizeRole }) => {
         fetchSections={fetchSections}
         isOpenSection={isOpenSection}
         setIsOpenSection={setIsOpenSection}
+        rows={rows}
+        setRows={setRows}
+        columns={columns}
       />
     </div>
   );

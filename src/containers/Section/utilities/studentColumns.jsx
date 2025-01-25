@@ -1,53 +1,13 @@
-import { Link } from "react-router-dom";
-import { getStudentStatusColor } from "../statusColor";
-import { Button } from "@headlessui/react";
-import RoleBasedView from "../../components/common/RoleBasedView";
+import { getStudentStatusColor } from "../../../utils/statusColor";
 
 // Student Static Columns
-export const getStudentStaticColumns = ({
-  authorizeRole,
-  handleStudentContentModal,
-  pathname,
-}) => {
+export const getStudentStaticColumns = ({ authorizeRole }) => {
   const columns = [
     {
       field: "id",
       headerName: "ID",
       width: 150,
       headerClassName: "super-app-theme--header",
-      renderCell: (params) => (
-        <>
-          {/* Coordinator */}
-          <RoleBasedView roles={["coordinator"]} authorizeRole={authorizeRole}>
-            <Button
-              onClick={() => handleStudentContentModal(params.row)}
-              className="text-blue-500 hover:underline"
-            >
-              {params.row.id}
-            </Button>
-          </RoleBasedView>
-
-          {/* All */}
-          <RoleBasedView
-            roles={[
-              "admin",
-              "dean",
-              "chairperson",
-              "osa",
-              "company",
-              "supervisor",
-            ]}
-            authorizeRole={authorizeRole}
-          >
-            <Link
-              to={`${pathname}/${params.row.id}`}
-              className="text-blue-500 hover:underline"
-            >
-              <span>{params.row.id}</span>
-            </Link>
-          </RoleBasedView>
-        </>
-      ),
     },
 
     {
@@ -87,12 +47,7 @@ export const getStudentStaticColumns = ({
         );
       },
     },
-    {
-      field: "coordinator",
-      headerName: "Coordinator",
-      width: 150,
-      headerClassName: "super-app-theme--header",
-    },
+
     // ! Only add the program_name column if the role is admin or dean
     ...(authorizeRole === "admin" || authorizeRole === "dean"
       ? [
@@ -206,69 +161,6 @@ export const getStudentStaticColumns = ({
 };
 
 // Student Action Columns
-export const getStudentActionColumns = ({
-  authorizeRole,
-  handleEditModal,
-  handleDeleteModal,
-  activeTab = {},
-  pathname = "",
-}) => {
-  return {
-    field: "actions",
-    headerName: "Actions",
-    width: 400,
-    headerClassName: "super-app-theme--header",
-    renderCell: (params) => (
-      <div className="flex space-x-2 items-center justify-center">
-        {authorizeRole === "admin" && (
-          <Button
-            className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded"
-            onClick={() => handleEditModal(params.row)}
-          >
-            Edit
-          </Button>
-        )}
-
-        {authorizeRole === "coordinator" &&
-          params.row.latest_application_id && (
-            <>
-              {/* <Link>
-              <Button
-                className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded"
-                onClick={() => handleEditModal(params.row)}
-              >
-                View Applications
-              </Button>
-            </Link> */}
-              <Link
-                to={`${pathname}/applications/${params.row.latest_application_id}`}
-              >
-                <Button className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded">
-                  View Latest Application
-                </Button>
-              </Link>
-            </>
-          )}
-
-        {authorizeRole === "admin" &&
-          (params.row.deleted_at ? (
-            <Button
-              className="bg-green-500 hover:bg-green-600 text-white py-1 px-4 rounded"
-              onClick={() => console.log("Restored")}
-            >
-              Restore
-            </Button>
-          ) : (
-            <Button
-              className="bg-red-500 hover:bg-red-600 text-white py-1 px-4 rounded"
-              onClick={() => handleDeleteModal(params.row)}
-            >
-              Delete
-            </Button>
-          ))}
-      </div>
-    ),
-    sortable: false, // Prevent sorting for the actions column
-    filterable: false, // Prevent filtering for the actions column
-  };
+export const getStudentActionColumns = ({ authorizeRole }) => {
+  return {};
 };

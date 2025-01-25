@@ -2,11 +2,15 @@ import { getRequest } from "../../api/apiHelpers";
 import { GET_ALL_SECTIONS } from "./constants/resources";
 
 export const getSection = async ({ authorizeRole, searchTerm }) => {
+  // console.log(authorizeRole);
+
   try {
-    const response = getRequest({
+    const response = await getRequest({
       url: GET_ALL_SECTIONS,
-      requestedBy: authorizeRole,
-      searchTerm: searchTerm,
+      params: {
+        requestedBy: authorizeRole,
+        searchTerm: searchTerm,
+      },
     });
 
     // console.log(sectionID);

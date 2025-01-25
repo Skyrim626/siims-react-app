@@ -5,9 +5,10 @@ import Heading from "../../components/common/Heading";
 import Text from "../../components/common/Text";
 import SearchableDropdown from "./components/SearchableDropdown";
 import { Button } from "@headlessui/react";
-import { Plus } from "lucide-react";
+import { Plus, UserCogIcon } from "lucide-react";
 import Modal from "../../components/modals/Modal";
 import SectionForm from "./forms/SectionForm";
+import DynamicDataGrid from "./components/DynamicDataGrid";
 
 const SectionPresenter = ({
   /** Authorize prop */
@@ -24,6 +25,11 @@ const SectionPresenter = ({
   fetchSections,
   isOpenSection,
   setIsOpenSection,
+
+  /** Data Grid Props */
+  rows = [],
+  setRows,
+  columns,
 }) => {
   return (
     <Page>
@@ -44,22 +50,24 @@ const SectionPresenter = ({
         <hr className="my-3" />
       </Section>
 
-      <div className="flex items-center justify-between">
-        <div>
-          <SearchableDropdown
-            items={sections}
-            selectedItem={selectedSection}
-            setSelectedItem={setSelectedSection}
-            isOpen={isSectionOpen}
-            setIsOpen={setIsSectionOpen}
-            searchTerm={searchSection}
-            setSearchTerm={setSearchSection}
-            placeholder="Search section..."
-            onSearchSubmit={fetchSections}
-          />
-        </div>
+      <div className="flex items-center justify-between mb-3">
+        {sections.length > 0 && (
+          <div>
+            <SearchableDropdown
+              items={sections}
+              selectedItem={selectedSection}
+              setSelectedItem={setSelectedSection}
+              isOpen={isSectionOpen}
+              setIsOpen={setIsSectionOpen}
+              searchTerm={searchSection}
+              setSearchTerm={setSearchSection}
+              placeholder="Search section..."
+              onSearchSubmit={fetchSections}
+            />
+          </div>
+        )}
 
-        <div>
+        <div className="flex items-center justify-end gap-3">
           <Button
             className="flex gap-1 items-center text-sm px-2 py-2 bg-blue-500 hover:bg-blue-600 rounded-sm text-white font-semibold transition"
             onClick={() => setIsOpenSection(!isOpenSection)}
@@ -69,6 +77,18 @@ const SectionPresenter = ({
           </Button>
         </div>
       </div>
+
+      <DynamicDataGrid
+        rows={rows}
+        setRows={setRows}
+        columns={columns}
+        url={"/users/students"}
+        pageSizeOptions={[5, 10, 15, 25, 50]}
+        searchPlaceholder={"Search Student..."}
+        requestedBy={authorizeRole}
+        selectedSection={selectedSection}
+        checkboxSelection={false}
+      />
     </Page>
   );
 };

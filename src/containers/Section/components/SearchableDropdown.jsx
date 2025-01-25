@@ -8,11 +8,17 @@ const SearchableDropdown = ({
   setSelectedItem,
   isOpen,
   setIsOpen,
-  searchTerm,
+  searchTerm = "", // Default value for searchTerm
   setSearchTerm,
   placeholder = "Search Something...",
   onSearchSubmit,
 }) => {
+  // Add "All" as the first item with id set to null
+  const updatedItems = [{ id: null, name: "All" }, ...items];
+
+  // If no selectedItem, default to "All"
+  const displaySelectedItem = selectedItem?.name || "All";
+
   return (
     <div className="relative w-64">
       {/* Dropdown button */}
@@ -20,7 +26,7 @@ const SearchableDropdown = ({
         className="bg-white w-full px-4 py-2 flex items-center justify-between border-2 border-gray-300 rounded-md shadow-sm"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <span>{selectedItem?.name || placeholder}</span>
+        <span>{displaySelectedItem}</span>
         {isOpen ? (
           <ChevronUp size={20} className="text-gray-500" />
         ) : (
@@ -47,8 +53,8 @@ const SearchableDropdown = ({
 
           {/* Items */}
           <ul className="max-h-40 overflow-y-auto">
-            {items.length > 0 ? (
-              items
+            {updatedItems.length > 0 ? (
+              updatedItems
                 .filter((item) =>
                   item.name.toLowerCase().includes(searchTerm.toLowerCase())
                 )
