@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { DataGrid, gridClasses, GridToolbar } from "@mui/x-data-grid";
-import { getRequest } from "../../api/apiHelpers";
 import { alpha, styled } from "@mui/material/styles";
 import { Input } from "@headlessui/react";
 import { Search } from "lucide-react";
-import { Pagination, TablePagination } from "@mui/material";
-import Text from "../common/Text";
-import useDebouncedSearch from "../../hooks/useDebouncedSearch";
+import { Pagination } from "@mui/material";
+import useDebouncedSearch from "../../../hooks/useDebouncedSearch";
+import Text from "../../../components/common/Text";
+import { getRequest } from "../../../api/apiHelpers";
 
 const ODD_OPACITY = 0.2;
 
@@ -74,6 +74,9 @@ const DynamicDataGrid = React.memo(
 
     // Requested by
     requestedBy = "",
+
+    // Selected Date
+    selectedDate,
   }) => {
     const [totalCount, setTotalCount] = useState(0); // Total count of records
     const [loading, setLoading] = useState(true); // Loading state
@@ -94,6 +97,8 @@ const DynamicDataGrid = React.memo(
 
         console.log(`/api/v1${url}`);
 
+        console.log(selectedDate);
+
         const response = await getRequest({
           url: `/api/v1${url}`,
           params: {
@@ -101,6 +106,7 @@ const DynamicDataGrid = React.memo(
             perPage: paginationModel.pageSize, // Items per page
             search: searchTerm, // Search term
             requestedBy: requestedBy,
+            date: selectedDate,
           },
         });
 
@@ -115,7 +121,7 @@ const DynamicDataGrid = React.memo(
       };
 
       fetchData();
-    }, [paginationModel, searchTerm, url]); // Trigger on changes to paginationModel or searchTerm
+    }, [paginationModel, searchTerm, url, selectedDate]); // Trigger on changes to paginationModel or searchTerm
 
     // Handle pagination model change
     const handlePaginationModelChange = (newPaginationModel) => {

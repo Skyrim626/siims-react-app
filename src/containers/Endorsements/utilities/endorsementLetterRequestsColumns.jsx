@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { getEndorsementStatusColor } from "../../../utils/statusColor";
 import { Button } from "@headlessui/react";
+import getFullName from "../../../utils/getFullName";
 
 // Static Columns
 export const getEndorsementRequestsStaticColumns = ({
@@ -45,6 +46,31 @@ export const getEndorsementRequestsStaticColumns = ({
           <span>{params.row.name}</span>
         </Link>
       ),
+    },
+    {
+      field: "students",
+      headerName: "Students",
+      width: 200,
+      headerClassName: "super-app-theme--header",
+      renderCell: (params) => {
+        if (!params.row.students) {
+          return null;
+        }
+
+        if (!params.row.students.length === 0) {
+          return null;
+        }
+
+        return (
+          <ul>
+            {params.row.students.map((endoStudent, index) => {
+              // console.log(endoStudent);
+
+              return <li key={index}>{endoStudent.student.user.first_name}</li>;
+            })}
+          </ul>
+        );
+      },
     },
     {
       field: "endorse_students_count",

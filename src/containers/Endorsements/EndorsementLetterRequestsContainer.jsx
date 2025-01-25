@@ -63,6 +63,9 @@ const EndorsementLetterRequestsContainer = ({ authorizeRole }) => {
    */
   const [selectedStatus, setSelectedStatus] = useState(items[0].value);
   const [selectedURL, setSelectedURL] = useState(items[0].url);
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toISOString().split("T")[0] // Initialize with today's date
+  );
 
   /**
    *
@@ -114,18 +117,114 @@ const EndorsementLetterRequestsContainer = ({ authorizeRole }) => {
     [staticColumns, actionColumns]
   );
 
+  /**
+   *
+   * CSV Generator
+   *
+   */
+  /* const generateCSV = () => {
+    if (!rows || rows.length === 0) {
+      alert("No data available for download.");
+      return;
+    }
+
+    const headers = [
+      "Company Name",
+      "Student Name",
+      "Student ID",
+      "Student Email",
+      "Status",
+      "Letter Status",
+    ];
+
+    // Group rows by company_name
+    const groupedByCompany = rows.reduce((acc, row) => {
+      const companyName = row.company_name || "Unknown Company";
+      if (!acc[companyName]) {
+        acc[companyName] = [];
+      }
+      acc[companyName].push(row);
+      return acc;
+    }, {});
+
+    // Generate CSV rows
+    const csvRows = [];
+    for (const [companyName, companyRows] of Object.entries(groupedByCompany)) {
+      csvRows.push([`"${companyName}"`, "", "", "", "", ""]); // Company header row
+
+      companyRows.forEach((row) => {
+        const {
+          name = "N/A", // Requester name
+          student_id = "N/A",
+          status = "N/A",
+          letter_status_name = "N/A",
+          students = [],
+        } = row;
+
+        if (students.length > 0) {
+          // Add a row for each student
+          students.forEach((student) => {
+            const studentID = student.student?.user_id || "";
+            const studentEmail = student.student?.user?.email || "";
+            const studentName = `${student.student?.user?.first_name} ${student.student?.user?.middle_name} ${student.student?.user?.last_name}`;
+
+            csvRows.push([
+              "", // Empty for company grouping
+              studentName,
+              studentID,
+              studentEmail,
+              status,
+              letter_status_name,
+            ]);
+          });
+        } else {
+          // If no students are linked, add the requester info
+          csvRows.push([
+            "", // Empty for company grouping
+            name,
+            student_id,
+            "N/A", // No email
+            status,
+            letter_status_name,
+          ]);
+        }
+      });
+    }
+
+    // Convert rows to CSV content
+    const csvContent = [
+      headers.join(","), // Add headers
+      ...csvRows.map((row) => row.join(",")), // Add rows
+    ].join("\n");
+
+    // Trigger CSV download
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "endorsement_requests_by_company.csv";
+    link.click();
+  }; */
+
   return (
-    <EndorsementLetterRequestsPresenter
-      items={items}
-      selectedStatus={selectedStatus}
-      setSelectedStatus={setSelectedStatus}
-      selectedURL={selectedURL}
-      setSelectedURL={setSelectedURL}
-      authorizeRole={authorizeRole}
-      rows={rows}
-      setRows={setRows}
-      columns={columns}
-    />
+    <>
+      {/* <button onClick={generateCSV} style={{ marginTop: "20px" }}>
+        Download CSV
+      </button> */}
+      <EndorsementLetterRequestsPresenter
+        items={items}
+        selectedStatus={selectedStatus}
+        setSelectedStatus={setSelectedStatus}
+        selectedURL={selectedURL}
+        setSelectedURL={setSelectedURL}
+        authorizeRole={authorizeRole}
+        rows={rows}
+        setRows={setRows}
+        columns={columns}
+        /** Date Select */
+        selectedDate={selectedDate}
+        setSelectedDate={setSelectedDate}
+      />
+    </>
   );
 };
 

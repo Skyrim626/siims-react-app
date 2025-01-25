@@ -5,7 +5,8 @@ import Section from "../../components/common/Section";
 import Heading from "../../components/common/Heading";
 import Text from "../../components/common/Text";
 import SelectDropDown from "./components/SelectDropDown";
-import DynamicDataGrid from "../../components/tables/DynamicDataGrid";
+import DynamicDataGrid from "./components/DynamicDataGrid";
+import { Input } from "@headlessui/react";
 
 const EndorsementLetterRequestsPresenter = ({
   loading,
@@ -20,6 +21,10 @@ const EndorsementLetterRequestsPresenter = ({
   rows,
   setRows,
   columns,
+
+  /** Date Selection */
+  selectedDate,
+  setSelectedDate,
 }) => {
   return (
     <Page>
@@ -34,13 +39,22 @@ const EndorsementLetterRequestsPresenter = ({
       </Section>
 
       <div className="mt-3">
-        <SelectDropDown
-          items={items}
-          selectedStatus={selectedStatus}
-          setSelectedStatus={setSelectedStatus}
-          selectedURL={selectedURL}
-          setSelectedURL={setSelectedURL}
-        />
+        <div className="mb-3 flex items-center gap-2">
+          <SelectDropDown
+            items={items}
+            selectedStatus={selectedStatus}
+            setSelectedStatus={setSelectedStatus}
+            selectedURL={selectedURL}
+            setSelectedURL={setSelectedURL}
+          />
+
+          <Input
+            type="date"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            className="font-bold bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block py-3 px-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 h-[44px]"
+          />
+        </div>
 
         <DynamicDataGrid
           searchPlaceholder={"Search Endorsement..."}
@@ -50,6 +64,7 @@ const EndorsementLetterRequestsPresenter = ({
           url={selectedURL}
           requestedBy={authorizeRole}
           checkboxSelection={false}
+          selectedDate={selectedDate}
         />
       </div>
     </Page>
