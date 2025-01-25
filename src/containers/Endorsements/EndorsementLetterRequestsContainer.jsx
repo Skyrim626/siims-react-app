@@ -5,9 +5,14 @@ import {
   getEndorsementRequestsActionColumns,
   getEndorsementRequestsStaticColumns,
 } from "./utilities/endorsementLetterRequestsColumns";
-import { GET_ALL_URL, GET_ALL_WALK_IN_URL } from "./constants/resources";
+import {
+  GET_ALL_ARCHIVE_URL,
+  GET_ALL_URL,
+  GET_ALL_WALK_IN_URL,
+} from "./constants/resources";
 import { useDispatch, useSelector } from "react-redux";
 import { setFormValues } from "./_redux/endorsementLetterDetailSlice";
+import { deleteByID, restoreByID } from "./api";
 
 // Items for Drop down
 const items = [
@@ -20,6 +25,11 @@ const items = [
     value: "walk-in",
     label: "Walk-In",
     url: GET_ALL_WALK_IN_URL,
+  },
+  {
+    value: "archived",
+    label: "Archives",
+    url: GET_ALL_ARCHIVE_URL,
   },
 ];
 
@@ -66,6 +76,64 @@ const EndorsementLetterRequestsContainer = ({ authorizeRole }) => {
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split("T")[0] // Initialize with today's date
   );
+  const [selectedID, setSelectedID] = useState(null);
+
+  /**
+   *
+   *
+   * MODAL STATE
+   *
+   *
+   */
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [isRestoreOpen, setIsRestoreOpen] = useState(false);
+
+  /**
+   *
+   *
+   * MODAL FUNCTIONS
+   *
+   *
+   */
+  const openDeleteModal = (id) => {
+    // console.log(id);
+
+    setSelectedID(id);
+    setIsDeleteOpen(true);
+  };
+
+  const openRestoreModal = (id) => {
+    // console.log(id);
+    setSelectedID(id);
+    setIsRestoreOpen(true);
+  };
+
+  // Handles delete endorsement letter request record
+  const handleDelete = async () => {
+    // console.log(selectedID);
+    await deleteByID({
+      setStates: {
+        setLoading,
+        setIsDeleteOpen,
+        setRows,
+      },
+      id: selectedID,
+    });
+  };
+
+  // Handles restore deleted endorsement letter request record
+  const handleRestore = async () => {
+    // console.log(selectedID);
+
+    await restoreByID({
+      setStates: {
+        setLoading,
+        setIsRestoreOpen,
+        setRows,
+      },
+      id: selectedID,
+    });
+  };
 
   /**
    *
@@ -107,6 +175,8 @@ const EndorsementLetterRequestsContainer = ({ authorizeRole }) => {
       getEndorsementRequestsActionColumns({
         pathname: location.pathname,
         selectedStatus: selectedStatus,
+        openDeleteModal: openDeleteModal,
+        openRestoreModal: openRestoreModal,
       }),
     [authorizeRole, selectedStatus]
   );
@@ -211,6 +281,7 @@ const EndorsementLetterRequestsContainer = ({ authorizeRole }) => {
         Download CSV
       </button> */}
       <EndorsementLetterRequestsPresenter
+        loading={loading}
         items={items}
         selectedStatus={selectedStatus}
         setSelectedStatus={setSelectedStatus}
@@ -223,6 +294,13 @@ const EndorsementLetterRequestsContainer = ({ authorizeRole }) => {
         /** Date Select */
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}
+        /* Modal Props */
+        openDelete={isDeleteOpen}
+        setOpenDelete={setIsDeleteOpen}
+        handleDelete={handleDelete}
+        openRestore={isRestoreOpen}
+        setOpenRestore={setIsRestoreOpen}
+        handleRestore={handleRestore}
       />
     </>
   );

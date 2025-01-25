@@ -1,6 +1,13 @@
-import { getRequest, postRequest } from "../../api/apiHelpers";
+import {
+  deleteRequest,
+  getRequest,
+  postRequest,
+  putRequest,
+} from "../../api/apiHelpers";
 import {
   ADD_MANUAL_REQUEST_URL,
+  DELETE_BY_ID_URL,
+  RESTORE_BY_ID_URL,
   SEARCH_COMPANY_URL,
   SEARCH_COORDINATOR_URL,
   SEARCH_STUDENT_URL,
@@ -103,5 +110,49 @@ export const postManualRequest = async ({ setLoading, payload }) => {
     console.error(error);
   } finally {
     setLoading(false);
+  }
+};
+
+// DELETE
+export const deleteByID = async ({ setStates = {}, id }) => {
+  // Set loading state
+  setStates.setLoading(true);
+
+  try {
+    const response = await deleteRequest({
+      url: DELETE_BY_ID_URL(id),
+    });
+
+    // Check response
+    if (response) {
+      setStates.setRows((prevData) => prevData.filter((row) => row.id !== id));
+      setStates.setIsDeleteOpen(false);
+    }
+  } catch (error) {
+    console.log(error);
+  } finally {
+    setStates.setLoading(false);
+  }
+};
+
+// RESTORE
+export const restoreByID = async ({ setStates = {}, id }) => {
+  // Set loading state
+  setStates.setLoading(true);
+
+  try {
+    const response = await putRequest({
+      url: RESTORE_BY_ID_URL(id),
+    });
+
+    // Check response
+    if (response) {
+      setStates.setRows((prevData) => prevData.filter((row) => row.id !== id));
+      setStates.setIsRestoreOpen(false);
+    }
+  } catch (error) {
+    console.log(error);
+  } finally {
+    setStates.setLoading(false);
   }
 };

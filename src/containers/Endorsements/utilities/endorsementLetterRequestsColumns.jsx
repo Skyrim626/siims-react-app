@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { getEndorsementStatusColor } from "../../../utils/statusColor";
 import { Button } from "@headlessui/react";
 import getFullName from "../../../utils/getFullName";
+import TypeWrapper from "../components/TypeWrapper";
 
 // Static Columns
 export const getEndorsementRequestsStaticColumns = ({
@@ -47,7 +48,7 @@ export const getEndorsementRequestsStaticColumns = ({
         </Link>
       ),
     },
-    {
+    /* {
       field: "students",
       headerName: "Students",
       width: 200,
@@ -71,7 +72,7 @@ export const getEndorsementRequestsStaticColumns = ({
           </ul>
         );
       },
-    },
+    }, */
     {
       field: "endorse_students_count",
       headerName: "Total Endorse Students",
@@ -150,6 +151,16 @@ export const getEndorsementRequestsStaticColumns = ({
           },
         ]
       : []),
+    ...(selectedStatus === "archived"
+      ? [
+          {
+            field: "deleted_at",
+            headerName: "Deleted At",
+            width: 250,
+            headerClassName: "super-app-theme--header",
+          },
+        ]
+      : []),
   ];
 
   // Return
@@ -160,6 +171,8 @@ export const getEndorsementRequestsStaticColumns = ({
 export const getEndorsementRequestsActionColumns = ({
   pathname,
   selectedStatus,
+  openDeleteModal,
+  openRestoreModal,
 }) => {
   return {
     field: "actions",
@@ -170,6 +183,8 @@ export const getEndorsementRequestsActionColumns = ({
       // Fallback for missing data
       const rowId = params?.row?.id || "N/A";
 
+      // console.log(selectedStatus);
+
       return (
         <div className="flex space-x-2 items-center justify-center">
           <Link
@@ -178,6 +193,24 @@ export const getEndorsementRequestsActionColumns = ({
           >
             View
           </Link>
+
+          <TypeWrapper type={selectedStatus} requiredType={"walk-in"}>
+            <Button
+              className="bg-red-500 hover:bg-red-600 text-white py-1 px-4 rounded"
+              onClick={() => openDeleteModal(params.row.id)}
+            >
+              Delete
+            </Button>
+          </TypeWrapper>
+
+          <TypeWrapper type={selectedStatus} requiredType={"archived"}>
+            <Button
+              className="bg-green-500 hover:bg-green-600 text-white py-1 px-4 rounded"
+              onClick={() => openRestoreModal(params.row.id)}
+            >
+              Restore
+            </Button>
+          </TypeWrapper>
         </div>
       );
     },

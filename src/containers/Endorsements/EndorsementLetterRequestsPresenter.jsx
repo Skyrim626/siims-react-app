@@ -7,6 +7,8 @@ import Text from "../../components/common/Text";
 import SelectDropDown from "./components/SelectDropDown";
 import DynamicDataGrid from "./components/DynamicDataGrid";
 import { Input } from "@headlessui/react";
+import DeleteConfirmModal from "./components/modals/DeleteConfirmModal";
+import RestoreConfirmModal from "./components/modals/RestoreConfirmModal";
 
 const EndorsementLetterRequestsPresenter = ({
   loading,
@@ -25,10 +27,33 @@ const EndorsementLetterRequestsPresenter = ({
   /** Date Selection */
   selectedDate,
   setSelectedDate,
+
+  /** Modal Props */
+  openDelete,
+  setOpenDelete,
+  handleDelete,
+
+  openRestore,
+  setOpenRestore,
+  handleRestore,
 }) => {
   return (
     <Page>
+      {/* Loader */}
       <Loader loading={loading} />
+
+      {/* Modals */}
+      <DeleteConfirmModal
+        open={openDelete}
+        setOpen={setOpenDelete}
+        handleDelete={handleDelete}
+      />
+
+      <RestoreConfirmModal
+        open={openRestore}
+        setOpen={setOpenRestore}
+        handleRestore={handleRestore}
+      />
 
       <Section>
         <Heading level={3} text={"Endorsement Letter Requests"} />
@@ -48,12 +73,14 @@ const EndorsementLetterRequestsPresenter = ({
             setSelectedURL={setSelectedURL}
           />
 
-          <Input
-            type="date"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-            className="font-bold bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block py-3 px-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 h-[44px]"
-          />
+          {!(selectedStatus === "archived") && (
+            <Input
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              className="font-bold bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block py-3 px-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 h-[44px]"
+            />
+          )}
         </div>
 
         <DynamicDataGrid
