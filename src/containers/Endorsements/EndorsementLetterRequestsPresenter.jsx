@@ -6,9 +6,12 @@ import Heading from "../../components/common/Heading";
 import Text from "../../components/common/Text";
 import SelectDropDown from "./components/SelectDropDown";
 import DynamicDataGrid from "./components/DynamicDataGrid";
-import { Input } from "@headlessui/react";
+import { Button, Input } from "@headlessui/react";
 import DeleteConfirmModal from "./components/modals/DeleteConfirmModal";
 import RestoreConfirmModal from "./components/modals/RestoreConfirmModal";
+import { generateCSV } from "./utilities/generateCSV";
+import { File } from "lucide-react";
+import TypeWrapper from "./components/TypeWrapper";
 
 const EndorsementLetterRequestsPresenter = ({
   loading,
@@ -65,6 +68,16 @@ const EndorsementLetterRequestsPresenter = ({
 
       <div className="mt-3">
         <div className="mb-3 flex items-center gap-2">
+          <TypeWrapper type={selectedStatus} requiredType={"walk-in"}>
+            <Button
+              onClick={() => generateCSV(rows)}
+              className="bg-green-500 hover:bg-green-600 px-3 py-2 rounded-md text-sm text-white font-semibold flex gap-2 items-center"
+            >
+              <File size={18} />
+              Download CSV
+            </Button>
+          </TypeWrapper>
+
           <SelectDropDown
             items={items}
             selectedStatus={selectedStatus}
