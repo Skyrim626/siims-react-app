@@ -1,12 +1,13 @@
 import React from "react";
 import EndorseStudentModalContainer from "./components/modals/EndorseStudentModalContainer";
-import { Button, Field, Input, Label } from "@headlessui/react";
+import { Button, Field, Input, Label, Select } from "@headlessui/react";
 import TypeWrapper from "./components/TypeWrapper";
 import SearchCompanyModalContainer from "./components/modals/SearchCompanyModalContainer";
 import SearchCoordinatorModalContainer from "./components/modals/SearchCoordinatorModalContainer";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import Loader from "../../components/common/Loader";
 import RoleBasedView from "../../components/common/RoleBasedView";
+import RecepientPositionDropDown from "./components/RecepientPositionDropDown";
 
 const ManualCreateEndorsementLetterPresenter = ({
   authorizeRole,
@@ -92,7 +93,7 @@ const ManualCreateEndorsementLetterPresenter = ({
           />
         </Field>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-3 gap-3 items-center">
           <Field className="mb-6">
             <Label className="block text-gray-700 font-semibold mb-2">
               Recipient Name
@@ -121,6 +122,11 @@ const ManualCreateEndorsementLetterPresenter = ({
               placeholder="Recipient Position"
             />
           </Field>
+
+          <RecepientPositionDropDown
+            state={formData.recipient_position}
+            handleInputChange={handleInputChange}
+          />
         </div>
 
         <Field className="mb-6">
