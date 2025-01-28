@@ -8,6 +8,7 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 import Loader from "../../components/common/Loader";
 import RoleBasedView from "../../components/common/RoleBasedView";
 import RecepientPositionDropDown from "./components/RecepientPositionDropDown";
+import ConfirmGenerateModal from "./components/modals/ConfirmGenerateModal";
 
 const ManualCreateEndorsementLetterPresenter = ({
   authorizeRole,
@@ -40,6 +41,12 @@ const ManualCreateEndorsementLetterPresenter = ({
   setIsSearchCompanyModalOpen,
 
   callEndorsementLetter,
+
+  /* Confirmation Modal */
+  studentsNotAttended = [],
+  isConfirmationModalOpen,
+  setIsConfirmationModalOpen,
+  handleConfirm,
 }) => {
   return (
     <div>
@@ -61,6 +68,15 @@ const ManualCreateEndorsementLetterPresenter = ({
         <EndorseStudentModalContainer
           setNewStudent={setNewStudent}
           setIsStudentModalOpen={setIsStudentModalOpen}
+        />
+      )}
+
+      {isConfirmationModalOpen && (
+        <ConfirmGenerateModal
+          open={isConfirmationModalOpen}
+          setOpen={setIsConfirmationModalOpen}
+          studentsNotAttended={studentsNotAttended}
+          handleConfirm={handleConfirm}
         />
       )}
 

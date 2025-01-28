@@ -1,3 +1,4 @@
+import axios from "axios";
 import {
   deleteRequest,
   getRequest,
@@ -7,6 +8,7 @@ import {
 import {
   ADD_MANUAL_REQUEST_URL,
   DELETE_BY_ID_URL,
+  GET_VALIDATE_ORIENTATION,
   RESTORE_BY_ID_URL,
   SEARCH_COMPANY_URL,
   SEARCH_COORDINATOR_URL,
@@ -201,4 +203,41 @@ export const fetchData = async ({
   } finally {
     setLoading(false);
   }
+};
+
+/**
+ *
+ *
+ * GET (Third Party API)
+ *
+ *
+ */
+export const validateOrientation = async ({ validatedStudents = [] }) => {
+  const isNotPresent = [];
+
+  // Loop through each student
+  for (const student of validatedStudents) {
+    // Skip if hasOrientation is false
+    if (!student.hasOrientation) continue;
+
+    try {
+      // Call the third-party API to validate orientation attendance
+      const response = await axios.get(GET_VALIDATE_ORIENTATION(student.id));
+
+      const { student_name, attended } = response.data;
+
+      // Check if attended is false
+      if (!attended) {
+        isNotPresent.push(student);
+      }
+    } catch (error) {
+      console.error(
+        `Failed to fetch data for student ID: ${student.id}`,
+        error
+      );
+      isNotPresent.push(student); // Add student to the list if the API call fails
+    }
+  }
+
+  return isNotPresent;
 };

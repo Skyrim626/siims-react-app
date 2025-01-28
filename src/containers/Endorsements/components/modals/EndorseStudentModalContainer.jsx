@@ -43,6 +43,7 @@ const EndorseStudentModalContainer = ({
       fullName: student.fullName,
       phoneNumber: student.phoneNumber,
       email: student.email,
+      hasOrientation: student.hasOrientation,
     });
 
     setSelectedStudent(student);

@@ -36,6 +36,9 @@ const endorsementLetterSlice  = createSlice({
       state[key] = value;
     },
     addStudent: (state, action) => {
+
+      // console.log(action.payload);
+
       state.students.push(action.payload);
     },
     removeStudent: (state, action) => {

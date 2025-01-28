@@ -1,4 +1,16 @@
 /**
+ * 
+ * 
+ * GET (THIRD-PARTY)
+ * 
+ * 
+ * 
+ */
+export const GET_VALIDATE_ORIENTATION = (id) => {
+  return `https://mlicayan.pythonanywhere.com/api/v1/events/on-job-training-orientation-2024-2025/${id}/`
+}
+
+/**
  *
  *
  * GET (SEARCH)
