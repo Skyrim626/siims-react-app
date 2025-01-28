@@ -8,6 +8,21 @@ import useDebouncedSearch from "../../../hooks/useDebouncedSearch";
 import Text from "../../../components/common/Text";
 import { getRequest } from "../../../api/apiHelpers";
 
+/**
+ *
+ *
+ *
+ *
+ *
+ * !!!!!! TO BE DELETED
+ *
+ *
+ *
+ *
+ *
+ *
+ */
+
 const ODD_OPACITY = 0.2;
 
 const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
@@ -95,9 +110,9 @@ const DynamicDataGrid = React.memo(
       const fetchData = async () => {
         setLoading(true);
 
-        console.log(`/api/v1${url}`);
+        // console.log(`/api/v1${url}`);
 
-        console.log(selectedDate);
+        // console.log(selectedDate);
 
         const response = await getRequest({
           url: `/api/v1${url}`,

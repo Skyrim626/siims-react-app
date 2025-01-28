@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import EndorsementLetterRequestsPresenter from "./EndorsementLetterRequestsPresenter";
 import {
@@ -12,7 +12,8 @@ import {
 } from "./constants/resources";
 import { useDispatch, useSelector } from "react-redux";
 import { setFormValues } from "./_redux/endorsementLetterDetailSlice";
-import { deleteByID, restoreByID } from "./api";
+import { deleteByID, fetchData, restoreByID } from "./api";
+import useDebouncedSearch from "../../hooks/useDebouncedSearch";
 
 // Items for Drop down
 const items = [
@@ -77,6 +78,76 @@ const EndorsementLetterRequestsContainer = ({ authorizeRole }) => {
     new Date().toISOString().split("T")[0] // Initialize with today's date
   );
   const [selectedID, setSelectedID] = useState(null);
+
+  /**
+   *
+   *
+   * DATAGRID STATE
+   *
+   *
+   *
+   */
+  const [totalCount, setTotalCount] = useState(0);
+  const [dataGridLoading, setDataGridLoading] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0, // Current page
+    pageSize: 5, // Items per page
+  });
+
+  // Use debounced search term to avoid sending request on every keystroke
+  const debouncedSearchTerm = useDebouncedSearch(searchInput, 500); // 500ms debounce delay
+
+  /**
+   *
+   *
+   * DATAGRID FUNCTION STATE
+   *
+   *
+   */
+  // Handle input field change
+  const handleSearchInputChange = useCallback((event) => {
+    const value = event.target.value;
+    setSearchInput(value);
+
+    if (value === "") {
+      // Reload data if input is cleared
+      setSearchTerm("");
+      setPaginationModel({ ...paginationModel, page: 0 });
+    }
+  });
+
+  // Trigger search only on Enter key press
+  const handleSearchKeyDown = (event) => {
+    // console.log(event.key);
+
+    if (event.key === "Enter") {
+      setSearchTerm(debouncedSearchTerm); // Use the input value for fetching data
+      setPaginationModel({ ...paginationModel, page: 0 }); // Reset to first page
+    }
+  };
+
+  /**
+   *
+   *
+   * FETCH STATE
+   *
+   *
+   *
+   */
+  useEffect(() => {
+    fetchData({
+      requestedBy: authorizeRole,
+      selectedDate: selectedDate,
+      setLoading: setDataGridLoading,
+      url: selectedURL,
+      paginationModel: paginationModel,
+      setRows: setRows,
+      setTotalCount: setTotalCount,
+      searchTerm: searchTerm,
+    });
+  }, [paginationModel, searchTerm, selectedURL, selectedDate]);
 
   /**
    *
@@ -210,6 +281,13 @@ const EndorsementLetterRequestsContainer = ({ authorizeRole }) => {
         openRestore={isRestoreOpen}
         setOpenRestore={setIsRestoreOpen}
         handleRestore={handleRestore}
+        /* Data Grid Props */
+        paginationModel={paginationModel}
+        totalCount={totalCount}
+        searchInput={searchInput}
+        handleSearchInputChange={handleSearchInputChange}
+        handleSearchKeyDown={handleSearchKeyDown}
+        dataGridLoading={dataGridLoading}
       />
     </>
   );

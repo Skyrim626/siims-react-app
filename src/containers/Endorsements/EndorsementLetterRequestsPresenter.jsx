@@ -10,8 +10,10 @@ import { Button, Input } from "@headlessui/react";
 import DeleteConfirmModal from "./components/modals/DeleteConfirmModal";
 import RestoreConfirmModal from "./components/modals/RestoreConfirmModal";
 import { generateCSV } from "./utilities/generateCSV";
-import { File } from "lucide-react";
+import { File, Search } from "lucide-react";
 import TypeWrapper from "./components/TypeWrapper";
+import CustomDataGrid from "./components/CustomDataGrid";
+import { Pagination } from "@mui/material";
 
 const EndorsementLetterRequestsPresenter = ({
   loading,
@@ -39,6 +41,16 @@ const EndorsementLetterRequestsPresenter = ({
   openRestore,
   setOpenRestore,
   handleRestore,
+
+  /* Data Grid Props */
+  paginationModel,
+  totalCount,
+  searchInput,
+  handleSearchInputChange,
+  handleSearchKeyDown,
+  dataGridLoading,
+  handlePaginationModelChange,
+  onSelectionModelChange,
 }) => {
   return (
     <Page>
@@ -96,16 +108,48 @@ const EndorsementLetterRequestsPresenter = ({
           )}
         </div>
 
-        <DynamicDataGrid
-          searchPlaceholder={"Search Endorsement..."}
-          rows={rows}
-          setRows={setRows}
-          columns={columns}
-          url={selectedURL}
-          requestedBy={authorizeRole}
-          checkboxSelection={false}
-          selectedDate={selectedDate}
-        />
+        <div>
+          <div className="mb-4 flex justify-between items-center">
+            {/* Pagination */}
+            <div className="flex items-center space-x-3">
+              <Text className="font-semibold">Page</Text>
+
+              <Pagination
+                count={Math.ceil(totalCount / paginationModel.pageSize)} // Calculate number of pages
+                page={paginationModel.page + 1} // Pagination uses 1-based index
+                onChange={(event, page) =>
+                  handlePaginationModelChange({
+                    ...paginationModel,
+                    page: page - 1,
+                  })
+                } // Handle page change
+                shape="rounded"
+                variant="outlined"
+              />
+            </div>
+
+            <div className="p-2 w-[300px] rounded-full border border-blue-950 flex items-center space-x-3 bg-white">
+              <Search size={20} />
+              <Input
+                type="text"
+                placeholder={"Search by name, company, or email"}
+                value={searchInput}
+                onChange={handleSearchInputChange} // Update input field only
+                className={"bg-transparent w-full outline-none"}
+                onKeyDown={handleSearchKeyDown} // Trigger search on Enter key press
+              />
+            </div>
+          </div>
+          <CustomDataGrid
+            loading={dataGridLoading}
+            paginationModel={paginationModel}
+            totalCount={totalCount}
+            handlePaginationModelChange={handlePaginationModelChange}
+            rows={rows}
+            columns={columns}
+            onSelectionModelChange={onSelectionModelChange}
+          />
+        </div>
       </div>
     </Page>
   );

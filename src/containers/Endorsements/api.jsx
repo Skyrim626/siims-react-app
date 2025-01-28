@@ -156,3 +156,49 @@ export const restoreByID = async ({ setStates = {}, id }) => {
     setStates.setLoading(false);
   }
 };
+
+/**
+ *
+ *
+ * GET
+ *
+ *
+ */
+export const fetchData = async ({
+  requestedBy,
+  selectedDate,
+  setLoading,
+  url,
+  paginationModel,
+  setRows,
+  setTotalCount,
+  searchTerm,
+}) => {
+  // Set Loading
+  setLoading(true);
+
+  // console.log(url);
+
+  try {
+    const response = await getRequest({
+      url: `/api/v1${url}`,
+      params: {
+        page: paginationModel.page + 1,
+        perPage: paginationModel.pageSize,
+        search: searchTerm,
+        requestedBy: requestedBy,
+        date: selectedDate,
+      },
+    });
+
+    if (response && response.data) {
+      // console.log(response.data);
+      setRows(response.data);
+      setTotalCount(response.meta.total);
+    }
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setLoading(false);
+  }
+};
