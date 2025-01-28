@@ -53,6 +53,7 @@ const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
 const CustomDataGrid = React.memo(
   ({
     paginationModel,
+
     totalCount,
     handlePaginationModelChange,
     rows,

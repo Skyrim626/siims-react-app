@@ -106,6 +106,11 @@ const EndorsementLetterRequestsContainer = ({ authorizeRole }) => {
    *
    *
    */
+  // Handle pagination model change
+  const handlePaginationModelChange = (newPaginationModel) => {
+    setPaginationModel(newPaginationModel); // Update pagination model (page and pageSize)
+  };
+
   // Handle input field change
   const handleSearchInputChange = useCallback((event) => {
     const value = event.target.value;
@@ -288,6 +293,7 @@ const EndorsementLetterRequestsContainer = ({ authorizeRole }) => {
         handleSearchInputChange={handleSearchInputChange}
         handleSearchKeyDown={handleSearchKeyDown}
         dataGridLoading={dataGridLoading}
+        handlePaginationModelChange={handlePaginationModelChange}
       />
     </>
   );
