@@ -1,24 +1,30 @@
-// Libraries
-import React, { useState } from "react";
+import React from "react";
+import Loader from "../../components/common/Loader";
+import AuthPrompt from "./components/AuthPrompt";
+import Text from "../../components/common/Text";
+import { Button, Field, Input, Label } from "@headlessui/react";
 import { NavLink } from "react-router-dom";
 
-/**
- * Components
- */
-// Headless UI Component
-import { Button, Field, Input, Label } from "@headlessui/react";
-
-// Forgot Password Form Component
-const ForgotPasswordForm = ({
-  email = "",
-  setEmail = () => {},
-  onSubmit = () => {},
+const ForgetPasswordPresenter = ({
+  email,
+  setEmail,
+  message,
+  error,
+  loading,
+  submitEmail,
 }) => {
   return (
     <>
-      {/* Forgot Password Form */}
-      {/* form action TODO */}
-      <form method="post" className="mt-3 space-y-5" onSubmit={onSubmit}>
+      <Loader loading={loading} />
+
+      <AuthPrompt
+        heading={"Forgot Password"}
+        description={"Please enter your email to verify."}
+      />
+      {message && <Text className="text-green-500">{message}</Text>}
+      {error && <Text className="text-red-600">{error}</Text>}
+
+      <form method="post" className="mt-3 space-y-5" onSubmit={submitEmail}>
         {/* ID Input */}
         <Field className={"text-sm flex flex-col gap-2"}>
           <Label htmlFor="email" className={"text-white font-bold"}>
@@ -60,4 +66,4 @@ const ForgotPasswordForm = ({
   );
 };
 
-export default ForgotPasswordForm;
+export default ForgetPasswordPresenter;

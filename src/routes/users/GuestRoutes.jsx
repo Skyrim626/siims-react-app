@@ -5,9 +5,9 @@ import { Navigate } from "react-router-dom";
 import GuestLayout from "../../components/layouts/GuestLayout";
 
 // Guest Pages
-import LoginPage from "../../pages/guest/LoginPage";
-import ForgotPasswordPage from "../../pages/guest/ForgotPasswordPage";
 import PasswordResetPage from "../../pages/guest/PasswordResetPage";
+import LoginContainer from "../../containers/Auth/LoginContainer";
+import ForgetPasswordContainer from "../../containers/Auth/ForgetPasswordContainer";
 
 // Guest Routes
 const GuestRoutes = {
@@ -20,11 +20,11 @@ const GuestRoutes = {
     },
     {
       path: "/login",
-      element: <LoginPage />,
+      element: <LoginContainer />,
     },
     {
       path: "/forgot-password",
-      element: <ForgotPasswordPage />,
+      element: <ForgetPasswordContainer />,
     },
     {
       path: "/password-reset/:token",

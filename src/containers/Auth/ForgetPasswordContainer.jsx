@@ -1,24 +1,34 @@
-// Libraries
 import React, { useState } from "react";
+import ForgetPasswordPresenter from "./ForgetPasswordPresenter";
 
-// Forms
-import ForgotPasswordForm from "../../components/forms/ForgotPasswordForm";
-import AuthPrompt from "../../components/auth/AuthPrompt";
-import Text from "../../components/common/Text";
-import { postRequest } from "../../api/apiHelpers";
-import Loader from "../../components/common/Loader";
-
-// Forgot Password Page Component
-export default function ForgotPasswordPage() {
-  // Input State
+const ForgetPasswordContainer = () => {
+  /**
+   *
+   *
+   * INPUT STATE
+   *
+   *
+   */
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState(null);
 
-  // Loading State
+  /**
+   *
+   *
+   * LOADING STATE
+   *
+   *
+   */
   const [loading, setLoading] = useState(false);
 
-  // Send Email
+  /**
+   *
+   *
+   * FUNCTIONS
+   *
+   *
+   */
   const submitEmail = async (e) => {
     // Prevent Default
     e.preventDefault();
@@ -51,24 +61,16 @@ export default function ForgotPasswordPage() {
 
   return (
     <>
-      {/* Loading */}
-      <Loader loading={loading} />
-
-      {/* Logo and Welcome */}
-      <AuthPrompt
-        heading={"Forgot Password"}
-        description={"Please enter your email to verify."}
-      />
-      {message && <Text className="text-green-500">{message}</Text>}
-      {error && <Text className="text-red-600">{error}</Text>}
-      {/* Forgot Password Form */}
-      <ForgotPasswordForm
+      <ForgetPasswordPresenter
         email={email}
         setEmail={setEmail}
-        onSubmit={submitEmail}
         message={message}
         error={error}
+        loading={loading}
+        submitEmail={submitEmail}
       />
     </>
   );
-}
+};
+
+export default ForgetPasswordContainer;

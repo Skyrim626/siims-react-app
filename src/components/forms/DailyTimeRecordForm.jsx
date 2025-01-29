@@ -23,7 +23,7 @@ const DailyTimeRecordForm = ({
 }) => {
   return (
     <>
-      <form className="space-y-3" onSubmit={handleSubmit}>
+      <div>
         <Heading
           level={5}
           color="black"
@@ -129,7 +129,7 @@ const DailyTimeRecordForm = ({
             </div>
           </div>
         </div>
-      </form>
+      </div>
     </>
   );
 };

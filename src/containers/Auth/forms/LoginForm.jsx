@@ -1,11 +1,9 @@
+import { Button, Field, Input, Label } from "@headlessui/react";
+import { Eye, EyeOff } from "lucide-react";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Field, Input, Label, Button } from "@headlessui/react";
-import { Eye, EyeOff } from "lucide-react";
-import Text from "../common/Text";
 
 const LoginForm = ({ formData, handleChange, handleSubmit, errors }) => {
-  // State to manage the visibility toggle for the password field
   const [toggleVisible, setToggleVisible] = useState(false);
 
   return (

@@ -1,8 +1,8 @@
 import React from "react";
-import Heading from "../common/Heading";
-import Text from "../common/Text";
 // Assets
-import logo from "../../assets/images/logo.svg";
+import logo from "../../../assets/images/logo.svg";
+import Heading from "../../../components/common/Heading";
+import Text from "../../../components/common/Text";
 
 const AuthPrompt = ({ heading, description }) => {
   return (

@@ -99,11 +99,13 @@ const StudentRoutes = {
     },
     {
       path: "profile",
-      element: <ProfileContainer authorizeRole={"student"} method={"self"} />,
+      element: <Outlet />,
       children: [
         {
           index: true,
-          element: <SelfProfile authorizeRole={"student"} />,
+          element: (
+            <ProfileContainer authorizeRole={"student"} method={"self"} />
+          ),
         },
         {
           path: "edit",

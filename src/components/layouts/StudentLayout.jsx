@@ -75,14 +75,14 @@ export default function StudentLayout() {
       path: "/auth/my/endorsements",
     }, */
 
-    /* {
+    {
       icon: <FileText size={20} />,
       text: "Reports",
       alert: true,
       ariaLabel: "Reports",
       exact: true,
       path: "/auth/my/reports",
-    }, */
+    },
 
     /* {
       icon: <FileClock size={20} />,

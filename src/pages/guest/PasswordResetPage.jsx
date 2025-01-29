@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useLocation, Navigate } from "react-router-dom";
 
 // Components
-import AuthPrompt from "../../components/auth/AuthPrompt";
+// import AuthPrompt from "../../components/auth/AuthPrompt";
 import Text from "../../components/common/Text";
 import { postRequest } from "../../api/apiHelpers";
 

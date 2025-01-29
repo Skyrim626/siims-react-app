@@ -43,7 +43,13 @@ const SelfProfilePresenter = ({
           />
 
           <div className="flex gap-2 justify-end px-3">
-            <Link to={`${location.pathname}/edit`}>
+            <Link
+              to={`${location.pathname}/edit`}
+              state={{
+                id: profile.id,
+                profile: profile,
+              }}
+            >
               <Button className="download-profile-section | whitespace-nowrap  flex items-center gap-2 px-4 py-2 border rounded-sm text-gray-700 border-gray-300 hover:bg-gray-100">
                 <Edit size={20} />
                 <Text>Edit Profile</Text>
