@@ -1,13 +1,30 @@
+import { Button } from "@headlessui/react";
 import { getStudentStatusColor } from "../../../utils/statusColor";
 
 // Student Static Columns
-export const getStudentStaticColumns = ({ authorizeRole }) => {
+export const getStudentStaticColumns = ({
+  authorizeRole,
+  selectedSection,
+  openStudentInfoModal,
+}) => {
+  // console.log(selectedSection);
+
   const columns = [
     {
       field: "id",
       headerName: "ID",
       width: 150,
       headerClassName: "super-app-theme--header",
+      renderCell: (params) => (
+        <>
+          <Button
+            onClick={() => openStudentInfoModal(params.row)}
+            className="text-blue-500 hover:underline"
+          >
+            {params.row.id}
+          </Button>
+        </>
+      ),
     },
 
     {
@@ -27,25 +44,6 @@ export const getStudentStaticColumns = ({ authorizeRole }) => {
       headerName: "Last Name",
       width: 150,
       headerClassName: "super-app-theme--header",
-    },
-    {
-      field: "student_status",
-      headerName: "Status",
-      width: 250,
-      headerClassName: "super-app-theme--header",
-      renderCell: (params) => {
-        const { textColor, backgroundColor } = getStudentStatusColor(
-          params.value
-        );
-
-        return (
-          <div
-            className={`${textColor} ${backgroundColor} flex items-center justify-center rounded-full`}
-          >
-            {params.value}
-          </div>
-        );
-      },
     },
 
     // ! Only add the program_name column if the role is admin or dean

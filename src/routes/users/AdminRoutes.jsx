@@ -39,6 +39,7 @@ import DocumentTypeContainer from "../../containers/DocumentTypes/DocumentTypeCo
 import StudentContainer from "../../containers/Students/StudentContainer";
 import SectionContainer from "../../containers/Section/SectionContainer";
 import GenerateEndorsementLetterIndex from "../../containers/Endorsements/GenerateEndorsementLetterIndex";
+import CollegeContainer from "../../containers/Colleges/CollegeContainer";
 
 // Define routes for the Admin section
 const AdminRoutes = {
@@ -165,6 +166,10 @@ const AdminRoutes = {
       path: "roles", // Route for managing user roles
       element: <ViewRolesPage />,
     }, */
+    {
+      path: "test/colleges",
+      element: <CollegeContainer authorizeRole={"admin"} />,
+    },
     {
       path: "colleges", // Route for managing colleges
       element: <ViewCollegesPage />,

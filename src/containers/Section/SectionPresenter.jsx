@@ -4,11 +4,15 @@ import Section from "../../components/common/Section";
 import Heading from "../../components/common/Heading";
 import Text from "../../components/common/Text";
 import SearchableDropdown from "./components/SearchableDropdown";
-import { Button } from "@headlessui/react";
-import { Plus, UserCogIcon } from "lucide-react";
+import { Button, Input } from "@headlessui/react";
+import { Plus, Search, UserCog, UserCogIcon } from "lucide-react";
 import Modal from "../../components/modals/Modal";
 import SectionForm from "./forms/SectionForm";
 import DynamicDataGrid from "./components/DynamicDataGrid";
+import { Pagination } from "@mui/material";
+import CustomDataGrid from "./components/CustomDataGrid";
+import AssignSectionForm from "./forms/AssignSectionForm";
+import StudentContentModal from "./components/modals/StudentContentModal";
 
 const SectionPresenter = ({
   /** Authorize prop */
@@ -26,10 +30,40 @@ const SectionPresenter = ({
   isOpenSection,
   setIsOpenSection,
 
+  /** Section Form Data Props */
+  sectionFormData,
+  sectionHandleInputChange,
+  addNewSection,
+
   /** Data Grid Props */
   rows = [],
   setRows,
   columns,
+  paginationModel,
+  totalCount,
+  searchInput,
+  handleSearchInputChange,
+  handleSearchKeyDown,
+  dataGridLoading,
+  handlePaginationModelChange,
+  onRowSelectionModelChange,
+
+  /** Section Assign Props */
+  openSectionAssignModal,
+  isSectionAssignOpen,
+  setIsSectionAssignOpen,
+  selectedRows = [],
+  selectedSectionID,
+  setSelectedSectionID,
+  assignSection,
+
+  /** Student Info Modal */
+  isStudentModalOpen,
+  setIsStudentModalOpen,
+  selectedStudent,
+
+  /** Testing Props */
+  printSelectedRows,
 }) => {
   return (
     <Page>
@@ -39,7 +73,35 @@ const SectionPresenter = ({
         setIsOpen={setIsOpenSection}
         modalTitle="Create new section"
       >
-        <SectionForm authorizeRole={authorizeRole} />
+        <SectionForm
+          authorizeRole={authorizeRole}
+          sectionInfo={sectionFormData}
+          handleInputChange={sectionHandleInputChange}
+          addNewSection={addNewSection}
+        />
+      </Modal>
+
+      <Modal
+        modalTitle="Student Info"
+        isOpen={isStudentModalOpen}
+        setIsOpen={setIsStudentModalOpen}
+        minWidth="min-w-[1250px]"
+      >
+        <StudentContentModal student={selectedStudent} />
+      </Modal>
+
+      <Modal
+        isOpen={isSectionAssignOpen}
+        setIsOpen={setIsSectionAssignOpen}
+        modalTitle="Assign to Section"
+        minWidth="min-w-[500px]"
+      >
+        <AssignSectionForm
+          selectedSectionID={selectedSectionID}
+          setSelectedSectionID={setSelectedSectionID}
+          sections={sections}
+          assignSection={assignSection}
+        />
       </Modal>
 
       <Section>
@@ -52,7 +114,7 @@ const SectionPresenter = ({
 
       <div className="flex items-center justify-between mb-3">
         {sections.length > 0 && (
-          <div>
+          <div className="flex items-center gap-3">
             <SearchableDropdown
               items={sections}
               selectedItem={selectedSection}
@@ -64,6 +126,21 @@ const SectionPresenter = ({
               placeholder="Search section..."
               onSearchSubmit={fetchSections}
             />
+
+            {selectedSection.id === "no-sections" && (
+              <Button
+                onClick={() => openSectionAssignModal()}
+                className={`px-3 py-2 rounded-sm text-sm text-white font-semibold flex items-center gap-2 ${
+                  selectedRows.length > 0
+                    ? "bg-green-500 hover:bg-green-600"
+                    : "bg-gray-500 cursor-not-allowed"
+                }`}
+                disabled={!(selectedRows.length > 0)}
+              >
+                <UserCog size={18} />
+                Assign Student
+              </Button>
+            )}
           </div>
         )}
 
@@ -78,17 +155,48 @@ const SectionPresenter = ({
         </div>
       </div>
 
-      <DynamicDataGrid
-        rows={rows}
-        setRows={setRows}
-        columns={columns}
-        url={"/users/students"}
-        pageSizeOptions={[5, 10, 15, 25, 50]}
-        searchPlaceholder={"Search Student..."}
-        requestedBy={authorizeRole}
-        selectedSection={selectedSection}
-        checkboxSelection={false}
-      />
+      <div>
+        <div className="mb-4 flex justify-between items-center">
+          <div className="flex items-center space-x-3">
+            <Text className="font-semibold">Page</Text>
+
+            <Pagination
+              count={Math.ceil(totalCount / paginationModel.pageSize)} // Calculate number of pages
+              page={paginationModel.page + 1} // Pagination uses 1-based index
+              onChange={(event, page) =>
+                handlePaginationModelChange({
+                  ...paginationModel,
+                  page: page - 1,
+                })
+              } // Handle page change
+              shape="rounded"
+              variant="outlined"
+            />
+          </div>
+
+          <div className="p-2 w-[300px] rounded-full border border-blue-950 flex items-center space-x-3 bg-white">
+            <Search size={20} />
+            <Input
+              type="text"
+              placeholder={"Search by name, company, or email"}
+              value={searchInput}
+              onChange={handleSearchInputChange} // Update input field only
+              className={"bg-transparent w-full outline-none"}
+              onKeyDown={handleSearchKeyDown} // Trigger search on Enter key press
+            />
+          </div>
+        </div>
+        <CustomDataGrid
+          loading={dataGridLoading}
+          paginationModel={paginationModel}
+          totalCount={totalCount}
+          handlePaginationModelChange={handlePaginationModelChange}
+          rows={rows}
+          columns={columns}
+          checkboxSelection={selectedSection.id === "no-sections"}
+          onRowSelectionModelChange={onRowSelectionModelChange}
+        />
+      </div>
     </Page>
   );
 };

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Field, Input } from "@headlessui/react";
+import { Button, Field, Input } from "@headlessui/react";
 import Heading from "../../../components/common/Heading";
 import FormField from "../../../components/common/FormField";
 import Text from "../../../components/common/Text";
@@ -20,15 +20,14 @@ const SectionForm = ({
     coordinator_id: 0,
   },
   handleInputChange = () => {},
-  onChange = () => {},
   errors = {},
   accept = "csv",
   maxSize = "20MB",
   authorizeRole,
-  coordinators = [],
+  addNewSection,
 }) => {
   return (
-    <form>
+    <form method="post" onSubmit={addNewSection}>
       <Heading
         level={5}
         color="black"
@@ -101,14 +100,14 @@ const SectionForm = ({
 
       {/*Import Students */}
 
-      <div className="mt-3">
+      {/* <div className="mt-3">
         <FormField
           label={"Import Students"}
           name={"class_list"}
           labelClassName="text-sm text-black font-semibold"
           required={requiredFields["class_list"]}
         >
-          {/* File Upload Button */}
+          
           <div className="relative flex items-center justify-center w-full border-2 border-dashed border-gray-300 rounded-md p-6 cursor-pointer hover:bg-gray-50 transition-all">
             <Input
               type={"file"}
@@ -123,6 +122,15 @@ const SectionForm = ({
             </div>
           </div>
         </FormField>
+      </div> */}
+
+      <div className="mt-3">
+        <Button
+          type="submit"
+          className="w-full py-2 px-3 text-center bg-blue-500 hover:bg-blue-600 transition font-semibold text-white"
+        >
+          Create
+        </Button>
       </div>
     </form>
   );

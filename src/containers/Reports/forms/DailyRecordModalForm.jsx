@@ -9,9 +9,8 @@ const DailyRecordModalForm = ({
   handleInputChange,
   isOpen,
   setIsOpen,
-  errors,
   addDailyTimeRecord,
-  validationErrors,
+  validationErrors = {},
 }) => {
   return (
     <Modal

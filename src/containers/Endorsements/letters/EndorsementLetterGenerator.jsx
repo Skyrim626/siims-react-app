@@ -70,6 +70,13 @@ const styles = StyleSheet.create({
     textAlign: "justify",
     lineHeight: 1.5,
   },
+  table: {
+    marginBottom: 12,
+    fontSize: 11,
+    fontFamily: "Times-Roman",
+    textAlign: "left",
+    lineHeight: 1.5,
+  },
   text: {
     marginBottom: 4,
     fontSize: 11,
@@ -202,7 +209,7 @@ const EndorsementLetterGenerator = ({ imageHeight = 80, formData }) => {
             </Text>
           </View>
 
-          <View style={styles.paragraph}>
+          <View style={styles.table}>
             <Table tdStyle={{ padding: "2px" }}>
               <TH
                 style={{

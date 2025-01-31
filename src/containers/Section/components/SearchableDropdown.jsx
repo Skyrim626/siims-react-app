@@ -14,7 +14,11 @@ const SearchableDropdown = ({
   onSearchSubmit,
 }) => {
   // Add "All" as the first item with id set to null
-  const updatedItems = [{ id: null, name: "All" }, ...items];
+  const updatedItems = [
+    { id: null, name: "All" },
+    { id: "no-sections", name: "No Sections" },
+    ...items,
+  ];
 
   // If no selectedItem, default to "All"
   const displaySelectedItem = selectedItem?.name || "All";

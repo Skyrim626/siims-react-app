@@ -2,9 +2,13 @@ import axiosClient from "../../api/axiosClient";
 import { showSuccessAlert } from "../../utils/toastify";
 import {
   ADD_DTR_API,
+  ADD_WAR_API,
   DELETE_DTR_API,
+  DELETE_WAR_API,
   GET_DTR_API,
+  GET_WAR_API,
   PUT_DTR_API,
+  PUT_WAR_API,
 } from "./constants/resources";
 
 // DELETE
@@ -139,9 +143,143 @@ export const addDtr = async ({
     if (error.status === 422) {
       console.error(error.status);
 
+      // console.log(error.response.data.errors);
+      setErrors(error.response.data.errors);
+    }
+  } finally {
+    setLoading(false);
+  }
+};
+
+/** UPDATE */
+export const updateWar = async ({
+  authorizeRole,
+  setLoading,
+  setRows,
+  setErrors,
+  setOpen,
+  payload,
+}) => {
+  // Set Loading
+  setLoading(true);
+
+  try {
+    const response = await axiosClient.put(
+      PUT_WAR_API(payload["id"]),
+      payload,
+      {
+        params: {
+          requestedBy: authorizeRole,
+        },
+      }
+    );
+
+    // Check Response
+    if (response && response.status === 200) {
+      setOpen(false);
+
+      showSuccessAlert(response.data.message); // Display Toastify
+
+      setRows((prevData) =>
+        prevData.map((data) =>
+          data.id === payload["id"] ? { ...data, ...response.data.data } : data
+        )
+      );
+    }
+  } catch (error) {
+    // console.log(error);
+
+    if (error.status === 422) {
+      console.error(error.status);
+
       console.log(error.response.data.errors);
       setErrors(error.response.data.errors);
     }
+  } finally {
+    setLoading(false);
+  }
+};
+
+/** ADD */
+export const addWar = async ({
+  authorizeRole,
+  setLoading,
+  payload,
+  setErrors,
+  setIsOpen,
+  setRows,
+}) => {
+  // Set Loading
+  setLoading(true);
+
+  try {
+    const response = await axiosClient.post(ADD_WAR_API, payload, {
+      params: {
+        requestedBy: authorizeRole,
+      },
+    });
+
+    if (response && response.status === 201) {
+      setIsOpen(false);
+
+      setRows((prevState) => [...prevState, response.data.data]);
+
+      // console.log(response.data.data);
+    }
+  } catch (error) {
+    console.log(error);
+
+    if (error.status === 422) {
+      console.error(error.status);
+
+      // console.log(error.response.data.errors);
+      setErrors(error.response.data.errors);
+    }
+  } finally {
+    setLoading(false);
+  }
+};
+
+// Get all WAR
+export const getAllWar = async ({ setLoading, setRows, authorizeRole }) => {
+  // Set Loading
+  setLoading(true);
+
+  try {
+    const response = await axiosClient.get(GET_WAR_API, {
+      params: {
+        requestedBy: authorizeRole,
+      },
+    });
+
+    if (response && response.status === 200) {
+      // console.log(response.data);
+      setRows(response.data);
+    }
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+// DELETE WAR
+export const deleteWarByID = async ({ setLoading, id, setRows }) => {
+  // Set Loading
+  setLoading(true);
+
+  try {
+    const response = await axiosClient.delete(DELETE_WAR_API(id));
+
+    // Check response
+    if (response && response.status === 200) {
+      showSuccessAlert(response.data.message); // Display Toastify
+
+      // Set Rows
+      setRows((prevState) => prevState.filter((row) => row.id !== id));
+    }
+  } catch (error) {
+    console.error(error);
   } finally {
     setLoading(false);
   }

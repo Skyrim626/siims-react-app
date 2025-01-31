@@ -1,6 +1,7 @@
 import React from "react";
 import DailyReportContainer from "./DailyReportContainer";
 import WeeklyReportContainer from "./WeeklyReportContainer";
+import { Button } from "@headlessui/react";
 
 const ReportsPresenter = ({ activeTab, setActiveTab, authorizeRole }) => {
   return (
@@ -8,7 +9,7 @@ const ReportsPresenter = ({ activeTab, setActiveTab, authorizeRole }) => {
       <div className="bg-white rounded-lg shadow-md p-6">
         {/* Tab Navigation */}
         <div className="flex border-b-2 border-gray-200 mb-6">
-          <button
+          <Button
             className={`${
               activeTab === "daily"
                 ? "text-blue-600 border-b-2 border-blue-600"
@@ -17,8 +18,8 @@ const ReportsPresenter = ({ activeTab, setActiveTab, authorizeRole }) => {
             onClick={() => setActiveTab("daily")}
           >
             Daily Reports
-          </button>
-          <button
+          </Button>
+          <Button
             className={`${
               activeTab === "weekly"
                 ? "text-blue-600 border-b-2 border-blue-600"
@@ -27,14 +28,14 @@ const ReportsPresenter = ({ activeTab, setActiveTab, authorizeRole }) => {
             onClick={() => setActiveTab("weekly")}
           >
             Weekly Reports
-          </button>
+          </Button>
         </div>
 
         {/* Active Tab Content */}
         {activeTab === "daily" ? (
           <DailyReportContainer authorizeRole={authorizeRole} />
         ) : (
-          <WeeklyReportContainer />
+          <WeeklyReportContainer authorizeRole={authorizeRole} />
         )}
       </div>
     </div>
