@@ -19,6 +19,9 @@ import {
   ScrollText,
   FilePlus,
   Section,
+  Home,
+  FileSpreadsheet,
+  ClipboardPlus,
 } from "lucide-react";
 
 // Configuration for sidebar items for Admin
@@ -611,6 +614,50 @@ const deanSidebarItemsConfig = [
   },
 ];
 
+// Configuration for sidebar items for Student
+const studentSidebarItemsConfig = [
+  {
+    icon: <Home size={20} />,
+    text: "Home",
+    alert: true,
+    ariaLabel: "Home",
+    exact: true, // Add an `exact` property for exact path matching
+    path: "/auth/my",
+  },
+  {
+    icon: <User size={20} />,
+    text: "Profile",
+    alert: false,
+    ariaLabel: "Profile",
+    exact: false,
+    path: "/auth/my/profile",
+  },
+  {
+    icon: <FileSpreadsheet size={20} />,
+    text: "Daily Time Records",
+    alert: false,
+    ariaLabel: "Daily Time Records",
+    exact: false,
+    path: "/auth/my/daily-time-records",
+  },
+  {
+    icon: <ClipboardPlus size={20} />,
+    text: "Weekly Accomplishments",
+    alert: false,
+    ariaLabel: "Daily Time Records",
+    exact: false,
+    path: "/auth/my/weekly-accomplishments",
+  },
+  /* {
+    icon: <FileSpreadsheet size={20} />,
+    text: "Reports",
+    alert: false,
+    ariaLabel: "Reports",
+    exact: false,
+    path: "/auth/my/reports",
+  }, */
+];
+
 export {
   adminSidebarItemsConfig,
   deanSidebarItemsConfig,
@@ -619,4 +666,5 @@ export {
   chairpersonSidebarItemsConfig,
   companySidebarItemsConfig,
   coordinatorSidebarItemsConfig,
+  studentSidebarItemsConfig,
 };

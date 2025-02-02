@@ -2,13 +2,14 @@ import React from "react";
 import Loader from "../../components/common/Loader";
 import { Button } from "@headlessui/react";
 import { PDFDownloadLink } from "@react-pdf/renderer";
-import { Plus } from "lucide-react";
+import { Edit, Plus, Trash2 } from "lucide-react";
 import Text from "../../components/common/Text";
 import FormModal from "../../components/modals/FormModal";
 import DailyRecordModalForm from "./forms/DailyRecordModalForm";
 import { formatDate } from "../../_global/utilities/formatDate";
 import { formatTime } from "../../_global/utilities/formatTime";
 import { formatCreatedAt } from "../../_global/utilities/formatCreatedAt";
+import Page from "../../components/common/Page";
 
 const DailyReportPresenter = ({
   rows = [],
@@ -35,7 +36,7 @@ const DailyReportPresenter = ({
   deleteDailyTimeRecord,
 }) => {
   return (
-    <div>
+    <Page>
       {/* Modals */}
       {/* Add Form Modal */}
       {isAddOpen && (
@@ -64,11 +65,7 @@ const DailyReportPresenter = ({
 
       <Loader loading={loading} />
 
-      <div className="mx-auto py-6 bg-white rounded-lg mt-8">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">
-          Daily Time Record
-        </h2>
-
+      <div className="rounded-lg">
         <div className="flex items-center justify-between my-3">
           <div className="flex items-center space-x-2">
             <Button
@@ -91,10 +88,13 @@ const DailyReportPresenter = ({
         </div>
 
         {/* Table */}
+        <h2 className="text-lg font-semibold bg-blue-900 px-4 py-3 text-white">
+          Daily Time Record
+        </h2>
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white border border-gray-200 rounded-lg">
             <thead>
-              <tr className="bg-gray-100 text-gray-700 uppercase text-sm">
+              <tr className="bg-white text-gray-700 uppercase text-sm">
                 <th className="py-3 px-4 text-left border">Date</th>
                 <th className="py-3 px-4 text-left border">Time In</th>
                 <th className="py-3 px-4 text-left border">Time Out</th>
@@ -107,7 +107,27 @@ const DailyReportPresenter = ({
               {rows.length > 0 ? (
                 rows.map((row, index) => (
                   <tr key={index} className="border-t">
-                    <td className="py-3 px-4 border">{formatDate(row.date)}</td>
+                    <td className="py-3 px-4 border">
+                      {(() => {
+                        const { month, day, weekday } = formatDate(
+                          row.date,
+                          "secondary"
+                        );
+                        return (
+                          <div className="flex flex-col items-center">
+                            <span className="text-gray-600 text-sm">
+                              {month}
+                            </span>
+                            <span className="text-blue-600 font-bold text-xl">
+                              {day}
+                            </span>
+                            <span className="text-gray-600 text-sm">
+                              {weekday}
+                            </span>
+                          </div>
+                        );
+                      })()}
+                    </td>
                     <td className="py-3 px-4 border">
                       {formatTime(row.time_in)}
                     </td>
@@ -123,13 +143,13 @@ const DailyReportPresenter = ({
                         onClick={() => openEditModal(row)}
                         className="text-sm bg-yellow-500 hover:bg-yellow-600 text-white rounded px-3 py-1 mr-2"
                       >
-                        Update
+                        <Edit size={18} />
                       </Button>
                       <Button
                         onClick={() => deleteDailyTimeRecord(row.id)}
                         className="text-sm bg-red-500 hover:bg-red-600 text-white rounded px-3 py-1"
                       >
-                        Delete
+                        <Trash2 size={18} />
                       </Button>
                     </td>
                   </tr>
@@ -145,7 +165,7 @@ const DailyReportPresenter = ({
           </table>
         </div>
       </div>
-    </div>
+    </Page>
   );
 };
 

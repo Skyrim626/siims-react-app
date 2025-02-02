@@ -32,6 +32,8 @@ import EndorsementsRemotePage from "../../pages/remotes/EndorsementsRemotePage";
 import ProfileContainer from "../../containers/Profiles/ProfileContainer";
 import GenerateEndorsementLetterIndex from "../../containers/Endorsements/GenerateEndorsementLetterIndex";
 import ReportsContainer from "../../containers/Reports/ReportsContainer";
+import DailyReportContainer from "../../containers/Reports/DailyReportContainer";
+import WeeklyReportContainer from "../../containers/Reports/WeeklyReportContainer";
 // Routes for Student
 const StudentRoutes = {
   path: "my",
@@ -306,6 +308,14 @@ const StudentRoutes = {
     {
       path: "reports",
       element: <ReportsContainer authorizeRole={"student"} />,
+    },
+    {
+      path: "daily-time-records",
+      element: <DailyReportContainer authorizeRole={"student"} />,
+    },
+    {
+      path: "weekly-accomplishments",
+      element: <WeeklyReportContainer authorizeRole={"student"} />,
     },
 
     {

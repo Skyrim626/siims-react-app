@@ -2,13 +2,20 @@ import Text from "../components/common/Text";
 
 // Render Profile Header (For Self)
 export const renderSelfProfileHeader = ({ authorizeRole, profile }) => {
+  const renderFullName = () => {
+    return (
+      <h1 className="text-3xl font-semibold">
+        {profile.first_name ?? ""} {profile.middle_name ?? ""}{" "}
+        {profile.last_name ?? ""}
+      </h1>
+    );
+  };
+
   switch (authorizeRole) {
     case "dean":
       return (
         <>
-          <h1 className="text-3xl font-semibold">
-            {profile.first_name} {profile.middle_name} {profile.last_name}
-          </h1>
+          {renderFullName()}
           <Text className="text-sm text-gray-600 font-bold">
             Dean of the {profile.college || "College of Science"}
           </Text>
@@ -17,9 +24,7 @@ export const renderSelfProfileHeader = ({ authorizeRole, profile }) => {
     case "chairperson":
       return (
         <>
-          <h1 className="text-3xl font-semibold">
-            {profile.first_name} {profile.middle_name} {profile.last_name}
-          </h1>
+          {renderFullName()}
           <Text className="text-sm text-gray-600 font-bold">
             Chairperson of the {profile.college || "College of Science"}
           </Text>
@@ -28,9 +33,7 @@ export const renderSelfProfileHeader = ({ authorizeRole, profile }) => {
     case "coordinator":
       return (
         <>
-          <h1 className="text-3xl font-semibold">
-            {profile.first_name} {profile.middle_name} {profile.last_name}
-          </h1>
+          {renderFullName()}
           <div className="flex flex-col">
             {/* College */}
             <Text className="text-sm text-gray-600 font-bold">
@@ -46,22 +49,14 @@ export const renderSelfProfileHeader = ({ authorizeRole, profile }) => {
     case "supervisor":
       return (
         <>
-          <h1 className="text-3xl font-semibold">
-            {profile.first_name} {profile.middle_name} {profile.last_name}
-          </h1>
+          {renderFullName()}
           <Text className="text-sm text-gray-600 font-bold">
             {profile.company || "Company of Science"}
           </Text>
         </>
       );
     case "student":
-      return (
-        <>
-          <h1 className="text-3xl font-semibold">
-            {`${profile.first_name} ${profile.middle_name} ${profile.last_name}`}
-          </h1>
-        </>
-      );
+      return <>{renderFullName()}</>;
   }
 };
 

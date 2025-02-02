@@ -4,10 +4,10 @@ import Text from "../../../components/common/Text";
 import RoleBasedView from "../../../components/common/RoleBasedView";
 
 const ProfileImagePresenter = ({
-  first_name,
-  middle_name,
-  last_name,
-  profile_image_url,
+  first_name = "",
+  middle_name = "",
+  last_name = "",
+  profile_image_url = "",
   authorizeRole,
 }) => {
   close;

@@ -22,7 +22,9 @@ export default function SidebarLayout({
   const location = useLocation();
 
   // Combine into full name
-  const name = `${user["first_name"]} ${user["middle_name"]} ${user["last_name"]}`;
+  const name = `${user["first_name"] ?? ""} ${user["middle_name"] ?? ""} ${
+    user["last_name"] ?? ""
+  }`;
   const email = user["email"];
 
   return (

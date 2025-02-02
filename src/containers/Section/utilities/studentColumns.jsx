@@ -46,6 +46,30 @@ export const getStudentStaticColumns = ({
       headerClassName: "super-app-theme--header",
     },
 
+    {
+      field: "has_requested_endorsement",
+      headerName: "Has Requested",
+      width: 150,
+      headerClassName: "super-app-theme--header",
+      renderCell: (params) => {
+        return (
+          <>
+            <div className="text-center">
+              {params.row.has_requested_endorsement === "Requested" ? (
+                <span className="bg-green-100 text-green-600 px-5 py-4 rounded-full">
+                  Requested
+                </span>
+              ) : (
+                <span className="bg-gray-600 text-gray-100 px-3 py-3 rounded-full">
+                  Not yet
+                </span>
+              )}
+            </div>
+          </>
+        );
+      },
+    },
+
     // ! Only add the program_name column if the role is admin or dean
     ...(authorizeRole === "admin" || authorizeRole === "dean"
       ? [

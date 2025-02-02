@@ -63,30 +63,28 @@ const ProfileContainer = ({ authorizeRole, method }) => {
    *
    */
 
-  const fetchProfile = async () => {
-    // Set Loading State
-    setLoading(true);
+  useEffect(() => {
+    fetchProfile();
+  }, []);
 
+  const fetchProfile = async () => {
     try {
       const response = await getProfile({
         authorizeRole: authorizeRole,
         status: method,
+        setLoading: setLoading,
       });
 
+      // console.log(response);
+
       if (response) {
-        setLoading(false);
-        console.log(response);
         dispatch(setProfileValues(response));
-        // setProfile(response);
+        setLoading(false);
       }
     } catch (error) {
       console.error(error);
     }
   };
-
-  useEffect(() => {
-    fetchProfile();
-  }, []);
 
   // Check Loading
   if (loading || !profile) {
@@ -97,7 +95,8 @@ const ProfileContainer = ({ authorizeRole, method }) => {
 
   // For Self
   if (method === "self") {
-    return (
+    // console.log("testing");
+    return loading ? null : (
       <SelfProfilePresenter
         authorizeRole={authorizeRole}
         location={location}

@@ -86,6 +86,8 @@ export const fetchData = async ({
       },
     });
 
+    console.log(response);
+
     if (response) {
       setRows(response.data);
       setTotalCount(response.meta.total);

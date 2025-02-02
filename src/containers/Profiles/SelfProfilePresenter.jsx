@@ -22,7 +22,7 @@ const SelfProfilePresenter = ({
   location,
   handlePrint,
 
-  profile,
+  profile = {},
 }) => {
   // console.log(profile);
 
@@ -35,9 +35,9 @@ const SelfProfilePresenter = ({
       <div ref={componentRef}>
         <div className="flex items-center justify-between w-full bg-white shadow-lg">
           <ProfileImagePresenter
-            first_name={profile.first_name}
-            middle_name={profile.middle_name}
-            last_name={profile.last_name}
+            first_name={profile.first_name ?? ""}
+            middle_name={profile.middle_name ?? ""}
+            last_name={profile.last_name ?? ""}
             profile_image_url={profile.profile_image_url}
             authorizeRole={authorizeRole}
           />

@@ -1,12 +1,42 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../organisms/Navbar";
-import { NavLink, Outlet, useLoaderData, useLocation } from "react-router-dom";
+import {
+  NavLink,
+  Outlet,
+  useLoaderData,
+  useLocation,
+  useParams,
+} from "react-router-dom";
 import { Home, CircleUserRound, FileText, File, FileClock } from "lucide-react";
 import Loader from "../common/Loader";
 import { getRequest } from "../../api/apiHelpers";
+import { findBreadcrumbPath } from "../../utils/breadcrumbUtils";
+import { studentSidebarItemsConfig } from "../sidebars/sidebarConfig";
+import Breadcrumb from "../common/Breadcrumb";
+import SidebarLayout from "./SidebarLayout";
+
+export default function StudentLayout() {
+  const location = useLocation();
+  const params = useParams();
+
+  const breadcrumbPaths = findBreadcrumbPath(
+    location.pathname,
+    studentSidebarItemsConfig,
+    params || {} // Ensure params is an empty object if it's undefined
+  ); // Use the helper
+
+  return (
+    <SidebarLayout sidebarItemsConfig={studentSidebarItemsConfig}>
+      <main className="flex-1 overflow-auto">
+        <Breadcrumb paths={breadcrumbPaths} />
+        <Outlet />
+      </main>
+    </SidebarLayout>
+  );
+}
 
 // Layout for Student Pages
-export default function StudentLayout() {
+function OLD_StudentLayout() {
   // Fetch auth student
   // const { auth } = useLoaderData();
 
@@ -136,7 +166,6 @@ export default function StudentLayout() {
       <div className="min-h-screen bg-gray-100 relative">
         <div className="container mx-auto flex">
           <main className="w-full p-4 overflow-y-auto">
-            {/* Content Feed */}
             <Outlet />
             <div className="space-y-4"></div>
           </main>
