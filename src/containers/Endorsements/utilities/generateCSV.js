@@ -12,6 +12,8 @@ export const generateCSV = (rows = []) => {
   const csvData = rows.flatMap((row) => {
     const companyName = row.company_name || "Unknown Company";
     const companyAddress = row.company_address || "Unknown Address";
+    const recipientName = row.recipient_name || "Unknown Recepient Name";
+    const recipientPosition = row.recipient_position || "Unknown Recipient Position"
     const {
       name = "N/A", // Main student's name
       student_id = "N/A", // Main student's ID
@@ -46,6 +48,8 @@ export const generateCSV = (rows = []) => {
     const companyHeader = {
       "Company Name": companyName,
       "Company Address": companyAddress,
+      "Recipient Name": recipientName,
+      "Recipient Position": recipientPosition,
       "Student Name": "", // Blank for grouping
       "Student ID": "",
       "Student Email": "",
